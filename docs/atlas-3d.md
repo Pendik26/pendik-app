@@ -81,7 +81,7 @@ instead of about 5,000, so turning the body stays smooth on phones.
   back goes around the side rather than through the body. Taking hold of the
   model (a drag or the wheel) stops a glide under way.
 - With **Turn around the part you click** on (the default; kept in the
-  `medicine:atlas` setting with the recently opened structures), a click
+  `atlas` setting with the recently opened structures), a click
   slides the view so the part becomes the point the camera turns around,
   without zooming.
 - **Navigation** follows the knowledge map's 3D view (`Graph3D`), itself

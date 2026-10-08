@@ -291,8 +291,10 @@ readiness.
 
 ## Leaderboard
 
-Points are worked out on the server from synced progress
-(`server/leaderboard.ts`), never from a score the browser reports:
+Points are worked out in the database from saved progress and finished
+attempts (`progress_score()` and `attempts_score()` in
+`supabase/migrations/…0500_study.sql`), never from a score the browser
+reports:
 
 | Earned for | Points |
 | --- | --- |
@@ -306,8 +308,6 @@ Points are worked out on the server from synced progress
   gains are kept for 14 days.
 - **All time** is the total. **Streak** is the latest run of consecutive study
   days, if it ended today or yesterday (UTC).
-- Progress synced before an account's leaderboard record existed counts towards
-  all time but not this week, so guest history doesn't land on one day.
 - Equal scores share a rank (1, 2, 2, 4), and only scores above zero are listed.
 - Values that can't be real don't count: at most 5,000 cards and 1,000
   attempts are read per key, and an attempt of more than 500 questions or a
@@ -411,34 +411,21 @@ Built once at deploy time by `src/lib/knowledgeGraph/build.ts`.
   up to 6,000 characters of the page on screen. Alfond keeps the last 40
   messages on the device.
 
-## Sync and the Class Drive
+## Saving and the Class Drive
 
-- **Sync** runs 4 s after a change, every 5 minutes, and when the tab regains
-  focus or the network returns. A request carries up to 1,000 changes (2 MB),
-  and each download re-sends the last 5 s to cover clock overlap.
-- **Merging two copies of a key:**
-  - Flashcard and label states keep, per card, the copy reviewed more often
-    (then the later due date).
-  - Quiz and exam attempts are joined without duplicates.
-  - Study days and finished chapters are joined as sets.
-  - Daily study counts keep the larger number.
-  - A reading position keeps the later one.
-  - Anything else keeps the most recently changed copy.
-- **Class Drive:**
-  - The server reuses a listing for 5 minutes; a Refresh reaches Drive once it's
-    30 s old.
-  - A stale listing is served if Drive takes over 3 s, and a failed read isn't
-    retried for 30 s.
-  - A read lists up to 25 folders per request, 8 requests at a time, up to 600
-    folders and 10 levels deep.
-  - A linked folder's (a folder shortcut's, or one in
-    `GOOGLE_DRIVE_ON_DEMAND_FOLDERS`) own folders aren't walked with the
-    rest. Each is walked
-    when first opened, with its own 600-folder budget, and kept like the main
-    listing (5 minutes, saved in MongoDB, at most 40 in a server's memory).
-    The browser keeps the 4 most recently opened and checks a kept one once a
-    visit.
-  - The browser checks again after 5 minutes away.
+- **Saving progress:** a change is saved 1.5 s after the last one, every
+  changed key in one request (200 rows a batch). Returning to the tab reads
+  the account again, unless changes are waiting to be saved.
+- **Class Drive sync** (`supabase/functions/_shared/driveSync.ts`):
+  - Each call walks folders for up to 40 s, 20 folders per Drive request,
+    then saves where it got to; the GitHub Action calls up to 40 times.
+  - A run reads at most 3,000 folders, 12 levels deep. A run left
+    unfinished for 6 hours is started over.
+  - A run is **held** instead of applied when it couldn't read some folders,
+    found no files at all, or would mark more than 30% of the files missing
+    (and more than 10). An admin can apply it.
+  - A Google Doc is re-read for YouTube links only when it changed since the
+    last run.
   - A file is **new** for 7 days after it was added or changed (whichever is
     later) until the student opens it.
 

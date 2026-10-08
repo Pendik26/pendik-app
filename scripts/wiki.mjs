@@ -113,7 +113,7 @@ for (const page of pages.values()) {
 }
 
 // In the order the docs index lists them; anything new goes at the end.
-const ORDER = ["content-guide", "architecture", "development", "storage-and-sync", "database", "atlas", "atlas-3d", "api", "calculations", "deploying"];
+const ORDER = ["content-guide", "questions", "architecture", "development", "storage-and-sync", "database", "atlas-3d", "api", "calculations", "deploying"];
 const rank = (p) => {
   const i = ORDER.indexOf(posix.basename(p.source, ".md"));
   return i === -1 ? ORDER.length : i;

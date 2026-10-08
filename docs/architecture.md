@@ -1,20 +1,22 @@
 # Architecture
 
-Medicine is a single-page React app that works with no server at all. All
-study material is bundled at build time, all progress lives in the browser,
-and an optional API adds accounts, sync, the leaderboard, AI and the Class
-Drive.
+Pendik is a single-page React app for the Pendik 26 class. Study material
+(flashcards, quizzes, ebooks, summaries, lecture PDFs, the knowledge map and
+atlas) is bundled at build time; everything students and admins save is in
+one Supabase project: sign-in, progress, past-paper exams, the class Drive
+listing, the leaderboard and the AI allowance. Every page needs sign-in, and
+only students on the class roster can have an account.
 
 ```text
           build time                              run time
 content/*.json, *.md, *.pdf ──► Vite bundle ──► browser (React SPA, PWA)
-                                   │                │  localStorage: medicine:*
-                                   ▼                │
-               scripts/prerender.mjs                ▼ (signed in)
-               static page per route ◄── Vercel ──► /api  (api/index.ts)
-               sitemap, robots, 404              server/app.ts ──► MongoDB
-                                                   │         ──► AI gateway
-                                                   └──────────► Google Drive API
+                                   │                │  supabase-js (signed in)
+                                   ▼                ▼
+               scripts/prerender.mjs         Supabase: Auth, Postgres + RLS, SQL functions
+               static page per route           Edge Functions: ai ──► AI gateway
+               (served by Vercel)                              admin-accounts
+                                                               drive-sync ◄── GitHub Action (daily)
+                                                                   └──► Google Drive API
 ```
 
 ## The stack
@@ -22,16 +24,19 @@ content/*.json, *.md, *.pdf ──► Vite bundle ──► browser (React SPA, 
 - **Vite 8, React 19, TypeScript 6** (strict, `erasableSyntaxOnly`), React
   Router 7.
 - **vite-plugin-pwa / Workbox** for the service worker.
-- **Vercel** for hosting and the one API Function; **MongoDB Atlas** for
-  accounts and synced progress; **Better Auth** for sign-in.
+- **Vercel** hosts the static site. **Supabase** for sign-in (Auth), the
+  database (Postgres with row level security and SQL functions) and three
+  Edge Functions (Deno).
 - **Vitest** for tests, **oxlint** and **Stylelint** for linting,
-  **markdownlint** for Markdown.
+  **markdownlint** for Markdown; SQL tests for the database rules.
 - Fuse.js for search, marked for Markdown, d3-force for the knowledge map's
   layout (once at build time, then live on the map page). The map draws on a
   2D canvas in both views; its 3D view has its own small physics and camera,
   with no WebGL library.
 - three.js for the 3D anatomy atlas only (`/atlas`), in its own chunk that no
   other page loads.
+- The interface is in **Indonesian by default, with English** from the
+  sidebar or Account page (`src/i18n/`).
 
 ## Project layout
 
@@ -51,28 +56,22 @@ src/
   styles/       theme.css (design tokens) plus one stylesheet per area,
                 imported by index.css
   types/        content.ts: Flashcard, QuizQuestion, ExamAttempt, EbookMeta…
-  context/      AccountContext: session, sync scheduling, sign-in actions
-  prerender/    site.ts: the static page for every public route
+  context/      AccountContext: the session, the student's profile, loading and
+                saving progress, sign-in actions
+  i18n/         the Indonesian and English text (sections/*.ts), useI18n()
+  prerender/    site.ts: the static page for every route
 content/        the study material and help pages (see content-guide.md)
 public/atlas/   the 3D anatomy models and index (CC BY-SA, see atlas-3d.md)
+public/question-images/  pictures for exam questions (see questions.md)
 scripts/        prerender.mjs (after vite build), graph-relations.mjs,
                 build-info.mjs (version and build for the footer), wiki.mjs,
                 atlas/ (converts Z-Anatomy into public/atlas/)
-api/
-  index.ts      the Vercel Function; vercel.json rewrites /api/* here
-server/         the API behind it:
-  app.ts          routes: auth (Better Auth), config, sync, export,
-                  leaderboard, readiness, AI, Drive (see api.md)
-  schema.ts       every MongoDB collection and its indexes, created once per
-                  cold start
-  progressStore.ts  synced progress, one document per user per key
-                    (MongoDB and in-memory)
-  leaderboard.ts  scoring and ranking, one document per user (MongoDB and in-memory)
-  ai.ts           "Explain this" and Alfond through the AI gateway, daily allowance
-  drive.ts        the Class Drive: walks the Drive folder, caches the listing,
-                  and reads archive folders when they're opened
-  mongo.ts        the shared client (see database.md); devApi.ts serves the
-                  API from the Vite dev server
+supabase/
+  migrations/   the database: tables, row level security, SQL functions
+                (see database.md)
+  functions/    the Edge Functions ai, admin-accounts, drive-sync, and
+                _shared/ (their logic, tested with Vitest; see api.md)
+  tests/        SQL tests for the exam and Drive rules
 ```
 
 ## How content gets into the app
@@ -96,21 +95,28 @@ Every page is its own lazily loaded chunk (`src/App.tsx`). The pages:
 | `/flashcards` → `/flashcards/:blockId/:subjectId` | Subject list with due counts → SM-2 review session |
 | `/occlusion` → `/occlusion/:blockId/:subjectId` | Subjects with figures → image occlusion (review or browse, figure gallery) |
 | `/quizzes` → `/quizzes/:blockId/:subjectId` | Subject list with last score and due counts → quiz (with section picker for large banks) |
-| `/exam` → `/exam/:blockId[/:packageId]` | Block list → package picker → timed exam |
+| `/exam` | Past papers and practice sets for the student's block, their best scores and a running attempt; the pooled block exam |
+| `/exam/papers/:packageId` → `/exam/attempt/:attemptId` → `/exam/result/:attemptId` | A package's details and past attempts → taking it (server timer, saved as you go, one tab at a time) → the graded result and review |
+| `/exam/:blockId` | The pooled block exam, drawn from the block's quiz banks |
 | `/modules` → `/modules/:blockId/:subjectId` | Subjects with PDFs → sectioned PDF viewer |
 | `/ebooks` → `/ebooks/:blockId/:subjectId/:chapterId` | Book list with resume position → chapter reader |
 | `/summaries` → `/summaries/:blockId/:subjectId` | Summary list → rendered summary |
 | `/lab` → `/lab/:exerciseId/:activity` | Virtual Lab activities → simulator bench, data table, plot and check questions |
 | `/search` | Fuzzy search with type and subject filters |
-| `/progress` | Readiness, subject meters, trends, heatmap, weak spots, milestones, export/import |
+| `/progress` | Readiness, subject meters, trends, heatmap, weak spots, milestones |
 | `/atlas` | 3D anatomy: the whole body by system, with search, descriptions, landmarks and muscle attachments (see [3D anatomy atlas](atlas-3d.md)) |
 | `/map` | Knowledge map of every concept across all blocks |
-| `/drive` | Class Drive: the class's Google Drive folder, live (signed-in only) |
+| `/drive` | Class Drive: the class's Google Drive folder, as copied by the daily sync |
 | `/alfond` | Alfond, the study assistant's own page |
 | `/docs` → `/docs/:pageId` | Help: the index of help pages → one page, with contents and previous/next |
 | `/plan`, `/plan/:block` | Exam plan: today's plan, phases, readiness, mock trend, weak spots, class average |
-| `/leaderboard` | Weekly, all-time and streak rankings, filtered to your cohort; join or leave, and pick a display name (signed-in only) |
-| `/account` | Sign in or create an account; profile, sync status, current block, sign out, data download, account deletion |
+| `/leaderboard` | Weekly, all-time and streak rankings, filtered to your cohort; join or leave, and pick a display name |
+| `/account` | Profile, language and theme, current block, password, linking Google, save status, sign out |
+| `/admin/students`, `/packages`, `/import`, `/drive` | Admins only: the roster and accounts, exam packages and their questions, importing a Markdown file of questions, the Drive sync and hidden files |
+
+Signed out, every address shows the sign-in page (NIM and password, or
+Google). A student still on their first password sees the change-password
+page first.
 
 Every page is code-split and loaded on demand.
 
@@ -119,22 +125,15 @@ and whether search engines may index it. The app uses it to set the document
 title while navigating (`usePageMeta`), and the prerender step uses it for the
 static pages, so the two always agree.
 
-## Static pages for search engines
+## Static pages
 
 `npm run build` ends with `scripts/prerender.mjs`, which runs
-`src/prerender/site.ts` against the built `index.html`:
-
-- one page per public route (`indexablePaths()`), with its own title,
-  description, canonical URL and breadcrumb data, and the content itself as
-  plain HTML inside `#root` (card fronts, quiz questions, chapters,
-  summaries, help pages);
-- the personal pages (`PRIVATE_PATHS`) as `noindex` shells;
-- `knowledge-graph.json` (the map, laid out once at build time),
-  `sitemap.xml`, `robots.txt` and `404.html`.
-
-React replaces the static content as soon as the app starts. Past-paper exam
-questions and anything from the Class Drive are never written to these pages;
-`src/prerender/site.test.ts` checks the first.
+`src/prerender/site.ts` against the built `index.html`: one page per route
+with its own title and description, plus `knowledge-graph.json` (the map,
+laid out once at build time), `sitemap.xml`, `robots.txt` and `404.html`.
+Vercel serves those pages directly, so a deep link loads fast; React then
+starts and shows the sign-in page if needed. Past-paper questions and
+anything from the Class Drive are never written to these pages.
 
 ## Offline and updates
 
@@ -150,12 +149,14 @@ questions and anything from the Class Drive are never written to these pages;
   30 minutes, then shows a **"A new version is ready"** prompt. It never
   reloads on its own, so a quiz or exam in progress isn't lost.
 
-## Progress, accounts and sync
+## Accounts and progress
 
-Progress is a set of `medicine:*` keys in `localStorage`, declared in one
-registry (`src/lib/storageSchema.ts`). Signed in, changed keys are synced
-with the server and merged per key. The whole design is in [Storage and
-sync](storage-and-sync.md); the endpoints are in [the API reference](api.md).
+Students sign in with their NIM (as `<nim>@pendik26.internal` in Supabase
+Auth) or with Google once they've linked it. Their progress is kept in their
+account only: loaded into memory at sign-in and saved a moment after each
+change. The keys are declared in one registry, `src/lib/storageSchema.ts`.
+The whole design is in [Storage and saving](storage-and-sync.md), the tables
+in [Database](database.md), the Edge Functions in [Server API](api.md).
 
 ## Pure logic in src/lib
 
@@ -165,7 +166,7 @@ pure function with a `*.test.ts` beside it. The formulas are written out in
 
 | File | Responsibility |
 | --- | --- |
-| `content.ts` | Discovers every content file at build time and exposes decks, banks, exam packages, ebooks, summaries and modules |
+| `content.ts` | Discovers every content file at build time and exposes decks, banks, ebooks, summaries and modules |
 | `blocks.ts` | Block display names, "coming soon" subjects, grouping lists by block |
 | `sm2.ts` | SM-2 scheduling: a 0–5 grade becomes the next interval, ease factor and due date |
 | `quizScoring.ts` | Scores an attempt and keeps the "due for review" queue of missed questions |
@@ -189,23 +190,25 @@ pure function with a `*.test.ts` beside it. The formulas are written out in
 | `muscleSim.ts` | The Virtual Lab's muscle model (recruitment, twitch, summation, length–tension, fatigue, load–velocity) |
 | `labTraces.ts` | Oscilloscope tracing colours and reading a value off a trace |
 | `occlusion.ts` | Image-occlusion cards, figure navigation and the zoom window |
-| `explain.ts` | Finds the note passages that match a question, asks the AI to explain |
+| `explain.ts` | Finds the note passages that match a question for "Explain this" |
 | `knowledgeGraph/` | Builds the knowledge map (concepts, links, layout, each concept's "What it is" from `describe.ts` and the glossary), its shared physics (`layout.ts`), the 3D physics (`layout3d.ts`) and orbit camera (`camera3d.ts`), the compact file format (`wire.ts`), the graph settings and each concept's mastery |
 | `buildInfo.ts` | The version and build the footer shows, put in at build time |
-| `drive.ts` | The Class Drive listing: device cache, folder lookup, search, new files |
+| `drive.ts` | The Class Drive: the tree from the `drive_files` rows, folder lookup, search, new files, labels |
 | `help.ts` | The in-app help pages: the list from `content/help/meta.json`, each page loaded on demand |
 | `markdownHtml.ts` | Markdown to HTML with heading anchors (chapters, summaries, help) |
 | `records.ts` | Safe reads and writes of objects keyed by untrusted ids |
-| `backupReminder.ts` | When to show the export reminder |
-| `tipOfDay.ts` | Deterministic daily tip (same for everyone, no server) |
+| `tipOfDay.ts` | Deterministic daily tip (same for everyone) |
 | `subjectStyle.ts` | Stable per-subject hue from the subject id, avoiding the red and green used for wrong/right |
-| `storageSchema.ts` | The registry of every `localStorage` key type: id, sync and merge rule, clearing (shared with the server) |
+| `storageSchema.ts` | The registry of every kind of saved value: its id and whether it's saved in the account or on the device |
 | `routeMeta.ts` | Title, description, breadcrumbs and indexability for every route (the app and the prerendered pages), and each subject's materials for the study pages' tabs (`subjectMaterials`) |
-| `storage.ts` | `localStorage` helpers, the key builders, and export/import of all `medicine:*` keys |
-| `progressMigration.ts` | Renames progress saved under old subject-only keys to per-block keys |
-| `syncMerge.ts` | How two copies of one key are merged, by the key's rule in the registry (shared with the server) |
-| `sync.ts` | The sync round: upload changed keys, download the account's changes, apply them safely |
-| `syncDirty.ts` | Records which synced keys changed on this device since the last sync |
+| `storage.ts` | Reading and writing saved values (progress in memory, device settings in `localStorage`) and the key builders |
+| `progressSync.ts` | Loading the account's progress at sign-in and saving changes |
+| `supabase.ts` | The Supabase client and the NIM sign-in address |
+| `exams.ts` | Past-paper packages and attempts: the store loaded at sign-in, and the attempt functions |
+| `questionMarkdown.ts` | The question import format: parsing and writing it |
+| `admin.ts` | The admin pages' calls: roster, accounts, packages, imports, Drive sync |
+| `aiStream.ts` | Streams an answer from the `ai` Edge Function |
+| `leaderboard.ts`, `classReadiness.ts` | The leaderboard and the class average, from SQL functions |
 
 ## Design
 

@@ -3,31 +3,31 @@
 ## Quick start
 
 ```bash
-git clone https://github.com/neccrr/medicine.git
-cd medicine
+git clone https://github.com/Pendik26/pendik-app.git
+cd pendik-app
 npm install
-npm run dev       # http://localhost:5173, guest-only
+cp .env.example .env.local   # then fill in VITE_SUPABASE_URL and the key
+npm run dev                  # http://localhost:5173
 ```
 
-That's the whole app without accounts. `npm run dev:api` also serves the API
-from the dev server with in-memory storage, so you can sign up, sync and use
-the leaderboard locally. With `MONGODB_URI` set it uses that database instead
-(a local MongoDB must run as a replica set, because Better Auth uses
-transactions; a single node is fine, and Atlas always is).
-
-Optional features work locally too, with their variables set in the shell or
-`.env.local` (see [deploying](deploying.md)):
+Every page needs sign-in, so the app needs a Supabase project to talk to:
+either the real one (add `http://localhost:5173` to its redirect URLs and
+`APP_ORIGINS`, see [deploying](deploying.md)), or a local one with the
+[Supabase CLI](https://supabase.com/docs/guides/cli):
 
 ```bash
-AI_BASE_URL=… AI_API_KEY=… AI_MODEL=… npm run dev:api
-GOOGLE_DRIVE_API_KEY=… GOOGLE_DRIVE_FOLDER_ID=… npm run dev:api
+supabase start                 # Postgres, Auth and the API in Docker
+supabase db reset              # apply supabase/migrations/
+supabase functions serve       # the Edge Functions, reading supabase/functions/.env
 ```
+
+`supabase start` prints the local URL and publishable key for `.env.local`.
+Make yourself an admin as in [deploying, step 6](deploying.md#6-first-admin-roster-and-past-papers).
 
 ## Scripts
 
 ```bash
-npm run dev          # dev server on http://localhost:5173 (guest-only)
-npm run dev:api      # same, plus the API with in-memory storage
+npm run dev          # dev server on http://localhost:5173
 npm run build        # type-check (tsc -b), build to dist/, then prerender
 npm run preview      # serve the production build locally
 npm run lint         # oxlint
@@ -52,23 +52,26 @@ Tests sit beside the code as `*.test.ts` and run in Node (no DOM). They cover:
 - the pure logic in `src/lib`: SM-2, quiz scoring, shuffling and sections,
   exam format, readiness and today's plan, the muscle model and trace
   reading, image occlusion, the knowledge map, note matching, search
-  indexing, text extraction, streaks, backup timing, tip of the day, the key
-  registry and sync merging, the Class Drive helpers, help pages and route
-  metadata;
+  indexing, text extraction, streaks, tip of the day, the key registry, the
+  Class Drive helpers, the question Markdown parser, the admin helpers, the
+  AI stream, help pages and route metadata;
 - content integrity (`contentIntegrity.test.ts`) and the prerendered pages
   (`src/prerender/site.test.ts`, which also checks that no past-paper question
   is published);
-- the API in `server/`: sign-up, sync, per-user isolation, validation, export
-  and deletion, leaderboard scoring and ranking, the AI routes and allowance,
-  and the Drive crawl and cache. `sync.e2e.test.ts` runs two browser sync
-  engines against the real handler.
+- the Edge Functions' shared code in `supabase/functions/_shared/`: the AI
+  requests and allowance, account actions, and the Drive sync with its path
+  rules (against a fake Drive and store);
+- the translations (`src/i18n/i18n.test.ts`: both languages have the same
+  keys and the same `{placeholders}`).
 
-A test that needs `window` stubs it with `vi.stubGlobal`. The MongoDB stores
-and indexes have an integration test against a real server, using a throwaway
-database:
+A test that needs `window` stubs it with `vi.stubGlobal`; one that needs
+Supabase mocks `./supabase`.
+
+The database rules (exam attempts, grading, deadlines, the Drive functions)
+have SQL tests that run against a local Postgres:
 
 ```bash
-MONGODB_TEST_URI="mongodb://127.0.0.1:27017/?replicaSet=rs0" npx vitest run server/mongo.integration.test.ts
+PGHOST=localhost PGPORT=5432 PGUSER=postgres bash supabase/tests/run.sh
 ```
 
 There are no component tests; check UI changes in the browser, in light and
@@ -93,8 +96,14 @@ dark mode and at phone width (about 380 px).
 - **Markdown** wraps at 80 columns (tables exempt), with blank lines around
   lists. Bold terms stay on one line: the knowledge map reads them.
 - **Comments** say why, not what.
-- **Privacy:** no secrets in the repo (keys live in Vercel's environment
-  variables), and no personal data in content. Anything only for signed-in
+- **Words on screen** come from `src/i18n/`: `t("key")` from `useI18n()`,
+  with the English and Indonesian text side by side in a section file in
+  `src/i18n/sections/`. Indonesian is the default. Code in `src/lib` that
+  makes text takes a `t: Translate` argument (defaulting to English, for
+  tests and the prerender).
+- **Names in code are English**, including database tables and columns.
+- **Privacy:** no secrets in the repo (the server's keys are Supabase
+  Edge Function secrets), and no personal data in content. Anything only for signed-in
   students (the Class Drive) stays out of the prerendered pages, search and the
   knowledge map.
 
@@ -129,12 +138,20 @@ page follow from the list.
 
 See [storage and sync](storage-and-sync.md#adding-a-new-kind-of-progress).
 
-### A new API route
+### Something that needs the server
 
-Add it to the handler in `server/app.ts` (method check, session check,
-validation with a readable error), give it a test in `server/app.test.ts`, and
-document it in [the API reference](api.md). A new collection or index goes in
-`server/schema.ts`.
+Most things are a table or SQL function: add a migration in
+`supabase/migrations/` with row level security and a header comment, a SQL
+test in `supabase/tests/` if it enforces a rule, and a wrapper in `src/lib`.
+Only what needs a secret (an API key, the service role) becomes an Edge
+Function: put its logic in `supabase/functions/_shared/` with a Vitest test,
+keep `index.ts` thin, and document it in [the server API](api.md).
+
+### A new language string
+
+Add the key to the English and Indonesian objects in the right
+`src/i18n/sections/*.ts` file (a new section file is merged in
+`src/i18n/messages.ts`). `npm test` fails if the two don't match.
 
 ### A new block
 

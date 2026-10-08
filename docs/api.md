@@ -1,132 +1,38 @@
-# API reference
+# Server API
 
-The whole API is one Vercel Function, `api/index.ts`, which builds the app in
-`server/app.ts` once per cold start and routes by path. `vercel.json`
-rewrites `/api/*` to it. In development, `npm run dev:api` serves the same
-handler from the Vite dev server (`server/devApi.ts`) with in-memory storage,
-or with your database if `MONGODB_URI` is set.
+There's no server of our own. The browser talks to Supabase:
 
-Without `MONGODB_URI` and `BETTER_AUTH_SECRET`, every route answers `503`
-and the app runs as a guest-only static site.
+- **Tables and SQL functions** through supabase-js (`src/lib/supabase.ts`),
+  with the signed-in student's token. Row level security and the functions'
+  own checks decide what each call may do; they're described in
+  [database.md](database.md). The app's wrappers are in `src/lib/exams.ts`
+  (attempts), `src/lib/admin.ts` (admin pages), `src/lib/leaderboard.ts`,
+  `src/lib/classReadiness.ts` and `src/lib/progressSync.ts`.
+- **Three Edge Functions** (Deno, in `supabase/functions/`) for what needs a
+  secret: the AI key, the service role, or Google's credentials. They're
+  below.
+
+Shared code for the functions is in `supabase/functions/_shared/`. It has no
+imports beyond its own folder, so the same files are unit-tested with Vitest
+(`*.test.ts` next to them) and typechecked with `tsconfig.functions.json`.
 
 ## Conventions
 
-- Requests and responses are JSON, except the AI routes, which stream plain
-  text.
-- Signed-in routes use the Better Auth session cookie; there are no API keys
-  for clients.
-- Errors are `{ "error": "A sentence a student can read." }` with the status:
-  `400` invalid input, `401` signed out, `405` wrong method, `413` too large,
-  `429` AI allowance used up, `502` Google Drive unreachable, `503` feature
-  not configured, `500` anything else.
-- Responses are `cache-control: no-store`, except the Drive listing (below).
+- Address: `https://<project-ref>.supabase.co/functions/v1/<name>`.
+- All take `POST` with a JSON body and answer JSON (except the AI's text
+  stream). Errors are `{ "error": "message" }` with a fitting status.
+- Browsers from addresses not in the `APP_ORIGINS` secret get no CORS
+  headers, so their calls fail.
+- `ai` and `admin-accounts` need `Authorization: Bearer <access token>` (and
+  the `apikey` header supabase-js sends); Supabase checks the token before
+  the function runs (`verify_jwt = true` in `supabase/config.toml`).
 
-## Routes
+## `ai`: "Explain this" and Alfond
 
-| Method | Path | Sign-in | What it does |
-| --- | --- | --- | --- |
-| any | `/api/auth/*` | – | Better Auth: sign up, sign in (email or Google), sessions, profile, delete account |
-| GET | `/api/config` | – | which features are switched on |
-| POST | `/api/sync` | yes | upload changed progress keys, download what changed since the last sync |
-| GET | `/api/account/export` | yes | everything stored for the account |
-| GET | `/api/leaderboard` | yes | a ranked board, and the student's own row |
-| PUT | `/api/leaderboard/me` | yes | join or leave, change the display name |
-| GET, PUT | `/api/readiness` | yes | the class's average readiness for a block; record your own |
-| POST | `/api/ai/explain` | yes | stream an explanation of a quiz question or flashcard |
-| POST | `/api/ai/chat` | yes | stream Alfond's reply |
-| GET | `/api/drive` | yes | the Class Drive listing |
-| GET | `/api/drive/folder?key=` | yes | one archive folder's contents, read when it's opened |
+For signed-in students on the roster. Secrets: `AI_BASE_URL`, `AI_API_KEY`,
+`AI_MODEL`, `AI_DAILY_LIMIT`, `APP_ORIGINS`. Called by `src/lib/aiStream.ts`.
 
-### GET /api/config
-
-```json
-{ "accounts": true, "google": true, "ai": true, "drive": false }
-```
-
-The app reads this once at start-up to decide what to show (the Google
-button, the AI button and Alfond, the Class Drive).
-
-### POST /api/sync
-
-```json
-{
-  "since": 1759000000000,
-  "changes": [
-    {
-      "key": "medicine:flashcards:1.2/anatomy",
-      "value": {},
-      "updatedAt": 1759000123456
-    }
-  ]
-}
-```
-
-- `since` is the `serverTime` of the previous sync, or `0` for the first.
-- Up to 1,000 changes and 2 MB per request. Every key must be a syncable
-  `medicine:*` key (see [storage and sync](storage-and-sync.md)), and
-  `updatedAt` a time no later than a day ahead; otherwise the whole request is
-  rejected with `400`.
-- Each change is merged into the stored copy by the key's rule.
-
-Response:
-
-```json
-{
-  "serverTime": 1759000200000,
-  "entries": [{ "key": "…", "value": {}, "updatedAt": 1759000150000 }]
-}
-```
-
-`entries` is every key changed since `since` minus 5 seconds.
-
-### GET /api/account/export
-
-```json
-{
-  "exportedAt": "2026-10-06T07:00:00.000Z",
-  "user": {
-    "id": "…",
-    "name": "…",
-    "email": "…",
-    "cohort": "2026",
-    "createdAt": "…"
-  },
-  "progress": [
-    { "key": "medicine:…", "value": {}, "updatedAt": "2026-10-05T12:00:00Z" }
-  ]
-}
-```
-
-### GET /api/leaderboard
-
-Query: `period` = `week` (default), `all` or `streak`; `scope` = `everyone`
-(default) or `cohort` (only when the student has a cohort).
-
-The response has `rows` (up to 100 of `{ rank, name, cohort, value, me }`,
-with `me` true on the student's own row), `total`, the `points` table, and
-`me` (joined, display name, rank, this period's value, week, streak and
-stats). Points are
-always computed on the server from synced progress; see
-[calculations](calculations.md#leaderboard).
-
-### PUT /api/leaderboard/me
-
-```json
-{ "joined": true, "displayName": "Night owl" }
-```
-
-Either field may be left out. Display names are 2 to 32 characters.
-
-### /api/readiness
-
-- `PUT { "block": "1.2", "value": 63.5 }` records the student's readiness
-  (0–100) for a block. The app sends it when it moves by a whole point.
-- `GET ?block=1.2` answers
-  `{ "cohort": "2026", "count": 12, "average": 58 }`: the cohort's average
-  (everyone's, without a cohort). `average` is `null` until at least 3
-  students have one.
-
-### POST /api/ai/explain
+### POST /ai/explain
 
 ```json
 {
@@ -142,9 +48,9 @@ Either field may be left out. Display names are 2 to 32 characters.
 
 `question` and `answer` are required; the rest is optional and trimmed to
 fixed limits (8 options, 4 notes of 2,400 characters). The notes are the
-matching passages the browser already found.
+matching passages the browser already found in the ebook and summary.
 
-### POST /api/ai/chat
+### POST /ai/chat
 
 ```json
 {
@@ -161,80 +67,65 @@ The last 12 messages are kept (3,000 characters each), and the conversation
 must end with the student's message. `page` is optional (up to 6,000
 characters of text).
 
-Both AI routes take one answer from the student's daily allowance before
-calling the gateway, and give it back if the answer fails. The response is a
-plain-text stream; the header `x-ai-remaining` says how many answers are left
-today. With the allowance used up they answer `429`; with no AI configured,
-`503`.
+Both take one answer from the student's daily allowance (`ai_take()`) before
+calling the gateway, and give it back (`ai_refund()`) if the answer fails.
+The response is a plain-text stream; the header `x-ai-remaining` says how
+many answers are left today. `401` without a valid token, `403` for an
+account that isn't on the roster, `429` with the allowance used up, `503`
+with no AI configured.
 
-### GET /api/drive
+## `admin-accounts`: activate, lock, unlock, reset
 
-Query: `refresh=1` asks for a fresh read of Google Drive (honoured once the
-listing is 30 s old).
-
-```json
-{
-  "updatedAt": 1759000000000,
-  "complete": true,
-  "root": {
-    "name": "…",
-    "folders": [],
-    "files": [
-      {
-        "id": "…",
-        "name": "…",
-        "kind": "slides",
-        "size": 1234,
-        "modifiedTime": "…",
-        "createdTime": "…"
-      }
-    ]
-  }
-}
-```
-
-Folders are sent by name only, never with their Drive ids: the class folder
-may be shared as editable, and its ids would let anyone open it. Files carry
-the id Google's viewer needs. `complete` is `false` when the walk stopped
-early (too many folders, or a folder failed to list).
-
-The response carries an `ETag` and `cache-control: private, no-cache`; a
-request with a matching `If-None-Match` gets `304` with no body. Without a
-configured Drive it answers `503`, and `502` if Google can't be reached and
-there's no saved copy.
-
-Linked folders (every folder shortcut in the class folder, and any folder in
-`GOOGLE_DRIVE_ON_DEMAND_FOLDERS`, see
-[deploying](deploying.md#class-drive-optional)) come with `"archive": true`.
-Their own folders (one per cohort, say) come with no contents and a
-`"deferred"` key instead:
+Admins only (the function checks `profiles.role`). Uses the service role to
+change Supabase Auth users. Called by `accountAction()` and
+`activateAccounts()` in `src/lib/admin.ts`.
 
 ```json
-{
-  "name": "ANGKATAN 2020",
-  "folders": [],
-  "files": [],
-  "deferred": "r8_axc-74j3ZJjTh"
-}
+{ "action": "activate", "student_ids": ["2601001", "2601002"] }
 ```
 
-### GET /api/drive/folder
+Creates the Auth user (`<nim>@pendik26.internal`, password `pendik26` + NIM)
+and the profile for each roster student, up to 300 at once. Answers
+`{ "results": [{ "student_id": "2601001", "ok": true }, …] }`, with a
+`message` on each one that failed.
 
-Query: `key` (16 characters, from a `deferred` folder) and optionally
-`refresh=1`. Answers with that folder's own listing, in the same shape as
-`/api/drive` (its `root` is the folder), walked on first request with a folder
-budget of its own and then kept like the main listing. The key is a hash of
-the folder's id, which never leaves the server. `400` for a malformed key,
-`404` for a key that isn't in the current listing; ETags work the same way.
+```json
+{ "action": "lock", "user_id": "<uuid>" }
+{ "action": "unlock", "user_id": "<uuid>" }
+{ "action": "reset", "user_id": "<uuid>" }
+```
 
-The crawl and cache are described in
-[calculations](calculations.md#sync-and-the-class-drive) and
-[deploying](deploying.md#class-drive-optional).
+Lock bans the Auth user, so they can't sign in or renew their session;
+unlock lifts it; reset sets the password back to the first password and makes
+them change it at next sign-in. An admin can't lock or reset their own account.
+
+## `drive-sync`: copy the class Drive
+
+Called by the daily GitHub Action with `x-sync-secret: <DRIVE_SYNC_SECRET>`,
+or by an admin from Admin → Drive with their token (`verify_jwt = false`, so
+the function checks both itself). Secrets: `GOOGLE_SERVICE_ACCOUNT`,
+`DRIVE_ROOT_FOLDER_ID`, `DRIVE_SYNC_SECRET`, `DRIVE_SYNC_BUDGET_MS`,
+`APP_ORIGINS`.
+
+```json
+{}
+```
+
+Does one step of the current sync (or starts one): walks folders until its
+time budget runs out, saves the files it found and where it got to, and
+answers the run's state, `{ "status": "running" | "done" | "held" | "failed",
+"filesFound": …, "remaining": … }`. Call again while it says `running`.
+
+```json
+{ "action": "apply", "run_id": "<uuid>" }
+```
+
+Admins only: lets a held run go ahead (marks the files it didn't see as
+missing).
 
 ## Tests
 
-`server/app.test.ts`, `server/ai.test.ts`, `server/drive.test.ts`,
-`server/leaderboard.test.ts` and `server/readiness.test.ts` run the handler
-with in-memory stores and a stubbed fetch. `server/sync.e2e.test.ts` drives
-two browser sync engines against it. `server/mongo.integration.test.ts` runs
-against a real MongoDB when `MONGODB_TEST_URI` is set.
+```sh
+npm test                 # Vitest, including supabase/functions/_shared/*.test.ts
+bash supabase/tests/run.sh   # the SQL rules, see database.md
+```

@@ -1,228 +1,148 @@
 # Database
 
-Accounts, synced progress, the leaderboard, the AI allowance and the Class
-Drive's cached listing live in one MongoDB database (MongoDB Atlas in
-production; the cluster itself, its limits and how to scale it are in the
-[MongoDB Atlas cluster](atlas.md) page). Everything else (content, the
-knowledge map, search) is static and never touches it. Without `MONGODB_URI`
-the site still works, as guest only.
+Everything a student or admin saves lives in one Supabase project: sign-in
+(Supabase Auth), a Postgres database, and three Edge Functions. Study content
+(flashcards, quizzes, ebooks, summaries, lecture PDFs, the knowledge map and
+atlas) is not in it: it ships with the built site from `content/` and
+`public/`.
 
-## Connection
+The schema is the SQL in [`supabase/migrations/`](../supabase/migrations/),
+applied in file order. Each file starts with a comment saying what it holds
+and the rules it enforces; this page is the map.
 
 ```text
-browser ──► Vercel Function api/index.ts (sin1) ──► Atlas (Singapore)
-              │  one MongoClient per function instance (server/mongo.ts)
-              └─ server/app.ts routes ─► stores: progressStore, leaderboard,
-                                         ai, drive, Better Auth's adapter
+browser ── supabase-js ──► Supabase Auth      (NIM or Google sign-in, sessions)
+   │                  └──► Postgres (PostgREST) tables and SQL functions, behind row level security
+   └── fetch ────────────► Edge Functions     ai, admin-accounts (with the student's token)
+GitHub Action ───────────► Edge Function      drive-sync (with a shared secret)
 ```
 
-- **Settings:** `MONGODB_URI` (an Atlas `mongodb+srv://` string for a user
-  with `readWrite` on this database only) and `MONGODB_DB` (default
-  `medicine`). Set them in Vercel's environment variables; never commit them.
-  `.env.example` shows the shape.
-- **One client per instance.** `getMongo()` keeps the connecting client on
-  `globalThis`, so a warm function instance reuses its connection pool across
-  requests. A failed connect is forgotten, so the next request tries again.
-- **Pool:** at most 5 connections per instance. A connection idle for 60
-  seconds is closed (`maxIdleTimeMS`), so instances winding down don't hold
-  connections against the cluster's limit (500 on the free tier).
-- **Timeouts:** an unreachable cluster fails after 5 seconds
-  (`serverSelectionTimeoutMS`, not the driver's 30), and a query that hangs
-  after 20 (`socketTimeoutMS`). The API then answers `503` or `500` quickly,
-  and the app keeps working offline.
-- **Region:** the function runs in `sin1` (Singapore, `vercel.json`), next to
-  the Atlas cluster, so each query is a few milliseconds. Move both together.
-- **Network access:** Atlas allows Vercel either by `0.0.0.0/0` (the database
-  user's password is then the protection) or through the Vercel ↔ Atlas
-  integration.
-- **Indexes** are created once per cold start, off the request path
-  (`ensureIndexes()` in `server/schema.ts`); when they exist it's one quick
-  round trip per collection.
+## Who can see what
 
-## Collections
+Every table has row level security on, and `anon` (signed out) can read
+nothing. In short:
 
-Every collection and index is declared in `server/schema.ts`.
+- **Students** read and change only their own profile settings, progress,
+  bookmarks and attempts. They never read `questions` directly: question
+  content reaches them only through the attempt functions, which leave the
+  answer keys out of exam attempts until they're submitted.
+- **Admins** (`profiles.role = 'admin'`, checked by `is_admin()`) can read
+  and edit the roster, questions and packages, and use the `admin_*`
+  functions.
+- **The service role** (Edge Functions only, never the browser) creates and
+  locks accounts and writes the Drive tables.
 
-| Collection | Owner | One document per | Expires |
-| --- | --- | --- | --- |
-| `user` | Better Auth | account | when deleted |
-| `session` | Better Auth | signed-in device | at `expiresAt` (60 days, renewed daily) |
-| `account` | Better Auth | sign-in method (password, Google) | with the user |
-| `verification` | Better Auth | pending token | at `expiresAt` |
-| `rateLimit` | Better Auth | rate-limited key | overwritten |
-| `progress` | sync | user × synced key | with the user |
-| `leaderboard` | leaderboard | user | with the user |
-| `aiUsage` | AI | user × UTC day | two days after the day |
-| `driveSnapshot` | Class Drive | listing (the tree, each opened archive folder) | 30 days unsaved |
+## Accounts (`…0100_accounts.sql`)
 
-### `progress`
+| Table | One row per | Notes |
+| --- | --- | --- |
+| `roster` | student on the class list: NIM, full name, class, cohort | admin only |
+| `profiles` | activated account, keyed by the Auth user id | role, `must_change_password`, leaderboard name and whether they joined |
 
-```js
-{ userId, key: "medicine:quiz:1.2/anatomy", value: [/* … */],
-  updatedAt: 1759740000000, rev: 1759740001234 }
-```
+A student signs in as `<nim>@pendik26.internal` (lower case) with a
+password; their first password is `pendik26` + NIM, and `must_change_password`
+keeps them on the change-password page until they pick their own
+(`password_changed()`). Google is linked to that same Auth user from the
+Account page, so a Google sign-in for anyone not activated finds no profile
+and is signed straight out.
 
-One document per synced `localStorage` key (see
-[Storage and sync](storage-and-sync.md)). `updatedAt` is the browser's time
-of the change, used to merge; `rev` is the server's time of the write, used
-to answer "what changed since". A sync reads the keys it sends (`$in`), writes
-them in one unordered `bulkWrite` of upserts, and reads back what changed
-since the client's last `rev`. Reads project only `key`, `value`,
-`updatedAt` and `rev`.
+Students change their profile only through `update_my_settings()`; name,
+NIM, class and role aren't theirs to change.
 
-| Index | Serves |
+## Questions and packages (`…0200_questions.sql`)
+
+| Table | One row per | Notes |
+| --- | --- | --- |
+| `question_imports` | imported Markdown file | the file itself, with its answer keys: admin only |
+| `questions` | question | single choice or short answer; `revision` goes up on every edit |
+| `packages` | exam or practice set | title, block, mode, time limit, draft or published, whether to keep the best score |
+| `package_questions` | question in a package, in order | |
+| `bookmarks` | question a student saved | |
+| `package_summaries` (view) | package with its live question count | students see published ones |
+
+Question images are files under `public/question-images/`; `stem_image` and
+each option's `image` hold that path. The Markdown format is in
+[questions.md](questions.md).
+
+## Attempts (`…0300_attempts.sql`)
+
+`attempts` has one row per try at a package. Students only read it; every
+change goes through these functions, which enforce the rules:
+
+| Function | Does |
 | --- | --- |
-| `user_key` `{ userId, key }`, unique | reads and upserts of one key |
-| `user_rev` `{ userId, rev }` | "changed since" and the account export |
+| `start_attempt(package, holder)` | starts one, or returns the one already running (one at a time per student) |
+| `get_attempt(id)` | the questions in this attempt's option order, its answers and deadline; keys only for practice |
+| `save_attempt(id, holder, answers, …)` | saves answers; refused after the deadline (plus a few seconds' grace) or from a tab that isn't the holder |
+| `take_over_attempt(id, holder)` | moves the attempt to this browser tab |
+| `submit_attempt(id, holder)` | grades it (`finish_attempt()`) and freezes it |
+| `abandon_attempt(id)` | gives up a running attempt |
+| `get_attempt_result(id)` | a finished attempt with the keys and explanations |
 
-### `leaderboard`
+An attempt freezes its question list, option order, time limit and question
+revisions when it starts. The deadline is on the server's clock; a running
+attempt past it is graded the next time its owner touches it.
+`best_scores` (view) is each student's best finished exam score per package.
 
-```js
-{ userId, joined: true, displayName: "Siti", cohort: "2025",
-  parts: { "medicine:quiz:1%2E2/anatomy": { correctAnswers: 18 }, … },
-  daily: { "2026-10-06": 20, … },
-  readiness: { "1_2": 74 },
-  updatedAt: 1759740000000 }
+## Class Drive (`…0400_drive.sql`)
+
+| Table | One row per | Notes |
+| --- | --- | --- |
+| `drive_files` | file in the class Drive folder | path, kind, size, dates; block, category and subject from the folder path; `missing_since` when the sync stops finding it; `hidden_at` when an admin hides it |
+| `drive_sync_runs` | sync | status (running, done, failed, held), counts, and `cursor`, the folders still to visit |
+
+Only `drive-sync` writes them, through `drive_touch_videos()`,
+`drive_counts()` and `drive_mark_missing()` (service role only). Students read
+files that are neither missing nor hidden. How a sync runs is in
+[deploying.md](deploying.md#5-class-drive-sync).
+
+## Study progress, leaderboard, readiness, AI (`…0500_study.sql`)
+
+| Table | One row per | Notes |
+| --- | --- | --- |
+| `progress` | student × key, a JSON value | flashcard reviews, quiz attempts, reading positions, exam plans… The keys are declared in `src/lib/storageSchema.ts`; at most 512 KB a value |
+| `leaderboard_parts` | student × scoring source | the points each source is worth now |
+| `leaderboard_daily` | student × day | points gained that day, for the weekly board |
+| `block_readiness` | student × block | the readiness the app worked out, for the class average |
+| `ai_usage` | student × day | AI answers used, against `AI_DAILY_LIMIT` |
+
+Points: 1 per correct answer (quizzes and finished attempts), 2 per learned
+flashcard or image-occlusion label, 10 per finished ebook chapter, 5 per study
+day. A change to `progress` or a finished attempt rescores that one source
+and credits what it gained to today. `leaderboard()` ranks the students who
+joined by this week's points, all-time points or current streak.
+`class_readiness()` gives the class average only once at least three
+classmates have one.
+
+How the app loads and saves progress is in
+[storage-and-sync.md](storage-and-sync.md).
+
+## Admin functions (`…0600_admin.sql`)
+
+`admin_list_roster()` (the roster with each student's account state),
+`admin_set_role()`, `admin_import_questions()`,
+`admin_packages_from_import()` and `admin_set_package_status()`. Creating,
+locking, unlocking and resetting accounts needs the service role, so it's the
+`admin-accounts` Edge Function instead ([api.md](api.md)).
+
+## Testing
+
+`supabase/tests/` holds SQL tests for the exam rules and the Drive functions.
+They run against a plain Postgres (a stub stands in for Supabase's `auth`
+schema):
+
+```sh
+PGHOST=localhost PGPORT=5432 PGUSER=postgres bash supabase/tests/run.sh
 ```
 
-- `parts` holds one small score per scoring key. Dots are stored as `%2E`,
-  since MongoDB reads a dot in a field name as a path. A sync `$set`s only the
-  parts it changed, so two syncs at once can't overwrite each other.
-- `daily` is points gained per UTC day, for two weeks (older days are
-  `$unset` as new ones are added); the weekly board sums the last seven.
-- `readiness` is the exam readiness per block (`1.2` stored as `1_2`), for the
-  class average. Averages are an aggregation over students who have one, and
-  are only shown when at least three do.
-- Reading the board fetches only what the period needs: `daily` for the
-  week, `parts` for all time and streaks, and never `readiness`. It filters
-  by cohort in the query.
-
-| Index | Serves |
-| --- | --- |
-| `user` `{ userId }`, unique | the student's own record, every sync |
-| `joined` `{ joined }` | the board |
-
-### `aiUsage`
-
-```js
-{ _id: "<userId>:2026-10-06", userId, day: "2026-10-06", count: 7,
-  expiresAt: ISODate("2026-10-08") }
-```
-
-Each AI answer is one atomic `findOneAndUpdate` with `$inc` and an upsert, so
-the daily limit holds even with requests in parallel. A failed answer is
-refunded. A TTL index on `expiresAt` deletes the day's document two days
-later.
-
-### `driveSnapshot`
-
-```js
-{ _id: "tree", tree: { root, updatedAt, complete, deferred }, savedAt }
-{ _id: "folder:<key>", tree: { root, updatedAt, complete }, savedAt }
-```
-
-The last listing of the class Drive, and of each archive folder someone has
-opened, so a cold start serves at once instead of walking Drive first.
-`deferred` maps the opaque keys the browser uses to archive folders' ids,
-which never leave the server. A TTL index on `savedAt` deletes a listing
-nobody has asked for in 30 days; the next request just reads Drive again.
-
-### Better Auth's collections
-
-Better Auth (`server/auth.ts`) owns `user`, `session`, `account`,
-`verification` and `rateLimit` and creates no indexes on MongoDB itself;
-`schema.ts` adds them: unique `email` and session `token`, `userId` on
-sessions and accounts, `providerId + accountId` on accounts, and TTL indexes
-that delete expired sessions and verification tokens. Passwords are hashed
-(scrypt), and Google's OAuth tokens are stored encrypted.
-
-The cohort a student enters is an extra `user` field. Sessions last 60 days
-and are renewed once a day of use.
-
-## What each request does
-
-| Request | Database work |
-| --- | --- |
-| Any signed-in route | the session and its user (two indexed reads), or none from the session cookie cache |
-| `POST /api/sync` | progress: one `$in` read, one `bulkWrite`, one "changed since" read; leaderboard: one read and one update when scoring keys changed |
-| `GET /api/leaderboard` | the student's record, then one projected read of the joined students |
-| `GET /api/readiness` | one aggregation |
-| `POST /api/ai/*` | one `findOneAndUpdate` (and a refund on failure) |
-| `GET /api/drive*` | none when the listing is in memory; one read on a cold start; one replace after Drive is walked |
-| `GET /api/account/export` | every progress document of the student |
-| Account deletion | `deleteMany` on progress, `deleteOne` on the leaderboard, then Better Auth's user, sessions and accounts |
-
-**Session cookie cache.** Better Auth keeps the session and user in a
-signed cookie for five minutes. Routes that only read (the Drive listings and
-the class average) use it and skip the two lookups. Every route that can
-write something (sync, the leaderboard, readiness, AI, export) checks the
-database each time, so nothing is saved for an account that was just signed
-out or deleted on another device. When the cached cookie is renewed, the
-API sends the new cookie with its answer.
-
-## Sizes
-
-A student's data is small: a few dozen `progress` documents (a flashcard
-deck's review state is the largest, tens of kilobytes) and one leaderboard
-document of a few kilobytes. A class of a few hundred students fits easily in
-the free tier's 512 MB. The largest single document is the Class Drive
-listing, about a hundred kilobytes per few thousand files, well under
-MongoDB's 16 MB document limit. Archives are split per cohort folder, so they
-can't make it grow without bound.
-
-## Privacy and deletion
-
-- Deleting an account removes the student's progress and leaderboard record
-  first, then Better Auth deletes the user, sessions and sign-in methods.
-- **Account → Download my data** (`GET /api/account/export`) returns the
-  user record and every synced key.
-- Nothing personal is in `aiUsage` beyond the user id and a count, and it is
-  gone after two days. The Drive listings hold no personal data.
-- See the [privacy policy](../public/legal/privacy.html) for what students are
-  told.
-
-## Running and testing
-
-- `npm run dev:api` serves the API from the Vite dev server with in-memory
-  stores (no database needed); set `MONGODB_URI` in `.env.local` and use
-  `vercel dev` to run against a real database.
-- `server/mongo.integration.test.ts` runs the MongoDB stores against a real
-  server in a throwaway database, which it drops afterwards:
-
-  ```bash
-  MONGODB_TEST_URI=mongodb://127.0.0.1:27017 \
-    npx vitest run server/mongo.integration.test.ts
-  ```
-
-  It checks that every declared index is created (TTLs included), progress
-  writes and reads, concurrent score updates, the board's projections, and
-  the Drive snapshots.
+Each run creates a scratch database, applies every migration, runs the tests
+and drops it. With the Supabase CLI, `supabase start` then `supabase db reset`
+gives a full local stack instead.
 
 ## Changing the schema
 
-1. Declare new collections and indexes in `server/schema.ts`. Indexes are
-   created on the next cold start; give each a `name`, and never reuse a name
-   with different keys (MongoDB refuses, and the old index stays).
-2. Read and write through a store class with an in-memory twin for tests, as
-   `progressStore.ts` and `leaderboard.ts` do, and project only the fields
-   you use.
-3. Documents written by older versions stay in the database: read them
-   tolerantly (missing fields) or repair them on first use, as the
-   leaderboard does for records from before score parts.
-4. Anything personal must be deleted with the account (`onDeleteUser` in
-   `api/index.ts`) and included in the export.
-5. Update this page and the table in
-   [Storage and sync](storage-and-sync.md).
-
-## Operations
-
-- **Backups:** the free tier has no automatic backups. Students' progress
-  also lives in their browsers and their own exports, but for a copy of the
-  server's, run `mongodump --uri "$MONGODB_URI"` from a trusted machine.
-- **Monitoring:** Atlas → Metrics shows connections, operations and
-  storage; the Performance Advisor (missing indexes) needs a dedicated tier.
-  The cluster's limits and how to scale it are in
-  [MongoDB Atlas cluster](atlas.md).
-- **Rotating the password:** change the database user's password in Atlas,
-  update `MONGODB_URI` in Vercel and redeploy. Old function instances drop
-  their connections within a minute of going idle.
+Add a new file to `supabase/migrations/` (never edit one that's been
+applied), named with the next timestamp, and keep its header comment
+up to date. Run the SQL tests, then `supabase db push` to apply it.
+A new kind of student progress needs no migration: declare its key in
+`src/lib/storageSchema.ts` and it's saved in `progress`.

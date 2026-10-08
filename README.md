@@ -1,25 +1,24 @@
-# Medicine: study tool
+# Pendik: study tool for Pendik 26
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2dd4a7.svg)](./LICENSE)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres-3ECF8E?logo=supabase&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-installable-2dd4a7)
-![Guest mode](https://img.shields.io/badge/guest_mode-no_sign--in_needed-lightgrey)
 
-**Live:** [medicine.necr.help](https://medicine.necr.help)
+The class app for the Pendik 26 medical students, organized the way the
+curriculum is: by **study block**, then by **subject**. Each subject can have
+spaced-repetition flashcards, quizzes, chaptered ebooks, summaries and the
+original lecture and practicum PDFs. Each block has timed past-paper exams,
+and the class's Google Drive is browsable in the app. Indonesian by default,
+with an English toggle.
 
-A study app for medical school, organized the way
-the curriculum is: by **study block**, then by **subject**. Each subject can
-have spaced-repetition flashcards, quizzes, chaptered ebooks, summaries and the
-original lecture and practicum PDFs. Each block can have timed practice exams
-built from past papers.
-
-All content ships as JSON, Markdown and PDF files in the repo, and progress
-lives in the browser's `localStorage`, so it works with no sign-in, offline, as
-a PWA. Optional **accounts** (email and password, or Google) sync that progress
-across devices through one Vercel Function and MongoDB Atlas. Without the
-account environment variables it runs as a plain static site.
+Only students on the class roster can sign in, with their NIM or a linked
+Google account. Progress, exam attempts and the past papers live in one
+Supabase project (Postgres with row level security, plus three Edge
+Functions); study content ships with the site as JSON, Markdown and PDF
+files. It installs as a PWA and works offline from what's already loaded.
 
 ## Screenshots
 
@@ -40,7 +39,7 @@ account environment variables it runs as a plain static site.
 | **1.1**: Cell Biology and Hematology | Histology | 31 flashcards · 170 quiz questions · 5-chapter ebook · summary · 3 lecture PDFs |
 | | Biochemistry | 45 flashcards · 42 quiz questions · 7-chapter ebook · summary · 3 lecture PDFs |
 | | Physiology | 23 flashcards · 26 quiz questions · 4 lecture PDFs |
-| | *Block exam* | 3 exam packages: Original Set (100 Q), Costraver (64 Q), UB 2025 (80 Q) |
+| | *Block exam* | Past papers (Original Set, Costraver, UB 2025), imported by an admin into the database |
 | **1.2**: Integument and Musculoskeletal System | Anatomy | 144 flashcards · 986 image-occlusion labels on 88 figures · 134 quiz questions · 7-chapter ebook (22 original diagrams, 153 slide figures) · summary · 9 practicum assistance PDFs |
 | | Histology | 69 flashcards · 76 quiz questions · 6-chapter ebook on muscle tissue and the integument (44 slide figures) · summary · 2 lecture PDFs |
 | | Physiology | 57 flashcards · 80 quiz questions (28 with slide figures, incl. skin physiology) · 5-chapter ebook on muscle contraction and reflexes (12 original diagrams, 41 slide figures) · summary · 3 practicum assistance PDFs · Virtual Lab (PhysioEx Exercise 2) |
@@ -104,9 +103,12 @@ account environment variables it runs as a plain static site.
 
 - Timed block exams: up to 100 questions at 1 minute each, scaled down for
   smaller banks
-- A block can have several **exam packages** (e.g. past papers from different
-  sources) to choose between. Without packages, the exam pools the block's quiz
-  banks.
+- **Past papers** (`/exam/papers`): exam and practice packages an admin
+  imports from Markdown. The timer runs on the server, answers are graded in
+  the database, and an exam's answer keys never reach the browser before it's
+  submitted. One attempt runs at a time and can move between tabs; the best
+  score is kept.
+- Without packages, a block's exam pools its quiz banks.
 - **Real exam** mode (scored only at the end) or **instant feedback** mode
 - Flag for review, a navigator showing answered and flagged questions, and a
   low-time warning
@@ -126,8 +128,8 @@ account environment variables it runs as a plain static site.
   week" and per-folder counts show what was just added until it's opened; `/`
   searches every file and folder name. Each subject's module page lists its
   Drive files above the cleaned PDFs. Files added to or removed from the Drive
-  show up within a few minutes, and the listing opens instantly from the
-  device's last copy
+  are copied into the database every morning by a sync, so students never
+  call Google's API themselves
 - Linked folders (any folder shortcut in the class Drive, such as past
   cohorts' Pendproduktif): their folders are listed, and each is read from
   Drive only when it's opened, so a big linked tree never crowds out this
@@ -266,30 +268,34 @@ account environment variables it runs as a plain static site.
 - Export and import of all progress as a JSON file, plus a reminder if you
   haven't backed up in 14 days
 
-### Accounts (optional)
+### Accounts
 
-- Guest mode by default: everything works without signing in
-- Sign up with Google (one tap, with the account chooser) or email and password;
-  profile with name and cohort
-- Connect Google to a password account from the Account page; a Google sign-in
-  never silently joins an unverified password account with the same email
-- Clear messages when Google sign-in is cancelled or fails, and a hint to open
-  the page in a real browser when it's inside an app (Instagram, LINE…) where
-  Google blocks sign-in
-- Flashcard reviews, quiz and exam history, reading progress, streak days and
-  settings sync across devices, offline-first
-- Guest progress is merged into the account on first sign-in (per-card,
-  per-attempt, per-day, so nothing studied on either device is lost)
-- Sign out keeps local progress; "sign out and clear" for shared computers;
-  download all account data; delete the account
-- A "current block" setting (guests too, asked on the first visit) that puts
-  your block first on Home and drives the daily plan
+- Roster only: an admin adds the class list and activates students. A student
+  signs in with their NIM and the first password `pendik26` + NIM, then picks
+  their own
+- Google sign-in once it's linked from the Account page
+- Progress (flashcard reviews, quiz history, reading, streak days, settings
+  that follow you) is saved in the account only, a moment after each change,
+  with the save state and **Save now** on the Account page
+- "Sign out and clear this device" for shared computers, and download all
+  account data
+- A "current block" setting that puts your block first on Home and drives the
+  daily plan
 - Opt-in **leaderboard**: this week, all time and study streak, for everyone or
-  just your cohort. Points are worked out on the server from synced progress (1
-  per correct answer, 2 per learned flashcard or label, 10 per finished
+  just your cohort. Points are worked out in the database from saved progress
+  (1 per correct answer, 2 per learned flashcard or label, 10 per finished
   chapter, 5 per study day; see
   [Leaderboard](docs/calculations.md#leaderboard)), and you choose the
   display name
+
+### Admin (`/admin`)
+
+- **Students:** paste the roster, activate accounts, lock, unlock, reset a
+  password, make admins
+- **Import:** past papers and practice sets as Markdown
+  ([format](docs/questions.md)), checked line by line before saving
+- **Packages:** edit questions, set the time, publish
+- **Drive:** the sync's runs, run one now, or let a held run go ahead
 
 ### App
 
@@ -297,8 +303,7 @@ account environment variables it runs as a plain static site.
   and updates](docs/architecture.md#offline-and-updates))
 - Light and dark themes, with a color per content type and per subject
 - Blocks with no content yet appear as "coming soon" placeholders
-- A recovery screen instead of a blank page if saved progress from an older
-  version breaks something
+- A recovery screen instead of a blank page if something breaks
 - Every page's footer shows the current block and the version and build
   (`v0.1.49 · build fb0fd76`: the version counts commits, the build links to
   the commit; see [Version and
@@ -306,33 +311,34 @@ account environment variables it runs as a plain static site.
 
 ## Documentation
 
-- **Students:** open **Help** in the app ([/docs](https://medicine.necr.help/docs)).
-- **Adding study material:** the [content guide](docs/content-guide.md).
+- **Students:** open **Help** in the app (`/docs`).
+- **Adding study material:** the [content guide](docs/content-guide.md);
+  past papers: [writing exam questions](docs/questions.md).
 - **Developers:** [architecture](docs/architecture.md),
   [development](docs/development.md), [storage and
-  sync](docs/storage-and-sync.md), the [database](docs/database.md) and its
-  [Atlas cluster](docs/atlas.md), the [3D anatomy
-  atlas](docs/atlas-3d.md), the [API](docs/api.md), and [how the numbers
-  are worked out](docs/calculations.md), every formula from the Virtual Lab
-  to leaderboard points.
-- **Running your own copy:** [deploying](docs/deploying.md).
+  saving](docs/storage-and-sync.md), the [database](docs/database.md), the
+  [server API](docs/api.md), the [3D anatomy atlas](docs/atlas-3d.md), and
+  [how the numbers are worked out](docs/calculations.md), every formula from
+  the Virtual Lab to leaderboard points.
+- **Setting it up:** [deploying](docs/deploying.md), from a new Supabase
+  project to the first admin.
 
-All of it is also on the [wiki](https://github.com/neccrr/medicine/wiki),
+All of it is also on the [wiki](https://github.com/Pendik26/pendik-app/wiki),
 regenerated from `docs/` and `content/help/` on every push.
 
 ## Quick start
 
 ```bash
-git clone https://github.com/neccrr/medicine.git
-cd medicine
+git clone https://github.com/Pendik26/pendik-app.git
+cd pendik-app
 npm install
-npm run dev       # http://localhost:5173
+cp .env.example .env.local   # fill in VITE_SUPABASE_URL and the publishable key
+npm run dev                  # http://localhost:5173
 ```
 
-That runs the guest-only app; nothing else is needed. `npm run dev:api` also
-serves the API with in-memory storage, so accounts, sync and the leaderboard
-work locally. Scripts, tests and conventions are in
-[development](docs/development.md).
+Every page needs sign-in, so the app needs a Supabase project: a hosted one
+(see [deploying](docs/deploying.md)) or a local one with `supabase start`.
+Scripts, tests and conventions are in [development](docs/development.md).
 
 ## Adding content
 
@@ -347,24 +353,23 @@ privacy checklist are in the [content guide](docs/content-guide.md).
 
 ## Data and privacy
 
-- As a guest, progress stays in this browser on this device. Use **Progress →
-  Export** to back up, and **Import** to restore on another device.
-- With an account, the same `medicine:*` progress keys (not theme, sidebar
-  state or half-finished quizzes) are stored in MongoDB under your user id,
-  plus your name, email, optional cohort and a hashed password. Nothing is
-  shared with other users unless you join the leaderboard, which shows your
-  chosen display name, cohort and scores to other signed-in students (never
-  your email or answers). Leave it any time. **Account → Download my data**
-  exports it all, and
-  **Delete account** removes the account and its stored progress.
-- The public [Privacy Policy](https://medicine.necr.help/privacy) and
-  [Terms of Service](https://medicine.necr.help/terms) are static pages in
-  `public/legal/`, served at `/privacy` and `/terms` (the old `.html` addresses
-  redirect there); update them if what the app stores changes.
-- Content is the same for everyone.
-- Clearing site data erases progress. If saved progress from an older version
-  ever breaks a page, the recovery screen offers **Reload** or **Clear local
-  data and reload**.
+- Progress, exam attempts and settings that follow you are stored in the
+  Supabase database under your account, with your NIM, name, class and cohort
+  from the roster. Row level security lets each student read only their own
+  rows; admins see the roster and account states, not anyone's answers.
+- This device keeps only its own settings (theme, language, sidebar, recent
+  pages); resetting them never touches your progress.
+- Nothing is shared with classmates unless you join the leaderboard, which
+  shows your chosen display name, cohort and scores (never your NIM or
+  answers). Leave it any time. **Account → Download my data** exports
+  everything saved in your account.
+- The [Privacy Policy](public/legal/privacy.html) and
+  [Terms of Service](public/legal/terms.html) are static pages in
+  `public/legal/`, served at `/privacy` and `/terms`; update them if what the
+  app stores changes.
+- Study content is the same for everyone and is part of the built site, so
+  anyone with a file's address can fetch it. Past-paper questions and keys
+  are only in the database.
 
 ## Contributing
 
