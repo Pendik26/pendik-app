@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
 import { askAi, findNotes, type NotePassage } from "../lib/explain";
 import { AiText } from "./AiText";
+import { useI18n } from "../i18n/useI18n";
 
 interface Props {
   /** "{blockId}/{subjectId}" */
@@ -27,6 +28,7 @@ type AiState =
  */
 export function ExplainPanel(props: Props) {
   const { subjectKey, question, answer } = props;
+  const { t } = useI18n();
   const { status, config } = useAccount();
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState<NotePassage[] | null>(null);
@@ -112,7 +114,7 @@ export function ExplainPanel(props: Props) {
     return (
       <div className="explain-panel">
         <button type="button" className="explain-toggle" onClick={() => { setOpen(true); }}>
-          Explain this
+          {t("explain.open")}
         </button>
       </div>
     );
@@ -122,15 +124,15 @@ export function ExplainPanel(props: Props) {
   return (
     <div className="explain-panel is-open">
       <div className="explain-head">
-        <h3>From your notes</h3>
-        <button type="button" className="explain-close" onClick={() => { setOpen(false); }} aria-label="Close the explanation">
+        <h3>{t("explain.notes")}</h3>
+        <button type="button" className="explain-close" onClick={() => { setOpen(false); }} aria-label={t("explain.close")}>
           ×
         </button>
       </div>
       {notes === null ? (
-        <p className="explain-muted">Looking through your notes…</p>
+        <p className="explain-muted">{t("explain.looking")}</p>
       ) : notes.length === 0 ? (
-        <p className="explain-muted">Nothing in this subject's ebook or summary matches this question closely.</p>
+        <p className="explain-muted">{t("explain.noNotes")}</p>
       ) : (
         <ul className="explain-notes">
           {notes.map((n) => (
@@ -144,34 +146,34 @@ export function ExplainPanel(props: Props) {
 
       {aiOn && (
         <div className="explain-ai">
-          <h3>AI explanation</h3>
+          <h3>{t("explain.ai")}</h3>
           {!online ? (
-            <p className="explain-muted">The AI needs an internet connection; your notes above work offline.</p>
+            <p className="explain-muted">{t("explain.offline")}</p>
           ) : status !== "signed-in" ? (
             <p className="explain-muted">
-              <Link to="/account">Sign in</Link> to ask the AI to explain this (free, a few a day).
+              <Link to="/account">{t("auth.signIn")}</Link> {t("explain.signIn")}
             </p>
           ) : ai.phase === "idle" ? (
             <button type="button" className="btn btn-secondary explain-ask" onClick={ask}>
-              Ask AI to explain
+              {t("explain.ask")}
             </button>
           ) : (
             <>
               <div className="explain-ai-text" aria-live="polite">
-                {waiting ? <p className="explain-muted">{slow ? "Still thinking… the free AI can take up to a minute." : "Thinking…"}</p> : <AiText text={ai.phase === "error" ? (ai.text ?? "") : ai.text} />}
+                {waiting ? <p className="explain-muted">{slow ? t("alfond.slow") : t("alfond.thinking")}</p> : <AiText text={ai.phase === "error" ? (ai.text ?? "") : ai.text} />}
               </div>
               {ai.phase === "error" && (
                 <p className="explain-error">
                   {ai.message}{" "}
                   <button type="button" className="explain-retry" onClick={ask}>
-                    Try again
+                    {t("drive.tryAgain")}
                   </button>
                 </p>
               )}
               {ai.phase === "done" && (
                 <p className="explain-foot">
-                  AI can be wrong: check it against your notes.
-                  {ai.remaining !== null && ` ${ai.remaining} left today.`}
+                  {t("explain.canBeWrong")}
+                  {ai.remaining !== null && ` ${t("alfond.left", { count: ai.remaining })}`}
                 </p>
               )}
             </>

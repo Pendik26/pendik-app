@@ -4,14 +4,16 @@ import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import { UpcomingSubjectCard } from "../components/UpcomingSubjectCard";
+import { useI18n } from "../i18n/useI18n";
 
 /** Every subject, by block: each card opens the subject's page with all its material. */
 export function SubjectsIndex() {
-  const groups = groupByBlock(buildSubjectOverviews());
+  const { t } = useI18n();
+  const groups = groupByBlock(buildSubjectOverviews(t));
   return (
     <section className="page">
-      <h1>Subjects</h1>
-      <p className="subtitle">Everything for one subject in one place: flashcards, quizzes, the ebook, summary, slides and labs.</p>
+      <h1>{t("nav.subjects")}</h1>
+      <p className="subtitle">{t("misc.subjectsIntro")}</p>
       {groups.map(({ block, subjects, upcoming }) => (
         <div key={block.id} className="block-section">
           <h2 className="block-section-heading">{block.label}</h2>

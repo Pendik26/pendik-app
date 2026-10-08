@@ -7,6 +7,8 @@ import { pageMeta } from "../../lib/routeMeta";
 import { SITE_NAME } from "../../lib/site";
 import { AiText } from "../AiText";
 import { AlfondIcon } from "../icons";
+import { useI18n } from "../../i18n/useI18n";
+import type { MessageKey } from "../../i18n/i18n";
 
 interface Props {
   /** "overlay": beside any page, reading it; "page": Alfond's own page, with no page to read. */
@@ -16,12 +18,13 @@ interface Props {
   autoFocus?: boolean;
 }
 
-const PAGE_PROMPTS = ["Explain this page simply", "Quiz me on this page", "What should I remember from this?"];
-const GENERAL_PROMPTS = ["Make me a revision plan for this week", "How do I use spaced repetition well?", "Explain the cardiac cycle simply"];
+const PAGE_PROMPTS: MessageKey[] = ["alfond.promptExplain", "alfond.promptQuiz", "alfond.promptRemember"];
+const GENERAL_PROMPTS: MessageKey[] = ["alfond.promptPlan", "alfond.promptSpaced", "alfond.promptCardiac"];
 const SLOW_MS = 8000;
 
 /** The conversation and the message box, shared by the overlay and Alfond's page. */
 export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
+  const { t } = useI18n();
   const { status, config } = useAccount();
   const { messages, busy, remaining } = useAlfond();
   const online = useOnline();
@@ -83,18 +86,18 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
   const followLink = () => onNavigate?.();
 
   let blocked: ReactNode = null;
-  if (config && !config.ai) blocked = <p className="alfond-note">Alfond isn't switched on for this site yet.</p>;
+  if (config && !config.ai) blocked = <p className="alfond-note">{t("alfond.off")}</p>;
   else if (config && status !== "signed-in" && status !== "checking")
     blocked = (
       <p className="alfond-note">
         <Link to="/account" onClick={followLink}>
-          Sign in
+          {t("auth.signIn")}
         </Link>{" "}
-        to chat with Alfond. It's free, with a daily allowance.
+        {t("alfond.signIn")}
       </p>
     );
 
-  const prompts = variant === "overlay" ? PAGE_PROMPTS : GENERAL_PROMPTS;
+  const prompts = (variant === "overlay" ? PAGE_PROMPTS : GENERAL_PROMPTS).map((key) => t(key));
   const canSend = !blocked && online && status === "signed-in";
 
   return (
@@ -103,7 +106,7 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
         className="alfond-log"
         ref={logRef}
         role="log"
-        aria-label="Conversation with Alfond"
+        aria-label={t("alfond.log")}
         aria-busy={busy}
         onScroll={(e) => {
           const el = e.currentTarget;
@@ -116,8 +119,8 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
               <AlfondIcon />
             </span>
             <p>
-              <strong>Hi, I'm Alfond.</strong>{" "}
-              {variant === "overlay" ? "Ask me anything. I can read the page you're on." : "Ask me anything about your studies."}
+              <strong>{t("alfond.hi")}</strong>{" "}
+              {variant === "overlay" ? t("alfond.askPage") : t("alfond.askStudies")}
             </p>
             {canSend && (
               <div className="alfond-prompts">
@@ -136,7 +139,7 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
                 <p>{m.content}</p>
                 {m.page && (
                   <Link className="alfond-msg-page" to={m.page.path} onClick={followLink}>
-                    on {m.page.title}
+                    {t("alfond.on", { page: m.page.title })}
                   </Link>
                 )}
               </div>
@@ -151,17 +154,17 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
                       <span />
                       <span />
                     </span>
-                    {slow ? "Still thinking… the free AI can take up to a minute." : "Thinking…"}
+                    {slow ? t("alfond.slow") : t("alfond.thinking")}
                   </p>
                 ) : null}
                 {m.error && (
                   <p className="alfond-error">
-                    {m.error}
+                    {m.error === "Stopped." ? t("alfond.stopped") : m.error}
                     {i === messages.length - 1 && !busy && m.error !== "Stopped." && canSend && (
                       <>
                         {" "}
                         <button type="button" onClick={() => void retryAlfond(readsPage ? readPageContext() : null)}>
-                          Try again
+                          {t("drive.tryAgain")}
                         </button>
                       </>
                     )}
@@ -179,16 +182,16 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
             <div className="alfond-context">
               {usePage ? (
                 <>
-                  <span className="alfond-context-chip" title="Alfond reads this page with your question">
-                    Reading: <strong>{pageTitle}</strong>
+                  <span className="alfond-context-chip" title={t("alfond.readingHint")}>
+                    {t("alfond.reading")} <strong>{pageTitle}</strong>
                   </span>
-                  <button type="button" className="alfond-context-x" onClick={() => { setUsePage(false); }} aria-label="Don't send this page with my question">
+                  <button type="button" className="alfond-context-x" onClick={() => { setUsePage(false); }} aria-label={t("alfond.dropPage")}>
                     ×
                   </button>
                 </>
               ) : (
                 <button type="button" className="alfond-context-add" onClick={() => { setUsePage(true); }}>
-                  + Include this page
+                  + {t("alfond.includePage")}
                 </button>
               )}
             </div>
@@ -199,8 +202,8 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
               rows={1}
               value={draft}
               maxLength={3000}
-              placeholder={online ? "Ask anything…" : "You're offline"}
-              aria-label="Message Alfond"
+              placeholder={online ? t("alfond.placeholder") : t("common.offline")}
+              aria-label={t("alfond.message")}
               disabled={!online}
               onChange={(e) => {
                 setDraft(e.target.value);
@@ -210,13 +213,13 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
               onKeyDown={onKeyDown}
             />
             {busy ? (
-              <button type="button" className="alfond-send" onClick={stopAlfond} aria-label="Stop answering">
+              <button type="button" className="alfond-send" onClick={stopAlfond} aria-label={t("alfond.stop")}>
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
                   <rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" />
                 </svg>
               </button>
             ) : (
-              <button type="submit" className="alfond-send" disabled={!draft.trim() || !canSend} aria-label="Send">
+              <button type="submit" className="alfond-send" disabled={!draft.trim() || !canSend} aria-label={t("alfond.send")}>
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
                   <path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                 </svg>
@@ -224,8 +227,8 @@ export function AlfondChat({ variant, onNavigate, autoFocus }: Props) {
             )}
           </div>
           <p className="alfond-foot">
-            {online ? "Alfond can be wrong. Check important facts in your notes." : "Alfond needs an internet connection."}
-            {online && remaining !== null && ` ${remaining} answers left today.`}
+            {online ? t("alfond.canBeWrong") : t("alfond.needsInternet")}
+            {online && remaining !== null && ` ${t("alfond.left", { count: remaining })}`}
           </p>
         </form>
       )}

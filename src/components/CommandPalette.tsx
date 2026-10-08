@@ -5,10 +5,25 @@ import { recentPages } from "../lib/recentPages";
 import { buildNavigationDocs, type SearchDoc } from "../lib/searchIndex";
 import { unfinishedToday } from "../lib/todayPlan";
 import { HighlightText } from "./HighlightText";
+import { useI18n } from "../i18n/useI18n";
+import type { MessageKey } from "../i18n/i18n";
 
 export const OPEN_COMMAND_PALETTE_EVENT = "pendik:open-command-palette";
 
+const TYPE_LABELS: Partial<Record<string, MessageKey>> = {
+  next: "palette.next",
+  recent: "palette.recent",
+  page: "palette.page",
+  flashcard: "palette.flashcard",
+  quiz: "palette.quiz",
+  exam: "palette.exam",
+  ebook: "palette.ebook",
+  summary: "palette.summary",
+  module: "palette.module",
+};
+
 export function CommandPalette() {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -123,16 +138,16 @@ export function CommandPalette() {
         onClick={(e) => { e.stopPropagation(); }}
         role="dialog"
         aria-modal="true"
-        aria-label="Command palette"
+        aria-label={t("palette.title")}
       >
         <input
           ref={inputRef}
           className="command-input"
-          placeholder="Jump to a page, subject, card or question…"
+          placeholder={t("palette.placeholder")}
           value={query}
           onChange={(e) => { onQueryChange(e.target.value); }}
           onKeyDown={onInputKeyDown}
-          aria-label="Command palette search"
+          aria-label={t("palette.search")}
         />
         <ul className="command-results">
           {results.map(({ doc, label, titleRanges }, i) => (
@@ -142,28 +157,28 @@ export function CommandPalette() {
                 onClick={() => { go(doc); }}
                 onMouseEnter={() => { setActiveIndex(i); }}
               >
-                <span className={`command-item-type command-item-${label}`}>{label}</span>
+                <span className={`command-item-type command-item-${label}`}>{TYPE_LABELS[label] ? t(TYPE_LABELS[label]) : label}</span>
                 <span className="command-item-title">
                   <HighlightText text={doc.title} ranges={titleRanges} />
                 </span>
               </button>
             </li>
           ))}
-          {results.length === 0 && <li className="command-empty">No matches.</li>}
+          {results.length === 0 && <li className="command-empty">{t("palette.none")}</li>}
         </ul>
         <div className="command-footer">
           <span>
             <kbd>↑</kbd>
-            <kbd>↓</kbd> navigate
+            <kbd>↓</kbd> {t("palette.navigate")}
           </span>
           <span>
-            <kbd>Enter</kbd> select
+            <kbd>Enter</kbd> {t("palette.select")}
           </span>
           <span>
-            <kbd>Esc</kbd> close
+            <kbd>Esc</kbd> {t("palette.close")}
           </span>
           <span>
-            <kbd>?</kbd> all shortcuts
+            <kbd>?</kbd> {t("palette.shortcuts")}
           </span>
         </div>
       </div>

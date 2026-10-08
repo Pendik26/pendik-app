@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import { EmptyState } from "../components/EmptyState";
+import { useI18n } from "../i18n/useI18n";
 
 /** Any address the app has no page for. */
 export function NotFound() {
+  const { t } = useI18n();
   return (
     <section className="page">
-      <EmptyState title="Page not found">
-        <p>There's nothing at this address. It may have moved, or the link may be mistyped.</p>
+      <EmptyState title={t("misc.notFound")}>
+        <p>{t("misc.notFoundBody")}</p>
         <p>
           <Link to="/" className="btn">
-            Go to Home
+            {t("misc.goHome")}
           </Link>
         </p>
       </EmptyState>

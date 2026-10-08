@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { STORAGE_KEYS } from "../lib/storage";
 import { en, id, type Messages } from "./messages";
 
 export type Language = "id" | "en";
@@ -25,3 +26,12 @@ export type Translate = I18nValue["t"];
 
 /** For code that runs outside the app's language (tests, the prerendered pages). */
 export const englishT: Translate = (key, vars) => translate("en", key, vars);
+
+/** This browser's chosen language (Indonesian unless English was picked). */
+export function storedLanguage(): Language {
+  try {
+    return window.localStorage.getItem(STORAGE_KEYS.language) === '"en"' ? "en" : "id";
+  } catch {
+    return "id";
+  }
+}

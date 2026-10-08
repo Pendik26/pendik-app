@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useAccount } from "../../hooks/useAccount";
 import { OPEN_ALFOND_EVENT, useAlfond, useAlfondPrefs } from "../../lib/alfond";
 import { AlfondIcon } from "../icons";
+import { useI18n } from "../../i18n/useI18n";
 
 // The chat itself loads the first time it's opened, so the button costs next to nothing.
 const AlfondPanel = lazy(() => import("./AlfondPanel").then((m) => ({ default: m.AlfondPanel })));
@@ -39,6 +40,7 @@ function useLayer(): HTMLDivElement {
  * site has no AI, or when the student has turned it off (Alfond page or Account).
  */
 export function AlfondOverlay() {
+  const { t } = useI18n();
   const { config } = useAccount();
   const [prefs] = useAlfondPrefs();
   const { busy } = useAlfond();
@@ -81,8 +83,8 @@ export function AlfondOverlay() {
         onClick={() => { setOpen((o) => !o); }}
         aria-expanded={open}
         aria-controls={open ? "alfond-panel" : undefined}
-        aria-label={open ? "Close Alfond" : "Ask Alfond about this page"}
-        title={open ? "Close Alfond" : "Ask Alfond"}
+        aria-label={open ? t("alfond.close") : t("alfond.askAboutPage")}
+        title={open ? t("alfond.close") : t("alfond.askShort")}
       >
         <AlfondIcon />
       </button>

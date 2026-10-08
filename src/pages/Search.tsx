@@ -6,12 +6,14 @@ import { ebookSubjects, flashcardSubjects, quizSubjects, summarySubjects } from 
 import { EmptyState } from "../components/EmptyState";
 import { HighlightText } from "../components/HighlightText";
 import { subjectHue } from "../lib/subjectStyle";
+import { useI18n } from "../i18n/useI18n";
+import type { MessageKey } from "../i18n/i18n";
 
-const TYPE_LABELS = new Map([
-  ["flashcard", "Flashcards"],
-  ["quiz", "Quizzes"],
-  ["summary", "Summaries"],
-  ["ebook", "Ebooks"],
+const TYPE_LABELS = new Map<string, MessageKey>([
+  ["flashcard", "nav.flashcards"],
+  ["quiz", "nav.quizzes"],
+  ["summary", "nav.summaries"],
+  ["ebook", "nav.ebooks"],
 ]);
 
 const TYPE_CLASS = new Map([
@@ -42,6 +44,11 @@ interface RankedDoc {
 }
 
 export function Search() {
+  const { t } = useI18n();
+  const typeLabel = (type: string) => {
+    const label = TYPE_LABELS.get(type);
+    return label ? t(label) : type;
+  };
   // ?q= opens the page with a search already typed (the anatomy atlas links here).
   const [params] = useSearchParams();
   const [query, setQuery] = useState(() => params.get("q") ?? "");
@@ -136,17 +143,17 @@ export function Search() {
 
   return (
     <section className="page">
-      <h1>Search</h1>
-      <p className="subtitle">Search across every flashcard, quiz question, summary, and ebook chapter.</p>
+      <h1>{t("nav.search")}</h1>
+      <p className="subtitle">{t("search.subtitle")}</p>
       <input
         className="search-input"
         type="search"
-        placeholder="Search flashcards, quizzes, summaries, ebooks..."
+        placeholder={t("search.placeholder")}
         value={query}
         onChange={(e) => { onQueryChange(e.target.value); }}
         onKeyDown={onInputKeyDown}
         autoFocus
-        aria-label="Search all content"
+        aria-label={t("search.label")}
         role="combobox"
         aria-expanded={results.length > 0}
         aria-controls="search-results-list"
@@ -168,7 +175,7 @@ export function Search() {
                 onClick={() => { toggleType(type); }}
                 aria-pressed={activeTypes.includes(type)}
               >
-                {TYPE_LABELS.get(type) ?? type}
+                {typeLabel(type)}
               </button>
             ))}
           </div>
@@ -194,7 +201,7 @@ export function Search() {
                   setActiveSubjects([]);
                 }}
               >
-                Clear filters
+                {t("cards.clearFilters")}
               </button>
             )}
           </div>
@@ -202,23 +209,20 @@ export function Search() {
       )}
 
       {!query.trim() && (
-        <EmptyState title="Search across everything">
-          Try a symptom, a drug name, or a mechanism — results span every
-          flashcard, quiz question, summary section, and ebook chapter in
-          every subject. Use ↑↓ and Enter to jump to a result without
-          touching the mouse.
+        <EmptyState title={t("search.emptyTitle")}>
+          {t("search.emptyHint")}
         </EmptyState>
       )}
 
       {query.trim() && results.length === 0 && (
-        <EmptyState title={`No matches for "${query}"`}>
-          {filtersActive ? "Try clearing a filter, or use a shorter term." : "Try a shorter or more general term."}
+        <EmptyState title={t("search.noMatches", { query })}>
+          {filtersActive ? t("search.tryClear") : t("search.tryShorter")}
         </EmptyState>
       )}
 
       {query.trim() && results.length > 0 && (
         <p className="search-result-count">
-          {results.length} result{results.length === 1 ? "" : "s"} for &ldquo;{query}&rdquo;
+          {t("search.results", { count: results.length, query })}
         </p>
       )}
 
@@ -237,7 +241,7 @@ export function Search() {
               aria-selected={i === clampedIndex}
               onMouseEnter={() => { setActiveIndex(i); }}
             >
-              <span className="search-result-type">{TYPE_LABELS.get(r.doc.type) ?? r.doc.type}</span>
+              <span className="search-result-type">{typeLabel(r.doc.type)}</span>
               <p className="search-result-title">
                 <HighlightText text={r.doc.title} ranges={r.titleRanges} />
               </p>

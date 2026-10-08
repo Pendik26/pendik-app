@@ -1,15 +1,17 @@
 import { useTheme } from "../hooks/useTheme";
+import { useI18n } from "../i18n/useI18n";
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useI18n();
 
   return (
     <button
       type="button"
       className="icon-btn"
       onClick={toggleTheme}
-      aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-      title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={theme === "dark" ? t("misc.toLight") : t("misc.toDark")}
+      title={theme === "dark" ? t("misc.toLight") : t("misc.toDark")}
     >
       {theme === "dark" ? (
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
