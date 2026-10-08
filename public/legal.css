@@ -1,0 +1,142 @@
+/* Shared by legal/privacy.html and legal/terms.html: plain pages that load without the app. */
+:root {
+  --bg: #0a0f0d;
+  --surface: rgb(255 255 255 / 0.04);
+  --border: rgb(255 255 255 / 0.1);
+  --text: #eef4f1;
+  --muted: #a9b8b1;
+  --accent: #2dd4a7;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f2e8;
+  --surface: rgb(255 255 255 / 0.6);
+  --border: rgb(22 33 27 / 0.12);
+  --text: #16211b;
+  --muted: #55645c;
+  --accent: #0f8f70;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.65 "Archivo", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.legal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin-bottom: 2.5rem;
+  font-size: 0.95rem;
+}
+
+.legal-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: auto;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.legal-brand svg {
+  color: var(--accent);
+}
+
+h1,
+h2 {
+  font-family: "Fraunces", Georgia, serif;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw, 2.6rem);
+  margin: 0 0 0.25rem;
+}
+
+h2 {
+  font-size: 1.35rem;
+  margin: 2.25rem 0 0.5rem;
+}
+
+.legal-updated {
+  color: var(--muted);
+  margin: 0 0 1.5rem;
+}
+
+.legal-summary {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.legal-summary p {
+  margin: 0.25rem 0;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 2px;
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li {
+  margin: 0.3rem 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin: 0.75rem 0;
+  display: block;
+  overflow-x: auto;
+}
+
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+code {
+  font-family: "IBM Plex Mono", Menlo, monospace;
+  font-size: 0.88em;
+}
+
+.legal-footer {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}

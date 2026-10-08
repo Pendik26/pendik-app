@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms of Service · Pendik</title>
+    <meta name="description" content="The terms for using the Pendik study app." />
+    <link rel="canonical" href="https://pendik-app.vercel.app/terms" />
+    <link rel="icon" type="image/svg+xml" href="/pwa-icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Archivo:wght@400;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/legal.css" />
+    <script>
+      // Same theme as the app: the saved choice, else the system setting.
+      try {
+        var t = localStorage.getItem("pendik:theme");
+        if (t === "light" || (!t && matchMedia("(prefers-color-scheme: light)").matches)) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <main class="legal">
+      <nav class="legal-nav">
+        <a class="legal-brand" href="/">
+          <svg viewBox="0 0 96 24" width="40" height="10" aria-hidden="true"><path d="M0 12h16l6-9 8 18 6-13 4 4h16l6-9 8 18 6-9h20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          Pendik
+        </a>
+        <a href="/">Open the app</a>
+        <a href="/privacy">Privacy Policy</a>
+      </nav>
+
+      <h1>Terms of Service</h1>
+      <p class="legal-updated">Last updated 8 October 2026</p>
+
+      <div class="legal-summary">
+        <p><strong>The short version.</strong> Pendik is a study aid for the Pendik 26 class, provided as it is. Its content can contain mistakes and is not medical advice. Keep your account to yourself, be fair on exams and the leaderboard, and don't share the class's material outside the class.</p>
+      </div>
+
+      <h2>1. Who can use it</h2>
+      <p>Pendik is for students on the Pendik 26 class roster. Admins add students to the roster and can lock an account that's misused.</p>
+
+      <h2>2. What Pendik is</h2>
+      <p>A study tool: flashcards, quizzes, past-paper exams, the class Drive, ebooks, summaries and an AI study assistant. It is not an official assessment, and scores in it don't count towards anything.</p>
+
+      <h2>3. Your account</h2>
+      <p>Sign in with your NIM and your own password, or with Google once you've linked it. Don't share your account or sign in as someone else.</p>
+
+      <h2>4. Fair use</h2>
+      <ul>
+        <li>Don't try to get exam answer keys out of the app, change other students' data, or get around the daily AI allowance.</li>
+        <li>Don't use the app to harass anyone, including through leaderboard names.</li>
+        <li>Class material (Drive files, past papers, notes) is for the class. Don't republish it.</li>
+      </ul>
+
+      <h2>5. Content and AI</h2>
+      <p>Content is written and collected by students and may be wrong or out of date. AI answers can be wrong. Check anything important against your lecturers' material.</p>
+
+      <h2>6. Source code</h2>
+      <p>The app's source code is at <a href="https://github.com/Pendik26/pendik-app">github.com/Pendik26/pendik-app</a> under the MIT License. Course material belongs to its authors.</p>
+
+      <h2>7. Changes</h2>
+      <p>These terms can change; the date at the top says when they last did.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about these terms: ask a class admin.</p>
+
+      <p class="legal-footer"><a href="/">Pendik</a> · <a href="/privacy">Privacy Policy</a></p>
+    </main>
+  </body>
+</html>

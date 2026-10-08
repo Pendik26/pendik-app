@@ -1,0 +1,662 @@
+/* Alfond, the study assistant: the floating button, its chat window, and its own page. */
+
+/* ---- Floating button ---- */
+.alfond-fab {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--glass-border-strong));
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.25) inset,
+    0 14px 30px -12px color-mix(in srgb, var(--accent) 70%, rgb(0 0 0 / 0.5));
+  cursor: pointer;
+  transition:
+    scale 0.35s var(--ease-spring),
+    box-shadow 0.2s ease;
+}
+
+.alfond-fab svg {
+  width: 24px;
+  height: 24px;
+}
+
+.alfond-fab:hover {
+  scale: 1.06;
+}
+
+.alfond-fab:active {
+  scale: 0.94;
+}
+
+.alfond-fab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.alfond-fab.open {
+  background: var(--surface-solid);
+  color: var(--accent);
+  border-color: var(--glass-border-strong);
+}
+
+/* Answering while the window is closed: a soft pulse says something is coming. */
+.alfond-fab.busy::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: alfond-pulse 1.4s ease-out infinite;
+}
+
+@keyframes alfond-pulse {
+  from {
+    opacity: 0.8;
+    scale: 0.9;
+  }
+  to {
+    opacity: 0;
+    scale: 1.25;
+  }
+}
+
+/* ---- Chat window (overlay) ---- */
+.alfond-backdrop {
+  display: none;
+}
+
+.alfond-panel {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 5.5rem;
+  z-index: 121;
+  display: flex;
+  flex-direction: column;
+  width: min(25rem, calc(100vw - 3rem));
+  height: min(38rem, calc(100vh - 8rem));
+  height: min(38rem, calc(100dvh - 8rem));
+  background: var(--surface-solid);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, 0 30px 70px -24px rgb(0 0 0 / 0.55);
+  overflow: hidden;
+  transform-origin: bottom right;
+  animation: alfond-panel-in 0.28s var(--ease-glass);
+}
+
+@keyframes alfond-panel-in {
+  from {
+    opacity: 0;
+    scale: 0.92;
+    translate: 0 10px;
+  }
+}
+
+.alfond-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.75rem 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.alfond-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.alfond-panel-title svg {
+  color: var(--accent);
+}
+
+.alfond-panel-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.alfond-panel-actions .icon-btn {
+  padding: 0.35rem;
+  color: var(--text-muted);
+}
+
+.alfond-panel-actions .icon-btn:hover {
+  color: var(--text);
+}
+
+.alfond-panel-actions .icon-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.alfond-panel .alfond-chat {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- The conversation ---- */
+.alfond-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.alfond-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.alfond-empty {
+  margin: auto 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.alfond-empty strong {
+  color: var(--text);
+}
+
+.alfond-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.alfond-avatar svg {
+  width: 24px;
+  height: 24px;
+}
+
+.alfond-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.alfond-prompts button {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.alfond-prompts button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.alfond-msg {
+  max-width: 88%;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.alfond-msg p,
+.alfond-msg ul,
+.alfond-msg ol {
+  margin: 0 0 0.5rem;
+}
+
+.alfond-msg > :last-child {
+  margin-bottom: 0;
+}
+
+.alfond-msg ul,
+.alfond-msg ol {
+  padding-left: 1.2rem;
+}
+
+.alfond-msg-user {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.alfond-msg-user p {
+  margin: 0;
+  padding: 0.55rem 0.85rem;
+  border-radius: 1.1rem 1.1rem 0.35rem 1.1rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  white-space: pre-wrap;
+}
+
+.alfond-msg-page {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alfond-msg-page:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.alfond-msg-bot {
+  align-self: flex-start;
+  padding: 0.6rem 0.85rem;
+  border-radius: 1.1rem 1.1rem 1.1rem 0.35rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.alfond-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+.alfond-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.alfond-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: alfond-dot 1.1s ease-in-out infinite;
+}
+
+.alfond-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.alfond-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes alfond-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    translate: 0 0;
+  }
+  40% {
+    opacity: 1;
+    translate: 0 -3px;
+  }
+}
+
+.alfond-error {
+  margin-top: 0.4rem !important;
+  font-size: 0.82rem;
+  color: var(--red);
+}
+
+.alfond-error button {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---- Message box ---- */
+.alfond-composer {
+  padding: 0.6rem 0.75rem 0.65rem;
+  border-top: 1px solid var(--border);
+}
+
+.alfond-context {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.45rem;
+  min-width: 0;
+}
+
+.alfond-context-chip {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.74rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--text-muted);
+}
+
+.alfond-context-chip strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.alfond-context-x,
+.alfond-context-add {
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.alfond-context-x {
+  font-size: 1rem;
+}
+
+.alfond-context-x:hover,
+.alfond-context-add:hover {
+  color: var(--accent);
+}
+
+.alfond-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.35rem 0.35rem 0.35rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  background: var(--surface-2);
+  transition: border-color 0.2s ease;
+}
+
+.alfond-input-row:focus-within {
+  border-color: var(--accent);
+}
+
+.alfond-input-row textarea {
+  flex: 1;
+  min-width: 0;
+  max-height: 9rem;
+  padding: 0.4rem 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.alfond-send {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: 0;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.alfond-send:disabled {
+  background: var(--border);
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.alfond-foot,
+.alfond-note {
+  margin: 0.45rem 0.25rem 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.alfond-note {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+/* ---- Alfond's page ---- */
+.alfond-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.alfond-page-head .btn {
+  flex-shrink: 0;
+  margin-top: 0.4rem;
+}
+
+.alfond-page-chat {
+  display: flex;
+  flex-direction: column;
+  height: min(70vh, 46rem);
+  height: min(70dvh, 46rem);
+  min-height: 24rem;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, var(--glass-shadow);
+  overflow: hidden;
+}
+
+.alfond-page-chat .alfond-chat {
+  flex: 1;
+}
+
+.alfond-page-chat .alfond-log {
+  padding: 1.25rem 1.5rem;
+}
+
+.alfond-page-chat .alfond-msg {
+  max-width: 78%;
+}
+
+.alfond-page-settings {
+  margin-top: 1.25rem;
+}
+
+/* ---- Setting switch (Alfond's page, Account) ---- */
+.alfond-switch {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.alfond-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 2.5rem;
+  height: 1.4rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.alfond-switch-track {
+  flex-shrink: 0;
+  position: relative;
+  width: 2.5rem;
+  height: 1.4rem;
+  margin-top: 0.1rem;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  transition: background-color 0.2s ease;
+}
+
+.alfond-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  transition: translate 0.25s var(--ease-spring);
+}
+
+.alfond-switch input:checked + .alfond-switch-track {
+  background: var(--accent);
+}
+
+.alfond-switch input:checked + .alfond-switch-track::after {
+  translate: 1.1rem 0;
+}
+
+.alfond-switch input:focus-visible + .alfond-switch-track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.alfond-switch-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.alfond-switch-text strong {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.alfond-switch-text small {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ---- Phones: the window is a sheet above the tab bar ---- */
+@media (max-width: 960px) {
+  .alfond-fab {
+    right: 1rem;
+    bottom: calc(4.9rem + env(safe-area-inset-bottom));
+    width: 3rem;
+    height: 3rem;
+    z-index: 68;
+  }
+
+  .alfond-fab.open {
+    z-index: 82;
+  }
+
+  .alfond-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: rgb(0 0 0 / 0.4);
+    animation: backdrop-in 0.2s ease;
+  }
+
+  .alfond-panel {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: calc(4.4rem + env(safe-area-inset-bottom));
+    z-index: 81;
+    width: auto;
+    height: min(34rem, calc(100vh - 9rem));
+    height: min(34rem, calc(100dvh - 9rem - env(safe-area-inset-bottom)));
+    transform-origin: bottom center;
+  }
+
+  /* The open button would sit on the sheet's message box; the sheet's own × closes it. */
+  .alfond-fab.open {
+    display: none;
+  }
+
+  /* Clear of the top bar, the heading and the tab bar, so the message box is in view. */
+  .alfond-page-chat {
+    height: calc(100vh - 19rem);
+    height: calc(100dvh - 19rem - env(safe-area-inset-bottom));
+    min-height: 18rem;
+  }
+
+  .alfond-page h1 {
+    font-size: 1.6rem;
+  }
+
+  .alfond-page .subtitle {
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+
+  .alfond-page-head .btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+  }
+
+  .alfond-page-chat .alfond-log {
+    padding: 1rem;
+  }
+
+  .alfond-page-chat .alfond-msg {
+    max-width: 90%;
+  }
+}
+
+@media print {
+  .alfond-fab,
+  .alfond-panel,
+  .alfond-backdrop {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alfond-panel,
+  .alfond-fab.busy::after,
+  .alfond-dots span {
+    animation: none;
+  }
+
+  .alfond-fab {
+    transition: none;
+  }
+}

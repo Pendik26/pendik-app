@@ -1,0 +1,187 @@
+/* Admin pages */
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-tab {
+  padding: 0.5rem 0.9rem;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.admin-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.admin-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.admin-toolbar .form-input {
+  flex: 1 1 14rem;
+}
+
+.admin-textarea {
+  width: 100%;
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.admin-mono,
+.admin-textarea.admin-mono {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.admin-problems {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--red);
+  font-size: 0.85rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+  align-items: center;
+}
+
+.admin-pill {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+.admin-state {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.admin-state-active {
+  color: var(--accent);
+}
+
+.admin-state-none {
+  color: var(--text-muted);
+}
+
+.admin-state-locked {
+  color: var(--red);
+}
+
+.admin-check {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.admin-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.admin-package-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-package-head small,
+.admin-file small {
+  display: block;
+  color: var(--text-muted);
+}
+
+.admin-questions ol,
+.admin-preview ol {
+  display: grid;
+  gap: 0.9rem;
+  padding-left: 1.4rem;
+}
+
+.admin-correct {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.admin-file {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Small dropdowns: class (track), filters. */
+.admin-select,
+.admin-toolbar .admin-select {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 7rem;
+  padding-block: 0.3rem;
+}
+
+.admin-inline-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-order {
+  width: 4.5rem;
+  padding-block: 0.3rem;
+}

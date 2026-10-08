@@ -1,0 +1,272 @@
+[
+  {
+    "id": "bio-001",
+    "front": "What are the six major macromolecule/micromolecule categories in the body, and which three are the only calorie-yielding ones?",
+    "back": "Protein, carbohydrate, lipid, vitamins, minerals, and water. Only carbohydrate, protein, and lipid yield calories — water is essential but contributes none.",
+    "tags": ["macromolecules", "metabolism"]
+  },
+  {
+    "id": "bio-002",
+    "front": "What is the monomeric building block of each major macromolecule: protein, carbohydrate, and lipid?",
+    "back": "Protein → amino acids. Carbohydrate → monosaccharides. Lipid → fatty acids and glycerol.",
+    "tags": ["macromolecules", "building-blocks"]
+  },
+  {
+    "id": "bio-003",
+    "front": "In the catabolism/anabolism cycle, what energy currency links the two pathways?",
+    "back": "ATP. Catabolism breaks down nutrients (carbohydrate, lipid, protein) into low-energy end products (CO2, H2O, NH3) and releases chemical energy as ATP; anabolism uses that ATP to build macromolecules from small starting molecules (amino acids, sugars, fatty acids).",
+    "tags": ["metabolism", "atp"]
+  },
+  {
+    "id": "bio-004",
+    "front": "What are the three stages of catabolism of the major energy nutrients, from macromolecule to final small products?",
+    "back": "Stage I: proteins, polysaccharides, and lipids are broken into their building-block units (amino acids, glucose, fatty acids/glycerol). Stage II: those units converge on common degradation products, chiefly pyruvate and acetyl-CoA. Stage III: acetyl-CoA enters the citric acid (TCA) cycle, ending in CO2, H2O, and NH3.",
+    "tags": ["metabolism", "catabolism"]
+  },
+  {
+    "id": "bio-005",
+    "front": "What distinguishes a glucogenic amino acid from a ketogenic one?",
+    "back": "Glucogenic amino acids are catabolized to pyruvate or a TCA-cycle intermediate (oxaloacetate, α-ketoglutarate, succinyl-CoA, fumarate) and can be used to make glucose. Ketogenic amino acids are catabolized to acetyl-CoA or acetoacetyl-CoA and can only form ketone bodies/fat. Leucine and lysine are purely ketogenic; most amino acids are glucogenic, and several (e.g. isoleucine, phenylalanine, tyrosine, tryptophan, threonine) are both.",
+    "tags": ["metabolism", "amino-acids", "tca-cycle"]
+  },
+  {
+    "id": "bio-006",
+    "front": "What is the basic structural formula of an amino acid?",
+    "back": "A central α-carbon bonded to four groups: an amino group (+NH3), a carboxyl group (-COO−), a hydrogen atom, and a variable side chain (R group) that gives each amino acid its distinct identity.",
+    "tags": ["protein", "amino-acids"]
+  },
+  {
+    "id": "bio-007",
+    "front": "How does a peptide bond form between two amino acids, and what small molecule is released?",
+    "back": "The carboxyl group (-COOH) of one amino acid condenses with the amino group (-NH2) of the next, forming an amide (peptide) bond and releasing one molecule of H2O — a dehydration/condensation reaction.",
+    "tags": ["protein", "peptide-bond"]
+  },
+  {
+    "id": "bio-008",
+    "front": "Name the four levels of protein structure and what each describes.",
+    "back": "Primary: the linear sequence of amino acids. Secondary: local folding into α-helices or β-sheets, stabilized by hydrogen bonds along the backbone. Tertiary: the overall 3D folding of a single polypeptide chain. Quaternary: the arrangement of multiple folded polypeptide subunits into one functional complex (e.g. hemoglobin's four subunits).",
+    "tags": ["protein", "structure"]
+  },
+  {
+    "id": "bio-009",
+    "front": "What three macromolecule classes make up the cell membrane, and roughly in what proportion?",
+    "back": "Protein (~49%), lipid (~43%, including cholesterol), and carbohydrate (~8%) — carbohydrate chains project from the outer (extracellular) leaflet as glycoproteins and glycolipids.",
+    "tags": ["membrane", "cell-biology"]
+  },
+  {
+    "id": "bio-010",
+    "front": "What three lipid types make up the membrane's lipid bilayer?",
+    "back": "Phospholipids, glycolipids, and cholesterol — arranged with hydrophilic (polar) heads facing the aqueous cytoplasm and extracellular fluid, and hydrophobic (nonpolar) fatty-acid tails facing each other in the bilayer's core.",
+    "tags": ["membrane", "lipids"]
+  },
+  {
+    "id": "bio-011",
+    "front": "What is the functional difference between an integral membrane protein and a peripheral membrane protein?",
+    "back": "Integral proteins span or embed within the lipid bilayer itself (many are transmembrane, e.g. receptors and channels). Peripheral proteins attach loosely to the membrane surface (often to integral proteins or lipid head groups) without inserting into the bilayer.",
+    "tags": ["membrane", "protein"]
+  },
+  {
+    "id": "bio-012",
+    "front": "List the three broad functions of the cell membrane described in this lecture.",
+    "back": "(1) Maintains and preserves cell shape. (2) Protects the cell and lets it withstand mechanical stress in small vessels/capillaries by deforming without changing composition. (3) Transports substances in and out of the cell, via passive transport (diffusion, osmosis) or active transport (ion pumps).",
+    "tags": ["membrane", "cell-biology"]
+  },
+  {
+    "id": "bio-013",
+    "front": "The SARS-CoV-2 spike (S) protein and the human ACE2 receptor illustrate what general biochemical principle?",
+    "back": "Ligand–receptor specificity: a virus's surface protein (ligand) must molecularly fit a receptor protein already present on the host cell membrane. ACE2 is itself a membrane-bound enzyme expressed on cells of the airway, lung, gut, heart, and kidney; TMPRSS2 then proteolytically activates the spike protein to trigger membrane fusion and viral entry.",
+    "tags": ["membrane", "receptor", "clinical"]
+  },
+  {
+    "id": "bio-014",
+    "front": "Name seven functional categories of proteins in the body, with one example each.",
+    "back": "1) Regulator/bioregulator — hormones. 2) Biocatalyst — enzymes. 3) Transport — hemoglobin, albumin, lipoprotein, transferrin. 4) Contractile — actin and myosin. 5) Structural — collagen, tubulin, keratin, glycoprotein. 6) Protective/defense — immunoglobulins, interferon, perforin, interleukins. 7) Receptor — membrane receptors (can be beneficial, e.g. hormone receptors, or exploited, e.g. ACE2 in COVID-19).",
+    "tags": ["protein", "function"]
+  },
+  {
+    "id": "bio-015",
+    "front": "What are the three major plasma protein fractions, and their approximate normal blood concentrations?",
+    "back": "Albumin (35–50 g/L, ~3.5–5.0 g/dL), globulins (65–85 g/L total, split into α1, α2, β, and γ fractions), and fibrinogen (2–4 g/L). Albumin is the single most abundant plasma protein (~58% of total).",
+    "tags": ["plasma-proteins", "albumin", "globulin"]
+  },
+  {
+    "id": "bio-016",
+    "front": "What are albumin's two main physiological roles?",
+    "back": "(1) Maintaining plasma oncotic (colloid osmotic) pressure, which keeps fluid inside blood vessels rather than leaking into tissue. (2) Transporting ligands through the blood — endogenous ligands like bilirubin and fatty acids, and exogenous ligands like drugs (e.g. metadon, propranolol, furosemide, methotrexate).",
+    "tags": ["albumin", "plasma-proteins"]
+  },
+  {
+    "id": "bio-017",
+    "front": "Why does hypoalbuminemia cause edema, ascites, or pleural effusion?",
+    "back": "Albumin is the main contributor to plasma oncotic pressure, which normally pulls fluid back into capillaries against hydrostatic pressure. When albumin falls (normal range ~3.5–5.2 g/dL), oncotic pressure drops, hydrostatic pressure dominates, and fluid leaks out of vessels into interstitial spaces (edema), the peritoneal cavity (ascites), or the pleural space (pleural effusion).",
+    "tags": ["albumin", "hypoalbuminemia", "clinical"]
+  },
+  {
+    "id": "bio-018",
+    "front": "Name four clinical causes of hypoalbuminemia mentioned in this lecture.",
+    "back": "Nephrotic syndrome (albuminuria → hypoalbuminemia → edema/ascites/pleural effusion, plus hypercholesterolemia and lipiduria), cirrhosis (CH — reduced hepatic synthesis), kwashiorkor (severe protein malnutrition), and pre-eclampsia.",
+    "tags": ["albumin", "hypoalbuminemia", "clinical"]
+  },
+  {
+    "id": "bio-019",
+    "front": "On serum protein electrophoresis, which protein band migrates fastest and ends up farthest from the origin — albumin or globulin — and why?",
+    "back": "Albumin, because it has the smallest molecular weight of the major plasma proteins: smaller proteins run faster in the electric field and their band sits lower (farther from the loading point), while larger globulins run slower and their band stays higher, closer to the origin.",
+    "tags": ["albumin", "globulin", "electrophoresis"]
+  },
+  {
+    "id": "bio-020",
+    "front": "What is gamma globulin, and what are its five immunoglobulin (Ig) classes with one distinguishing feature each?",
+    "back": "Gamma globulin is the antibody fraction of plasma protein. IgA: mucosal immunity (secretions). IgD: B-cell receptor, function still not fully defined. IgE: allergic reactions and anti-parasite (helminth) defense. IgG: the dominant antibody of the chronic/late immune response, and the only one to cross the placenta. IgM: the first antibody of the acute/early response, formed as a pentamer.",
+    "tags": ["globulin", "immunoglobulins"]
+  },
+  {
+    "id": "bio-021",
+    "front": "In a new infection, which immunoglobulin rises first, and which follows?",
+    "back": "IgM rises first (acute/early phase marker), followed later by IgG (chronic/late phase, and the class responsible for durable/long-term immunity). This IgM-then-IgG pattern is used clinically, e.g. in COVID-19 serology.",
+    "tags": ["globulin", "immunoglobulins", "clinical"]
+  },
+  {
+    "id": "bio-022",
+    "front": "What are the two steps of protein synthesis from a gene, and where in the cell does each occur?",
+    "back": "Transcription: DNA is copied into mRNA, in the nucleus. Translation: mRNA is read by ribosomes to build a polypeptide chain, in the cytoplasm — itself divided into initiation, elongation, and termination.",
+    "tags": ["protein-synthesis", "molecular-biology"]
+  },
+  {
+    "id": "bio-023",
+    "front": "Name an antibiotic that inhibits bacterial translation initiation, one that blocks the 30S ribosomal subunit, and one that blocks the 50S subunit.",
+    "back": "Initiation/misreading: streptomycin and other aminoglycosides. 30S subunit (blocks aminoacyl-tRNA binding): tetracycline. 50S subunit (blocks peptidyl transferase activity): chloramphenicol. (Erythromycin also binds the 50S subunit, blocking translocation.)",
+    "tags": ["protein-synthesis", "pharmacology", "antibiotics"]
+  },
+  {
+    "id": "bio-024",
+    "front": "What are the three components of a nucleotide, and what is the bond between the nitrogenous base and the sugar called?",
+    "back": "A nucleotide = a nitrogenous base (purine or pyrimidine) + a five-carbon sugar (ribose or deoxyribose) + one or more phosphate groups. The base attaches to the sugar's C1' carbon via a β-N-glycosidic bond.",
+    "tags": ["nucleotides", "molecular-biology"]
+  },
+  {
+    "id": "bio-025",
+    "front": "What bond links successive nucleotides together to form the DNA backbone?",
+    "back": "A phosphodiester bond — the phosphate group bridges the C3' of one sugar to the C5' of the next sugar's phosphate. (A separate phosphoester bond links the phosphate to its own sugar's C5' hydroxyl.)",
+    "tags": ["nucleotides", "molecular-biology"]
+  },
+  {
+    "id": "bio-026",
+    "front": "What is the one gene–one enzyme hypothesis, and how was it later broadened?",
+    "back": "Beadle and Tatum's hypothesis: a gene is a segment of genetic material that codes for one enzyme. It was later broadened to one gene–one polypeptide, since many genes code for non-enzyme proteins, or for just one subunit of a multi-subunit protein.",
+    "tags": ["genetics", "molecular-biology"]
+  },
+  {
+    "id": "bio-027",
+    "front": "What are the four landmark structural regions of a chromosome?",
+    "back": "Telomeres (protective caps at both ends), the centromere (the pinch point), and the two arms it divides the chromosome into: the short p arm and the long q arm.",
+    "tags": ["chromosome", "genetics"]
+  },
+  {
+    "id": "bio-028",
+    "front": "What is the relationship between a gene, DNA, and a chromosome?",
+    "back": "A gene is a segment of DNA that carries genetic information — the gene itself is DNA. DNA is the full-length molecule, of which genes are only certain coding segments. A chromosome is one long, packaged DNA molecule carrying many genes. Genes are definitely DNA; DNA is not necessarily genes.",
+    "tags": ["genetics", "chromosome"]
+  },
+  {
+    "id": "bio-029",
+    "front": "How many chromosomes does a person with Down syndrome have, and with Turner syndrome?",
+    "back": "Down syndrome (trisomy 21): 47 chromosomes (an extra copy of chromosome 21). Turner syndrome (monosomy X): 45 chromosomes (only one X, no Y). Normal human karyotype is 46 (23 pairs).",
+    "tags": ["chromosome", "clinical"]
+  },
+  {
+    "id": "bio-030",
+    "front": "What is a nucleosome, and why does DNA need this kind of packaging?",
+    "back": "A nucleosome is one turn of DNA wound around a cluster of eight histone proteins (a histone octamer) — like a bead on a string. DNA needs this packaging because a single cell's total DNA, stretched out, is dramatically longer than the nucleus it has to fit inside.",
+    "tags": ["chromosome", "genetics"]
+  },
+  {
+    "id": "bio-031",
+    "front": "What is a genome, and approximately how large is the human genome?",
+    "back": "A genome is the total amount of genetic information in an individual — for humans, the total DNA in the body. The human genome is about 3×10⁹ base pairs. Genome size varies enormously across species, roughly from 3×10⁷ to 3×10¹¹ base pairs.",
+    "tags": ["genome", "genetics"]
+  },
+  {
+    "id": "bio-032",
+    "front": "Roughly how long is the DNA in a single human cell if stretched end to end, and how does that compare across the whole body?",
+    "back": "About 2 meters per cell. With roughly 10¹⁴ cells in an adult body, total DNA length is about 2×10¹¹ km — far longer than the Earth's circumference (4×10⁴ km) and about 8 times the Earth–Moon distance. This illustrates the extraordinary degree of DNA compaction inside cells.",
+    "tags": ["genome", "genetics"]
+  },
+  {
+    "id": "bio-033",
+    "front": "What are the two types of DNA in a human cell, and where is each found?",
+    "back": "Chromosomal (nuclear) DNA, found in the nucleus of nucleated cells, and mitochondrial DNA (mtDNA), a separate, much smaller genome inside mitochondria.",
+    "tags": ["genetics", "cell-biology"]
+  },
+  {
+    "id": "bio-034",
+    "front": "Describe human mitochondrial DNA: size, shape, copy number, and what fraction of mitochondrial proteins it actually encodes.",
+    "back": "16,569 base pairs, a circular duplex, with 2–10 copies per mitochondrion (up to hundreds in some differentiating embryonic cells). It codes for mitochondrial tRNAs, rRNAs, and only a few mitochondrial proteins — more than 95% of mitochondrial proteins are actually encoded by nuclear DNA.",
+    "tags": ["genetics", "cell-biology"]
+  },
+  {
+    "id": "bio-035",
+    "front": "Does a mature human red blood cell contain DNA? What about a bird's red blood cell?",
+    "back": "No — mature mammalian red blood cells lose their nucleus during maturation and contain no DNA (which is why human DNA testing uses white blood cells, not red ones). Bird red blood cells stay nucleated and do contain DNA, so avian blood can be used directly for DNA testing.",
+    "tags": ["genetics", "clinical"]
+  },
+  {
+    "id": "bio-036",
+    "front": "What is the difference between DNA replication and PCR?",
+    "back": "Replication is DNA copying itself in vivo, inside a living cell, using the cell's own enzymes. PCR (polymerase chain reaction) is DNA copying done in vitro, in a lab machine — used for diagnostics and research rather than by the cell itself.",
+    "tags": ["pcr", "molecular-biology"]
+  },
+  {
+    "id": "bio-037",
+    "front": "Name the three stages of one PCR cycle, and roughly how much does the DNA quantity increase after n cycles?",
+    "back": "Denaturation (heat opens the double helix), annealing (primers bind the single strands), and extension (DNA polymerase builds new complementary strands). After n cycles, DNA quantity increases roughly 2ⁿ-fold — e.g. about 2³⁰-fold after 30 cycles.",
+    "tags": ["pcr", "molecular-biology"]
+  },
+  {
+    "id": "bio-038",
+    "front": "How does RT-PCR test for an RNA virus like SARS-CoV-2, when PCR itself only copies DNA?",
+    "back": "RT-PCR adds a reverse transcription step first, converting the viral RNA genome into DNA (the reverse of transcription). That DNA copy can then be amplified by ordinary PCR — RNA → reverse transcription → DNA → PCR amplification → detectable signal.",
+    "tags": ["pcr", "clinical"]
+  },
+  {
+    "id": "bio-039",
+    "front": "Compare Southern blot DNA testing to PCR-based DNA testing.",
+    "back": "Southern blot (no amplification) needs a relatively large amount of intact DNA and takes longer. PCR-based testing needs only a small amount of DNA, doesn't require it to be fully intact, and gives a rapid result — which is why PCR has largely displaced non-amplified methods clinically.",
+    "tags": ["pcr", "molecular-biology"]
+  },
+  {
+    "id": "bio-040",
+    "front": "What happens during transcription, and where does it occur in a eukaryotic cell?",
+    "back": "Transcription converts DNA into mRNA. In eukaryotic cells it occurs in the nucleus. The immediate product is pre-mRNA, which still contains introns; splicing then removes the introns and joins the exons to form mature mRNA.",
+    "tags": ["transcription", "molecular-biology"]
+  },
+  {
+    "id": "bio-041",
+    "front": "What is splicing, and what is mature mRNA made of once splicing is complete?",
+    "back": "Splicing cuts introns (non-coding sequences) out of pre-mRNA and joins the exons (coding sequences) directly together. Mature mRNA ends up as nothing but a string of joined exons.",
+    "tags": ["transcription", "molecular-biology"]
+  },
+  {
+    "id": "bio-042",
+    "front": "What structural feature marks the 3' end of a mature mRNA, and what is it for?",
+    "back": "A long stretch of adenine nucleotides — the poly-A tail (AAAA...) — which helps identify and stabilize the mRNA molecule.",
+    "tags": ["transcription", "molecular-biology"]
+  },
+  {
+    "id": "bio-043",
+    "front": "What roles do mRNA and tRNA each play in translation?",
+    "back": "mRNA carries the codon (a 3-nucleotide sequence) and determines the amino acid sequence of the protein. tRNA carries the complementary anticodon and delivers the specific amino acid that codon specifies.",
+    "tags": ["translation", "molecular-biology"]
+  },
+  {
+    "id": "bio-044",
+    "front": "What is the start codon, which amino acid does it always specify, and how does translation end?",
+    "back": "AUG is the start codon, and it always specifies methionine as the first amino acid of a new protein. Translation ends when the ribosome reaches a stop codon.",
+    "tags": ["translation", "molecular-biology"]
+  },
+  {
+    "id": "bio-045",
+    "front": "What are the three sub-phases shared by transcription, translation, and protein synthesis as a whole?",
+    "back": "Initiation, elongation, and termination — the same three phases that antibiotic inhibitors of protein synthesis (Chapter 4) target individually.",
+    "tags": ["translation", "protein-synthesis"]
+  }
+]

@@ -1,0 +1,291 @@
+[
+  {
+    "id": "histo-001",
+    "front": "What distinguishes simple from stratified epithelium?",
+    "back": "Simple epithelium is a single layer of cells resting on the basement membrane; stratified epithelium has two or more layers, named for the shape of the surface (apical) layer.",
+    "tags": [
+      "epithelium",
+      "classification"
+    ]
+  },
+  {
+    "id": "histo-002",
+    "front": "Where is pseudostratified ciliated columnar epithelium classically found?",
+    "back": "The respiratory tract (trachea, bronchi) — it looks multilayered because nuclei sit at different heights, but every cell actually touches the basement membrane.",
+    "tags": [
+      "epithelium",
+      "respiratory"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_trachea.jpg\" alt=\"Micrograph of the trachea showing ciliated pseudostratified columnar epithelium\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-003",
+    "front": "What are the three main types of cartilage, and one defining feature of each?",
+    "back": "Hyaline (glassy matrix, articular surfaces/trachea), elastic (elastic fibers, ear/epiglottis), fibrocartilage (dense collagen I, intervertebral discs/menisci — no perichondrium).",
+    "tags": [
+      "connective tissue",
+      "cartilage"
+    ]
+  },
+  {
+    "id": "histo-004",
+    "front": "Which blood cell has no nucleus and why does that matter for identification?",
+    "back": "The erythrocyte (red blood cell) — its biconcave, anucleate shape (~7.5 µm) makes it the easiest cell to spot on a peripheral smear.",
+    "tags": [
+      "blood",
+      "erythrocyte"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/erythrocyte.jpg\" alt=\"Micrograph of erythrocytes (red blood cells) on a peripheral blood smear\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-005",
+    "front": "What is the key structural difference between skeletal and cardiac muscle under the microscope?",
+    "back": "Both are striated, but skeletal muscle fibers are long, multinucleated, with peripheral nuclei, while cardiac fibers are shorter, branching, with one or two central nuclei and intercalated discs.",
+    "tags": [
+      "muscle",
+      "histology"
+    ]
+  },
+  {
+    "id": "histo-006",
+    "front": "What cell type is responsible for laying down bone matrix, and what is it called once it becomes trapped in that matrix?",
+    "back": "Osteoblasts secrete osteoid; once surrounded by mineralized matrix they mature into osteocytes, housed in lacunae and linked by canaliculi.",
+    "tags": [
+      "bone",
+      "connective tissue"
+    ]
+  },
+  {
+    "id": "histo-007",
+    "front": "What is the functional unit of a lymph node responsible for antibody production?",
+    "back": "The germinal center of a lymphoid follicle (cortex), where activated B cells proliferate and differentiate into plasma cells.",
+    "tags": [
+      "lymphatic",
+      "immune"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/lymphnode_cortex.jpg\" alt=\"Micrograph of lymph node cortex showing lymphoid follicles\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-008",
+    "front": "Which granulocyte has bilobed nuclei and bright eosinophilic (red-orange) granules, and what is it associated with?",
+    "back": "The eosinophil — elevated counts are associated with parasitic infections and allergic/atopic reactions.",
+    "tags": [
+      "blood",
+      "granulocyte"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/eosinophil.jpg\" alt=\"Micrograph of an eosinophil with bilobed nucleus and eosinophilic granules\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-009",
+    "front": "What are the three modes of glandular secretion, and how do they differ?",
+    "back": "Merocrine (exocytosis, cell stays intact — e.g., eccrine sweat glands), apocrine (pinches off apical cytoplasm — e.g., mammary glands), and holocrine (whole cell ruptures and becomes the secretion — e.g., sebaceous glands).",
+    "tags": [
+      "glands",
+      "secretion"
+    ]
+  },
+  {
+    "id": "histo-010",
+    "front": "What is a desmosome and what is its function?",
+    "back": "A spot-like junction that anchors intermediate filaments (keratin) between adjacent cells, providing mechanical strength — abundant in tissues under mechanical stress like epidermis and cardiac muscle.",
+    "tags": [
+      "cell junctions"
+    ]
+  },
+  {
+    "id": "histo-011",
+    "front": "What is a Kupffer cell?",
+    "back": "A resident macrophage of the liver sinusoids, part of the reticuloendothelial system, responsible for clearing pathogens and old red blood cells from portal blood.",
+    "tags": [
+      "liver",
+      "macrophage"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/macrophage.jpg\" alt=\"Micrograph of a macrophage (Kupffer cells are the liver-resident form of this cell)\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-012",
+    "front": "What type of connective tissue makes up tendons, and how are its fibers arranged?",
+    "back": "Dense regular connective tissue — collagen fibers run in parallel bundles along the line of mechanical stress, maximizing tensile strength.",
+    "tags": [
+      "connective tissue",
+      "tendon"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_regular.jpg\" alt=\"Micrograph of a tendon showing dense regular connective tissue with parallel collagen bundles\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-013",
+    "front": "What do goblet cells secrete, and where are they found?",
+    "back": "Mucin (which hydrates into mucus); found scattered among columnar epithelial cells in the respiratory and GI tracts.",
+    "tags": [
+      "epithelium",
+      "secretion"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/sc_columnar_intestine.jpg\" alt=\"Micrograph of intestinal villi: simple columnar epithelium with scattered goblet cells\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-014",
+    "front": "What is the key histologic difference between exocrine and endocrine glands?",
+    "back": "Exocrine glands retain a duct that delivers secretions to an epithelial surface; endocrine glands lose their duct during development and secrete hormones directly into the bloodstream via surrounding capillaries.",
+    "tags": [
+      "glands",
+      "classification"
+    ]
+  },
+  {
+    "id": "histo-015",
+    "front": "Name the five layers of the epidermis shown here, from superficial to deep.",
+    "back": "Stratum corneum, lucidum, granulosum, spinosum, basale (mnemonic: 'Californians Like Girls In String Bikinis'). Lucidum is only present in thick skin (palms/soles).",
+    "tags": [
+      "skin",
+      "epithelium"
+    ],
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 360 / 289;\"><img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Micrograph of thin skin epidermis showing keratinized stratified squamous epithelium\" loading=\"lazy\" /><div class=\"quiz-photo-band\" style=\"top:0.0%;height:13.3%;\"><span class=\"quiz-photo-marker\">1</span></div><div class=\"quiz-photo-band\" style=\"top:13.3%;height:8.9%;\"><span class=\"quiz-photo-marker\">2</span></div><div class=\"quiz-photo-band\" style=\"top:22.2%;height:22.2%;\"><span class=\"quiz-photo-marker\">3</span></div><div class=\"quiz-photo-band\" style=\"top:44.4%;height:37.8%;\"><span class=\"quiz-photo-marker\">4</span></div><div class=\"quiz-photo-band\" style=\"top:82.2%;height:17.8%;\"><span class=\"quiz-photo-marker\">5</span></div></div>"
+  },
+  {
+    "id": "histo-016",
+    "front": "What are the three criteria used to classify epithelial tissue?",
+    "back": "(1) Number of cell layers — simple or stratified/complex. (2) Surface cell shape — squamous, cuboidal, or columnar. (3) Surface specialization — plain, ciliated, or keratinized/cornified.",
+    "tags": [
+      "epithelium",
+      "classification"
+    ]
+  },
+  {
+    "id": "histo-017",
+    "front": "What are the three functionally distinct surfaces of an epithelial cell?",
+    "back": "Apical (faces the lumen or external surface — site of microvilli/cilia/stereocilia), lateral (faces the neighboring cell — site of the junctional complex), and basal (faces the basement membrane — anchored by hemidesmosomes).",
+    "tags": [
+      "epithelium",
+      "cell junctions"
+    ]
+  },
+  {
+    "id": "histo-018",
+    "front": "What does a tight junction (zonula occludens) do?",
+    "back": "It seals the paracellular space between adjacent epithelial cells, controlling what can pass between (rather than through) cells — the apical-most component of the junctional complex.",
+    "tags": [
+      "cell junctions"
+    ]
+  },
+  {
+    "id": "histo-019",
+    "front": "What is a zonula adherens, and where does it sit relative to the tight junction?",
+    "back": "A belt-like junction just below the tight junction that anchors the actin cytoskeleton of neighboring cells together.",
+    "tags": [
+      "cell junctions"
+    ]
+  },
+  {
+    "id": "histo-020",
+    "front": "How does a gap junction work, and what size cutoff limits what can pass through it?",
+    "back": "Channels called connexons — each built from six transmembrane connexin proteins — bridge a 2–4 nm gap between adjacent cells. Small molecules and inorganic ions up to about 1.5 nm can pass directly from one cell's cytoplasm to the next; larger molecules and negatively charged ions cannot.",
+    "tags": [
+      "cell junctions"
+    ]
+  },
+  {
+    "id": "histo-021",
+    "front": "How does a hemidesmosome differ from a desmosome?",
+    "back": "A desmosome is a cell-to-cell junction on the lateral surface, anchoring intermediate filaments between two neighboring cells. A hemidesmosome instead sits on the basal surface only, anchoring the cell to the basement membrane rather than to another cell.",
+    "tags": [
+      "cell junctions"
+    ]
+  },
+  {
+    "id": "histo-022",
+    "front": "What are microvilli, and by roughly how much do they increase a cell's absorptive surface area?",
+    "back": "Finger-like projections of the apical plasma membrane, 0.5–1.0 µm long, that increase apical surface area roughly 30-fold — the defining feature of absorptive epithelium like the small intestine's brush border.",
+    "tags": [
+      "epithelium",
+      "surface specialization"
+    ]
+  },
+  {
+    "id": "histo-023",
+    "front": "What are stereocilia, and where are they classically found?",
+    "back": "Unusually long, immobile microvilli, easily seen with a light microscope. Found in small numbers in the male reproductive tract, classically the epididymis, where they assist absorption.",
+    "tags": [
+      "epithelium",
+      "surface specialization",
+      "reproductive"
+    ]
+  },
+  {
+    "id": "histo-024",
+    "front": "Roughly how many cilia can a single ciliated epithelial cell carry, and how long can each one be?",
+    "back": "Up to about 300 cilia per cell, each up to 10 µm long — roughly half the cell's height. They beat in a synchronized, wave-like rhythm that moves fluid or mucus in one consistent direction.",
+    "tags": [
+      "epithelium",
+      "surface specialization",
+      "respiratory"
+    ]
+  },
+  {
+    "id": "histo-025",
+    "front": "What is the '9+2' arrangement inside a motile cilium?",
+    "back": "Nine peripheral microtubule doublets arranged in a ring around two central single microtubules (the axoneme) — the core structural motif shared by every motile cilium in the body.",
+    "tags": [
+      "surface specialization"
+    ]
+  },
+  {
+    "id": "histo-026",
+    "front": "How are exocrine glands classified by structure, separate from their secretion mechanism?",
+    "back": "By duct branching — simple (one unbranched duct) or compound (a branching duct system) — and by the shape of the secretory unit: tubular, alveolar/acinar, or a tubuloalveolar mix.",
+    "tags": [
+      "glands",
+      "classification"
+    ]
+  },
+  {
+    "id": "histo-027",
+    "front": "Where is transitional epithelium found, and why is it well suited to that location?",
+    "back": "The lower urinary tract — renal pelvis, ureters, bladder, and urethra. Its dome-shaped surface cells can flatten out as the organ distends, letting the epithelium stretch without tearing.",
+    "tags": [
+      "epithelium",
+      "urinary"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/transitional_bladder.jpg\" alt=\"Micrograph of the urinary bladder wall showing transitional epithelium\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-028",
+    "front": "What type of epithelium lines the parietal layer of Bowman's capsule?",
+    "back": "Simple squamous epithelium — a classic example used to teach simple squamous identification, since it wraps around the glomerulus inside each renal corpuscle.",
+    "tags": [
+      "epithelium",
+      "urinary"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Micrograph of the kidney showing simple squamous epithelium of Bowman's capsule\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-029",
+    "front": "What is unusual about the epithelium lining the male urethra's pars cavernosa?",
+    "back": "It's stratified columnar epithelium — one of the few places in the body where a stratified columnar arrangement is the normal, expected finding.",
+    "tags": [
+      "epithelium",
+      "urinary",
+      "reproductive"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/strat_columnar_urethra.jpg\" alt=\"Micrograph of the male urethra (pars cavernosa) showing stratified columnar epithelium\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-030",
+    "front": "What shape are the follicular cells that line thyroid follicles?",
+    "back": "Simple cuboidal epithelium — the same general cell shape seen lining kidney tubules, but here arranged around a colloid-filled follicle as part of an endocrine (ductless) gland.",
+    "tags": [
+      "epithelium",
+      "endocrine"
+    ],
+    "image": "<img src=\"/histology/guess-the-slide/sc_thyroid.jpg\" alt=\"Micrograph of a thyroid follicle showing simple cuboidal follicular epithelium\" loading=\"lazy\" />"
+  },
+  {
+    "id": "histo-031",
+    "front": "What type of epithelium lines the fallopian tube, and what is its function there?",
+    "back": "Simple ciliated columnar epithelium. Its cilia beat to help move the ovum from the ovary toward the uterus.",
+    "tags": [
+      "epithelium",
+      "surface specialization",
+      "reproductive"
+    ]
+  }
+]

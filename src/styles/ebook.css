@@ -1,0 +1,244 @@
+/* Ebook reader: TOC sidebar (also reused by ModuleViewer's lecture list) + PDF viewer */
+
+.ebook-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.ebook-toc {
+  position: sticky;
+  top: 5.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+}
+
+.ebook-toc-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin: 0 0 0.85rem;
+}
+
+.ebook-toc ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ebook-toc-link {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  /* This class is also used on <button> elements (e.g. ModuleViewer's lecture list) —
+     reset UA button chrome so it matches the plain-link look everywhere else. */
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.ebook-toc-link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.ebook-toc-link.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ebook-toc-check {
+  display: inline-flex;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.ebook-toc-section {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.ebook-toc-subhead {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.ebook-toc-group {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.ebook-toc-part + .ebook-toc-part {
+  margin-top: 0.6rem;
+}
+
+.ebook-toc-sublabel {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin: 0 0 0.25rem 0.6rem;
+}
+
+.ebook-toc-empty {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0 0 0 0.6rem;
+  padding: 0.2rem 0;
+}
+
+.ebook-toc-flat {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ebook-content {
+  min-width: 0;
+}
+
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pdf-viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pdf-viewer-bar p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.pdf-frame {
+  width: 100%;
+  height: 78vh;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.mark-complete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: auto;
+  margin-top: 1.75rem;
+}
+
+.mark-complete-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ebook-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.ebook-done {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .ebook-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ebook-toc {
+    position: static;
+  }
+
+  .ebook-toc-collapsible {
+    padding: 0;
+  }
+
+  .ebook-toc-collapsible:not(.is-open) > :not(.ebook-toc-toggle) {
+    display: none;
+  }
+
+  .ebook-toc-collapsible.is-open {
+    padding: 0 1.1rem 1.1rem;
+  }
+
+  .ebook-toc-collapsible.is-open .ebook-toc-toggle {
+    margin: 0 -1.1rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+.ebook-toc-toggle {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .ebook-toc-toggle {
+    font: inherit;
+    display: flex;
+    width: calc(100% + 0px);
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.8rem 1.1rem;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .ebook-toc-toggle-hint {
+    color: var(--accent);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+}
+
+.ebook-status {
+  padding: 2rem 0;
+  color: var(--text-muted);
+}
+
+/* Jumped to from the module list on phones: clear the sticky top bar. */
+#module-viewer {
+  scroll-margin-top: 5rem;
+}

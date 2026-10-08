@@ -1,0 +1,548 @@
+[
+  {
+    "id": "q-bio-001",
+    "question": "Which three macromolecules are the body's only calorie-yielding nutrients?",
+    "options": [
+      "Carbohydrate, protein, and lipid",
+      "Lipid, vitamins, and water",
+      "Protein, vitamins, and minerals",
+      "Carbohydrate, protein, and water",
+      "Vitamins, minerals, and water"
+    ],
+    "answer": 0,
+    "explanation": "Carbohydrate, protein, and lipid are the only macromolecules that yield calories on catabolism. Water is essential for metabolism but contributes no calories, and vitamins/minerals are micronutrient cofactors, not fuel sources."
+  },
+  {
+    "id": "q-bio-002",
+    "question": "An amino acid is catabolized down to acetyl-CoA and cannot be used to synthesize new glucose. What is this amino acid classified as?",
+    "options": [
+      "Ketogenic",
+      "Aromatic",
+      "Essential",
+      "Glucogenic",
+      "Nonpolar"
+    ],
+    "answer": 0,
+    "explanation": "Ketogenic amino acids (like leucine and lysine) are degraded to acetyl-CoA or acetoacetyl-CoA, precursors for ketone bodies and fat, not glucose. Glucogenic amino acids instead feed into pyruvate or TCA-cycle intermediates, which can be used for gluconeogenesis."
+  },
+  {
+    "id": "q-bio-003",
+    "question": "Which level of protein structure describes the linear sequence of amino acids in a polypeptide chain?",
+    "options": [
+      "Primary structure",
+      "Tertiary structure",
+      "Quaternary structure",
+      "Secondary structure",
+      "Domain structure"
+    ],
+    "answer": 0,
+    "explanation": "Primary structure is simply the amino acid sequence. Secondary structure describes local folding (α-helix/β-sheet), tertiary is the full 3D fold of one chain, and quaternary describes how multiple folded chains assemble together."
+  },
+  {
+    "id": "q-bio-004",
+    "question": "What small molecule is released when two amino acids join by a peptide bond?",
+    "options": [
+      "NH3",
+      "ATP",
+      "NADH",
+      "H2O",
+      "CO2"
+    ],
+    "answer": 3,
+    "explanation": "Peptide bond formation is a condensation (dehydration) reaction: the -COOH of one amino acid reacts with the -NH2 of the next, releasing one molecule of water as the amide bond forms."
+  },
+  {
+    "id": "q-bio-005",
+    "question": "Roughly what fraction of the cell membrane's mass is made up of protein?",
+    "options": [
+      "About 90%",
+      "About 60%",
+      "About 8%",
+      "About 25%",
+      "About 49%"
+    ],
+    "answer": 4,
+    "explanation": "The plasma membrane is roughly 49% protein, 43% lipid (including cholesterol), and 8% carbohydrate — the carbohydrate exists as chains attached to outer-leaflet lipids and proteins (glycolipids/glycoproteins)."
+  },
+  {
+    "id": "q-bio-006",
+    "question": "A membrane protein spans the full width of the lipid bilayer, with domains exposed on both the extracellular and cytoplasmic sides. What type of membrane protein is this?",
+    "options": [
+      "GPI-anchored protein",
+      "Integral (transmembrane) protein",
+      "Peripheral protein",
+      "Glycolipid",
+      "Cholesterol-anchored protein"
+    ],
+    "answer": 1,
+    "explanation": "Integral membrane proteins are embedded in — and often span — the lipid bilayer; many, including most receptors and channels, are transmembrane. Peripheral proteins only attach loosely to the membrane surface."
+  },
+  {
+    "id": "q-bio-007",
+    "question": "The SARS-CoV-2 spike (S) protein binds ACE2 on the surface of human airway, lung, and gut cells. In receptor biology terms, what role does ACE2 play?",
+    "options": [
+      "It is the viral ligand",
+      "It is a peripheral membrane protein",
+      "It is a co-receptor required only for viral egress",
+      "It is the host-cell receptor",
+      "It is a secreted antibody"
+    ],
+    "answer": 3,
+    "explanation": "ACE2 is a membrane-bound host enzyme that the viral spike protein (the ligand) binds as its entry receptor. TMPRSS2 then proteolytically activates the spike protein, triggering membrane fusion and viral entry into the cell."
+  },
+  {
+    "id": "q-bio-008",
+    "question": "Which functional category of protein includes actin and myosin?",
+    "options": [
+      "Contractile protein",
+      "Enzymatic protein",
+      "Structural protein",
+      "Transport protein",
+      "Protective protein"
+    ],
+    "answer": 0,
+    "explanation": "Actin and myosin are contractile proteins, responsible for generating mechanical force in muscle and other motile cells. Structural proteins (collagen, keratin, tubulin) instead provide shape and support."
+  },
+  {
+    "id": "q-bio-009",
+    "question": "On serum protein electrophoresis, which plasma protein produces the band that migrates farthest (fastest) toward the anode?",
+    "options": [
+      "Gamma globulin",
+      "Alpha-1 globulin",
+      "Fibrinogen",
+      "Albumin",
+      "Beta globulin"
+    ],
+    "answer": 3,
+    "explanation": "Albumin has the smallest molecular weight of the major plasma proteins, so it migrates fastest in the electric field and its band sits farthest from the origin; larger globulins migrate more slowly and stay closer to the origin."
+  },
+  {
+    "id": "q-bio-010",
+    "question": "A patient with nephrotic syndrome has heavy albuminuria, leading to hypoalbuminemia. What is the direct mechanism by which this causes edema?",
+    "options": [
+      "Increased plasma hydrostatic pressure pushes fluid into tissue",
+      "Decreased plasma oncotic pressure fails to hold fluid in vessels",
+      "Increased globulin concentration draws fluid into tissue",
+      "Increased plasma viscosity blocks capillary flow",
+      "Decreased plasma sodium concentration draws fluid out of vessels"
+    ],
+    "answer": 1,
+    "explanation": "Albumin is the main driver of plasma oncotic (colloid osmotic) pressure, which normally pulls fluid back into capillaries against hydrostatic pressure. When albumin falls, oncotic pressure drops, hydrostatic pressure dominates, and fluid leaks into tissue as edema (or ascites/pleural effusion)."
+  },
+  {
+    "id": "q-bio-011",
+    "question": "Which immunoglobulin class is a pentamer and rises first in an acute infection?",
+    "options": [
+      "IgE",
+      "IgG",
+      "IgA",
+      "IgD",
+      "IgM"
+    ],
+    "answer": 4,
+    "explanation": "IgM, assembled as a pentamer, is the first antibody produced in an acute/early immune response. IgG follows later and dominates the chronic/late response — it's also the only class that crosses the placenta."
+  },
+  {
+    "id": "q-bio-012",
+    "question": "Tetracycline inhibits bacterial protein synthesis by which mechanism?",
+    "options": [
+      "Inhibiting DNA gyrase (topoisomerase II)",
+      "Binding the 30S ribosomal subunit and blocking aminoacyl-tRNA binding",
+      "Binding the 50S ribosomal subunit and inhibiting peptidyl transferase",
+      "Directly degrading mRNA",
+      "Inhibiting DNA transcription in the nucleus"
+    ],
+    "answer": 1,
+    "explanation": "Tetracycline binds the bacterial 30S ribosomal subunit and blocks aminoacyl-tRNA from binding the A site, halting elongation. Chloramphenicol instead binds the 50S subunit and inhibits peptidyl transferase activity."
+  },
+  {
+    "id": "q-bio-013",
+    "question": "What is the name of the bond that links the phosphate of one nucleotide to the sugar of the next nucleotide, forming the DNA backbone?",
+    "options": [
+      "Peptide bond",
+      "Phosphodiester bond",
+      "Ester bond",
+      "Hydrogen bond",
+      "Glycosidic bond"
+    ],
+    "answer": 1,
+    "explanation": "Successive nucleotides are linked by phosphodiester bonds, which bridge the 3' carbon of one sugar to the 5' carbon of the next sugar's phosphate group, forming the sugar-phosphate backbone of DNA/RNA."
+  },
+  {
+    "id": "q-bio-014",
+    "question": "A chromosome's short arm and long arm are divided by which landmark structure?",
+    "options": [
+      "The histone octamer",
+      "The kinetochore",
+      "The centromere",
+      "The telomere",
+      "The nucleosome"
+    ],
+    "answer": 2,
+    "explanation": "The centromere is the pinch point that divides a chromosome into a short p arm and a long q arm. Telomeres instead cap the two ends of the chromosome."
+  },
+  {
+    "id": "q-bio-015",
+    "question": "A patient has 47 chromosomes, with an extra copy of chromosome 21. What condition is this?",
+    "options": [
+      "Down syndrome",
+      "Patau syndrome",
+      "Marfan syndrome",
+      "Klinefelter syndrome",
+      "Turner syndrome"
+    ],
+    "answer": 0,
+    "explanation": "Down syndrome is trisomy 21 — an extra copy of chromosome 21, giving 47 chromosomes total instead of the normal 46. Turner syndrome (monosomy X) instead has only 45 chromosomes."
+  },
+  {
+    "id": "q-bio-016",
+    "question": "What is a nucleosome?",
+    "options": [
+      "The circular genome found in mitochondria",
+      "One turn of DNA wound around a cluster of eight histone proteins",
+      "A single strand of unpaired DNA exposed during transcription",
+      "The enzyme that unwinds DNA during replication",
+      "A single gene's worth of DNA"
+    ],
+    "answer": 1,
+    "explanation": "A nucleosome is DNA wound around a histone octamer (eight histone proteins) — the basic repeating unit of DNA packaging, needed because a cell's total DNA is far longer than the nucleus that has to contain it."
+  },
+  {
+    "id": "q-bio-017",
+    "question": "Approximately how large is the human genome, in base pairs?",
+    "options": [
+      "3 × 10¹⁵",
+      "3 × 10⁹",
+      "3 × 10¹²",
+      "3 × 10⁶",
+      "3 × 10³"
+    ],
+    "answer": 1,
+    "explanation": "The human genome is approximately 3 × 10⁹ (3 billion) base pairs. Genome size varies enormously across species, from roughly 3×10⁷ to 3×10¹¹ base pairs."
+  },
+  {
+    "id": "q-bio-018",
+    "question": "Why does a mature human red blood cell contain no DNA, while a bird's red blood cell does?",
+    "options": [
+      "Bird red blood cells are much larger and can store extra DNA",
+      "Human red blood cells lose their nucleus during maturation; bird red blood cells stay nucleated",
+      "Human red blood cells never had a nucleus to begin with",
+      "Human DNA degrades faster than avian DNA at body temperature",
+      "Human red blood cells digest their own DNA with intracellular nucleases after maturation"
+    ],
+    "answer": 1,
+    "explanation": "Mature mammalian red blood cells extrude their nucleus during maturation, freeing space to carry more oxygen — leaving them with no DNA. This is why human DNA testing uses white blood cells, not red ones. Bird red blood cells remain nucleated throughout their life and do contain DNA."
+  },
+  {
+    "id": "q-bio-019",
+    "question": "What key difference distinguishes DNA replication from PCR?",
+    "options": [
+      "Replication happens in vivo using cellular enzymes; PCR is performed in vitro in a lab machine",
+      "There is no real difference — they are the same process",
+      "Replication only happens in bacteria; PCR only happens in humans",
+      "Replication copies RNA; PCR copies DNA",
+      "Replication requires primers; PCR does not"
+    ],
+    "answer": 0,
+    "explanation": "Replication is DNA copying itself inside a living cell (in vivo) using the cell's own enzyme machinery. PCR (polymerase chain reaction) performs the analogous copying in vitro, in a lab thermocycler, for diagnostic or research purposes."
+  },
+  {
+    "id": "q-bio-020",
+    "question": "In RT-PCR testing for an RNA virus like SARS-CoV-2, what does the 'RT' step accomplish?",
+    "options": [
+      "It removes introns from the viral genome",
+      "It reverse-transcribes the viral RNA genome into DNA so PCR can then amplify it",
+      "It denatures the viral capsid protein",
+      "It amplifies only the 3' poly-A tail of the RNA",
+      "It amplifies the RNA directly without converting it"
+    ],
+    "answer": 1,
+    "explanation": "Standard PCR only copies DNA, so testing an RNA virus first requires reverse transcription — converting the RNA genome into DNA — before ordinary PCR amplification can proceed: RNA → reverse transcription → DNA → PCR amplification."
+  },
+  {
+    "id": "q-bio-021",
+    "question": "What happens to introns during mRNA splicing?",
+    "options": [
+      "They are converted into the poly-A tail",
+      "They are cut out and discarded, leaving only the exons joined together",
+      "They are translated into a special signal peptide",
+      "They become the start codon",
+      "They are retained and translated along with the exons"
+    ],
+    "answer": 1,
+    "explanation": "Splicing removes introns (non-coding sequences) from pre-mRNA and joins the exons (coding sequences) directly together — mature mRNA ends up as nothing but a string of joined exons."
+  },
+  {
+    "id": "q-bio-022",
+    "question": "During translation, what does a tRNA's anticodon do?",
+    "options": [
+      "It signals the ribosome to terminate translation",
+      "It caps the 5' end of the mRNA",
+      "It base-pairs with the complementary mRNA codon and delivers the matching amino acid",
+      "It reads the mRNA's 5' cap to initiate translation",
+      "It catalyzes peptide bond formation directly"
+    ],
+    "answer": 2,
+    "explanation": "Each tRNA carries an anticodon that base-pairs with a complementary codon on the mRNA, and arrives already charged with the specific amino acid that codon specifies — the adaptor step linking nucleotide sequence to amino acid sequence."
+  },
+  {
+    "id": "q-bio-023",
+    "question": "Is leucine glucogenic, ketogenic, or both?",
+    "options": [
+      "Essential",
+      "Nonpolar",
+      "Both",
+      "Ketogenic",
+      "Glucogenic"
+    ],
+    "answer": 3,
+    "explanation": "Leucine is purely ketogenic — it's degraded to acetyl-CoA and acetoacetyl-CoA and cannot be used to make new glucose."
+  },
+  {
+    "id": "q-bio-024",
+    "question": "Is isoleucine glucogenic, ketogenic, or both?",
+    "options": [
+      "Nonpolar",
+      "Ketogenic",
+      "Essential",
+      "Both",
+      "Glucogenic"
+    ],
+    "answer": 3,
+    "explanation": "Isoleucine is both glucogenic and ketogenic — part of its carbon skeleton becomes succinyl-CoA (glucogenic), and part becomes acetyl-CoA (ketogenic)."
+  },
+  {
+    "id": "q-bio-025",
+    "question": "Is valine glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Glucogenic",
+      "Nonpolar",
+      "Essential",
+      "Ketogenic"
+    ],
+    "answer": 1,
+    "explanation": "Valine is purely glucogenic, degraded to succinyl-CoA, a TCA-cycle intermediate that can be used for gluconeogenesis."
+  },
+  {
+    "id": "q-bio-026",
+    "question": "Is phenylalanine glucogenic, ketogenic, or both?",
+    "options": [
+      "Ketogenic",
+      "Essential",
+      "Nonpolar",
+      "Glucogenic",
+      "Both"
+    ],
+    "answer": 4,
+    "explanation": "Phenylalanine is both glucogenic and ketogenic — after conversion to tyrosine, its carbon skeleton splits into fumarate (glucogenic) and acetoacetate (ketogenic)."
+  },
+  {
+    "id": "q-bio-027",
+    "question": "Is tyrosine glucogenic, ketogenic, or both?",
+    "options": [
+      "Glucogenic",
+      "Both",
+      "Nonpolar",
+      "Ketogenic",
+      "Essential"
+    ],
+    "answer": 1,
+    "explanation": "Tyrosine is both glucogenic and ketogenic, degraded to fumarate and acetoacetate, just like the phenylalanine it's derived from."
+  },
+  {
+    "id": "q-bio-028",
+    "question": "Is tryptophan glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Nonpolar",
+      "Ketogenic",
+      "Essential",
+      "Glucogenic"
+    ],
+    "answer": 0,
+    "explanation": "Tryptophan is both glucogenic and ketogenic — its ring is degraded to alanine/pyruvate (glucogenic) and acetoacetyl-CoA (ketogenic)."
+  },
+  {
+    "id": "q-bio-029",
+    "question": "Is aspartate glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Glucogenic",
+      "Essential",
+      "Nonpolar",
+      "Ketogenic"
+    ],
+    "answer": 1,
+    "explanation": "Aspartate is purely glucogenic, converted directly to oxaloacetate by transamination."
+  },
+  {
+    "id": "q-bio-030",
+    "question": "Is asparagine glucogenic, ketogenic, or both?",
+    "options": [
+      "Glucogenic",
+      "Essential",
+      "Both",
+      "Nonpolar",
+      "Ketogenic"
+    ],
+    "answer": 0,
+    "explanation": "Asparagine is purely glucogenic — asparaginase converts it to aspartate, which feeds into oxaloacetate."
+  },
+  {
+    "id": "q-bio-031",
+    "question": "Is glutamate glucogenic, ketogenic, or both?",
+    "options": [
+      "Nonpolar",
+      "Essential",
+      "Both",
+      "Ketogenic",
+      "Glucogenic"
+    ],
+    "answer": 4,
+    "explanation": "Glutamate is purely glucogenic, converted by transamination to α-ketoglutarate, a TCA-cycle intermediate."
+  },
+  {
+    "id": "q-bio-032",
+    "question": "Is glutamine glucogenic, ketogenic, or both?",
+    "options": [
+      "Essential",
+      "Glucogenic",
+      "Both",
+      "Ketogenic",
+      "Nonpolar"
+    ],
+    "answer": 1,
+    "explanation": "Glutamine is purely glucogenic — glutaminase converts it to glutamate, which feeds into α-ketoglutarate."
+  },
+  {
+    "id": "q-bio-033",
+    "question": "Is arginine glucogenic, ketogenic, or both?",
+    "options": [
+      "Ketogenic",
+      "Glucogenic",
+      "Essential",
+      "Nonpolar",
+      "Both"
+    ],
+    "answer": 1,
+    "explanation": "Arginine is purely glucogenic, ultimately converted to glutamate and then α-ketoglutarate."
+  },
+  {
+    "id": "q-bio-034",
+    "question": "Is histidine glucogenic, ketogenic, or both?",
+    "options": [
+      "Essential",
+      "Ketogenic",
+      "Nonpolar",
+      "Glucogenic",
+      "Both"
+    ],
+    "answer": 3,
+    "explanation": "Histidine is purely glucogenic, degraded through glutamate to α-ketoglutarate."
+  },
+  {
+    "id": "q-bio-035",
+    "question": "Is lysine glucogenic, ketogenic, or both?",
+    "options": [
+      "Nonpolar",
+      "Glucogenic",
+      "Essential",
+      "Both",
+      "Ketogenic"
+    ],
+    "answer": 4,
+    "explanation": "Lysine is purely ketogenic — like leucine, it's degraded entirely to acetyl-CoA/acetoacetyl-CoA with no glucogenic route."
+  },
+  {
+    "id": "q-bio-036",
+    "question": "Is methionine glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Nonpolar",
+      "Essential",
+      "Ketogenic",
+      "Glucogenic"
+    ],
+    "answer": 4,
+    "explanation": "Methionine is purely glucogenic, degraded (via propionyl-CoA) to succinyl-CoA."
+  },
+  {
+    "id": "q-bio-037",
+    "question": "Is cysteine glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Nonpolar",
+      "Glucogenic",
+      "Essential",
+      "Ketogenic"
+    ],
+    "answer": 2,
+    "explanation": "Cysteine is purely glucogenic, converted to pyruvate after its sulfur is removed."
+  },
+  {
+    "id": "q-bio-038",
+    "question": "Is serine glucogenic, ketogenic, or both?",
+    "options": [
+      "Essential",
+      "Both",
+      "Glucogenic",
+      "Ketogenic",
+      "Nonpolar"
+    ],
+    "answer": 2,
+    "explanation": "Serine is purely glucogenic, converted directly to pyruvate."
+  },
+  {
+    "id": "q-bio-039",
+    "question": "Is threonine glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Ketogenic",
+      "Nonpolar",
+      "Glucogenic",
+      "Essential"
+    ],
+    "answer": 0,
+    "explanation": "Threonine is both glucogenic and ketogenic — it can be converted to pyruvate/succinyl-CoA (glucogenic) or contribute acetyl-CoA (ketogenic) depending on the pathway used."
+  },
+  {
+    "id": "q-bio-040",
+    "question": "Is glycine glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Glucogenic",
+      "Essential",
+      "Nonpolar",
+      "Ketogenic"
+    ],
+    "answer": 1,
+    "explanation": "Glycine is purely glucogenic, interconverted with serine and ultimately feeding into pyruvate."
+  },
+  {
+    "id": "q-bio-041",
+    "question": "Is alanine glucogenic, ketogenic, or both?",
+    "options": [
+      "Both",
+      "Essential",
+      "Ketogenic",
+      "Nonpolar",
+      "Glucogenic"
+    ],
+    "answer": 4,
+    "explanation": "Alanine is purely glucogenic — transamination converts it directly to pyruvate, the classic link between muscle protein breakdown and hepatic gluconeogenesis (the glucose-alanine cycle)."
+  },
+  {
+    "id": "q-bio-042",
+    "question": "Is proline glucogenic, ketogenic, or both?",
+    "options": [
+      "Ketogenic",
+      "Essential",
+      "Nonpolar",
+      "Both",
+      "Glucogenic"
+    ],
+    "answer": 4,
+    "explanation": "Proline is purely glucogenic, oxidized through glutamate to α-ketoglutarate."
+  }
+]

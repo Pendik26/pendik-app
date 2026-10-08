@@ -1,0 +1,177 @@
+/* Help (/docs): the index of help pages and the page reader, which reuses the ebook layout. */
+
+.docs-filter {
+  display: block;
+  width: min(100%, 24rem);
+  margin: 0.5rem 0 1.75rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.docs-filter:focus {
+  outline: 0;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.docs-group + .docs-group {
+  margin-top: 1.75rem;
+}
+
+.docs-group-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0 0 0.6rem;
+}
+
+.docs-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.75rem;
+}
+
+.docs-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 0.95rem 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.docs-card:hover,
+.docs-card:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.docs-card strong {
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.docs-card span {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.docs-empty,
+.docs-footnote {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.docs-footnote {
+  margin-top: 2.25rem;
+}
+
+.docs-page .subtitle a,
+.docs-empty a,
+.docs-footnote a {
+  color: var(--accent);
+}
+
+.docs-layout {
+  grid-template-columns: 220px 1fr;
+}
+
+.docs-toc-group + .docs-toc-group {
+  margin-top: 0.85rem;
+}
+
+.docs-onpage {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.docs-onpage ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+}
+
+.docs-onpage a {
+  color: var(--accent);
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.docs-onpage a:hover {
+  text-decoration: underline;
+}
+
+.docs-content > h1:first-child {
+  margin-top: 0;
+}
+
+.docs-content h2,
+.docs-content h3 {
+  scroll-margin-top: 5.5rem;
+}
+
+.docs-content blockquote {
+  margin: 1.1rem 0;
+  padding: 0.7rem 1rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--accent-soft);
+}
+
+.docs-content blockquote p {
+  margin: 0;
+}
+
+.docs-content kbd {
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
+.docs-content li + li {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 720px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-filter {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-card {
+    transition: none;
+  }
+
+  .docs-card:hover,
+  .docs-card:focus-visible {
+    transform: none;
+  }
+}

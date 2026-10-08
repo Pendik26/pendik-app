@@ -1,0 +1,140 @@
+[
+  {
+    "id": "phys-001",
+    "front": "On which chromosomes are the α-globin and β-globin gene clusters located?",
+    "back": "α-globin cluster: chromosome 16 (16p13.3). β-globin cluster: chromosome 11 (11p15.5).",
+    "tags": ["hemoglobin-genetics", "chromosomes"]
+  },
+  {
+    "id": "phys-002",
+    "front": "What is the subunit composition of adult hemoglobin (Hb A)?",
+    "back": "A tetramer of 2 α-globin chains and 2 β-globin chains (α2β2), each chain carrying one heme group.",
+    "tags": ["hemoglobin-structure"]
+  },
+  {
+    "id": "phys-003",
+    "front": "How many amino acids make up the α-globin and β-globin chains?",
+    "back": "α-globin: 141 amino acids. β-globin: 146 amino acids.",
+    "tags": ["hemoglobin-structure"]
+  },
+  {
+    "id": "phys-004",
+    "front": "What is the minor adult hemoglobin Hb A2, and roughly how much of total adult Hb does it make up?",
+    "back": "Hb A2 is α2δ2 — two α chains and two δ chains — making up about 2–3% of adult hemoglobin (the rest being mostly Hb A, α2β2).",
+    "tags": ["hemoglobin-structure"]
+  },
+  {
+    "id": "phys-005",
+    "front": "What are the three normal embryonic hemoglobins, and where are they made?",
+    "back": "Hb Gower-1, Hb Gower-2, and Hb Portland (ζ2γ2) — synthesized by yolk-sac erythrocytes starting around week 3 of gestation.",
+    "tags": ["hemoglobin-switching", "embryology"]
+  },
+  {
+    "id": "phys-006",
+    "front": "When does fetal hemoglobin (Hb F) synthesis begin, and where?",
+    "back": "Around 6–8 weeks of gestation, in the fetal liver, as hematopoiesis shifts away from the yolk sac. Hb F (α2γ2) becomes the dominant hemoglobin by ~12 weeks and stays dominant until birth.",
+    "tags": ["hemoglobin-switching", "embryology"]
+  },
+  {
+    "id": "phys-007",
+    "front": "What triggers the postnatal switch from Hb F to Hb A?",
+    "back": "γ-globin gene expression is silenced and β-globin expression rises after birth, gradually replacing Hb F (α2γ2) with Hb A (α2β2) over the first several months of life.",
+    "tags": ["hemoglobin-switching"]
+  },
+  {
+    "id": "phys-008",
+    "front": "What is the genotype of Hb Bart's hydrops fetalis, and what hemoglobin dominates as a result?",
+    "back": "All 4 α-globin genes deleted (--/--). With no α chains available, excess γ chains form γ4 tetramers called Hb Bart's, making up ~80–100% of the hemoglobin present; Hb A is 0%.",
+    "tags": ["thalassemia", "alpha-thalassemia"]
+  },
+  {
+    "id": "phys-009",
+    "front": "What is Hemoglobin H (Hb H) disease, genetically and structurally?",
+    "back": "Deletion/inactivation of 3 of the 4 α-globin genes (--/-α). The resulting α-chain deficit leaves excess β chains, which form β4 tetramers called Hb H.",
+    "tags": ["thalassemia", "alpha-thalassemia"]
+  },
+  {
+    "id": "phys-010",
+    "front": "What defines a 'silent carrier' of α-thalassemia?",
+    "back": "Loss of just 1 of the 4 α-globin genes (-α/αα). The remaining 3 genes make enough α chain that Hb A stays near-normal (~98–100%) and the carrier is clinically asymptomatic.",
+    "tags": ["thalassemia", "alpha-thalassemia"]
+  },
+  {
+    "id": "phys-011",
+    "front": "What defines α-thalassemia trait (minor), and why does the cis configuration matter clinically?",
+    "back": "Loss of 2 of the 4 α-globin genes, either in trans (-α/-α, one lost from each chromosome) or in cis (--/αα, both lost from the same chromosome). The cis form matters because if two carriers of the cis deletion have children, an offspring can inherit --/-- and develop hydrops fetalis.",
+    "tags": ["thalassemia", "alpha-thalassemia", "genetics"]
+  },
+  {
+    "id": "phys-012",
+    "front": "What is the first step of heme biosynthesis, and which enzyme catalyzes it?",
+    "back": "Succinyl-CoA + glycine condense to form δ-aminolevulinic acid (ALA), catalyzed by ALA synthase in the mitochondria — the pathway's rate-limiting step.",
+    "tags": ["heme-synthesis"]
+  },
+  {
+    "id": "phys-013",
+    "front": "What does ALA dehydratase do in heme synthesis?",
+    "back": "It condenses two molecules of ALA into one molecule of porphobilinogen (PBG) in the cytosol.",
+    "tags": ["heme-synthesis"]
+  },
+  {
+    "id": "phys-014",
+    "front": "What is the final step of heme synthesis, and which enzyme performs it?",
+    "back": "Ferrochelatase inserts a ferrous iron ion (Fe2+) into protoporphyrin IX, completing the heme molecule.",
+    "tags": ["heme-synthesis"]
+  },
+  {
+    "id": "phys-015",
+    "front": "What mutation causes sickle cell hemoglobin (Hb S)?",
+    "back": "A β-globin codon 6 substitution, GAG→GTG, replacing glutamic acid with valine (β6 Glu→Val). Homozygous Hb S polymerizes when deoxygenated, sickling red cells.",
+    "tags": ["hemoglobinopathy", "hb-variants"]
+  },
+  {
+    "id": "phys-016",
+    "front": "What mutation causes Hemoglobin C, and how does it relate to Hb S?",
+    "back": "A different substitution at the same β-globin codon 6: glutamic acid → lysine (β6 Glu→Lys), instead of the valine substitution seen in Hb S.",
+    "tags": ["hemoglobinopathy", "hb-variants"]
+  },
+  {
+    "id": "phys-017",
+    "front": "What mutation causes Hemoglobin E?",
+    "back": "A β-globin codon 26 substitution: glutamic acid → lysine (β26 Glu→Lys). Common in Southeast Asia; usually mild alone but can combine with β-thalassemia for a more severe phenotype.",
+    "tags": ["hemoglobinopathy", "hb-variants"]
+  },
+  {
+    "id": "phys-018",
+    "front": "What mutation produces Hb Constant Spring, and why is the resulting chain 172 amino acids long instead of 141?",
+    "back": "A point mutation in the α2 gene's stop codon (UAA→CAA) lets translation read through into the 3' UTR, adding 31 extra amino acids to the normal 141-residue α chain.",
+    "tags": ["hemoglobinopathy", "hb-variants"]
+  },
+  {
+    "id": "phys-019",
+    "front": "What characterizes Hb M variants functionally?",
+    "back": "They stabilize hemoglobin's iron in the oxidized, ferric (Fe3+) methemoglobin state, which binds oxygen poorly — reducing overall oxygen-carrying capacity.",
+    "tags": ["hemoglobinopathy", "hb-variants"]
+  },
+  {
+    "id": "phys-020",
+    "front": "In β-thalassemia, what's the difference between a β+ and a β0 mutation?",
+    "back": "β+ mutations reduce but don't eliminate β-globin synthesis (roughly 10–50% of normal). β0 mutations abolish β-chain production entirely (0%).",
+    "tags": ["thalassemia", "beta-thalassemia"]
+  },
+  {
+    "id": "phys-021",
+    "front": "What is δβ-thalassemia, and what Hb F level do heterozygotes typically show?",
+    "back": "Deletions spanning both the δ- and β-globin genes (includes Hb Lepore fusion variants). Because γ-chain production compensates, heterozygotes carry persistently elevated Hb F, typically 15–25%.",
+    "tags": ["thalassemia", "beta-thalassemia"]
+  },
+  {
+    "id": "phys-022",
+    "front": "How many heme groups and globin chains does one complete hemoglobin molecule contain?",
+    "back": "4 heme groups and 4 globin chains — each globin subunit binds exactly one heme, and each heme's iron can bind one O2 molecule (4 O2 per hemoglobin tetramer).",
+    "tags": ["hemoglobin-structure"]
+  },
+  {
+    "id": "phys-023",
+    "front": "Which codon initiates translation, and what amino acid does it encode?",
+    "back": "AUG is the universal start codon, encoding methionine — the first amino acid incorporated into essentially every polypeptide, including newly made globin chains.",
+    "tags": ["molecular-biology", "translation"]
+  }
+]

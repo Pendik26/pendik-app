@@ -1,0 +1,70 @@
+/* Sign-in and first-password pages: one card in the middle of the screen, before the app shell. */
+
+.auth-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  position: relative;
+}
+
+.auth-card {
+  width: min(400px, 100%);
+}
+
+.auth-card h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.auth-brand {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md, 10px);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--bg);
+  background: var(--accent);
+}
+
+.auth-corner {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.auth-status {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lang-switch button {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.lang-switch .lang-switch-on {
+  background: var(--accent);
+  color: var(--bg);
+}

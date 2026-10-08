@@ -1,0 +1,592 @@
+[
+  {
+    "id": "mhisto-001",
+    "front": "What is muscle tissue?",
+    "back": "A tissue made of muscle cells whose cytoplasm is packed with contractile filaments (actin and myosin).",
+    "tags": [
+      "muscle",
+      "terms"
+    ]
+  },
+  {
+    "id": "mhisto-002",
+    "front": "Classify the three muscle types histologically and physiologically.",
+    "back": "Histologically: striated (skeletal, cardiac) vs non-striated (smooth). Physiologically: voluntary (skeletal) vs involuntary (cardiac, smooth). Cardiac is striated but involuntary.",
+    "tags": [
+      "muscle",
+      "classification"
+    ]
+  },
+  {
+    "id": "mhisto-003",
+    "front": "Sarcoplasm = ?",
+    "back": "The cytoplasm of a muscle cell.",
+    "tags": [
+      "muscle",
+      "terms"
+    ]
+  },
+  {
+    "id": "mhisto-004",
+    "front": "Sarcoplasmic reticulum = ?",
+    "back": "The (smooth) endoplasmic reticulum of a muscle cell; it stores and releases Ca²⁺.",
+    "tags": [
+      "muscle",
+      "terms"
+    ]
+  },
+  {
+    "id": "mhisto-005",
+    "front": "Sarcosome = ?",
+    "back": "A mitochondrion of a muscle cell.",
+    "tags": [
+      "muscle",
+      "terms"
+    ]
+  },
+  {
+    "id": "mhisto-006",
+    "front": "Sarcolemma = ?",
+    "back": "The cell membrane (plasmalemma) of a muscle cell.",
+    "tags": [
+      "muscle",
+      "terms"
+    ]
+  },
+  {
+    "id": "mhisto-007",
+    "front": "Myofiber vs myofibril?",
+    "back": "Myofiber = the whole muscle cell (muscle fiber). Myofibril = a long subunit inside the cell, made of a chain of sarcomeres.",
+    "tags": [
+      "muscle",
+      "terms"
+    ]
+  },
+  {
+    "id": "mhisto-008",
+    "front": "How do longitudinal and transverse sections of muscle look? (membujur vs melintang)",
+    "back": "Longitudinal (membujur): long parallel strips. Transverse (melintang): round or polygonal islands. In the atlas figure, OL = transverse, IC = longitudinal.",
+    "tags": [
+      "muscle",
+      "sections"
+    ]
+  },
+  {
+    "id": "mhisto-009",
+    "front": "Smooth muscle: shape, striations, nucleus.",
+    "back": "Fusiform (spindle) cells, no cross-striations, one elongated nucleus in the center of the cell.",
+    "tags": [
+      "smooth"
+    ]
+  },
+  {
+    "id": "mhisto-010",
+    "front": "Where is smooth muscle found?",
+    "back": "Walls of blood vessels, GI tract, respiratory tract, uterus, urinary bladder and other internal organs (also arrector pili, iris). Also called visceral muscle.",
+    "tags": [
+      "smooth"
+    ]
+  },
+  {
+    "id": "mhisto-011",
+    "front": "Innervation of smooth muscle?",
+    "back": "Autonomic nervous system; the myoneural junction is called a synapse. Contraction is slow and involuntary.",
+    "tags": [
+      "smooth"
+    ]
+  },
+  {
+    "id": "mhisto-012",
+    "front": "Why do smooth muscle cross-sections show profiles of different sizes, only some with nuclei?",
+    "back": "The cells are spindle-shaped: cuts through the thick middle are large and include the central nucleus; cuts through the tapered ends are small and have none.",
+    "tags": [
+      "smooth",
+      "identification"
+    ]
+  },
+  {
+    "id": "mhisto-013",
+    "front": "Identify this tissue.",
+    "back": "Smooth muscle: spindle cells, no striations, central elongated nuclei.",
+    "tags": [
+      "smooth",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/m-image13.jpg\" alt=\"Pink spindle-shaped muscle cells with elongated central nuclei and no cross-bands\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-014",
+    "front": "Skeletal muscle: other names and control.",
+    "back": "Striated or cross-striated muscle (otot lurik, otot rangka). Voluntary; contraction triggered by acetylcholine at the motor end plate (neuromuscular junction).",
+    "tags": [
+      "skeletal"
+    ]
+  },
+  {
+    "id": "mhisto-015",
+    "front": "Skeletal muscle: shape and nuclei.",
+    "back": "Long cylindrical fibers, multinucleated; oval nuclei located peripherally, just beneath the clearly visible sarcolemma.",
+    "tags": [
+      "skeletal"
+    ]
+  },
+  {
+    "id": "mhisto-016",
+    "front": "Epimysium, perimysium, endomysium: what does each wrap, and what is it made of?",
+    "back": "Epimysium: the whole muscle (dense irregular CT). Perimysium: a fascicle (dense irregular CT). Endomysium: each fiber (fine reticular fibers).",
+    "tags": [
+      "skeletal",
+      "connective-tissue"
+    ]
+  },
+  {
+    "id": "mhisto-017",
+    "front": "What are Cohnheim's areas?",
+    "back": "The island-like pattern of myofibril bundles seen inside a skeletal muscle fiber cut in cross-section.",
+    "tags": [
+      "skeletal"
+    ]
+  },
+  {
+    "id": "mhisto-018",
+    "front": "Identify this and name the pattern inside each fiber.",
+    "back": "Skeletal muscle in transverse section; the stippled islands inside each fiber are Cohnheim's areas.",
+    "tags": [
+      "skeletal",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/m-image28.jpg\" alt=\"Skeletal muscle cut across, many polygonal fibers in bundles\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-019",
+    "front": "A band vs I band.",
+    "back": "A band: dark, anisotropic, contains myosin (thick filaments). I band: light, isotropic, contains actin only (thin filaments).",
+    "tags": [
+      "skeletal",
+      "bands"
+    ]
+  },
+  {
+    "id": "mhisto-020",
+    "front": "Z line, M line and H zone: where is each?",
+    "back": "Z line: dark line in the center of the I band. M line: dark line in the center of the A band. H zone: lighter region in the center of the A band.",
+    "tags": [
+      "skeletal",
+      "bands"
+    ]
+  },
+  {
+    "id": "mhisto-021",
+    "front": "What is a sarcomere?",
+    "back": "The segment from one Z line to the next: the smallest contractile unit of striated muscle.",
+    "tags": [
+      "skeletal",
+      "bands"
+    ]
+  },
+  {
+    "id": "mhisto-022",
+    "front": "Name the dark and light bands.",
+    "back": "Dark = A band (anisotropic); light = I band (isotropic).",
+    "tags": [
+      "skeletal",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/m-image15.jpg\" alt=\"Striated muscle fibers with alternating dark and light cross-bands\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-023",
+    "front": "Skeletal muscle regeneration?",
+    "back": "Limited: fibers cannot divide, but satellite cells can repair small injuries. Larger losses heal with scar.",
+    "tags": [
+      "skeletal"
+    ]
+  },
+  {
+    "id": "mhisto-024",
+    "front": "Cardiac muscle: key histological features.",
+    "back": "Parallel striated fibers that branch and anastomose; intercalated discs (irregular dark transverse lines); one (sometimes two) large, oval, central nucleus.",
+    "tags": [
+      "cardiac"
+    ]
+  },
+  {
+    "id": "mhisto-025",
+    "front": "What are intercalated discs?",
+    "back": "Irregular dark transverse lines marking junctions between cardiac muscle cells; they contain desmosomes, fasciae adherentes and gap junctions.",
+    "tags": [
+      "cardiac"
+    ]
+  },
+  {
+    "id": "mhisto-026",
+    "front": "Identify this tissue and the structure labeled I.",
+    "back": "Cardiac muscle; I = intercalated disc (N = nucleus).",
+    "tags": [
+      "cardiac",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/m-image17.jpg\" alt=\"Striated muscle with central nuclei labeled N and dark transverse lines labeled I\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-027",
+    "front": "What is the branching and rejoining of cardiac fibers called?",
+    "back": "Anastomosis (intercellular anastomosis; Indonesian: anastomose serabut otot).",
+    "tags": [
+      "cardiac"
+    ]
+  },
+  {
+    "id": "mhisto-028",
+    "front": "Cardiac muscle regeneration?",
+    "back": "Essentially none: after an infarct, dead muscle is replaced by fibrous scar.",
+    "tags": [
+      "cardiac"
+    ]
+  },
+  {
+    "id": "mhisto-029",
+    "front": "Smooth vs cardiac vs skeletal: nucleus position.",
+    "back": "Smooth: one, central. Cardiac: one or two, central. Skeletal: many, peripheral (beneath the sarcolemma).",
+    "tags": [
+      "muscle",
+      "comparison"
+    ]
+  },
+  {
+    "id": "mhisto-030",
+    "front": "Smooth vs cardiac vs skeletal: location.",
+    "back": "Smooth: walls of the gut and hollow organs. Cardiac: heart. Skeletal: limbs (extremities) and trunk.",
+    "tags": [
+      "muscle",
+      "comparison"
+    ]
+  },
+  {
+    "id": "mhisto-031",
+    "front": "Three layers of the skin and their origin.",
+    "back": "Epidermis (ectoderm), dermis (mesoderm), and beneath them the hypodermis (subcutis).",
+    "tags": [
+      "skin",
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-032",
+    "front": "What type of epithelium is the epidermis, and how is it nourished?",
+    "back": "Keratinized stratified squamous epithelium; it has no vessels and is nourished by diffusion from the dermis.",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-033",
+    "front": "Strata of thin skin, deep to superficial.",
+    "back": "Stratum basale, spinosum, granulosum, corneum (no lucidum).",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-034",
+    "front": "Strata of thick skin, deep to superficial.",
+    "back": "Stratum basale, spinosum, granulosum, lucidum, corneum.",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-035",
+    "front": "Stratum basale: features.",
+    "back": "A single layer of cuboidal or columnar basophilic cells, attached to the basal lamina by hemidesmosomes and to each other by desmosomes; high mitotic activity, with progenitor cells for all epidermal cells.",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-036",
+    "front": "Stratum spinosum: features.",
+    "back": "Several layers of polygonal cells joined by desmosomes, which look like spines; tonofibrils run into them. Langerhans cells live here. With the basale it forms the stratum Malpighii.",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-037",
+    "front": "Which layer is boxed, and what do the yellow arrows mark?",
+    "back": "Stratum spinosum; the yellow arrows mark tonofibrils.",
+    "tags": [
+      "epidermis",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/i-image17.jpg\" alt=\"Epidermis with a boxed area enlarged to show spiny polygonal cells, with yellow arrows\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-038",
+    "front": "Stratum granulosum: features.",
+    "back": "3–5 layers of flattened cells with dark keratohyalin granules; lamellar granules secrete lipid that waterproofs the skin. Cells die above this layer.",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-039",
+    "front": "Stratum lucidum: features.",
+    "back": "Several layers of flattened, pale, anucleate cells containing eleidin droplets. Found only in thick skin.",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-040",
+    "front": "Stratum corneum: features.",
+    "back": "15–20 layers of flattened, dead, anucleate cells filled with refractile keratin; the surface is shed (desquamation).",
+    "tags": [
+      "epidermis"
+    ]
+  },
+  {
+    "id": "mhisto-041",
+    "front": "Thick vs thin skin?",
+    "back": "Thick skin (palms, soles): very thick corneum, stratum lucidum, no hair or sebaceous glands. Thin skin (elsewhere): thin corneum, no lucidum, hair follicles and sebaceous glands.",
+    "tags": [
+      "epidermis",
+      "comparison"
+    ]
+  },
+  {
+    "id": "mhisto-042",
+    "front": "Thick or thin skin? Which layer proves it?",
+    "back": "Thick skin: the stratum lucidum (plus a very thick corneum).",
+    "tags": [
+      "epidermis",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/i-image26.jpg\" alt=\"Skin with an extremely thick pale surface layer over deep epidermal ridges\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-043",
+    "front": "Melanocyte: where and what?",
+    "back": "Round cell body with long processes, between the cells of the stratum basale; produces eumelanin and passes it to keratinocytes.",
+    "tags": [
+      "cells"
+    ]
+  },
+  {
+    "id": "mhisto-044",
+    "front": "Does dark skin have more melanocytes?",
+    "back": "No: the number is similar; dark skin makes and transfers more melanin.",
+    "tags": [
+      "cells"
+    ]
+  },
+  {
+    "id": "mhisto-045",
+    "front": "Identify the cells at the blue arrows.",
+    "back": "Melanocytes: pale cells among the basal keratinocytes.",
+    "tags": [
+      "cells",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/i-image30.jpg\" alt=\"Basal epidermis with blue arrows pointing to pale cells\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-046",
+    "front": "Langerhans cell: where and what?",
+    "back": "Looks like a melanocyte but makes no melanin; mainly in the stratum spinosum; macrophage-like immune (antigen-presenting) cell.",
+    "tags": [
+      "cells"
+    ]
+  },
+  {
+    "id": "mhisto-047",
+    "front": "Merkel cell: where and what?",
+    "back": "Resembles a keratinocyte with small dense granules; in the basal layer, especially thick skin; with its nerve ending it forms the Merkel corpuscle, a mechanoreceptor.",
+    "tags": [
+      "cells"
+    ]
+  },
+  {
+    "id": "mhisto-048",
+    "front": "Epidermal lymphocytes and SALT?",
+    "back": "Mostly immature T lymphocytes (round cells, dense nuclei), whose maturation keratinocytes support. With Langerhans cells and keratinocytes they form SALT, skin-associated lymphoid tissue.",
+    "tags": [
+      "cells"
+    ]
+  },
+  {
+    "id": "mhisto-049",
+    "front": "Stratum papillare of the dermis: tissue and contents.",
+    "back": "Thin, loose connective tissue: fibroblasts, macrophages, mast cells; dermal papillae interlocking with epidermal ridges; capillaries that feed the epidermis; anchoring fibrils (type VII collagen); Meissner's corpuscles.",
+    "tags": [
+      "dermis"
+    ]
+  },
+  {
+    "id": "mhisto-050",
+    "front": "Stratum reticulare of the dermis: tissue and fibers.",
+    "back": "Thick, dense irregular connective tissue: mainly type I collagen and elastic fibers.",
+    "tags": [
+      "dermis"
+    ]
+  },
+  {
+    "id": "mhisto-051",
+    "front": "Hypodermis: features.",
+    "back": "Loose connective tissue with abundant adipocytes, extensive blood supply, and Pacinian corpuscles (pressure receptors). Also called subcutis.",
+    "tags": [
+      "hypodermis"
+    ]
+  },
+  {
+    "id": "mhisto-052",
+    "front": "Merkel's disc (corpusculum Merkeli).",
+    "back": "Unencapsulated; a free nerve ending attached to a Merkel cell in the basal epidermis; light touch / tactile sensation.",
+    "tags": [
+      "nerve-endings"
+    ]
+  },
+  {
+    "id": "mhisto-053",
+    "front": "Vater-Pacini corpuscle.",
+    "back": "Oval, onion-like; capsule of concentric lamellae (collagen and flattened endothelium-like cells); deep dermis and subcutis; crude touch, sustained pressure and vibration.",
+    "tags": [
+      "nerve-endings"
+    ]
+  },
+  {
+    "id": "mhisto-054",
+    "front": "Identify the structures at the arrows, and what they sense.",
+    "back": "Vater-Pacini corpuscles: pressure and vibration.",
+    "tags": [
+      "nerve-endings",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/i-image45.jpg\" alt=\"Two large onion-like structures in the deep dermis marked by arrows\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-055",
+    "front": "Meissner's corpuscle.",
+    "back": "Cylindrical; branched encapsulated endings in a thin capsule of transversely arranged flattened cells; in the dermal papillae; light touch.",
+    "tags": [
+      "nerve-endings"
+    ]
+  },
+  {
+    "id": "mhisto-056",
+    "front": "Ruffini ending.",
+    "back": "Cylindrical, smaller than Meissner; spray-like branching inside a thin capsule; in the dermis; pressure.",
+    "tags": [
+      "nerve-endings"
+    ]
+  },
+  {
+    "id": "mhisto-057",
+    "front": "Krause end bulb.",
+    "back": "Round; branched encapsulated endings in a thick capsule; in the dermis; pressure (practicum; older texts: cold).",
+    "tags": [
+      "nerve-endings"
+    ]
+  },
+  {
+    "id": "mhisto-058",
+    "front": "Parts of a hair.",
+    "back": "Hair shaft (above the skin), hair root (within the follicle) and hair bulb (expanded base with dermal papilla, blood vessels, dividing epithelial cells and melanocytes).",
+    "tags": [
+      "hair"
+    ]
+  },
+  {
+    "id": "mhisto-059",
+    "front": "Layers of the hair from the inside out.",
+    "back": "Medulla, cortex, cuticle.",
+    "tags": [
+      "hair"
+    ]
+  },
+  {
+    "id": "mhisto-060",
+    "front": "The two parts of the follicle sheath, and what separates them.",
+    "back": "Outer dermal (connective tissue) root sheath, where the arrector pili attaches, and inner epidermal (epithelial) root sheath, separated by the glassy membrane.",
+    "tags": [
+      "hair"
+    ]
+  },
+  {
+    "id": "mhisto-061",
+    "front": "What is this?",
+    "back": "A hair follicle in transverse section.",
+    "tags": [
+      "hair",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/i-image63.jpg\" alt=\"A pigmented hair in the center ringed by epithelial and connective tissue layers\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-062",
+    "front": "Arrector pili.",
+    "back": "A small bundle of smooth muscle from the dermal root sheath to the papillary dermis; contraction raises the hair (goosebumps) and helps express sebum.",
+    "tags": [
+      "hair"
+    ]
+  },
+  {
+    "id": "mhisto-063",
+    "front": "Sebaceous gland: shape, secretion, opening.",
+    "back": "Simple branched acinar; holocrine (the whole cell becomes sebum); opens into the hair follicle (pilosebaceous unit). Absent from palms and soles.",
+    "tags": [
+      "glands"
+    ]
+  },
+  {
+    "id": "mhisto-064",
+    "front": "Identify this gland and its mode of secretion.",
+    "back": "Sebaceous gland; holocrine secretion.",
+    "tags": [
+      "glands",
+      "identification"
+    ],
+    "image": "<img src=\"/histology/1.2/i-image46.jpg\" alt=\"A gland of large pale cells beside a hair follicle, enlarged on the right\" loading=\"lazy\" />"
+  },
+  {
+    "id": "mhisto-065",
+    "front": "Eccrine sweat gland: shape, secretion, opening.",
+    "back": "Simple coiled tubular; merocrine; secretory portion in the deep dermis (dark and clear cells plus myoepithelial cells); duct of 2-layered cuboidal epithelium opens onto the skin surface at a sweat pore.",
+    "tags": [
+      "glands"
+    ]
+  },
+  {
+    "id": "mhisto-066",
+    "front": "Myoepithelial cells: where and what?",
+    "back": "Flat contractile cells between the secretory cells and the basal lamina of the secretory portion (not the duct); they squeeze secretion out.",
+    "tags": [
+      "glands"
+    ]
+  },
+  {
+    "id": "mhisto-067",
+    "front": "Apocrine sweat gland: features.",
+    "back": "Larger coiled tubular gland with a wide lumen; opens into a hair follicle; axilla, areola, anogenital region; active after puberty.",
+    "tags": [
+      "glands"
+    ]
+  },
+  {
+    "id": "mhisto-068",
+    "front": "Eccrine vs apocrine vs sebaceous: where does each open?",
+    "back": "Eccrine: skin surface. Apocrine: hair follicle. Sebaceous: hair follicle.",
+    "tags": [
+      "glands",
+      "comparison"
+    ]
+  },
+  {
+    "id": "mhisto-069",
+    "front": "Nail: plate, eponychium and hyponychium.",
+    "back": "A keratin plate on the dorsal distal phalanx, resting on the nail bed; eponychium (cuticle) at the proximal end, hyponychium under the free distal edge; produced by the nail matrix under the root.",
+    "tags": [
+      "nail"
+    ]
+  }
+]

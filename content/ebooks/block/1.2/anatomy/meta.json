@@ -1,0 +1,48 @@
+{
+  "title": "Anatomy: Musculoskeletal Foundations",
+  "description": "Study notes for the Block 1.2 anatomy practicum: anatomical language, embryology basics, the axial skeleton, skull, face and neck, and the upper and lower limbs.",
+  "chapters": [
+    {
+      "id": "chapter-01",
+      "title": "Introduction & the Language of Anatomy"
+    },
+    {
+      "id": "chapter-02",
+      "title": "Basic Embryology"
+    },
+    {
+      "id": "chapter-03",
+      "title": "Skeleton Trunci: Thoracic Cage & Vertebral Column"
+    },
+    {
+      "id": "chapter-04",
+      "title": "Cranium"
+    },
+    {
+      "id": "chapter-05",
+      "title": "Situs Faciales et Colli: Face & Neck"
+    },
+    {
+      "id": "chapter-06",
+      "title": "Extremitas Superior: Upper Limb"
+    },
+    {
+      "id": "chapter-07",
+      "title": "Extremitas Inferior: Lower Limb"
+    }
+  ],
+  "resources": [
+    {
+      "title": "TeachMeAnatomy",
+      "url": "https://teachmeanatomy.info/"
+    },
+    {
+      "title": "Kenhub: anatomy library",
+      "url": "https://www.kenhub.com/en/library/anatomy"
+    },
+    {
+      "title": "Radiopaedia",
+      "url": "https://radiopaedia.org/"
+    }
+  ]
+}

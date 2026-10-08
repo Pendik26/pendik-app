@@ -1,0 +1,30 @@
+/* Split into partials under ./styles/ for maintainability — the cascade order below
+   matches the original single-file ordering exactly, so nothing about the rendered
+   result changes. Vite inlines these @imports into one stylesheet at build time. */
+@import "./styles/theme.css";
+@import "./styles/layout.css";
+@import "./styles/home.css";
+@import "./styles/flashcards.css";
+@import "./styles/quiz-exam.css";
+@import "./styles/reading.css";
+@import "./styles/widgets.css";
+@import "./styles/cards-extra.css";
+@import "./styles/session-extras.css";
+@import "./styles/ebook.css";
+@import "./styles/progress-page.css";
+@import "./styles/command-palette.css";
+@import "./styles/account.css";
+@import "./styles/auth.css";
+@import "./styles/leaderboard.css";
+@import "./styles/lab.css";
+@import "./styles/occlusion.css";
+@import "./styles/subjects.css";
+@import "./styles/explain.css";
+@import "./styles/alfond.css";
+@import "./styles/plan.css";
+@import "./styles/map.css";
+@import "./styles/atlas.css";
+@import "./styles/drive.css";
+@import "./styles/docs.css";
+@import "./styles/admin.css";
+@import "./styles/print.css";

@@ -1,0 +1,1375 @@
+/* Knowledge map, styled after Obsidian: a vault workspace with a ribbon, a concept explorer,
+   the graph view and the open concept as a note. Its own flat palette (Obsidian's default
+   theme, purple accent) sits on this page only. Subject colors are the validated categorical
+   palette's first slots, stepped per theme (checked for color-blind separation and contrast
+   against each theme's background). */
+
+:root {
+  --map-1: #3987e5;
+  --map-2: #d95926;
+  --map-3: #199e70;
+  --map-4: #c98500;
+  --map-5: #d55181;
+  --map-6: #9085e9;
+  --map-unstudied: #4a524e;
+}
+
+:root[data-theme="light"] {
+  --map-1: #2a78d6;
+  --map-2: #eb6834;
+  --map-3: #1baf7a;
+  --map-4: #eda100;
+  --map-5: #e87ba4;
+  --map-6: #4a3aa7;
+  --map-unstudied: #c9c4b6;
+}
+
+/* The map's workspace uses the app's own palette (dark green-black surfaces, teal accent,
+   Fraunces and Archivo), as solid colors: no glass blur over a canvas that redraws often. */
+.map-page {
+  --obs-bg: var(--surface-solid);
+  --obs-bg-alt: var(--surface-2-solid);
+  --obs-bg-hover: rgb(45 212 167 / 0.07);
+  --obs-bg-active: var(--accent-soft);
+  --obs-border: var(--border);
+  --obs-text: var(--text);
+  --obs-text-muted: var(--text-muted);
+  --obs-text-faint: #839b93;
+  --obs-accent: var(--accent);
+  --obs-link: var(--accent);
+  --obs-accent-soft: var(--accent-soft);
+  --obs-graph-line: #2b3d35;
+  --obs-graph-grid: #22322b;
+  --obs-graph-node: #6f8780;
+  --obs-weak: var(--red);
+  --obs-weak-text: var(--red);
+  --obs-font: var(--font-body);
+  --obs-radius: 8px;
+}
+
+:root[data-theme="light"] .map-page {
+  --obs-bg-alt: #f7f3e9;
+  --obs-bg-hover: rgb(15 143 112 / 0.07);
+  --obs-text-faint: #66706a;
+  --obs-link: var(--accent-dim);
+  --obs-graph-line: #d9cfb6;
+  --obs-graph-grid: #e6dec9;
+  --obs-graph-node: #8d978f;
+  --obs-weak-text: #b23a32;
+}
+
+/* The workspace pages (knowledge map, 3D anatomy) keep their heading short, so the workspace
+   starts high on the screen. */
+.map-page > h1 {
+  margin-bottom: 0.2rem;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+}
+
+.map-page > .subtitle {
+  max-width: 75ch;
+  margin-bottom: 0.25rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 720px) {
+  .map-page > .subtitle {
+    display: none;
+  }
+}
+
+.map-loading {
+  color: var(--text-muted);
+}
+
+/* ---- The workspace frame ---- */
+.obs-frame {
+  container: obs / inline-size;
+  margin-top: 0.5rem;
+}
+
+.obs {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    "ribbon explorer graph note"
+    "status status status status";
+  grid-template-columns: 2.75rem auto minmax(0, 1fr) minmax(17rem, 22rem);
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: min(80vh, 56rem);
+  height: min(80dvh, 56rem);
+  min-height: 34rem;
+  overflow: hidden;
+  border: 1px solid var(--obs-border);
+  border-radius: 10px;
+  background: var(--obs-bg);
+  color: var(--obs-text);
+  font-family: var(--obs-font);
+  font-size: 14px;
+  box-shadow: var(--glass-shadow);
+}
+
+.obs button {
+  font-family: inherit;
+}
+
+.obs-icon {
+  flex-shrink: 0;
+}
+
+.obs-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--obs-radius);
+  background: none;
+  color: var(--obs-text-muted);
+  cursor: pointer;
+}
+
+.obs-icon-btn:hover,
+.obs-icon-btn.is-on {
+  background: var(--obs-bg-hover);
+  color: var(--obs-text);
+}
+
+.obs-icon-btn.is-on {
+  color: var(--obs-link);
+}
+
+.obs button:focus-visible,
+.obs input:focus-visible,
+.obs a:focus-visible {
+  outline: 2px solid var(--obs-accent);
+  outline-offset: 1px;
+}
+
+/* ---- Ribbon ---- */
+.obs-ribbon {
+  grid-area: ribbon;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.6rem 0;
+  border-right: 1px solid var(--obs-border);
+  background: var(--obs-bg-alt);
+}
+
+.obs-ribbon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: var(--obs-radius);
+  background: none;
+  color: var(--obs-text-muted);
+  cursor: pointer;
+}
+
+.obs-ribbon-btn:hover:not(:disabled) {
+  background: var(--obs-bg-hover);
+  color: var(--obs-text);
+}
+
+.obs-ribbon-btn.is-on {
+  color: var(--obs-link);
+  background: var(--obs-accent-soft);
+}
+
+.obs-ribbon-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ---- Tabs ---- */
+.obs-tabbar {
+  display: flex;
+  align-items: flex-end;
+  height: 2.4rem;
+  padding: 0 0.5rem;
+  border-bottom: 1px solid var(--obs-border);
+  background: var(--obs-bg-alt);
+}
+
+.obs-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--obs-border);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: -1px;
+  background: var(--obs-bg);
+  color: var(--obs-text);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.obs-tab .obs-icon {
+  color: var(--obs-text-muted);
+}
+
+.obs-tab-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.obs-tab-close {
+  display: inline-flex;
+  margin-left: 0.25rem;
+  padding: 0.1rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--obs-text-muted);
+  cursor: pointer;
+}
+
+.obs-tab-close:hover {
+  background: var(--obs-bg-hover);
+  color: var(--obs-text);
+}
+
+/* ---- Explorer ---- */
+.obs-explorer {
+  grid-area: explorer;
+  display: flex;
+  flex-direction: column;
+  width: 15.5rem;
+  min-height: 0;
+  border-right: 1px solid var(--obs-border);
+  background: var(--obs-bg-alt);
+}
+
+.obs-explorer-head {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  height: 2.4rem;
+  padding: 0 0.4rem 0 0.85rem;
+  border-bottom: 1px solid var(--obs-border);
+  color: var(--obs-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.obs-explorer-head > span {
+  flex: 1;
+}
+
+.obs-explorer-close {
+  display: none;
+}
+
+.obs-explorer-search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.55rem 0.6rem 0.3rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg);
+  color: var(--obs-text-muted);
+}
+
+.obs-explorer-search:focus-within {
+  border-color: var(--obs-accent);
+}
+
+.obs-explorer-search input,
+.obs-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--obs-text);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.obs-explorer-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.25rem 0.4rem 0.8rem;
+}
+
+.obs-explorer-empty {
+  margin: 0.5rem;
+  color: var(--obs-text-muted);
+  font-size: 0.82rem;
+}
+
+.obs-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.obs-tree .obs-tree {
+  margin-left: 0.7rem;
+  padding-left: 0.35rem;
+  border-left: 1px solid var(--obs-border);
+}
+
+.obs-folder,
+.obs-file {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.22rem 0.45rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--obs-text-muted);
+  font-size: 0.84rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.obs-folder {
+  color: var(--obs-text);
+  font-weight: 500;
+}
+
+.obs-folder .obs-icon {
+  color: var(--obs-text-faint);
+  transition: transform 0.12s ease;
+}
+
+.obs-folder[aria-expanded="true"] .obs-icon {
+  transform: rotate(90deg);
+}
+
+.obs-folder small {
+  margin-left: auto;
+  color: var(--obs-text-faint);
+  font-size: 0.72rem;
+}
+
+.obs-file {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding-left: 1.1rem;
+}
+
+.obs-file small {
+  color: var(--obs-text-faint);
+  font-size: 0.72rem;
+}
+
+.obs-file-name {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.obs-folder:hover,
+.obs-file:hover {
+  background: var(--obs-bg-hover);
+  color: var(--obs-text);
+}
+
+.obs-file.is-active {
+  background: var(--obs-bg-active);
+  color: var(--obs-text);
+}
+
+/* ---- Graph pane ---- */
+.obs-graph-pane {
+  grid-area: graph;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.obs-graph {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: var(--obs-bg);
+}
+
+.map-canvas-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.map-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+
+.map-canvas:active {
+  cursor: grabbing;
+}
+
+.obs-zoom {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  display: flex;
+  gap: 0.15rem;
+  padding: 0.15rem;
+  border: 1px solid var(--obs-border);
+  border-radius: 8px;
+  background: var(--obs-bg-alt);
+}
+
+.obs-legend {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.8rem;
+  max-width: calc(100% - 9rem);
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--obs-radius);
+  background: color-mix(in srgb, var(--obs-bg) 85%, transparent);
+  color: var(--obs-text-muted);
+  font-size: 0.74rem;
+  pointer-events: none;
+}
+
+.obs-legend > span,
+.obs-groups li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.obs-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.obs-dot-weak {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--obs-weak);
+}
+
+.obs-ramp {
+  display: inline-block;
+  width: 2.6rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--obs-accent) 30%, var(--obs-bg)), var(--obs-accent));
+}
+
+/* ---- Graph settings ---- */
+.obs-controls-toggle {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg-alt);
+  color: var(--obs-text-muted);
+  cursor: pointer;
+}
+
+.obs-controls-toggle:hover {
+  color: var(--obs-text);
+}
+
+.obs-controls {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 3;
+  width: 15.5rem;
+  max-height: calc(100% - 1.2rem);
+  overflow-y: auto;
+  padding: 0.3rem 0 0.4rem;
+  border: 1px solid var(--obs-border);
+  border-radius: 8px;
+  background: var(--obs-bg-alt);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+  font-size: 0.82rem;
+}
+
+.obs-controls-top {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.1rem;
+  padding: 0 0.35rem;
+}
+
+.obs-control-section + .obs-control-section {
+  border-top: 1px solid var(--obs-border);
+}
+
+.obs-control-head {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 0;
+  background: none;
+  color: var(--obs-text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.obs-control-head .obs-icon {
+  color: var(--obs-text-faint);
+  transition: transform 0.12s ease;
+}
+
+.obs-control-head[aria-expanded="true"] .obs-icon {
+  transform: rotate(90deg);
+}
+
+.obs-control-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0 0.8rem 0.75rem;
+}
+
+.obs-control-body > .obs-input {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg);
+  font-size: 0.82rem;
+}
+
+.obs-control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  color: var(--obs-text);
+}
+
+.obs-control-row small {
+  display: block;
+  color: var(--obs-text-faint);
+  font-size: 0.72rem;
+}
+
+.obs-toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--obs-border);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.obs-toggle::after {
+  content: "";
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  transition: transform 0.15s ease;
+}
+
+.obs-toggle.is-on {
+  background: var(--obs-accent);
+}
+
+.obs-toggle.is-on::after {
+  transform: translateX(1rem);
+}
+
+.obs-control-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: var(--obs-text);
+}
+
+.obs-control-slider input {
+  width: 100%;
+  accent-color: var(--obs-accent);
+}
+
+.obs-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.obs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--obs-border);
+  border-radius: 999px;
+  background: none;
+  color: var(--obs-text-muted);
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.obs-chip.is-on {
+  border-color: var(--obs-accent);
+  background: var(--obs-accent-soft);
+  color: var(--obs-text);
+}
+
+.obs-segmented {
+  display: flex;
+  padding: 0.15rem;
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg);
+}
+
+.obs-segmented button {
+  flex: 1;
+  padding: 0.25rem 0.3rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--obs-text-muted);
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.obs-segmented button.is-on {
+  background: var(--obs-bg-active);
+  color: var(--obs-text);
+  font-weight: 600;
+}
+
+.obs-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: var(--obs-text-muted);
+}
+
+/* ---- Note pane ---- */
+.obs-note-pane {
+  grid-area: note;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-left: 1px solid var(--obs-border);
+}
+
+.obs-note,
+.obs-empty {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.obs-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem 0.35rem 1rem;
+}
+
+.obs-breadcrumb {
+  display: flex;
+  gap: 0.35rem;
+  overflow: hidden;
+  color: var(--obs-text-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.obs-view-actions {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.obs-view-actions svg {
+  width: 16px;
+  height: 16px;
+}
+
+.obs-note-body {
+  padding: 0.4rem 1.25rem 0.5rem;
+  line-height: 1.55;
+}
+
+.obs-note-body p {
+  margin: 0.8rem 0;
+  color: var(--obs-text);
+}
+
+.obs-inline-title {
+  margin: 0.4rem 0 0.8rem;
+  color: var(--obs-text);
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.obs-note-body h3 {
+  margin: 1.3rem 0 0.45rem;
+  color: var(--obs-text);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.obs-properties {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--obs-border);
+}
+
+.obs-prop {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem;
+  padding: 0.2rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.obs-prop:hover {
+  background: var(--obs-bg-hover);
+}
+
+.obs-prop-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--obs-text-muted);
+}
+
+.obs-prop-value {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  color: var(--obs-text);
+}
+
+.obs-prop-value.is-weak {
+  color: var(--obs-weak-text);
+}
+
+.obs-faint {
+  color: var(--obs-text-faint);
+}
+
+.obs-tag {
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  background: var(--obs-accent-soft);
+  color: var(--obs-link);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.obs-internal-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--obs-link);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--obs-link) 45%, transparent);
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.obs-internal-link:hover {
+  text-decoration-color: currentcolor;
+}
+
+.obs-links,
+.obs-practice,
+.obs-bridges {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.obs-links li,
+.obs-practice li,
+.obs-bridges li {
+  margin: 0.2rem 0;
+}
+
+.obs-links li::marker,
+.obs-practice li::marker,
+.obs-bridges li::marker {
+  color: var(--obs-text-faint);
+}
+
+.obs-rel {
+  margin-right: 0.35rem;
+  color: var(--obs-text-muted);
+  font-style: italic;
+}
+
+.obs-rel::after {
+  content: " →";
+  font-style: normal;
+}
+
+.obs-practice small,
+.obs-bridges small {
+  display: block;
+  color: var(--obs-text-muted);
+  font-size: 0.78rem;
+}
+
+/* Linked mentions, like Obsidian's backlinks at the foot of a note. */
+.obs-backlinks {
+  margin: 0.6rem 1.25rem 1.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--obs-border);
+}
+
+.obs-backlinks-head {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.25rem 0;
+  border: 0;
+  background: none;
+  color: var(--obs-text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.obs-backlinks-head .obs-icon {
+  color: var(--obs-text-faint);
+  transition: transform 0.12s ease;
+}
+
+.obs-backlinks-head[aria-expanded="true"] .obs-icon {
+  transform: rotate(90deg);
+}
+
+.obs-count {
+  margin-left: auto;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--obs-bg-active);
+  color: var(--obs-text-muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+.obs-backlink-files,
+.obs-backlink-matches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.obs-backlink-files > li {
+  margin-top: 0.6rem;
+}
+
+.obs-backlink-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--obs-text);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.obs-backlink-file small {
+  flex-basis: 100%;
+  padding-left: 1.2rem;
+  color: var(--obs-text-faint);
+  font-size: 0.74rem;
+  font-weight: 400;
+}
+
+.obs-backlink-matches {
+  margin: 0.3rem 0 0 1.2rem;
+}
+
+.obs-backlink-matches li + li {
+  margin-top: 0.25rem;
+}
+
+.obs-backlink-matches a {
+  display: block;
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg-alt);
+  color: var(--obs-text-muted);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.obs-backlink-matches a:hover {
+  background: var(--obs-bg-hover);
+  color: var(--obs-text);
+}
+
+/* Nothing open: like Obsidian's empty tab. */
+.obs-empty {
+  padding: 2.5rem 1.4rem 1.5rem;
+}
+
+.obs-empty-title {
+  margin: 0 0 1rem;
+  color: var(--obs-text-muted);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.obs-empty-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+  border: 0;
+  background: none;
+  color: var(--obs-link);
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.obs-empty-action:hover {
+  text-decoration: underline;
+}
+
+.obs-empty-action kbd {
+  color: var(--obs-text-muted);
+}
+
+.obs-empty-hint {
+  margin: 1rem 0 0;
+  color: var(--obs-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.obs-empty-head {
+  margin: 1.6rem 0 0.5rem;
+  color: var(--obs-text);
+  font-family: var(--obs-font);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* ---- Status bar ---- */
+.obs-status {
+  grid-area: status;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.2rem;
+  padding: 0.2rem 0.8rem;
+  border-top: 1px solid var(--obs-border);
+  background: var(--obs-bg-alt);
+  color: var(--obs-text-muted);
+  font-size: 0.74rem;
+}
+
+/* ---- 2D / 3D switch in the graph's tab bar ---- */
+.obs-tabbar {
+  gap: 0.5rem;
+}
+
+.obs-view-switch {
+  display: inline-flex;
+  margin: 0 0 0.3rem auto;
+  padding: 0.15rem;
+  border: 1px solid var(--obs-border);
+  border-radius: 999px;
+  background: var(--obs-bg);
+}
+
+.obs-view-switch button {
+  min-width: 2.4rem;
+  padding: 0.15rem 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--obs-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.obs-view-switch button.is-on {
+  background: var(--obs-accent);
+  color: var(--accent-ink);
+}
+
+/* ---- Hover card: a concept's name and description by the pointer ---- */
+.map-hover-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-width: 17rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg-alt);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+  color: var(--obs-text);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.map-hover-card[hidden] {
+  display: none;
+}
+
+.map-hover-card strong {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.map-hover-card span {
+  color: var(--obs-text-muted);
+}
+
+/* ---- Ask Alfond: a labelled action under the title, so it can't be missed ---- */
+.obs-ask {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  margin: 0 0 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--obs-accent) 45%, var(--obs-border));
+  border-radius: var(--obs-radius);
+  background: color-mix(in srgb, var(--obs-accent) 10%, var(--obs-bg));
+  color: var(--obs-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.obs-ask:hover {
+  border-color: var(--obs-accent);
+  background: color-mix(in srgb, var(--obs-accent) 16%, var(--obs-bg));
+}
+
+.obs-ask:active {
+  transform: translateY(1px);
+}
+
+.obs-ask:focus-visible {
+  outline: 2px solid var(--obs-accent);
+  outline-offset: 2px;
+}
+
+.obs-ask-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--obs-accent);
+  color: var(--obs-bg);
+}
+
+.obs-ask-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.obs-ask-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.obs-ask-text strong {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.obs-ask-text small {
+  overflow: hidden;
+  color: var(--obs-text-muted);
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.obs-ask-go {
+  flex: none;
+  color: var(--obs-accent);
+  font-size: 1.1rem;
+}
+
+/* ---- Full screen: the browser's, or the workspace covering the page (iPhone) ---- */
+.obs-full-btn {
+  flex: none;
+  margin: 0 0 0.3rem;
+}
+
+.obs-frame:fullscreen,
+.obs-frame.is-page-full {
+  margin: 0;
+  padding: 0;
+  background: var(--obs-bg);
+}
+
+.obs-frame.is-page-full {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.obs-frame:fullscreen .obs,
+.obs-frame.is-page-full .obs {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+:root.map-page-full,
+:root.map-page-full body {
+  overflow: hidden;
+}
+
+/* ---- "What it is": the concept's description, as a callout ---- */
+.obs-callout {
+  margin: 0 0 0.9rem;
+  padding: 0.65rem 0.85rem;
+  border-left: 3px solid var(--obs-accent);
+  border-radius: 0 var(--obs-radius) var(--obs-radius) 0;
+  background: var(--obs-accent-soft);
+}
+
+.obs-note-body .obs-callout p {
+  margin: 0;
+}
+
+.obs-note-body .obs-callout .obs-callout-title {
+  margin-bottom: 0.2rem;
+  color: var(--obs-link);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.obs-callout-more {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: var(--obs-link);
+  font-size: 0.82rem;
+}
+
+/* ---- 3D view ---- */
+.map-canvas-wrap.is-3d {
+  background: radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--obs-accent) 7%, var(--obs-bg)), var(--obs-bg) 70%);
+}
+
+.map-canvas:focus-visible {
+  outline: 2px solid var(--obs-accent);
+  outline-offset: -2px;
+}
+
+.map-3d-tools {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  max-width: calc(100% - 4rem);
+}
+
+.map-gizmo {
+  cursor: pointer;
+}
+
+.map-3d-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.map-3d-buttons .obs-chip {
+  background: var(--obs-bg-alt);
+}
+
+.map-3d-views {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.map-3d-help {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.9rem;
+  max-width: min(26rem, 100%);
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  background: var(--obs-bg-alt);
+  font-size: 0.78rem;
+}
+
+.map-3d-help dt {
+  color: var(--obs-text);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.map-3d-help dd {
+  margin: 0;
+  color: var(--obs-text-muted);
+}
+
+/* ---- Narrower: the explorer slides over the graph ---- */
+@container obs (max-width: 1080px) {
+  .obs-explorer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+    box-shadow: 8px 0 24px rgb(0 0 0 / 0.25);
+  }
+
+  .obs-explorer-close {
+    display: inline-flex;
+  }
+}
+
+/* ---- Phones: ribbon on top, graph, then the note ---- */
+@container obs (max-width: 720px) {
+  .obs {
+    grid-template-areas:
+      "ribbon"
+      "graph"
+      "note"
+      "status";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 60vh auto auto;
+    grid-template-rows: auto 60dvh auto auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  .obs-ribbon {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0.3rem 0.4rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--obs-border);
+  }
+
+  .obs-explorer {
+    grid-area: graph;
+    width: min(100%, 20rem);
+  }
+
+  .obs-note-pane {
+    border-left: 0;
+    border-top: 1px solid var(--obs-border);
+  }
+
+  .obs-note,
+  .obs-empty {
+    overflow: visible;
+  }
+
+  .obs-controls {
+    width: calc(100% - 1.2rem);
+  }
+
+  .obs-legend {
+    max-width: calc(100% - 8rem);
+  }
+
+  .map-3d-views,
+  .map-3d-buttons .obs-chip:not(:first-child, :last-child) {
+    display: none;
+  }
+
+  .map-3d-help {
+    max-width: calc(100vw - 4rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .obs-folder .obs-icon,
+  .obs-control-head .obs-icon,
+  .obs-backlinks-head .obs-icon,
+  .obs-toggle,
+  .obs-toggle::after {
+    transition: none;
+  }
+}

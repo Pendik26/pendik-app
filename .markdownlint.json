@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json",
+  "MD033": {
+    "allowed_elements": [
+      "kbd",
+      "figure",
+      "figcaption",
+      "img",
+      "span",
+      "em",
+      "div",
+      "p",
+      "svg",
+      "g",
+      "path",
+      "line",
+      "polyline",
+      "polygon",
+      "circle",
+      "ellipse",
+      "rect",
+      "text",
+      "title",
+      "desc",
+      "defs",
+      "marker",
+      "clipPath",
+      "clippath"
+    ]
+  },
+  "MD013": {
+    "tables": false,
+    "code_blocks": false
+  }
+}

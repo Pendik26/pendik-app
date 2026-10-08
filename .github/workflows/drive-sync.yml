@@ -1,0 +1,45 @@
+# Copies the class Google Drive into the app every morning (and on demand), by calling the
+# drive-sync Edge Function until it says the sync is finished.
+# Repository secrets: SUPABASE_URL, DRIVE_SYNC_SECRET (the same value as the function's secret).
+name: Drive sync
+
+on:
+  schedule:
+    - cron: "0 22 * * *" # 05:00 WIB
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: drive-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Sync
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          DRIVE_SYNC_SECRET: ${{ secrets.DRIVE_SYNC_SECRET }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$DRIVE_SYNC_SECRET" ]; then
+            echo "::notice::Drive sync isn't set up (SUPABASE_URL / DRIVE_SYNC_SECRET secrets)."
+            exit 0
+          fi
+          for call in $(seq 1 40); do
+            result=$(curl -sS --fail-with-body --max-time 120 -X POST \
+              -H "x-sync-secret: $DRIVE_SYNC_SECRET" -H "content-type: application/json" \
+              -d '{}' "$SUPABASE_URL/functions/v1/drive-sync")
+            echo "$result"
+            status=$(echo "$result" | jq -r .status)
+            case "$status" in
+              running) continue ;;
+              done) exit 0 ;;
+              held) echo "::warning::The sync was held: $(echo "$result" | jq -c .notes). An admin can review it on the admin page."; exit 0 ;;
+              *) echo "::error::Sync failed"; exit 1 ;;
+            esac
+          done
+          echo "::error::The sync didn't finish in 40 calls"
+          exit 1

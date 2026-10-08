@@ -1,0 +1,687 @@
+/* The class Google Drive: the Class Drive page, its card on Modules, and the Drive part of a
+   subject's module list. */
+
+.drive-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.drive-head .subtitle {
+  max-width: 62ch;
+}
+
+.drive-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* "● Updated 2 min ago": green while the listing is current, amber when a check failed. */
+.drive-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.drive-live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 22%, transparent);
+}
+
+.drive-live.off .drive-live-dot {
+  background: var(--amber);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 22%, transparent);
+}
+
+.drive-refresh.spinning svg {
+  animation: drive-spin 0.9s linear infinite;
+}
+
+@keyframes drive-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.drive-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.drive-note-info {
+  border-left: 3px solid var(--accent);
+}
+
+.drive-note-info strong {
+  color: var(--text);
+}
+
+.drive-empty,
+.drive-count {
+  color: var(--text-muted);
+}
+
+.drive-count {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Toolbar: where you are, then finding and ordering. */
+.drive-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+  margin: 1.1rem 0 0.9rem;
+}
+
+.drive-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.drive-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+}
+
+.drive-crumbs li {
+  overflow-wrap: anywhere;
+}
+
+.drive-crumbs li + li::before {
+  content: "›";
+  margin: 0 0.4rem;
+  color: var(--text-muted);
+}
+
+.drive-crumbs a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.drive-crumbs a:hover {
+  text-decoration: underline;
+}
+
+.drive-crumbs [aria-current] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.drive-up {
+  display: none;
+  place-items: center;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.3rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.drive-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.drive-search {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  width: min(100%, 17rem);
+}
+
+.drive-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.drive-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+
+.drive-search-key {
+  padding: 0 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font: 0.72rem var(--font-mono);
+  color: var(--text-muted);
+}
+
+.drive-sort {
+  display: inline-flex;
+  padding: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+}
+
+.drive-sort a {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.drive-sort a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* New this week: the latest files, one tap away. */
+.drive-fresh {
+  margin: 0 0 1.25rem;
+}
+
+.drive-fresh h2 {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.drive-fresh ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drive-fresh-more {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.drive-fresh-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.6rem;
+  align-items: center;
+  height: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.drive-fresh-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.drive-fresh-card .drive-kind {
+  grid-row: span 2;
+}
+
+.drive-fresh-card strong {
+  font-size: 0.9rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.drive-fresh-card small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* The list, and the viewer beside it (below it on narrow screens). */
+.drive-layout {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.drive-layout.has-file {
+  grid-template-columns: minmax(17rem, 23rem) minmax(0, 1fr);
+}
+
+.drive-list ul {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drive-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.drive-row:hover {
+  background: var(--surface-2);
+}
+
+.drive-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.drive-row.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.drive-row-main {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.drive-row-name {
+  overflow-wrap: anywhere;
+}
+
+.drive-row.is-new .drive-row-name {
+  font-weight: 600;
+}
+
+.drive-row-name mark {
+  border-radius: 3px;
+  background: var(--accent-soft);
+  color: inherit;
+}
+
+.drive-row-sub {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.drive-row-chevron {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* What a row is: a short tag in its own colour. */
+.drive-kind {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-width: 2.6rem;
+  height: 1.6rem;
+  padding: 0 0.3rem;
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.drive-kind-folder {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.drive-kind-slides {
+  background: color-mix(in srgb, var(--type-module) 14%, transparent);
+  color: var(--type-module);
+}
+
+.drive-kind-pdf {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.drive-kind-video,
+.drive-kind-audio {
+  background: color-mix(in srgb, var(--type-quiz) 14%, transparent);
+  color: var(--type-quiz);
+}
+
+.drive-new-pill {
+  flex: none;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--green) 16%, transparent);
+  color: var(--green);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.drive-opened {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* The viewer stays in view while the list scrolls. */
+.drive-viewer {
+  position: sticky;
+  top: 1rem;
+}
+
+.drive-viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  flex-wrap: wrap;
+}
+
+.drive-viewer-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.drive-viewer-title p {
+  display: grid;
+  margin: 0;
+  min-width: 0;
+}
+
+.drive-viewer-title strong {
+  overflow-wrap: anywhere;
+}
+
+.drive-viewer-title small {
+  color: var(--text-muted);
+}
+
+.drive-viewer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.drive-viewer-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.drive-viewer-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-right: 0.25rem;
+}
+
+.drive-viewer-pos {
+  min-width: 3.8rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.drive-frame-wrap {
+  position: relative;
+}
+
+.drive-viewer .pdf-frame {
+  height: calc(100vh - 9rem);
+  min-height: 24rem;
+}
+
+.drive-frame-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.drive-spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: drive-spin 0.8s linear infinite;
+}
+
+.drive-viewer-missing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+}
+
+.drive-viewer-missing p {
+  margin: 0;
+}
+
+/* Loading: rows that look like the list to come. */
+.drive-skeleton {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drive-skeleton li {
+  height: 2.9rem;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface) 50%, var(--surface-2) 75%);
+  background-size: 300% 100%;
+  animation: drive-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes drive-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* Modules: the way into the class Drive. */
+.drive-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.drive-card:hover {
+  border-color: var(--accent);
+}
+
+.drive-card > span:nth-child(2) {
+  display: grid;
+  flex: 1;
+  gap: 0.15rem;
+}
+
+.drive-card small {
+  color: var(--text-muted);
+}
+
+.drive-card .drive-kind {
+  min-width: 2.4rem;
+  height: 2.4rem;
+}
+
+/* A subject's module list: its Drive files above the cleaned PDFs. */
+.drive-live-tag {
+  margin-left: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--green) 16%, transparent);
+  color: var(--green);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.drive-toc-link .drive-kind {
+  min-width: 2.3rem;
+  height: 1.35rem;
+  font-size: 0.6rem;
+}
+
+.drive-toc-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.drive-toc-browse {
+  display: inline-block;
+  margin: 0.4rem 0.6rem 0;
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.drive-toc-offline {
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 960px) {
+  .drive-layout.has-file {
+    grid-template-columns: 1fr;
+  }
+
+  .drive-viewer {
+    position: static;
+  }
+
+  .drive-viewer .pdf-frame {
+    height: 72vh;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  /* Just "‹ Folder" on phones: the whole trail wraps to several lines. */
+  .drive-up {
+    display: inline-grid;
+  }
+
+  .drive-crumbs li:not(:last-child) {
+    display: none;
+  }
+
+  .drive-crumbs li + li::before {
+    content: none;
+  }
+
+  .drive-tools {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .drive-search {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .drive-sort {
+    flex: none;
+  }
+
+  .drive-search-key {
+    display: none;
+  }
+
+  .drive-fresh ul {
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.3rem;
+  }
+
+  .drive-fresh li {
+    scroll-snap-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drive-refresh.spinning svg,
+  .drive-spinner,
+  .drive-skeleton li {
+    animation: none;
+  }
+
+  .drive-fresh-card:hover {
+    transform: none;
+  }
+}
