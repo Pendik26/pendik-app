@@ -15,6 +15,8 @@ import { buildSections, type QuizSection } from "../lib/quizSections";
 import type { Answers, QuizAttempt, QuizQuestion } from "../types/content";
 import { NextUp } from "../components/plan/Today";
 import { SubjectTrail } from "../components/SubjectTrail";
+import { useI18n } from "../i18n/useI18n";
+import type { Translate } from "../i18n/i18n";
 
 const OPTION_LETTERS = "ABCDEFGH";
 const EMPTY_BANK: QuizQuestion[] = [];
@@ -33,24 +35,25 @@ type SessionKind =
   | { type: "drill" }
   | { type: "section"; section: QuizSection };
 
-function sessionSubtitle(kind: SessionKind): string | null {
-  if (kind.type === "due") return "Reviewing due questions only";
-  if (kind.type === "missed") return "Reviewing missed questions only";
-  if (kind.type === "drill") return "Drilling the questions you miss most";
-  if (kind.type === "section") return `Studying ${kind.section.label}`;
+function sessionSubtitle(kind: SessionKind, t: Translate): string | null {
+  if (kind.type === "due") return t("quiz.sessionDue");
+  if (kind.type === "missed") return t("quiz.sessionMissed");
+  if (kind.type === "drill") return t("quiz.sessionDrill");
+  if (kind.type === "section") return t("quiz.sessionSection", { section: kind.section.label });
   return null;
 }
 
-function scoreMessage(score: number, total: number): string {
+function scoreMessage(score: number, total: number, t: Translate): string {
   const pct = total === 0 ? 0 : score / total;
-  if (pct === 1) return "Perfect score.";
-  if (pct >= 0.9) return "Excellent work.";
-  if (pct >= 0.75) return "Great work.";
-  if (pct >= 0.5) return "Solid effort — a bit more practice will lock it in.";
-  return "Worth another pass — review the explanations below.";
+  if (pct === 1) return t("quiz.scorePerfect");
+  if (pct >= 0.9) return t("quiz.scoreExcellent");
+  if (pct >= 0.75) return t("quiz.scoreGreat");
+  if (pct >= 0.5) return t("quiz.scoreSolid");
+  return t("quiz.scoreAgain");
 }
 
 export function QuizPlay() {
+  const { t } = useI18n();
   const { blockId = "", subjectId = "" } = useParams();
   const key = subjectKey(blockId, subjectId);
   const fullBank = quizBanks.get(key) ?? EMPTY_BANK;
@@ -251,8 +254,8 @@ export function QuizPlay() {
   if (fullBank.length === 0 && games.length === 0) {
     return (
       <section className="page">
-        <p>Unknown subject.</p>
-        <Link to="/quizzes">Back to quizzes</Link>
+        <p>{t("study.unknownSubject")}</p>
+        <Link to="/quizzes">{t("quiz.back")}</Link>
       </section>
     );
   }
@@ -269,7 +272,7 @@ export function QuizPlay() {
             <div className="pdf-viewer-bar">
               <p>{game.name}</p>
               <a href={game.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-                Open in new tab
+                {t("study.openNewTab")}
               </a>
             </div>
             <iframe src={game.url} title={game.name} className="pdf-frame" />
@@ -289,11 +292,11 @@ export function QuizPlay() {
           </div>
           <h1>{subjectLabel}</h1>
           <p className="subtitle">
-            {fullBank.length} question{fullBank.length === 1 ? "" : "s"} · one at a time, with instant feedback
+            {t("quiz.intro", { count: fullBank.length })}
           </p>
 
           {history.length >= 2 && (
-            <div className="quiz-trend quiz-start-trend" title="Score trend across recent attempts">
+            <div className="quiz-trend quiz-start-trend" title={t("quiz.trend")}>
               <ScoreSparkline history={history} />
             </div>
           )}
@@ -302,7 +305,7 @@ export function QuizPlay() {
             <div className="quiz-game-links">
               {games.map((game) => (
                 <a key={game.url} href={game.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-                  Also try: {game.name} ↗
+                  {t("quiz.alsoTry", { name: game.name })}
                 </a>
               ))}
             </div>
@@ -310,10 +313,7 @@ export function QuizPlay() {
 
           {dueQuestions.length > 0 && (
             <div className="quiz-due-banner">
-              <p>
-                <strong>{dueQuestions.length}</strong> question{dueQuestions.length === 1 ? "" : "s"} due
-                for review from past attempts.
-              </p>
+              <p>{t("quiz.dueBanner", { count: dueQuestions.length })}</p>
               <button
                 className="btn btn-secondary"
                 onClick={() => {
@@ -321,7 +321,7 @@ export function QuizPlay() {
                   setStarted(true);
                 }}
               >
-                Review due questions
+                {t("quiz.reviewDue")}
               </button>
             </div>
           )}
@@ -329,18 +329,18 @@ export function QuizPlay() {
           <div className="quiz-start-actions">
             {canResume && savedProgress && (
               <button className="btn btn-secondary" onClick={() => { beginQuiz(true); }}>
-                Resume ({savedProgress.currentIndex + 1}/{savedProgress.total})
+                {t("quiz.resume", { at: savedProgress.currentIndex + 1, total: savedProgress.total })}
               </button>
             )}
             <button className="btn quiz-start-btn" onClick={() => { beginQuiz(false); }}>
-              {canResume ? "Start over" : "Start quiz"}
+              {canResume ? t("quiz.startOver") : t("quiz.start")}
             </button>
           </div>
 
           {sections.length > 0 && (
             <div className="quiz-sections">
               <p className="quiz-sections-label">
-                {fullBank.length} questions is a lot in one sitting — study a smaller section instead:
+                {t("quiz.sectionsHint", { count: fullBank.length })}
               </p>
               <div className="quiz-sections-row">
                 {sections.map((s) => (
@@ -371,10 +371,10 @@ export function QuizPlay() {
       <div className="quiz-header">
         <div>
           <h1>{subjectLabel}</h1>
-          {sessionSubtitle(sessionKind) && <p className="subtitle">{sessionSubtitle(sessionKind)}</p>}
+          {sessionSubtitle(sessionKind, t) && <p className="subtitle">{sessionSubtitle(sessionKind, t)}</p>}
         </div>
         {history.length >= 2 && sessionKind.type === "full" && (
-          <div className="quiz-trend" title="Score trend across recent attempts">
+          <div className="quiz-trend" title={t("quiz.trend")}>
             <ScoreSparkline history={history} />
           </div>
         )}
@@ -384,7 +384,7 @@ export function QuizPlay() {
         <div className="quiz-game-links">
           {games.map((game) => (
             <a key={game.url} href={game.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-              Also try: {game.name} ↗
+              {t("quiz.alsoTry", { name: game.name })}
             </a>
           ))}
         </div>
@@ -392,18 +392,15 @@ export function QuizPlay() {
 
       {sessionKind.type === "full" && !finished && dueQuestions.length > 0 && (
         <div className="quiz-due-banner">
-          <p>
-            <strong>{dueQuestions.length}</strong> question{dueQuestions.length === 1 ? "" : "s"} due
-            for review from past attempts.
-          </p>
+          <p>{t("quiz.dueBanner", { count: dueQuestions.length })}</p>
           <button className="btn btn-secondary" onClick={() => { startBank(dueQuestions, { type: "due" }); }}>
-            Review due questions
+            {t("quiz.reviewDue")}
           </button>
         </div>
       )}
 
       {!finished && !currentQuestion ? (
-        <p className="subtitle">There are no questions in this session.</p>
+        <p className="subtitle">{t("quiz.emptySession")}</p>
       ) : !finished && currentQuestion ? (
         <div className="quiz-card">
           <div className="quiz-progress">
@@ -414,10 +411,10 @@ export function QuizPlay() {
               />
             </div>
             <span className="quiz-progress-label">
-              Question {currentIndex + 1} of {bank.length}
+              {t("quiz.progress", { at: currentIndex + 1, total: bank.length })}
             </span>
             {streak >= 3 && (
-              <span className="quiz-streak-badge" title={`${streak} correct in a row`}>
+              <span className="quiz-streak-badge" title={t("quiz.streak", { count: streak })}>
                 <FlameIcon />
                 {streak}
               </span>
@@ -437,8 +434,8 @@ export function QuizPlay() {
                   className={cls}
                   onClick={() => { goToQuestion(qi); }}
                   aria-current={qi === currentIndex ? "true" : undefined}
-                  aria-label={`Go to question ${qi + 1}`}
-                  title={`Question ${qi + 1}`}
+                  aria-label={t("quiz.goTo", { n: qi + 1 })}
+                  title={t("quiz.questionN", { n: qi + 1 })}
                 >
                   {qi + 1}
                 </button>
@@ -454,8 +451,8 @@ export function QuizPlay() {
                 className="quiz-question-image quiz-question-image-zoomable"
                 role="button"
                 tabIndex={0}
-                aria-label="Enlarge figure"
-                title="Enlarge figure"
+                aria-label={t("quiz.enlarge")}
+                title={t("quiz.enlarge")}
                 onClick={(e) => {
                   const img = e.currentTarget.querySelector("img");
                   if (img) {
@@ -480,7 +477,7 @@ export function QuizPlay() {
               className="quiz-zoom"
               role="dialog"
               aria-modal="true"
-              aria-label="Enlarged figure. Tap outside the image or press Escape to close."
+              aria-label={t("quiz.enlarged")}
               onClick={() => { setZoomSrc(null); }}
             >
               <img
@@ -492,7 +489,7 @@ export function QuizPlay() {
                   setZoomFull((v) => !v);
                 }}
               />
-              <button type="button" className="quiz-zoom-close" onClick={() => { setZoomSrc(null); }} aria-label="Close">
+              <button type="button" className="quiz-zoom-close" onClick={() => { setZoomSrc(null); }} aria-label={t("common.close")}>
                 ×
               </button>
             </div>
@@ -523,14 +520,13 @@ export function QuizPlay() {
           </div>
 
           <p className="quiz-keyboard-hint">
-            {!revealed ? "Tip: press a letter to answer" : "Tip: press Enter to continue"} · ← → to move between
-            questions
+            {!revealed ? t("quiz.tipLetter") : t("quiz.tipEnter")} · {t("quiz.tipArrows")}
           </p>
 
           {revealed && (
             <div className={`quiz-feedback ${selected === currentQuestion.answer ? "correct" : "incorrect"}`} role="status">
               <p className="quiz-feedback-verdict">
-                {selected === currentQuestion.answer ? "Correct" : "Not quite"}
+                {selected === currentQuestion.answer ? t("study.correct") : t("study.notQuite")}
               </p>
               <p className="quiz-feedback-explanation">{currentQuestion.explanation}</p>
             </div>
@@ -555,15 +551,15 @@ export function QuizPlay() {
               onClick={goPrev}
               disabled={currentIndex === 0}
             >
-              ← Previous
+              ← {t("study.previous")}
             </button>
             {revealed ? (
               <button className="btn quiz-next-btn" onClick={goNext}>
-                {isLast ? "See results" : "Next question"}
+                {isLast ? t("quiz.seeResults") : t("quiz.next")}
               </button>
             ) : isLast ? (
               <button type="button" className="btn btn-secondary quiz-skip-btn" onClick={finishQuiz}>
-                Finish quiz
+                {t("quiz.finish")}
               </button>
             ) : (
               <button
@@ -571,7 +567,7 @@ export function QuizPlay() {
                 className="btn btn-secondary quiz-skip-btn"
                 onClick={() => { goToQuestion(currentIndex + 1); }}
               >
-                Skip →
+                {t("quiz.skip")} →
               </button>
             )}
           </div>
@@ -585,7 +581,7 @@ export function QuizPlay() {
                 {result.score}
                 <span className="quiz-score-total">/{result.total}</span>
               </p>
-              <p className="quiz-score-caption">{scoreMessage(result.score, result.total)}</p>
+              <p className="quiz-score-caption">{scoreMessage(result.score, result.total, t)}</p>
             </div>
 
             <div className="quiz-retry-row">
@@ -594,15 +590,15 @@ export function QuizPlay() {
                   className="btn"
                   onClick={() => { startBank(sessionKind.section.questions, sessionKind); }}
                 >
-                  Retry {sessionKind.section.shortLabel}
+                  {t("quiz.retrySection", { section: sessionKind.section.shortLabel })}
                 </button>
               )}
               <button className="btn btn-secondary" onClick={() => { startBank(fullBank, { type: "full" }); }}>
-                Retry full quiz
+                {t("quiz.retryFull")}
               </button>
               {missedQuestions.length > 0 && (
                 <button className="btn" onClick={() => { startBank(missedQuestions, { type: "missed" }); }}>
-                  Review missed only ({missedQuestions.length})
+                  {t("quiz.reviewMissed", { count: missedQuestions.length })}
                 </button>
               )}
             </div>
@@ -614,7 +610,7 @@ export function QuizPlay() {
               onClick={() => { setReviewOpen((v) => !v); }}
               aria-expanded={reviewOpen}
             >
-              {reviewOpen ? "Hide full review ▲" : "Show full review ▼"}
+              {reviewOpen ? `${t("quiz.hideReview")} ▲` : `${t("quiz.showReview")} ▼`}
             </button>
 
             {reviewOpen && (
@@ -644,7 +640,7 @@ export function QuizPlay() {
                         })}
                       </div>
                       <p className={`quiz-feedback-explanation quiz-review-explanation ${wasCorrect ? "correct" : "incorrect"}`}>
-                        {wasCorrect ? "Correct. " : "Missed. "}
+                        {wasCorrect ? `${t("study.correct")}. ` : `${t("quiz.missed")}. `}
                         {q.explanation}
                       </p>
                     </li>

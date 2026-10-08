@@ -13,6 +13,7 @@ import { subjectHue, subjectHueStyle } from "../lib/subjectStyle";
 import type { Flashcard } from "../types/content";
 import { NextUp } from "../components/plan/Today";
 import { SubjectTrail } from "../components/SubjectTrail";
+import { useI18n } from "../i18n/useI18n";
 
 function tagHueStyle(tag: string): CSSProperties {
   return { "--tag-hue": String(subjectHue(tag)) } as CSSProperties;
@@ -27,6 +28,7 @@ function speak(text: string) {
 const EMPTY_DECK: Flashcard[] = [];
 
 export function FlashcardStudy() {
+  const { t } = useI18n();
   const { blockId = "", subjectId = "" } = useParams();
   const key = subjectKey(blockId, subjectId);
   const subjectLabel = flashcardSubjects.find((s) => keyOf(s) === key)?.label ?? subjectId;
@@ -145,8 +147,8 @@ export function FlashcardStudy() {
   if (deck.length === 0) {
     return (
       <section className="page">
-        <p>Unknown subject.</p>
-        <Link to="/flashcards">Back to flashcards</Link>
+        <p>{t("study.unknownSubject")}</p>
+        <Link to="/flashcards">{t("cards.back")}</Link>
       </section>
     );
   }
@@ -156,15 +158,15 @@ export function FlashcardStudy() {
       <SubjectTrail blockId={blockId} subjectId={subjectId} current="flashcards" />
       <h1>{subjectLabel}</h1>
       <p className="subtitle">
-        {stats.due} due · {stats.mastered}/{stats.total} mastered
+        {t("cards.stats", { due: stats.due, mastered: stats.mastered, total: stats.total })}
         {pickedCards
-          ? ` · ${pickedCards.length} card${pickedCards.length === 1 ? "" : "s"} from the knowledge map`
-          : selectedTags.length > 0 && ` · filtered to ${filteredDeck.length} card${filteredDeck.length === 1 ? "" : "s"}`}
+          ? ` · ${t("cards.fromMap", { count: pickedCards.length })}`
+          : selectedTags.length > 0 && ` · ${t("cards.filtered", { count: filteredDeck.length })}`}
         {pickedCards && (
           <>
             {" "}
             <button type="button" className="link-btn" onClick={() => { setShowAllCards(true); }}>
-              Show the whole deck
+              {t("cards.wholeDeck")}
             </button>
           </>
         )}
@@ -180,18 +182,18 @@ export function FlashcardStudy() {
               aria-expanded={filterOpen}
               aria-controls="topic-filter-panel"
             >
-              Filter by topic
+              {t("cards.filterTopic")}
               {selectedTags.length > 0 && <span className="topic-filter-count">{selectedTags.length}</span>}
               <span aria-hidden="true">{filterOpen ? "▴" : "▾"}</span>
             </button>
             {selectedTags.map((tag) => (
-              <button key={tag} type="button" className="tag tag-toggle tag-colored active" style={tagHueStyle(tag)} onClick={() => { toggleTag(tag); }} aria-label={`Remove ${tag} filter`}>
+              <button key={tag} type="button" className="tag tag-toggle tag-colored active" style={tagHueStyle(tag)} onClick={() => { toggleTag(tag); }} aria-label={t("cards.removeFilter", { tag })}>
                 {tag} ×
               </button>
             ))}
             {selectedTags.length > 0 && (
               <button type="button" className="tag-filter-clear" onClick={clearTags}>
-                Clear
+                {t("cards.clear")}
               </button>
             )}
           </div>
@@ -200,10 +202,10 @@ export function FlashcardStudy() {
               <input
                 type="search"
                 className="topic-filter-search"
-                placeholder={`Find a topic (${allTags.length})`}
+                placeholder={t("cards.findTopicCount", { count: allTags.length })}
                 value={tagQuery}
                 onChange={(e) => { setTagQuery(e.target.value); }}
-                aria-label="Find a topic"
+                aria-label={t("cards.findTopic")}
               />
               <div className="tag-filter-row">
                 {allTags
@@ -227,28 +229,28 @@ export function FlashcardStudy() {
       )}
 
       {filteredDeck.length === 0 ? (
-        <EmptyState title="No cards match those tags">
+        <EmptyState title={t("cards.noMatch")}>
           <button className="btn empty-state-action" onClick={clearTags}>
-            Clear filters
+            {t("cards.clearFilters")}
           </button>
         </EmptyState>
       ) : sessionDone || !card ? (
         <div className="flashcard-empty">
           {session.reviewed > 0 ? (
             <div className="session-summary">
-              <h2>Session complete</h2>
+              <h2>{t("cards.sessionDone")}</h2>
               <div className="session-stats">
                 <div>
                   <strong>{session.reviewed}</strong>
-                  <span>reviewed</span>
+                  <span>{t("cards.reviewed")}</span>
                 </div>
                 <div>
                   <strong>{session.reviewed - session.lapses}</strong>
-                  <span>recalled</span>
+                  <span>{t("cards.recalled")}</span>
                 </div>
                 <div>
                   <strong>{session.lapses}</strong>
-                  <span>missed</span>
+                  <span>{t("cards.missed")}</span>
                 </div>
               </div>
               <button
@@ -259,12 +261,12 @@ export function FlashcardStudy() {
                   setSession({ reviewed: 0, lapses: 0 });
                 }}
               >
-                Review anyway
+                {t("cards.reviewAnyway")}
               </button>
             </div>
           ) : (
-            <EmptyState title="Nothing due right now">
-              You're all caught up on this deck — come back later, or review anyway.
+            <EmptyState title={t("cards.nothingDue")}>
+              {t("cards.caughtUp")}
               <br />
               <button
                 className="btn empty-state-action"
@@ -274,7 +276,7 @@ export function FlashcardStudy() {
                   setSession({ reviewed: 0, lapses: 0 });
                 }}
               >
-                Review anyway
+                {t("cards.reviewAnyway")}
               </button>
             </EmptyState>
           )}
@@ -283,11 +285,11 @@ export function FlashcardStudy() {
 
           {hardestCards.length > 0 && (
             <div className="hardest-cards">
-              <h3>Your hardest cards</h3>
+              <h3>{t("cards.hardest")}</h3>
               <ul>
                 {hardestCards.map(({ card: c, lapses }) => (
                   <li key={c.id}>
-                    {c.front} <span className="lapse-count">{lapses} lapse{lapses === 1 ? "" : "s"}</span>
+                    {c.front} <span className="lapse-count">{t("cards.lapses", { count: lapses })}</span>
                   </li>
                 ))}
               </ul>
@@ -302,7 +304,7 @@ export function FlashcardStudy() {
             role="button"
             tabIndex={0}
             aria-pressed={flipped}
-            aria-label={flipped ? "Showing answer, click to show question" : "Showing question, click to reveal answer"}
+            aria-label={flipped ? t("cards.showingAnswer") : t("cards.showingQuestion")}
           >
             <div className="flashcard-inner">
               <div className="flashcard-face flashcard-front">
@@ -313,8 +315,8 @@ export function FlashcardStudy() {
                     e.stopPropagation();
                     speak(card.front);
                   }}
-                  aria-label="Read question aloud"
-                  title="Read aloud"
+                  aria-label={t("cards.readQuestion")}
+                  title={t("cards.readAloud")}
                 >
                   <SpeakerIcon />
                 </button>
@@ -322,7 +324,7 @@ export function FlashcardStudy() {
                   <div className="flashcard-image" dangerouslySetInnerHTML={{ __html: card.image }} />
                 )}
                 <p>{card.front}</p>
-                <span className="flashcard-hint">Space to reveal</span>
+                <span className="flashcard-hint">{t("cards.spaceReveal")}</span>
               </div>
               <div className="flashcard-face flashcard-back">
                 <button
@@ -332,13 +334,13 @@ export function FlashcardStudy() {
                     e.stopPropagation();
                     speak(card.back);
                   }}
-                  aria-label="Read answer aloud"
-                  title="Read aloud"
+                  aria-label={t("cards.readAnswer")}
+                  title={t("cards.readAloud")}
                 >
                   <SpeakerIcon />
                 </button>
                 <p>{card.back}</p>
-                <span className="flashcard-hint">Answer</span>
+                <span className="flashcard-hint">{t("cards.answer")}</span>
               </div>
             </div>
           </div>
@@ -371,9 +373,9 @@ export function FlashcardStudy() {
                   key={g.quality}
                   className="btn btn-grade"
                   onClick={() => { handleGrade(g.quality); }}
-                  title={`${g.hint} (press ${g.key})`}
+                  title={t("grade.title", { hint: t(g.hint), key: g.key })}
                 >
-                  {g.label}
+                  {t(g.label)}
                   <span className="key-hint">{g.key}</span>
                 </button>
               ))}

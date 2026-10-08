@@ -7,6 +7,8 @@ import { driveEn, driveId } from "./sections/drive";
 import { examEn, examId } from "./sections/exam";
 import { homeEn, homeId } from "./sections/home";
 import { planEn, planId } from "./sections/plan";
+import { progressEn, progressId } from "./sections/progress";
+import { studyEn, studyId } from "./sections/study";
 import { navEn, navId } from "./sections/nav";
 
 const coreEn = {
@@ -180,8 +182,8 @@ const coreId: { [K in keyof typeof coreEn]: string } = {
 
 };
 
-export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn, ...driveEn };
+export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn, ...driveEn, ...studyEn, ...progressEn };
 
 export type Messages = { [K in keyof typeof en]: string };
 
-export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId, ...driveId };
+export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId, ...driveId, ...studyId, ...progressId };

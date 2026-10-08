@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { FlameIcon, TrophyIcon } from "../components/icons";
 import { fetchBoard, updateMembership, type Board, type BoardRow, type Period, type Scope } from "../lib/leaderboard";
+import { useI18n } from "../i18n/useI18n";
+import type { MessageKey, Translate } from "../i18n/i18n";
 
-const PERIODS: { id: Period; label: string }[] = [
-  { id: "week", label: "This week" },
-  { id: "all", label: "All time" },
-  { id: "streak", label: "Streak" },
+const PERIODS: { id: Period; label: MessageKey }[] = [
+  { id: "week", label: "board.week" },
+  { id: "all", label: "board.all" },
+  { id: "streak", label: "board.streak" },
 ];
 
-function unit(period: Period, value: number): string {
-  if (period === "streak") return value === 1 ? "day" : "days";
-  return value === 1 ? "pt" : "pts";
+function unit(period: Period, value: number, t: Translate): string {
+  if (period === "streak") return value === 1 ? t("board.day") : t("board.days");
+  return value === 1 ? t("board.pt") : t("board.pts");
 }
 
 function initials(name: string): string {
@@ -32,6 +34,7 @@ function hueOf(name: string): number {
 }
 
 function Row({ row, period }: { row: BoardRow; period: Period }) {
+  const { t } = useI18n();
   const medal = row.rank <= 3 ? ` lb-rank-${row.rank}` : "";
   return (
     <li className={row.me ? "lb-row lb-row-me" : "lb-row"}>
@@ -41,17 +44,18 @@ function Row({ row, period }: { row: BoardRow; period: Period }) {
       </span>
       <span className="lb-name">
         {row.name}
-        {row.me && <span className="lb-you">You</span>}
-        {row.cohort && <small>Cohort {row.cohort}</small>}
+        {row.me && <span className="lb-you">{t("board.you")}</span>}
+        {row.cohort && <small>{t("board.cohort", { cohort: row.cohort })}</small>}
       </span>
       <span className="lb-value">
-        {row.value.toLocaleString()} <small>{unit(period, row.value)}</small>
+        {row.value.toLocaleString()} <small>{unit(period, row.value, t)}</small>
       </span>
     </li>
   );
 }
 
 function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
+  const { t } = useI18n();
   const [name, setName] = useState(board.me.displayName);
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -80,13 +84,13 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
     return (
       <div className="lb-membership">
         <span>
-          Showing as <strong>{board.me.displayName}</strong>
+          {t("board.showingAs")} <strong>{board.me.displayName}</strong>
         </span>
         <button type="button" className="btn btn-secondary btn-small" onClick={() => { setEditing(true); }}>
-          Change name
+          {t("board.changeName")}
         </button>
         <button type="button" className="btn btn-secondary btn-small" disabled={busy} onClick={() => void save({ joined: false })}>
-          Leave leaderboard
+          {t("board.leave")}
         </button>
         {message && <p className="account-error">{message}</p>}
       </div>
@@ -95,15 +99,14 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
 
   return (
     <form className="account-card lb-join" onSubmit={submit}>
-      <h2>{board.me.joined ? "Change your display name" : "Join the leaderboard"}</h2>
+      <h2>{board.me.joined ? t("board.changeTitle") : t("board.join")}</h2>
       {!board.me.joined && (
         <p className="account-note">
-          Only your display name, cohort and scores are shown to other students. Your real name and
-          answers stay private, and you can leave at any time.
+          {t("board.privacy")}
         </p>
       )}
       <label className="account-field">
-        <span>Display name</span>
+        <span>{t("board.displayName")}</span>
         <input
           className="form-input"
           value={name}
@@ -113,16 +116,16 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
           required
           autoComplete="nickname"
         />
-        <small>A nickname is fine.</small>
+        <small>{t("board.nickname")}</small>
       </label>
       {message && <p className="account-error">{message}</p>}
       <div className="account-row">
         <button type="submit" className="btn" disabled={busy}>
-          {board.me.joined ? "Save" : "Join"}
+          {board.me.joined ? t("common.save") : t("board.joinShort")}
         </button>
         {board.me.joined && (
           <button type="button" className="btn btn-secondary" onClick={() => { setEditing(false); }}>
-            Cancel
+            {t("common.cancel")}
           </button>
         )}
       </div>
@@ -131,6 +134,7 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
 }
 
 function SignedInBoard() {
+  const { t } = useI18n();
   const [period, setPeriod] = useState<Period>("week");
   const [scope, setScope] = useState<Scope>("everyone");
   const [board, setBoard] = useState<Board | null>(null);
@@ -157,7 +161,7 @@ function SignedInBoard() {
   const refresh = useCallback(() => { setReload((n) => n + 1); }, []);
 
   if (error && !board) return <p className="account-error">{error}</p>;
-  if (!board) return <p className="subtitle">Loading the leaderboard…</p>;
+  if (!board) return <p className="subtitle">{t("board.loading")}</p>;
 
   const me = board.me;
   const myRowShown = board.rows.some((r) => r.me);
@@ -168,22 +172,22 @@ function SignedInBoard() {
       <div className="lb-summary">
         <div className="lb-stat">
           <span className="lb-stat-value">{me.week.toLocaleString()}</span>
-          <span className="lb-stat-label">points this week</span>
+          <span className="lb-stat-label">{t("board.pointsWeek")}</span>
         </div>
         <div className="lb-stat">
           <span className="lb-stat-value">{me.stats.points.toLocaleString()}</span>
-          <span className="lb-stat-label">points all time</span>
+          <span className="lb-stat-label">{t("board.pointsAll")}</span>
         </div>
         <div className="lb-stat">
           <span className="lb-stat-value">
             <FlameIcon /> {me.streak}
           </span>
-          <span className="lb-stat-label">day streak</span>
+          <span className="lb-stat-label">{t("board.dayStreak")}</span>
         </div>
         {me.joined && (
           <div className="lb-stat">
             <span className="lb-stat-value">{me.rank ? `#${me.rank}` : "—"}</span>
-            <span className="lb-stat-label">{me.rank ? `of ${board.total} on this board` : "not ranked yet"}</span>
+            <span className="lb-stat-label">{me.rank ? t("board.ofTotal", { total: board.total }) : t("board.notRanked")}</span>
           </div>
         )}
       </div>
@@ -191,7 +195,7 @@ function SignedInBoard() {
       <JoinCard key={`${me.joined}-${me.displayName}`} board={board} onChange={refresh} />
 
       <div className="lb-controls">
-        <div className="account-tabs lb-tabs" role="tablist" aria-label="Ranking">
+        <div className="account-tabs lb-tabs" role="tablist" aria-label={t("board.ranking")}>
           {PERIODS.map((p) => (
             <button
               key={p.id}
@@ -201,12 +205,12 @@ function SignedInBoard() {
               className={period === p.id ? "account-tab active" : "account-tab"}
               onClick={() => { setPeriod(p.id); }}
             >
-              {p.label}
+              {t(p.label)}
             </button>
           ))}
         </div>
         {board.cohort ? (
-          <div className="account-tabs lb-scope" role="tablist" aria-label="Who to compare with">
+          <div className="account-tabs lb-scope" role="tablist" aria-label={t("board.compareWith")}>
             <button
               type="button"
               role="tab"
@@ -214,7 +218,7 @@ function SignedInBoard() {
               className={scope === "everyone" ? "account-tab active" : "account-tab"}
               onClick={() => { setScope("everyone"); }}
             >
-              Everyone
+              {t("board.everyone")}
             </button>
             <button
               type="button"
@@ -223,7 +227,7 @@ function SignedInBoard() {
               className={scope === "cohort" ? "account-tab active" : "account-tab"}
               onClick={() => { setScope("cohort"); }}
             >
-              Cohort {board.cohort}
+              {t("board.cohort", { cohort: board.cohort })}
             </button>
           </div>
         ) : null}
@@ -235,10 +239,10 @@ function SignedInBoard() {
         {board.rows.length === 0 ? (
           <p className="lb-empty">
             {board.period === "streak"
-              ? "No one has a study streak going on this board yet."
+              ? t("board.emptyStreak")
               : board.period === "week"
-                ? "No points on this board this week yet. Study something to get on it."
-                : "No one's on this board yet."}
+                ? t("board.emptyWeek")
+                : t("board.empty")}
           </p>
         ) : (
           <ol className="lb-list">
@@ -258,25 +262,24 @@ function SignedInBoard() {
       </div>
 
       <details className="account-card lb-how">
-        <summary>How points work</summary>
+        <summary>{t("board.how")}</summary>
         <ul>
           <li>
-            <strong>{board.points.correctAnswer}</strong> per correct quiz or exam answer
+            <strong>{board.points.correctAnswer}</strong> {t("board.perAnswer")}
           </li>
           <li>
-            <strong>{board.points.cardLearned}</strong> per flashcard you've learned (reviewed correctly at least once)
+            <strong>{board.points.cardLearned}</strong> {t("board.perCard")}
           </li>
           <li>
-            <strong>{board.points.chapterFinished}</strong> per ebook chapter marked complete
+            <strong>{board.points.chapterFinished}</strong> {t("board.perChapter")}
           </li>
           <li>
-            <strong>{board.points.studyDay}</strong> per day you study
+            <strong>{board.points.studyDay}</strong> {t("board.perDay")}
           </li>
         </ul>
         <p className="account-note">
-          <strong>This week</strong> counts points gained in the last 7 days.{" "}
-          <strong>Streak</strong> is consecutive study days, still alive if you studied today or
-          yesterday. Scores update as your progress is saved.
+          <strong>{t("board.week")}</strong> {t("board.weekHow")}{" "}
+          <strong>{t("board.streak")}</strong> {t("board.streakHow")}
         </p>
       </details>
     </>
@@ -284,15 +287,16 @@ function SignedInBoard() {
 }
 
 export function Leaderboard() {
+  const { t } = useI18n();
   return (
     <section className="page leaderboard-page">
       <h1>
         <span className="lb-title-icon" aria-hidden="true">
           <TrophyIcon />
         </span>
-        Leaderboard
+        {t("board.title")}
       </h1>
-      <p className="subtitle">Points from quizzes, exams, flashcards, reading and study days.</p>
+      <p className="subtitle">{t("board.subtitle")}</p>
       <SignedInBoard />
     </section>
   );

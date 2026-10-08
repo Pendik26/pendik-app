@@ -6,6 +6,7 @@ import { useSpacedRepetition } from "../hooks/useSpacedRepetition";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { STORAGE_KEYS } from "../lib/storage";
 import { GRADES } from "../lib/grades";
+import { useI18n } from "../i18n/useI18n";
 import { INITIAL_CARD_STATE, reviewCard } from "../lib/sm2";
 import {
   REGION_LABELS,
@@ -210,6 +211,7 @@ function FigureGallery({ figures, currentIndex, onOpen, onClose }: { figures: Fi
 }
 
 export function OcclusionStudy() {
+  const { t } = useI18n();
   const { blockId = "", subjectId = "" } = useParams();
   const key = subjectKey(blockId, subjectId);
   const subjectLabel = flashcardSubjects.find((s) => keyOf(s) === key)?.label ?? subjectId;
@@ -485,8 +487,8 @@ export function OcclusionStudy() {
             {revealed ? (
               <div className="grade-row">
                 {GRADES.map((g) => (
-                  <button key={g.quality} type="button" className="btn btn-grade" onClick={() => { handleGrade(g.quality); }} title={`${g.hint} (press ${g.key})`}>
-                    {g.label}
+                  <button key={g.quality} type="button" className="btn btn-grade" onClick={() => { handleGrade(g.quality); }} title={t("grade.title", { hint: t(g.hint), key: g.key })}>
+                    {t(g.label)}
                     <span className="io-interval">{intervalFor(g.quality)}</span>
                     <span className="key-hint">{g.key}</span>
                   </button>

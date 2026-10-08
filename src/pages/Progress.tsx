@@ -21,43 +21,48 @@ import { useCountUp } from "../hooks/useCountUp";
 import type { QuizAttempt } from "../types/content";
 import { readJSON } from "../lib/storage";
 import { entry } from "../lib/records";
+import { useI18n } from "../i18n/useI18n";
+import type { MessageKey, Translate } from "../i18n/i18n";
 
-const KIND_NAMES: Record<StudyKind, [string, string]> = {
-  cards: ["card", "cards"],
-  labels: ["label", "labels"],
-  questions: ["question", "questions"],
-  chapters: ["chapter", "chapters"],
-  exams: ["mock exam", "mock exams"],
+const KIND_NAMES: Record<StudyKind, [MessageKey, MessageKey]> = {
+  cards: ["progress.card", "progress.cards"],
+  labels: ["progress.label", "progress.labels"],
+  questions: ["progress.question", "progress.questions"],
+  chapters: ["progress.chapter", "progress.chapters"],
+  exams: ["progress.mock", "progress.mocks"],
 };
 
-const subjectName = (key: string) =>
-  key.startsWith("block:") ? `Block ${key.slice(6)} exams` : (allSubjects().find((s) => s.key === key)?.label ?? key) + ` (${key.split("/")[0]})`;
+const subjectName = (key: string, t: Translate) =>
+  key.startsWith("block:") ? t("progress.blockExams", { block: key.slice(6) }) : (allSubjects().find((s) => s.key === key)?.label ?? key) + ` (${key.split("/")[0]})`;
 
 function WeekTile({ label, now, before }: { label: string; now: number; before: number }) {
+  const { t } = useI18n();
   const diff = now - before;
   return (
     <div className="week-tile">
       <span className="stat-label">{label}</span>
       <span className="week-tile-value">{now.toLocaleString()}</span>
       <span className={`week-tile-delta${diff > 0 ? " up" : diff < 0 ? " down" : ""}`}>
-        {diff === 0 ? "same as last week" : `${diff > 0 ? "+" : "−"}${Math.abs(diff).toLocaleString()} vs last week`}
+        {diff === 0 ? t("progress.sameAsLast") : t("progress.vsLast", { diff: `${diff > 0 ? "+" : "−"}${Math.abs(diff).toLocaleString()}` })}
       </span>
     </div>
   );
 }
 
 function WeekStrip({ thisWeek, lastWeek }: { thisWeek: WeekSummary; lastWeek: WeekSummary }) {
+  const { t } = useI18n();
   return (
-    <div className="week-strip" aria-label="This week compared with last week">
-      <WeekTile label="Reviews" now={thisWeek.reviews} before={lastWeek.reviews} />
-      <WeekTile label="Questions" now={thisWeek.questions} before={lastWeek.questions} />
-      <WeekTile label="Chapters" now={thisWeek.chapters} before={lastWeek.chapters} />
-      <WeekTile label="Days studied" now={thisWeek.activeDays} before={lastWeek.activeDays} />
+    <div className="week-strip" aria-label={t("progress.weekCompare")}>
+      <WeekTile label={t("progress.reviews")} now={thisWeek.reviews} before={lastWeek.reviews} />
+      <WeekTile label={t("progress.questionsTitle")} now={thisWeek.questions} before={lastWeek.questions} />
+      <WeekTile label={t("progress.chaptersTitle")} now={thisWeek.chapters} before={lastWeek.chapters} />
+      <WeekTile label={t("progress.daysStudied")} now={thisWeek.activeDays} before={lastWeek.activeDays} />
     </div>
   );
 }
 
 export function Progress() {
+  const { t } = useI18n();
   const occlusion = useOcclusionIds();
   const [version, setVersion] = useState(0);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -109,46 +114,44 @@ export function Progress() {
 
   return (
     <section className="page progress-page">
-      <h1>Progress</h1>
-      <p className="subtitle">
-        Everything you've studied, saved in your account.
-      </p>
+      <h1>{t("progress.title")}</h1>
+      <p className="subtitle">{t("progress.subtitle")}</p>
 
       {focus && (
-        <ReadinessSummary br={focus} blockLabel={blockById(focus.blockId)?.label ?? `Block ${focus.blockId}`} daysLeft={focusDays} phase={phaseFor(focusDays)}>
+        <ReadinessSummary br={focus} blockLabel={blockById(focus.blockId)?.label ?? t("drive.block", { block: focus.blockId })} daysLeft={focusDays} phase={phaseFor(focusDays)}>
           <Link to={`/plan/${focus.blockId}`} className="btn">
-            Today's plan
+            {t("progress.todayPlan")}
           </Link>
-          <AskAlfondButton question="Looking at my progress on this page, what should I focus on this week, and why? Be specific about subjects and topics.">
-            Ask Alfond about my progress
+          <AskAlfondButton question={t("progress.askQuestion")}>
+            {t("progress.ask")}
           </AskAlfondButton>
         </ReadinessSummary>
       )}
 
       <div className="streak-stats progress-streaks">
         <div className="stat-tile">
-          <span className="stat-label">Current streak</span>
+          <span className="stat-label">{t("progress.currentStreak")}</span>
           <span className="stat-value">{streakCount}</span>
         </div>
         <div className="stat-tile">
-          <span className="stat-label">Longest streak</span>
+          <span className="stat-label">{t("progress.longestStreak")}</span>
           <span className="stat-value">{longestCount}</span>
         </div>
         <div className="stat-tile">
-          <span className="stat-label">Study days</span>
+          <span className="stat-label">{t("progress.studyDays")}</span>
           <span className="stat-value">{studyDaysCount}</span>
         </div>
       </div>
 
-      <h2 className="progress-heading">This week</h2>
+      <h2 className="progress-heading">{t("progress.thisWeek")}</h2>
       <WeekStrip thisWeek={data.week.thisWeek} lastWeek={data.week.lastWeek} />
 
-      <h2 className="progress-heading">Subjects</h2>
+      <h2 className="progress-heading">{t("progress.subjects")}</h2>
       {data.blocks.map((b) => (
         <div key={b.blockId} className="progress-block">
           <h3 className="block-section-heading">
-            {studyBlocks.find((s) => s.id === b.blockId)?.label ?? `Block ${b.blockId}`}
-            <span className="progress-block-score">{Math.round(b.readiness)}% ready</span>
+            {studyBlocks.find((s) => s.id === b.blockId)?.label ?? t("drive.block", { block: b.blockId })}
+            <span className="progress-block-score">{t("today.ready", { percent: Math.round(b.readiness) })}</span>
           </h3>
           <ul className="subject-progress-list">
             {b.subjects.map((s) => (
@@ -159,23 +162,23 @@ export function Progress() {
         </div>
       ))}
 
-      <h2 className="progress-heading">Trends</h2>
+      <h2 className="progress-heading">{t("progress.trends")}</h2>
       <div className="progress-trends">
         <div className="plan-card plan-card-wide">
-          <h3>Cards and labels reviewed a day</h3>
-          <p className="plan-card-note">The last 30 days.</p>
+          <h3>{t("progress.dailyTitle")}</h3>
+          <p className="plan-card-note">{t("progress.last30")}</p>
           <DailyBars
             data={data.series.map((d) => {
               const date = parseDay(d.date);
               return {
                 key: d.date,
-                short: date.toLocaleDateString(undefined, { day: "numeric", month: "short" }),
-                label: date.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }),
+                short: date.toLocaleDateString(t("drive.dateLocale"), { day: "numeric", month: "short" }),
+                label: date.toLocaleDateString(t("drive.dateLocale"), { weekday: "short", day: "numeric", month: "short" }),
                 value: d.reviews,
               };
             })}
-            unit="reviews"
-            caption="Cards and image-occlusion labels reviewed each day over the last 30 days"
+            unit={t("progress.reviewsUnit")}
+            caption={t("progress.dailyCaption")}
           />
         </div>
         {data.blocks
@@ -187,19 +190,19 @@ export function Progress() {
             const target = readJSON<{ target?: number }>(STORAGE_KEYS.examPlan(b.blockId), {}).target ?? 70;
             return (
               <div key={b.blockId} className="plan-card plan-card-wide">
-                <h3>Block {b.blockId} mock exams</h3>
+                <h3>{t("progress.mocksTitle", { block: b.blockId })}</h3>
                 <ScoreTrend
-                  points={b.mocks.map((m) => ({ date: new Date(m.date), value: m.percent, label: `${new Date(m.date).toLocaleDateString(undefined, { day: "numeric", month: "short" })}${m.paper ? `: ${m.paper}` : ""}` }))}
+                  points={b.mocks.map((m) => ({ date: new Date(m.date), value: m.percent, label: `${new Date(m.date).toLocaleDateString(t("drive.dateLocale"), { day: "numeric", month: "short" })}${m.paper ? `: ${m.paper}` : ""}` }))}
                   target={target}
                   projection={projection !== null && exam ? { date: exam, value: projection } : null}
-                  caption={`Mock exam scores for Block ${b.blockId}`}
+                  caption={t("progress.mocksCaption", { block: b.blockId })}
                 />
               </div>
             );
           })}
         {data.quizzes.length > 0 && (
           <div className="plan-card plan-card-wide">
-            <h3>Quiz scores</h3>
+            <h3>{t("progress.quizScores")}</h3>
             <ul className="quiz-trends">
               {data.quizzes.map(({ key, attempts }) => {
                 const last = attempts.at(-1);
@@ -209,11 +212,11 @@ export function Progress() {
                     <Link to={`/quizzes/${key}`} className="quiz-trend-row">
                       <SubjectBadge id={key.split("/")[1]} label={subjectLabel(key)} />
                       <span className="quiz-trend-name">
-                        {subjectLabel(key)} <small>Block {key.split("/")[0]}</small>
+                        {subjectLabel(key)} <small>{t("drive.block", { block: key.split("/")[0] })}</small>
                       </span>
                       <ScoreSparkline history={attempts} />
                       <span className="quiz-trend-last">
-                        {Math.round((last.score / last.total) * 100)}%<small> last</small>
+                        {Math.round((last.score / last.total) * 100)}%<small> {t("progress.last")}</small>
                       </span>
                     </Link>
                   </li>
@@ -224,27 +227,27 @@ export function Progress() {
         )}
       </div>
 
-      <h2 className="progress-heading">Activity</h2>
+      <h2 className="progress-heading">{t("progress.activity")}</h2>
       <div className="heatmap-wrapper">
         <ActivityHeatmap days={data.activityDays} intensity={data.intensity} selected={selectedDay} onSelect={(d) => { setSelectedDay((cur) => (cur === d ? null : d)); }} />
         <p className="heatmap-note">
-          {data.bestTime ? `You study most around ${data.bestTime}. ` : ""}
-          Tap a day to see what you studied.
+          {data.bestTime ? `${t("progress.bestTime", { time: data.bestTime })} ` : ""}
+          {t("progress.tapDay")}
         </p>
         {selectedDay && (
           <div className="day-detail" aria-live="polite">
-            <strong>{parseDay(selectedDay).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}</strong>
+            <strong>{parseDay(selectedDay).toLocaleDateString(t("drive.dateLocale"), { weekday: "long", day: "numeric", month: "long" })}</strong>
             {detail.length === 0 ? (
-              <p>{data.activityDays.includes(selectedDay) ? "You studied this day (before detailed records began)." : "Nothing recorded."}</p>
+              <p>{data.activityDays.includes(selectedDay) ? t("progress.studiedBefore") : t("progress.nothing")}</p>
             ) : (
               <ul>
                 {detail.map(({ subject, counts }) => (
                   <li key={subject}>
-                    <span>{subjectName(subject)}</span>
+                    <span>{subjectName(subject, t)}</span>
                     <span>
                       {(Object.entries(counts) as [StudyKind, number][])
                         .filter(([, n]) => n > 0)
-                        .map(([k, n]) => `${n} ${entry(KIND_NAMES, k)[n === 1 ? 0 : 1]}`)
+                        .map(([k, n]) => t(entry(KIND_NAMES, k)[n === 1 ? 0 : 1], { count: n }))
                         .join(", ")}
                     </span>
                   </li>
@@ -255,12 +258,12 @@ export function Progress() {
         )}
       </div>
 
-      <h2 className="progress-heading">Weak spots</h2>
+      <h2 className="progress-heading">{t("progress.weakSpots")}</h2>
       <div className="plan-card">
         <WeakSpotsPanel spots={data.spots} labelNames={occlusion.labels} subjectLabel={subjectLabel} />
       </div>
 
-      <h2 className="progress-heading">Milestones</h2>
+      <h2 className="progress-heading">{t("progress.milestones")}</h2>
       <div className="plan-card">
         <MilestoneList list={data.milestones} next={data.next} />
       </div>

@@ -13,6 +13,8 @@ import { subjectHueStyle } from "../lib/subjectStyle";
 import { STORAGE_KEYS } from "../lib/storage";
 import type { Answers, ExamAttempt, QuizQuestion } from "../types/content";
 import { NextUp } from "../components/plan/Today";
+import { useI18n } from "../i18n/useI18n";
+import type { Translate } from "../i18n/i18n";
 
 const OPTION_LETTERS = "ABCDEFGH";
 const EMPTY_BANK: QuizQuestion[] = [];
@@ -31,15 +33,16 @@ function formatClock(totalSec: number): string {
   return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
 }
 
-function scoreMessage(score: number, total: number): string {
+function scoreMessage(score: number, total: number, t: Translate): string {
   const pct = total === 0 ? 0 : score / total;
-  if (pct === 1) return "Perfect score.";
-  if (pct >= 0.9) return "Excellent work.";
-  if (pct >= 0.75) return "Great work.";
-  return "Worth another pass — review the explanations below.";
+  if (pct === 1) return t("quiz.scorePerfect");
+  if (pct >= 0.9) return t("quiz.scoreExcellent");
+  if (pct >= 0.75) return t("quiz.scoreGreat");
+  return t("quiz.scoreAgain");
 }
 
 export function ExamPlay() {
+  const { t } = useI18n();
   const { blockId = "" } = useParams();
   const block = blockById(blockId);
   // The block's pooled exam, drawn from its quiz questions. Past papers have their own pages
@@ -141,9 +144,9 @@ export function ExamPlay() {
     const unanswered = examBank.length - answeredCount;
     if (unanswered > 0 || flagged.size > 0) {
       const parts: string[] = [];
-      if (unanswered > 0) parts.push(`${unanswered} unanswered`);
-      if (flagged.size > 0) parts.push(`${flagged.size} flagged for review`);
-      if (!window.confirm(`You have ${parts.join(" and ")}. Submit the exam anyway?`)) return;
+      if (unanswered > 0) parts.push(t("pool.unanswered", { count: unanswered }));
+      if (flagged.size > 0) parts.push(t("pool.flaggedCount", { count: flagged.size }));
+      if (!window.confirm(t("pool.submitConfirm", { what: parts.join(t("pool.and")) }))) return;
     }
     finishExam();
   };
@@ -189,8 +192,8 @@ export function ExamPlay() {
   if (!block) {
     return (
       <section className="page">
-        <p>Unknown block.</p>
-        <Link to="/exam">Back to exam</Link>
+        <p>{t("pool.unknownBlock")}</p>
+        <Link to="/exam">{t("pool.back")}</Link>
       </section>
     );
   }
@@ -199,14 +202,14 @@ export function ExamPlay() {
     return (
       <section className="page subject-tinted" style={subjectHueStyle(blockId) as CSSProperties}>
         <Link to="/exam" className="back-link">
-          ← All exams
+          ← {t("pool.allExams")}
         </Link>
         <div className="quiz-start">
           <div className="quiz-start-badge">
             <SubjectBadge id={block.id} label={block.label} />
           </div>
           <h1>{block.label}</h1>
-          <p className="subtitle">No questions available for this block yet — check back once its subjects have content.</p>
+          <p className="subtitle">{t("pool.noQuestions")}</p>
         </div>
       </section>
     );
@@ -216,7 +219,7 @@ export function ExamPlay() {
     return (
       <section className="page subject-tinted" style={subjectHueStyle(blockId) as CSSProperties}>
         <Link to="/exam" className="back-link">
-          ← All exams
+          ← {t("pool.allExams")}
         </Link>
         <div className="quiz-start">
           <div className="quiz-start-badge">
@@ -224,23 +227,19 @@ export function ExamPlay() {
           </div>
           <h1>{block.label}</h1>
           <p className="subtitle">
-            {mode === "real"
-              ? "Timed block exam — answers aren't revealed until you submit."
-              : "Timed block exam — see if you're right after each question."}
+            {mode === "real" ? t("pool.introReal") : t("pool.introFeedback")}
           </p>
           <p className="exam-format-note">
-            {format.questionCount} questions · {Math.round(format.timeLimitSec / 60)} minutes ·{" "}
-            pooled from every subject in this block
+            {t("pool.format", { count: format.questionCount, minutes: Math.round(format.timeLimitSec / 60) })}
           </p>
 
           {lastAttempt && (
             <p className="exam-last-score">
-              Last attempt: <strong>{lastAttempt.score}/{lastAttempt.total}</strong> in{" "}
-              {formatClock(lastAttempt.timeTakenSec)}
+              {t("pool.lastAttempt", { score: `${lastAttempt.score}/${lastAttempt.total}`, time: formatClock(lastAttempt.timeTakenSec) })}
             </p>
           )}
 
-          <div className="exam-mode-toggle" role="radiogroup" aria-label="Exam mode">
+          <div className="exam-mode-toggle" role="radiogroup" aria-label={t("pool.mode")}>
             <button
               type="button"
               className={mode === "real" ? "exam-mode-btn active" : "exam-mode-btn"}
@@ -248,8 +247,8 @@ export function ExamPlay() {
               role="radio"
               aria-checked={mode === "real"}
             >
-              <span className="exam-mode-name">Real exam mode</span>
-              <span className="exam-mode-desc">No feedback until you submit — like the real thing.</span>
+              <span className="exam-mode-name">{t("pool.realMode")}</span>
+              <span className="exam-mode-desc">{t("pool.realModeHint")}</span>
             </button>
             <button
               type="button"
@@ -258,14 +257,14 @@ export function ExamPlay() {
               role="radio"
               aria-checked={mode === "feedback"}
             >
-              <span className="exam-mode-name">Instant feedback mode</span>
-              <span className="exam-mode-desc">See the correct answer and explanation after each question.</span>
+              <span className="exam-mode-name">{t("pool.feedbackMode")}</span>
+              <span className="exam-mode-desc">{t("pool.feedbackModeHint")}</span>
             </button>
           </div>
 
           <div className="quiz-start-actions">
             <button className="btn quiz-start-btn" onClick={startExam}>
-              Start exam
+              {t("pool.start")}
             </button>
           </div>
         </div>
@@ -276,15 +275,14 @@ export function ExamPlay() {
   return (
     <section className="page subject-tinted" style={subjectHueStyle(blockId) as CSSProperties}>
       <Link to="/exam" className="back-link">
-        ← All exams
+        ← {t("pool.allExams")}
       </Link>
       <div className="quiz-header">
         <div>
           <h1>{block.label}</h1>
           {!finished && (
             <p className="subtitle">
-              {examBank.length}-question block exam
-              {mode === "feedback" ? " · instant feedback mode" : " · real exam mode"}
+              {t("pool.subtitle", { count: examBank.length })} · {mode === "feedback" ? t("pool.feedbackMode") : t("pool.realMode")}
             </p>
           )}
         </div>
@@ -297,7 +295,7 @@ export function ExamPlay() {
       </div>
 
       {!finished && !currentQuestion ? (
-        <p className="subtitle">There are no questions in this session.</p>
+        <p className="subtitle">{t("quiz.emptySession")}</p>
       ) : !finished && currentQuestion ? (
         <div className="quiz-card">
           <div className="quiz-progress">
@@ -305,7 +303,7 @@ export function ExamPlay() {
               <div className="quiz-progress-fill" style={{ width: `${(answeredCount / examBank.length) * 100}%` }} />
             </div>
             <span className="quiz-progress-label">
-              Question {currentIndex + 1} of {examBank.length}
+              {t("quiz.progress", { at: currentIndex + 1, total: examBank.length })}
             </span>
           </div>
 
@@ -325,8 +323,8 @@ export function ExamPlay() {
                   className={cls}
                   onClick={() => { goToQuestion(qi); }}
                   aria-current={qi === currentIndex ? "true" : undefined}
-                  aria-label={`Go to question ${qi + 1}${flagged.has(q.id) ? " (flagged)" : ""}`}
-                  title={`Question ${qi + 1}`}
+                  aria-label={`${t("quiz.goTo", { n: qi + 1 })}${flagged.has(q.id) ? ` (${t("pool.flagged")})` : ""}`}
+                  title={t("quiz.questionN", { n: qi + 1 })}
                 >
                   {qi + 1}
                 </button>
@@ -343,7 +341,7 @@ export function ExamPlay() {
               aria-pressed={flagged.has(currentQuestion.id)}
             >
               <FlagIcon />
-              {flagged.has(currentQuestion.id) ? "Flagged" : "Flag for review"}
+              {flagged.has(currentQuestion.id) ? t("pool.flaggedLabel") : t("pool.flag")}
             </button>
           </div>
 
@@ -382,7 +380,7 @@ export function ExamPlay() {
                 </div>
 
                 <p className="quiz-keyboard-hint">
-                  {revealed ? "Tip: ← → to move between questions" : "Tip: press a letter to answer · ← → to move between questions"}
+                  {revealed ? t("quiz.tipArrows") : `${t("quiz.tipLetter")} · ${t("quiz.tipArrows")}`}
                 </p>
 
                 {revealed && (
@@ -391,7 +389,7 @@ export function ExamPlay() {
                     role="status"
                   >
                     <p className="quiz-feedback-verdict">
-                      {selected === currentQuestion.answer ? "Correct" : "Not quite"}
+                      {selected === currentQuestion.answer ? t("study.correct") : t("study.notQuite")}
                     </p>
                     <p className="quiz-feedback-explanation">{currentQuestion.explanation}</p>
                   </div>
@@ -402,22 +400,22 @@ export function ExamPlay() {
 
           <div className="quiz-nav-buttons">
             <button type="button" className="btn btn-secondary quiz-prev-btn" onClick={goPrev} disabled={currentIndex === 0}>
-              ← Previous
+              ← {t("study.previous")}
             </button>
             {isLast ? (
               <button type="button" className="btn quiz-next-btn" onClick={confirmSubmit}>
-                Submit exam
+                {t("pool.submit")}
               </button>
             ) : (
               <button type="button" className="btn btn-secondary quiz-skip-btn" onClick={goNext}>
-                Next →
+                {t("pool.next")} →
               </button>
             )}
           </div>
 
           {!isLast && (
             <button type="button" className="exam-submit-early" onClick={confirmSubmit}>
-              Submit exam now ({answeredCount}/{examBank.length} answered)
+              {t("pool.submitNow", { answered: answeredCount, total: examBank.length })}
             </button>
           )}
         </div>
@@ -430,9 +428,9 @@ export function ExamPlay() {
                 {result.score}
                 <span className="quiz-score-total">/{result.total}</span>
               </p>
-              <p className="quiz-score-caption">{scoreMessage(result.score, result.total)}</p>
+              <p className="quiz-score-caption">{scoreMessage(result.score, result.total, t)}</p>
               <p className="exam-time-caption">
-                Completed in {formatClock(result.timeTakenSec)} of {formatClock(result.timeLimitSec)}
+                {t("pool.completedIn", { time: formatClock(result.timeTakenSec), limit: formatClock(result.timeLimitSec) })}
               </p>
             </div>
 
@@ -442,11 +440,11 @@ export function ExamPlay() {
                   className="btn"
                   onClick={() => { startCustomBank(buildSessionBank(missedQuestions), missedQuestions.length * 60); }}
                 >
-                  Retake missed only ({missedQuestions.length})
+                  {t("pool.retakeMissed", { count: missedQuestions.length })}
                 </button>
               )}
               <Link to="/exam" className="btn btn-secondary">
-                Choose another block
+                {t("pool.another")}
               </Link>
             </div>
 
@@ -457,7 +455,7 @@ export function ExamPlay() {
               onClick={() => { setReviewOpen((v) => !v); }}
               aria-expanded={reviewOpen}
             >
-              {reviewOpen ? "Hide full review ▲" : "Show full review ▼"}
+              {reviewOpen ? `${t("quiz.hideReview")} ▲` : `${t("quiz.showReview")} ▼`}
             </button>
 
             {reviewOpen && (
@@ -487,7 +485,7 @@ export function ExamPlay() {
                         })}
                       </div>
                       <p className={`quiz-feedback-explanation quiz-review-explanation ${wasCorrect ? "correct" : "incorrect"}`}>
-                        {wasCorrect ? "Correct. " : chosen === undefined ? "Not answered. " : "Missed. "}
+                        {wasCorrect ? `${t("study.correct")}. ` : chosen === undefined ? `${t("pool.notAnswered")}. ` : `${t("quiz.missed")}. `}
                         {q.explanation}
                       </p>
                     </li>
