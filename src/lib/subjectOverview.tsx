@@ -19,11 +19,14 @@ import { INITIAL_CARD_STATE, isDue } from "./sm2";
 import { labExercises, type LabExercise } from "./labActivities";
 import { BookIcon, CardsIcon, FlaskIcon, OcclusionIcon, QuizIcon, SlidesIcon, SummaryIcon } from "../components/icons";
 import type { CardStateMap, QuizAttempt } from "../types/content";
+import { englishT, type Translate } from "../i18n/i18n";
 
 // Everything one subject has, across every section, with the student's progress in each:
 // the subject cards on Home and the subject pages are both built from this.
 
 export interface SubjectFacet {
+  /** Which part of the subject (also its CSS class). */
+  kind: "flashcards" | "quiz" | "ebook" | "summary" | "occlusion" | "lab" | "modules";
   label: string;
   detail: string;
   to: string;
@@ -48,7 +51,7 @@ export function labSubjectKey(e: LabExercise): string {
   return e.guide.to.split("/").slice(2, 4).join("/");
 }
 
-export function buildSubjectOverviews(): SubjectOverview[] {
+export function buildSubjectOverviews(t: Translate = englishT): SubjectOverview[] {
   // A subject can have material in more than one block (e.g. physiology in 1.1 and 1.2), so
   // each block gets its own card, showing only the content whose folder is in that block.
   const all = [
@@ -80,8 +83,9 @@ export function buildSubjectOverviews(): SubjectOverview[] {
         mastery = deck.length > 0 ? (masteredCount / deck.length) * 100 : 0;
         activityScore += due;
         facets.push({
-          label: "Flashcards",
-          detail: due > 0 ? `${deck.length} · ${due} due` : `${deck.length} cards`,
+          kind: "flashcards",
+          label: t("home.facetFlashcards"),
+          detail: due > 0 ? t("home.countDue", { count: deck.length, due }) : t("home.cards", { count: deck.length }),
           to: `/flashcards/${blockId}/${id}`,
           icon: <CardsIcon />,
         });
@@ -95,14 +99,15 @@ export function buildSubjectOverviews(): SubjectOverview[] {
         const due = readJSON<string[]>(STORAGE_KEYS.quizDue(key), []).length;
         activityScore += due;
         facets.push({
-          label: "Quiz",
+          kind: "quiz",
+          label: t("home.facetQuiz"),
           detail: bank
             ? due > 0
-              ? `${bank.length} · ${due} due`
+              ? t("home.countDue", { count: bank.length, due })
               : last
-                ? `${bank.length} · last ${last.score}/${last.total}`
-                : `${bank.length} questions`
-            : "Interactive",
+                ? t("home.countLast", { count: bank.length, score: last.score, total: last.total })
+                : t("home.questions", { count: bank.length })
+            : t("home.interactive"),
           to: `/quizzes/${blockId}/${id}`,
           icon: <QuizIcon />,
         });
@@ -112,13 +117,14 @@ export function buildSubjectOverviews(): SubjectOverview[] {
       if (meta) {
         const completedCount = readJSON<string[]>(STORAGE_KEYS.ebookCompleted(key), []).length;
         facets.push({
-          label: "Ebook",
+          kind: "ebook",
+          label: t("home.facetEbook"),
           detail:
             meta.chapters.length > 0
               ? completedCount > 0
-                ? `${completedCount}/${meta.chapters.length} complete`
-                : `${meta.chapters.length} chapters`
-              : "Reference PDF",
+                ? t("home.chaptersDone", { done: completedCount, count: meta.chapters.length })
+                : t("home.chapters", { count: meta.chapters.length })
+              : t("home.referencePdf"),
           to: `/ebooks/${blockId}/${id}`,
           icon: <BookIcon />,
         });
@@ -126,8 +132,9 @@ export function buildSubjectOverviews(): SubjectOverview[] {
 
       if (summaries.get(key)) {
         facets.push({
-          label: "Summary",
-          detail: "Written summary",
+          kind: "summary",
+          label: t("home.facetSummary"),
+          detail: t("home.writtenSummary"),
           to: `/summaries/${blockId}/${id}`,
           icon: <SummaryIcon />,
         });
@@ -135,8 +142,9 @@ export function buildSubjectOverviews(): SubjectOverview[] {
 
       if (occlusionKeys.includes(key)) {
         facets.push({
-          label: "Occlusion",
-          detail: "Labelled figures",
+          kind: "occlusion",
+          label: t("home.facetOcclusion"),
+          detail: t("home.labelledFigures"),
           to: `/occlusion/${blockId}/${id}`,
           icon: <OcclusionIcon />,
         });
@@ -146,8 +154,9 @@ export function buildSubjectOverviews(): SubjectOverview[] {
       if (labs.length > 0) {
         const activities = labs.reduce((n, e) => n + e.activities.length, 0);
         facets.push({
-          label: "Lab",
-          detail: `${activities} activities`,
+          kind: "lab",
+          label: t("home.facetLab"),
+          detail: t("home.activities", { count: activities }),
           to: "/lab",
           icon: <FlaskIcon />,
         });
@@ -156,8 +165,9 @@ export function buildSubjectOverviews(): SubjectOverview[] {
       const modulePdfs = modulesByBlockSubject.get(key);
       if (modulePdfs) {
         facets.push({
-          label: "Modules",
-          detail: `${modulePdfs.length} PDF${modulePdfs.length === 1 ? "" : "s"}`,
+          kind: "modules",
+          label: t("home.facetModules"),
+          detail: t("home.pdfs", { count: modulePdfs.length }),
           to: `/modules/${blockId}/${id}`,
           icon: <SlidesIcon />,
         });
@@ -169,6 +179,6 @@ export function buildSubjectOverviews(): SubjectOverview[] {
 
 
 /** One subject's overview, or undefined for an unknown key. */
-export function subjectOverview(key: string): SubjectOverview | undefined {
-  return buildSubjectOverviews().find((s) => s.key === key);
+export function subjectOverview(key: string, t: Translate = englishT): SubjectOverview | undefined {
+  return buildSubjectOverviews(t).find((s) => s.key === key);
 }

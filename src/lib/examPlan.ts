@@ -1,6 +1,7 @@
 import { blockById, studyBlocks } from "./blocks";
 import { ebookSubjects, flashcardSubjects, keyOf, quizSubjects } from "./content";
 import { readJSON, STORAGE_KEYS, writeJSON } from "./storage";
+import { englishT, type Translate } from "../i18n/i18n";
 
 // A block's exam plan: when the exam is, how long the student studies a day, and what score
 // they're aiming for. The date comes from the block's official date unless the student sets
@@ -128,10 +129,10 @@ export function focusBlockId(): string | null {
 }
 
 /** "12 days to the exam", "Exam tomorrow"… */
-export function countdownText(daysLeft: number | null): string {
-  if (daysLeft === null) return "No exam date yet";
-  if (daysLeft < 0) return "Exam has passed";
-  if (daysLeft === 0) return "Exam today";
-  if (daysLeft === 1) return "Exam tomorrow";
-  return `${daysLeft} days to the exam`;
+export function countdownText(daysLeft: number | null, t: Translate = englishT): string {
+  if (daysLeft === null) return t("plan.noDate");
+  if (daysLeft < 0) return t("plan.passed");
+  if (daysLeft === 0) return t("plan.today");
+  if (daysLeft === 1) return t("plan.tomorrow");
+  return t("plan.daysLeft", { count: daysLeft });
 }

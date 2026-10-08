@@ -20,3 +20,8 @@ export function translate(language: Language, key: MessageKey, vars?: Record<str
   if (!vars) return text;
   return text.replace(/\{(\w+)\}/g, (match, name: string) => (Object.hasOwn(vars, name) ? String(vars[name]) : match));
 }
+
+export type Translate = I18nValue["t"];
+
+/** For code that runs outside the app's language (tests, the prerendered pages). */
+export const englishT: Translate = (key, vars) => translate("en", key, vars);

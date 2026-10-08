@@ -27,6 +27,8 @@ import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { AtomIcon, BodyIcon, CalendarIcon, FlaskIcon, LinkIcon, MapIcon, PlayCircleIcon, SearchIcon, TimerIcon } from "../components/icons";
 import type { CardStateMap, ExamAttempt, QuizAttempt, ReadingPosition } from "../types/content";
 import { packagesForBlock } from "../lib/exams";
+import { useI18n } from "../i18n/useI18n";
+import type { Translate } from "../i18n/i18n";
 
 interface ContinueItem {
   to: string;
@@ -37,7 +39,7 @@ interface ContinueItem {
 }
 
 
-function buildContinueItems(): ContinueItem[] {
+function buildContinueItems(t: Translate): ContinueItem[] {
   const items: ContinueItem[] = [];
 
   const resumes = ebookSubjects
@@ -54,8 +56,8 @@ function buildContinueItems(): ContinueItem[] {
     const chapter = meta.chapters.find((c) => c.id === position.chapterId);
     items.push({
       to: `/ebooks/${s.blockId}/${s.id}/${position.chapterId}`,
-      title: `Continue "${meta.title}"`,
-      detail: chapter ? chapter.title : "Resume reading",
+      title: t("home.continueBook", { title: meta.title }),
+      detail: chapter ? chapter.title : t("home.resumeReading"),
       subjectId: s.id,
       subjectLabel: s.label,
     });
@@ -78,8 +80,8 @@ function buildContinueItems(): ContinueItem[] {
     .forEach(({ s, due }) => {
       items.push({
         to: `/flashcards/${s.blockId}/${s.id}`,
-        title: `${due} card${due === 1 ? "" : "s"} due in ${s.label}`,
-        detail: "Spaced-repetition review",
+        title: t("home.cardsDueIn", { count: due, subject: s.label }),
+        detail: t("home.spacedReview"),
         subjectId: s.id,
         subjectLabel: s.label,
       });
@@ -98,8 +100,8 @@ function buildContinueItems(): ContinueItem[] {
       dueQuizSubjectIds.add(keyOf(s));
       items.push({
         to: `/quizzes/${s.blockId}/${s.id}`,
-        title: `${due} quiz question${due === 1 ? "" : "s"} due in ${s.label}`,
-        detail: "Missed in a past attempt",
+        title: t("home.questionsDueIn", { count: due, subject: s.label }),
+        detail: t("home.missedBefore"),
         subjectId: s.id,
         subjectLabel: s.label,
       });
@@ -117,8 +119,8 @@ function buildContinueItems(): ContinueItem[] {
     .forEach(({ s, last }) => {
       items.push({
         to: `/quizzes/${s.blockId}/${s.id}`,
-        title: `Retake ${s.label} quiz`,
-        detail: `Last score ${last.score}/${last.total}`,
+        title: t("home.retakeQuiz", { subject: s.label }),
+        detail: t("home.lastScore", { score: last.score, total: last.total }),
         subjectId: s.id,
         subjectLabel: s.label,
       });
@@ -134,6 +136,7 @@ function orderByCurrentBlock<T extends { block: { id: string } }>(groups: T[], c
 }
 
 export function Home() {
+  const { t } = useI18n();
   const [currentBlock, setCurrentBlock] = useLocalStorage<string>(STORAGE_KEYS.currentBlock, "");
   const tip = tipOfDay(tips);
   const activityDays = getActivityDays();
@@ -141,8 +144,8 @@ export function Home() {
   const longest = getLongestStreak(activityDays);
   const hasActivity = activityDays.length > 0;
 
-  const continueItems = buildContinueItems();
-  const subjects = buildSubjectOverviews();
+  const continueItems = buildContinueItems(t);
+  const subjects = buildSubjectOverviews(t);
   const featuredId =
     subjects.length > 1
       ? subjects.reduce((top, s) => (s.activityScore > top.activityScore ? s : top), subjects[0]).key
@@ -166,17 +169,17 @@ export function Home() {
           <h2 className="section-heading">
             <AtomIcon />
             {block.label}
-            {block.id === currentBlock && <span className="your-block-pill">Your block</span>}
+            {block.id === currentBlock && <span className="your-block-pill">{t("home.yourBlock")}</span>}
           </h2>
           {papers > 0 ? (
             <Link to="/exam" className="block-exam-link">
               <TimerIcon />
-              {papers === 1 ? "1 past paper" : `${papers} past papers`}
+              {t("home.pastPapers", { count: papers })}
             </Link>
           ) : examPool > 0 && (
             <Link to={`/exam/${block.id}`} className="block-exam-link">
               <TimerIcon />
-              {lastExam ? `Exam · last ${lastExam.score}/${lastExam.total}` : "Take the exam"}
+              {lastExam ? t("home.examLast", { score: lastExam.score, total: lastExam.total }) : t("home.takeExam")}
             </Link>
           )}
         </div>
@@ -209,7 +212,7 @@ export function Home() {
                 {subject.mastery !== null && (
                   <RadialGauge
                     percent={subject.mastery}
-                    label={`${Math.round(subject.mastery)}% of ${subject.label} flashcards mastered`}
+                    label={t("home.mastered", { percent: Math.round(subject.mastery), subject: subject.label })}
                   />
                 )}
               </div>
@@ -218,7 +221,7 @@ export function Home() {
                   <Link
                     key={facet.to + facet.label}
                     to={facet.to}
-                    className={`subject-pill subject-pill-${facet.label.toLowerCase()}`}
+                    className={`subject-pill subject-pill-${facet.kind}`}
                   >
                     <span className="subject-pill-icon">{facet.icon}</span>
                     <span className="subject-pill-text">
@@ -240,7 +243,7 @@ export function Home() {
                 <SubjectBadge id={u.id} label={u.label} />
                 <h3>{u.label}</h3>
               </div>
-              <p className="subject-card-upcoming-note">Content coming soon.</p>
+              <p className="subject-card-upcoming-note">{t("home.comingSoon")}</p>
             </div>
           ))}
         </div>
@@ -259,7 +262,7 @@ export function Home() {
             <div className="dashboard-section">
               <h2 className="section-heading">
                 <PlayCircleIcon />
-                Pick up where you left off
+                {t("home.pickUp")}
               </h2>
               <div className="continue-list">
                 {continueItems.map((item) => (
@@ -290,8 +293,8 @@ export function Home() {
           {foldedGroups.length > 0 && (
             <details className="other-blocks">
               <summary>
-                Other blocks
-                <span>{foldedGroups.map((g) => `Block ${g.block.id}`).join(", ")}</span>
+                {t("home.otherBlocks")}
+                <span>{foldedGroups.map((g) => t("admin.blockN", { block: g.block.id })).join(", ")}</span>
               </summary>
               {foldedGroups.map(blockSection)}
             </details>
@@ -302,16 +305,16 @@ export function Home() {
           <div className="dashboard-widget">
             <h2 className="section-heading">
               <CalendarIcon />
-              Activity
+              {t("home.activity")}
             </h2>
             <div className="mini-stats">
               <div>
                 <span className="stat-value">{streak}</span>
-                <span className="stat-label">Current streak</span>
+                <span className="stat-label">{t("home.currentStreak")}</span>
               </div>
               <div>
                 <span className="stat-value">{longest}</span>
-                <span className="stat-label">Longest</span>
+                <span className="stat-label">{t("home.longest")}</span>
               </div>
             </div>
             {hasActivity && (
@@ -320,38 +323,38 @@ export function Home() {
               </div>
             )}
             <Link to="/progress" className="widget-link">
-              Full progress →
+              {t("home.fullProgress")} →
             </Link>
           </div>
 
           <div className="dashboard-widget">
             <h2 className="section-heading">
               <LinkIcon />
-              Explore
+              {t("nav.explore")}
             </h2>
-            <nav className="quick-links" aria-label="Explore">
+            <nav className="quick-links" aria-label={t("nav.explore")}>
               <Link to="/atlas">
                 <span className="quick-links-label">
                   <BodyIcon />
-                  3D anatomy
+                  {t("nav.atlas")}
                 </span>
               </Link>
               <Link to="/map">
                 <span className="quick-links-label">
                   <MapIcon />
-                  Knowledge map
+                  {t("nav.map")}
                 </span>
               </Link>
               <Link to="/lab">
                 <span className="quick-links-label">
                   <FlaskIcon />
-                  Virtual Lab
+                  {t("nav.lab")}
                 </span>
               </Link>
               <Link to="/search">
                 <span className="quick-links-label">
                   <SearchIcon />
-                  Search everything
+                  {t("home.searchEverything")}
                 </span>
                 <kbd>⌘K</kbd>
               </Link>
@@ -362,7 +365,7 @@ export function Home() {
             <div className="tip-card">
               <span className="tip-dot" aria-hidden="true" />
               <div>
-                <span className="tip-label">Tip of the day</span>
+                <span className="tip-label">{t("home.tip")}</span>
                 <p>{tip}</p>
               </div>
             </div>

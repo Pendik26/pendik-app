@@ -32,9 +32,13 @@ import {
   UserIcon,
 } from "./icons";
 import { useAccount } from "../hooks/useAccount";
+import { useI18n } from "../i18n/useI18n";
+import type { MessageKey } from "../i18n/i18n";
+import { LanguageSwitch } from "./LanguageSwitch";
 
 interface NavItem {
   to: string;
+  /** A message key until useNavGroups translates it. */
   label: string;
   end?: boolean;
   icon: ReactNode;
@@ -56,64 +60,71 @@ interface NavGroup {
 const groups: NavGroup[] = [
   {
     items: [
-      { to: "/", label: "Home", end: true, icon: <HomeIcon /> },
-      { to: "/subjects", label: "Subjects", icon: <GridIcon /> },
-      { to: "/alfond", label: "Alfond", icon: <AlfondIcon /> },
+      { to: "/", label: "nav.home", end: true, icon: <HomeIcon /> },
+      { to: "/subjects", label: "nav.subjects", icon: <GridIcon /> },
+      { to: "/alfond", label: "nav.alfond", icon: <AlfondIcon /> },
     ],
   },
   {
-    label: "Study",
+    label: "nav.study",
     items: [
-      { to: "/flashcards", label: "Flashcards", icon: <CardsIcon />, due: "cards" },
-      { to: "/quizzes", label: "Quizzes", icon: <QuizIcon />, due: "questions" },
-      { to: "/occlusion", label: "Image Occlusion", icon: <OcclusionIcon /> },
-      { to: "/exam", label: "Exams", icon: <TimerIcon /> },
-      { to: "/plan", label: "Exam plan", icon: <CalendarIcon /> },
+      { to: "/flashcards", label: "nav.flashcards", icon: <CardsIcon />, due: "cards" },
+      { to: "/quizzes", label: "nav.quizzes", icon: <QuizIcon />, due: "questions" },
+      { to: "/occlusion", label: "nav.occlusion", icon: <OcclusionIcon /> },
+      { to: "/exam", label: "nav.exams", icon: <TimerIcon /> },
+      { to: "/plan", label: "nav.plan", icon: <CalendarIcon /> },
     ],
   },
   {
-    label: "Library",
+    label: "nav.library",
     items: [
-      { to: "/ebooks", label: "Ebooks", icon: <BookIcon /> },
-      { to: "/summaries", label: "Summaries", icon: <SummaryIcon /> },
-      { to: "/modules", label: "Modules", icon: <SlidesIcon /> },
-      { to: "/drive", label: "Class Drive", icon: <DriveIcon /> },
+      { to: "/ebooks", label: "nav.ebooks", icon: <BookIcon /> },
+      { to: "/summaries", label: "nav.summaries", icon: <SummaryIcon /> },
+      { to: "/modules", label: "nav.modules", icon: <SlidesIcon /> },
+      { to: "/drive", label: "nav.drive", icon: <DriveIcon /> },
     ],
   },
   {
-    label: "Explore",
+    label: "nav.explore",
     items: [
-      { to: "/atlas", label: "3D anatomy", icon: <BodyIcon /> },
-      { to: "/map", label: "Knowledge map", icon: <MapIcon /> },
-      { to: "/lab", label: "Virtual Lab", icon: <FlaskIcon /> },
+      { to: "/atlas", label: "nav.atlas", icon: <BodyIcon /> },
+      { to: "/map", label: "nav.map", icon: <MapIcon /> },
+      { to: "/lab", label: "nav.lab", icon: <FlaskIcon /> },
     ],
   },
   {
-    label: "You",
+    label: "nav.you",
     items: [
-      { to: "/progress", label: "Progress", icon: <ProgressIcon /> },
-      { to: "/leaderboard", label: "Leaderboard", icon: <TrophyIcon /> },
-      { to: "/account", label: "Account", icon: <UserIcon /> },
-      { to: "/docs", label: "Help", icon: <HelpIcon /> },
-      { to: "/admin", label: "Admin", icon: <ShieldIcon />, admin: true },
+      { to: "/progress", label: "nav.progress", icon: <ProgressIcon /> },
+      { to: "/leaderboard", label: "nav.leaderboard", icon: <TrophyIcon /> },
+      { to: "/account", label: "nav.account", icon: <UserIcon /> },
+      { to: "/docs", label: "nav.help", icon: <HelpIcon /> },
+      { to: "/admin", label: "nav.admin", icon: <ShieldIcon />, admin: true },
     ],
   },
 ];
 
 /** The phone tab bar: two direct tabs and three that open their groups as a sheet. */
 const tabs: { id: string; label: string; icon: ReactNode; to?: string; sections?: NavGroup[] }[] = [
-  { id: "home", label: "Home", icon: <HomeIcon />, to: "/" },
-  { id: "study", label: "Study", icon: <CardsIcon />, sections: [{ items: [groups[0].items[1], ...groups[1].items] }] },
-  { id: "library", label: "Library", icon: <BookIcon />, sections: [groups[2], groups[3]] },
-  { id: "search", label: "Search", icon: <SearchIcon />, to: "/search" },
-  { id: "me", label: "Me", icon: <UserIcon />, sections: [{ items: [groups[0].items[2], ...groups[4].items] }] },
+  { id: "home", label: "nav.home", icon: <HomeIcon />, to: "/" },
+  { id: "study", label: "nav.study", icon: <CardsIcon />, sections: [{ items: [groups[0].items[1], ...groups[1].items] }] },
+  { id: "library", label: "nav.library", icon: <BookIcon />, sections: [groups[2], groups[3]] },
+  { id: "search", label: "nav.search", icon: <SearchIcon />, to: "/search" },
+  { id: "me", label: "nav.me", icon: <UserIcon />, sections: [{ items: [groups[0].items[2], ...groups[4].items] }] },
 ];
 
-/** Filters groups to what this student sees: admin links only for admins. */
-function useVisibleSectionsFilter(): <T extends { items: NavItem[] }>(list: T[]) => T[] {
+/** Groups as this student sees them: in their language, admin links only for admins. */
+function useNavGroups(): <T extends { label?: string; items: NavItem[] }>(list: T[]) => T[] {
   const { user } = useAccount();
+  const { t } = useI18n();
   const isAdmin = user?.role === "admin";
-  return (list) => list.map((g) => ({ ...g, items: g.items.filter((i) => isAdmin || !i.admin) }));
+  const tr = (key: string) => t(key as MessageKey);
+  return (list) =>
+    list.map((g) => ({
+      ...g,
+      label: g.label && tr(g.label),
+      items: g.items.filter((i) => isAdmin || !i.admin).map((i) => ({ ...i, label: tr(i.label) })),
+    }));
 }
 
 /** The due count for a link, if it has one and anything is due. */
@@ -121,10 +132,12 @@ function dueFor(item: NavItem, counts: { cards: number; questions: number }): nu
   return item.due ? counts[item.due] : 0;
 }
 
-function DueCount({ n, label }: { n: number; label: string }) {
+function DueCount({ n, kind }: { n: number; kind: NavItem["due"] }) {
+  const { t } = useI18n();
   if (n <= 0) return null;
+  const label = kind === "cards" ? t("nav.dueCards", { count: n }) : t("nav.dueQuestions", { count: n });
   return (
-    <span className="nav-due" aria-label={`${n} ${label} due`} title={`${n} ${label} due for review`}>
+    <span className="nav-due" aria-label={label} title={label}>
       {n > 99 ? "99+" : n}
     </span>
   );
@@ -137,7 +150,8 @@ export function MobileTabBar() {
   const { pathname } = useLocation();
   const counts = useDueCounts();
   const [open, setOpen] = useState<string | null>(null);
-  const visibleSections = useVisibleSectionsFilter();
+  const navGroups = useNavGroups();
+  const { t } = useI18n();
   // A new page closes the sheet that led to it.
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
@@ -153,7 +167,7 @@ export function MobileTabBar() {
     return () => { window.removeEventListener("keydown", onKeyDown); };
   }, [open]);
 
-  const visibleTabs = tabs.map((tab) => ({ ...tab, sections: tab.sections && visibleSections(tab.sections) }));
+  const visibleTabs = tabs.map((tab) => ({ ...tab, label: t(tab.label as MessageKey), sections: tab.sections && navGroups(tab.sections) }));
   const sheet = visibleTabs.find((t) => t.id === open);
   return (
     <>
@@ -170,7 +184,7 @@ export function MobileTabBar() {
                     <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? "tabsheet-link active" : "tabsheet-link")}>
                       <span className="tabsheet-icon">{item.icon}</span>
                       {item.label}
-                      <DueCount n={dueFor(item, counts)} label={item.due === "cards" ? "flashcards" : "quiz questions"} />
+                      <DueCount n={dueFor(item, counts)} kind={item.due} />
                     </NavLink>
                   ))}
                 </div>
@@ -179,7 +193,7 @@ export function MobileTabBar() {
           </div>
         </div>
       )}
-      <nav className="tabbar" aria-label="Sections">
+      <nav className="tabbar" aria-label={t("nav.sections")}>
         {visibleTabs.map((tab) => {
           // Subject pages sit under Home: they're reached from its subject cards.
           const items = (tab.sections ?? []).flatMap((s) => s.items);
@@ -195,7 +209,7 @@ export function MobileTabBar() {
             <button key={tab.id} type="button" className={cls} aria-expanded={open === tab.id} aria-haspopup="dialog" onClick={() => { setOpen((o) => (o === tab.id ? null : tab.id)); }}>
               {tab.icon}
               <span>{tab.label}</span>
-              {due > 0 && <span className="tabbar-dot" aria-label={`${due} reviews due`} />}
+              {due > 0 && <span className="tabbar-dot" aria-label={t("nav.dueReviews", { count: due })} />}
             </button>
           );
         })}
@@ -226,7 +240,8 @@ export function Sidebar() {
   const hoveredLink = useRef<HTMLElement | null>(null);
   const { pathname } = useLocation();
   const counts = useDueCounts();
-  const visibleGroups = useVisibleSectionsFilter()(groups);
+  const visibleGroups = useNavGroups()(groups);
+  const { t } = useI18n();
   // On the collapsed rail, the hovered or focused link's name, shown beside it right away
   // (a title attribute takes a second to appear and can't be styled).
   const [tip, setTip] = useState<{ label: string; x: number; y: number; path: string } | null>(null);
@@ -354,7 +369,7 @@ export function Sidebar() {
             type="button"
             className="icon-btn sidebar-toggle"
             onClick={() => { setDrawerOpen((o) => !o); }}
-            aria-label={drawerOpen ? "Close menu" : "Open menu"}
+            aria-label={drawerOpen ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={drawerOpen}
             aria-controls="app-sidebar"
           >
@@ -369,7 +384,7 @@ export function Sidebar() {
 
           <div className="topbar-brand">
             <PulseLine width={24} height={14} />
-            Medicine
+            Pendik
           </div>
 
           <div className="topbar-actions">
@@ -391,16 +406,16 @@ export function Sidebar() {
         <div className="sidebar-brand">
           <span className="sidebar-brand-name">
             <PulseLine width={28} height={17} />
-            Medicine
+            Pendik
           </span>
           <button
             type="button"
             className="icon-btn sidebar-collapse-btn"
             onClick={() => { setCollapsed((c) => !c); }}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? t("nav.expand") : t("nav.collapse")}
             aria-expanded={!collapsed}
             aria-controls="app-sidebar"
-            title={`${collapsed ? "Expand" : "Collapse"} sidebar (${collapseShortcut})`}
+            title={`${collapsed ? t("nav.expand") : t("nav.collapse")} (${collapseShortcut})`}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               <rect x="3.5" y="4.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
@@ -419,7 +434,7 @@ export function Sidebar() {
 
         <nav
           className="sidebar-nav"
-          aria-label="Primary"
+          aria-label={t("nav.primary")}
           ref={navRef}
           onPointerMove={onNavPointerMove}
           onPointerLeave={onNavPointerLeave}
@@ -451,7 +466,7 @@ export function Sidebar() {
                 >
                   <span className="sidebar-link-icon">{link.icon}</span>
                   <span className="sidebar-link-label">{link.label}</span>
-                  <DueCount n={dueFor(link, counts)} label={link.due === "cards" ? "flashcards" : "quiz questions"} />
+                  <DueCount n={dueFor(link, counts)} kind={link.due} />
                 </NavLink>
               ))}
             </Fragment>
@@ -468,12 +483,13 @@ export function Sidebar() {
               type="button"
               className="icon-btn command-trigger"
               onClick={openCommandPalette}
-              aria-label="Open command palette"
-              title="Search & jump to anything"
+              aria-label={t("nav.commandPalette")}
+              title={t("nav.commandPaletteHint")}
             >
               <SearchIcon />
               <kbd>{isMac ? "⌘K" : "Ctrl K"}</kbd>
             </button>
+            <LanguageSwitch compact />
             <ThemeToggle />
           </div>
         </div>

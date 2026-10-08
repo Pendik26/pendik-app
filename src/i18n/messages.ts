@@ -4,6 +4,9 @@
 
 import { adminEn, adminId } from "./sections/admin";
 import { examEn, examId } from "./sections/exam";
+import { homeEn, homeId } from "./sections/home";
+import { planEn, planId } from "./sections/plan";
+import { navEn, navId } from "./sections/nav";
 
 const coreEn = {
   // Shared
@@ -91,10 +94,6 @@ const coreEn = {
   "account.downloadHint": "Everything saved in your account, as a JSON file.",
   "account.signOutClear": "Sign out and clear this device",
 
-  // Navigation (new sections)
-  "nav.exams": "Exams",
-  "nav.drive": "Class Drive",
-  "nav.admin": "Admin",
 } as const;
 
 const coreId: { [K in keyof typeof coreEn]: string } = {
@@ -178,13 +177,10 @@ const coreId: { [K in keyof typeof coreEn]: string } = {
   "account.downloadHint": "Semua yang tersimpan di akun kamu, sebagai file JSON.",
   "account.signOutClear": "Keluar dan bersihkan perangkat ini",
 
-  "nav.exams": "Ujian",
-  "nav.drive": "Drive Kelas",
-  "nav.admin": "Admin",
 };
 
-export const en = { ...coreEn, ...examEn, ...adminEn };
+export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn };
 
 export type Messages = { [K in keyof typeof en]: string };
 
-export const id: Messages = { ...coreId, ...examId, ...adminId };
+export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId };
