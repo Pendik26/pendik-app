@@ -13,6 +13,30 @@ Drive into the database every morning.
 
 The steps below go in order. Each one says how to check it worked.
 
+## With Vercel's Supabase integration
+
+Connecting Supabase from the Vercel project (Storage / Integrations →
+Supabase) creates the Supabase project and sets these on Vercel for you:
+
+| Variable | Used for |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (or `…_ANON_KEY`) | the app: the build reads them in place of `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` |
+| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_ANON_KEY` | also accepted by the build, as a fallback |
+| `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWT_SECRET` | nothing in the app; the build never puts them in the page, and stops if one is set as the public key |
+| `POSTGRES_URL_NON_POOLING` | applying the schema from your computer (step 1) |
+| `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, the other `POSTGRES_*` | nothing |
+
+So with the integration, step 4's two Supabase variables are already done,
+and "create the project" in step 1 is too. The integration sets them for
+**Production** only: a Preview deployment shows "Supabase isn't configured"
+until you tick Preview for the two `NEXT_PUBLIC_` variables in Vercel →
+Settings → Environment Variables.
+
+Everything else below is still by hand: applying the schema (step 1),
+sign-in settings and Google (step 2), Edge Function secrets and deploy (step
+3), `VITE_AI_ENABLED` (step 4), the Drive sync (step 5), and the first admin,
+roster and past papers (step 6).
+
 ## 1. Create the Supabase project
 
 Use a **new** project. The tables here were written from scratch in English
@@ -37,9 +61,12 @@ import), see [step 6](#6-first-admin-roster-and-past-papers).
    supabase db push
    ```
 
-   This runs `supabase/migrations/*.sql` in order. **Check:** Table Editor
-   shows `roster`, `profiles`, `questions`, `packages`, `attempts`,
-   `drive_files`, `progress` and the rest.
+   This runs `supabase/migrations/*.sql` in order. Without `supabase
+   link`, give it the database directly: `supabase db push --db-url
+   "$POSTGRES_URL_NON_POOLING"` (with the integration, copy that value from
+   Vercel; it holds the database password, so keep it off GitHub).
+   **Check:** Table Editor shows `roster`, `profiles`, `questions`,
+   `packages`, `attempts`, `drive_files`, `progress` and the rest.
 
 ## 2. Sign-in settings
 
@@ -123,8 +150,8 @@ Edge Functions page lists all three.
 
    | Variable | Value |
    | --- | --- |
-   | `VITE_SUPABASE_URL` | `https://<project-ref>.supabase.co` |
-   | `VITE_SUPABASE_PUBLISHABLE_KEY` | Project Settings → API → publishable (anon) key |
+   | `VITE_SUPABASE_URL` | `https://<project-ref>.supabase.co` (or the integration's `NEXT_PUBLIC_SUPABASE_URL`) |
+   | `VITE_SUPABASE_PUBLISHABLE_KEY` | Project Settings → API → publishable (anon) key (or the integration's `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) |
    | `VITE_AI_ENABLED` | `true` once the `AI_*` secrets are set, otherwise leave it out |
    | `SITE_URL` | optional: the public address, if it isn't `https://pendik-app.vercel.app` |
 
