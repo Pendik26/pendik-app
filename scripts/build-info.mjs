@@ -4,7 +4,7 @@
 // completed by fetching the rest of the history, or asked from GitHub, before giving up.
 import { execFileSync } from "node:child_process";
 
-const REPO = "neccrr/medicine";
+const REPO = "Pendik26/pendik-app";
 
 const git = (...args) => execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 20_000 }).trim();
 const tryGit = (...args) => {
@@ -25,7 +25,7 @@ export function versionFromCount(count) {
 async function countFromGitHub(sha) {
   try {
     const res = await fetch(`https://api.github.com/repos/${REPO}/commits?sha=${sha}&per_page=1`, {
-      headers: { accept: "application/vnd.github+json", "user-agent": "medicine-build" },
+      headers: { accept: "application/vnd.github+json", "user-agent": "pendik-build" },
       signal: AbortSignal.timeout(5000),
     });
     if (!res.ok) return null;

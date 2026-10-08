@@ -1,7 +1,7 @@
 // The production site, shared by the build (vite.config.ts, the prerender step) and the app.
 
-export const SITE_ORIGIN = "https://medicine.necr.help";
-export const SITE_NAME = "Medicine";
-export const HOME_TITLE = "Medicine — Free Study Tool for Medical Students";
+export const SITE_ORIGIN = "https://pendik-app.vercel.app";
+export const SITE_NAME = "Pendik";
+export const HOME_TITLE = "Pendik: Study Tool for Pendik 26";
 export const HOME_DESCRIPTION =
-  "Free flashcards, quizzes, timed block exams, ebooks and summaries for medical school. Works offline, with optional accounts that sync across devices.";
+  "Flashcards, quizzes, past-paper exams, the class Drive, ebooks and summaries for Pendik 26 medical students.";

@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Privacy Policy · Medicine</title>
-    <meta name="description" content="What the Medicine study tool stores, why, who processes it, and how to download or delete it." />
-    <link rel="canonical" href="https://medicine.necr.help/privacy" />
+    <title>Privacy Policy · Pendik</title>
+    <meta name="description" content="What Pendik stores, why, who processes it, and how to have it deleted." />
+    <link rel="canonical" href="https://pendik-app.vercel.app/privacy" />
     <link rel="icon" type="image/svg+xml" href="/pwa-icon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,7 @@
     <script>
       // Same theme as the app: the saved choice, else the system setting.
       try {
-        var t = localStorage.getItem("medicine:theme");
+        var t = localStorage.getItem("pendik:theme");
         if (t === "light" || (!t && matchMedia("(prefers-color-scheme: light)").matches)) {
           document.documentElement.setAttribute("data-theme", "light");
         }
@@ -26,127 +26,59 @@
       <nav class="legal-nav">
         <a class="legal-brand" href="/">
           <svg viewBox="0 0 96 24" width="40" height="10" aria-hidden="true"><path d="M0 12h16l6-9 8 18 6-13 4 4h16l6-9 8 18 6-9h20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          Medicine
+          Pendik
         </a>
         <a href="/">Open the app</a>
         <a href="/terms">Terms of Service</a>
       </nav>
 
       <h1>Privacy Policy</h1>
-      <p class="legal-updated">Last updated 4 October 2026</p>
+      <p class="legal-updated">Last updated 8 October 2026</p>
 
       <div class="legal-summary">
-        <p><strong>The short version.</strong> Medicine works without an account, and then nothing about you leaves your device. If you create an account, we store what's needed to sign you in and sync your study progress. No ads, no analytics or tracking, and we never sell or share your data.</p>
+        <p><strong>The short version.</strong> Pendik is the study app for the Pendik 26 class. Only students on the class roster can sign in. We store what's needed to sign you in and to keep your study progress and exam attempts. No ads, no analytics or tracking, and we never sell or share your data.</p>
       </div>
 
-      <h2>Who we are</h2>
+      <h2>Who runs it</h2>
       <p>
-        Medicine is a free, open-source study tool for medical students, available at
-        <a href="https://medicine.necr.help">medicine.necr.help</a>. Its source code is public at
-        <a href="https://github.com/neccrr/medicine">github.com/neccrr/medicine</a>. In this policy "we"
-        means the people who run it.
+        Pendik is run by the class for the class. Its source code is at
+        <a href="https://github.com/Pendik26/pendik-app">github.com/Pendik26/pendik-app</a>. In this policy
+        "we" means the class admins who run it.
       </p>
 
-      <h2>Using Medicine as a guest</h2>
-      <p>
-        Without an account, your progress (flashcard reviews, quiz and exam results, reading
-        position, study days and settings) is saved only in your browser's local storage on your
-        device. We never receive it. Clearing your browser's site data deletes it; the Progress
-        page lets you export it to a file first.
-      </p>
-
-      <h2>What we store if you create an account</h2>
-      <table>
-        <thead>
-          <tr><th>Data</th><th>Why</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Name, email address, and (optionally) your cohort or entry year</td><td>To identify your account, and to compare scores within your class if you join the leaderboard</td></tr>
-          <tr><td>A password hash, if you sign up with email (never the password itself)</td><td>To check your password when you sign in</td></tr>
-          <tr><td>If you use Google: your Google account ID, your profile picture link, and the sign-in tokens Google returns (stored encrypted)</td><td>To sign you in with Google</td></tr>
-          <tr><td>Sign-in sessions: a random token, when it expires, and the IP address and browser that signed in</td><td>To keep you signed in, and to protect your account from abuse</td></tr>
-          <tr><td>Your study progress (the same data as guest mode, listed above)</td><td>To sync it between your devices</td></tr>
-          <tr><td>Short-lived counters of sign-in attempts per IP address</td><td>To slow down password-guessing attacks</td></tr>
-          <tr><td>If you join the leaderboard: the display name you choose, and scores worked out from your progress</td><td>To show the leaderboard</td></tr>
-        </tbody>
-      </table>
-      <p>
-        We use one cookie, which keeps you signed in. It is strictly necessary and isn't used for
-        anything else.
-      </p>
-
-      <h2>Google sign-in</h2>
-      <p>
-        If you sign in with Google, we ask Google only for your basic profile: your name, email
-        address and profile picture (the <code>openid</code>, <code>email</code> and
-        <code>profile</code> permissions). We don't request or have access to your Gmail, Drive,
-        contacts, calendar or any other Google data. We use what Google sends only to create and
-        sign in to your Medicine account.
-      </p>
-      <p>
-        Medicine's use and transfer of information received from Google APIs will adhere to the
-        <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
-        including the Limited Use requirements. We don't use Google user data for advertising,
-        don't sell it, and don't transfer it to anyone except as needed to run the service
-        (below) or as required by law.
-      </p>
-
-      <h2>Who else can see your data</h2>
+      <h2>What we store</h2>
       <ul>
-        <li><strong>Other students</strong> see only what you choose to show on the leaderboard (display name, cohort and scores), and only if you join it. They never see your email or your answers. The leaderboard is visible only to signed-in users.</li>
-        <li><strong>Service providers</strong> that run Medicine for us and process data only on our behalf:
-          <ul>
-            <li><a href="https://vercel.com/legal/privacy-policy">Vercel</a> hosts the website and its server, which receive your IP address and request details as part of normal web traffic;</li>
-            <li><a href="https://www.mongodb.com/legal/privacy">MongoDB Atlas</a> hosts the account database, in Singapore;</li>
-            <li><a href="https://policies.google.com/privacy">Google</a> handles Google sign-in if you use it, and serves the fonts the site uses (Google Fonts), which means your browser requests them from Google.</li>
-            <li><a href="https://bynara.id/">NaraRouter (Nara)</a> answers "Explain this" requests when you press <em>Ask AI to explain</em>: our server sends it the question, the answer options, the answer you picked and the matching passages from the study notes, never your name, email or account details. NaraRouter passes the request to the AI model provider it routes to, whose own terms apply. Nothing is sent unless you press the button. When you message <strong>Alfond</strong>, the study assistant, our server sends NaraRouter your message, the last few messages of the conversation and, if you ask from the floating button with "Reading: this page" on, the text of the page you are looking at in the app; again never your name, email or account details. Alfond's conversation is kept in your browser, not on our server.</li>
-          </ul>
-        </li>
-        <li>We may disclose data if the law requires it.</li>
+        <li><strong>The class roster:</strong> student id (NIM), full name, class group and cohort, added by an admin.</li>
+        <li><strong>Your account:</strong> a sign-in made from your NIM, a password stored only as a salted hash, and, if you link it, your Google account's email and id.</li>
+        <li><strong>Your progress:</strong> flashcard reviews, quiz results, reading positions, your exam plan, and your past-paper attempts with their answers and scores.</li>
+        <li><strong>The leaderboard,</strong> only if you join it: a display name you choose, your cohort and your points. Your real name and answers are never shown to other students.</li>
+        <li><strong>AI questions:</strong> what you ask Alfond or the explain button is sent to the AI provider to answer it, along with the page text when you choose to include it. We keep a count of how many you ask each day, not the questions.</li>
       </ul>
-      <p>We don't use analytics, advertising or tracking services.</p>
+      <p>Your browser also keeps device settings (theme, language, sidebar, recent pages). Those stay on your device.</p>
 
-      <h2>How long we keep it</h2>
+      <h2>Who processes it</h2>
       <ul>
-        <li>Account data and synced progress: until you delete your account.</li>
-        <li>Sign-in sessions: they expire after 60 days of not being used and are then deleted automatically.</li>
-        <li>Sign-in attempt counters: a count per IP address that resets after a short time window.</li>
-        <li>AI counters: how many AI answers (explanations and Alfond replies) you asked for each day, deleted after two days.</li>
-        <li>Exam readiness: when you open your exam plan while signed in, your readiness percentage for that block, used only to work out your class's average. Nobody else sees your own number, and the average is only shown once at least three students have one.</li>
-        <li>Server logs kept by our hosting provider: for their standard log retention period.</li>
+        <li><strong>Supabase</strong> hosts the database, sign-in and server functions.</li>
+        <li><strong>Vercel</strong> serves the app's pages.</li>
+        <li><strong>Google</strong> handles "Continue with Google" if you use it, and hosts the class Drive files the app links to.</li>
+        <li><strong>The AI provider</strong> configured for Alfond receives the questions you send it.</li>
       </ul>
+      <p>Pendik's use and transfer of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.</p>
 
-      <h2>Your choices and rights</h2>
+      <h2>Your choices</h2>
       <ul>
-        <li><strong>See and download your data:</strong> Account → Download my data gives you everything stored in your account as a file.</li>
-        <li><strong>Correct it:</strong> edit your name and cohort on the Account page, and your display name on the Leaderboard page.</li>
         <li><strong>Leave the leaderboard</strong> at any time from the Leaderboard page.</li>
-        <li><strong>Delete your account:</strong> Account → Delete account permanently removes your account, sessions, sign-in methods, synced progress and leaderboard entry from our database. Progress saved in your own browser stays until you clear it.</li>
-        <li><strong>Disconnect Google:</strong> you can also remove Medicine's access in your <a href="https://myaccount.google.com/connections">Google account settings</a>.</li>
+        <li><strong>Unlink Google</strong> from your Account page, or remove Pendik's access in your <a href="https://myaccount.google.com/connections">Google account settings</a>.</li>
+        <li><strong>Get a copy or have your data deleted:</strong> ask a class admin.</li>
       </ul>
-      <p>
-        Depending on where you live, you may have further rights over your personal data, such as
-        objecting to processing or complaining to a data protection authority. Contact us to use them.
-      </p>
 
       <h2>Security</h2>
-      <p>
-        Connections to Medicine are encrypted (HTTPS). Passwords are stored only as salted hashes,
-        Google sign-in tokens are encrypted, and each user's data can only be read with their own
-        signed-in session. No system is perfectly secure, so please use a password you don't use
-        anywhere else.
-      </p>
-
-      <h2>Children</h2>
-      <p>Medicine is made for university students. It isn't directed at children under 13, and we don't knowingly collect their data.</p>
-
-      <h2>Changes</h2>
-      <p>If we change this policy, we'll update the date at the top. For significant changes we'll also show a notice in the app.</p>
+      <p>Connections are encrypted (HTTPS). The database only lets each student read and change their own progress; exam answer keys never reach the browser.</p>
 
       <h2>Contact</h2>
-      <p>Questions or requests about your data: open an issue at <a href="https://github.com/neccrr/medicine/issues">github.com/neccrr/medicine/issues</a>. Please don't include personal details in a public issue; ask for a private contact and we'll reply.</p>
+      <p>Questions or requests about your data: ask a class admin, or open an issue at <a href="https://github.com/Pendik26/pendik-app/issues">github.com/Pendik26/pendik-app/issues</a> without personal details.</p>
 
-      <p class="legal-footer"><a href="/">Medicine</a> · <a href="/terms">Terms of Service</a></p>
+      <p class="legal-footer"><a href="/">Pendik</a> · <a href="/terms">Terms of Service</a></p>
     </main>
   </body>
 </html>

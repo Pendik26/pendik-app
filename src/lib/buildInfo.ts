@@ -17,7 +17,7 @@ declare const __BUILD_INFO__: BuildInfo | undefined;
 export const BUILD: BuildInfo =
   typeof __BUILD_INFO__ === "undefined" ? { version: "dev", commits: null, sha: "", short: "", subject: "", builtAt: "" } : __BUILD_INFO__;
 
-export const SOURCE_URL = "https://github.com/neccrr/medicine";
+export const SOURCE_URL = "https://github.com/Pendik26/pendik-app";
 
 /** The commit on GitHub, or the repository when the build doesn't know its commit. */
 export const commitUrl = (info: BuildInfo = BUILD) => (info.sha ? `${SOURCE_URL}/commit/${info.sha}` : SOURCE_URL);

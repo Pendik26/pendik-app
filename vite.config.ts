@@ -23,7 +23,7 @@ function legalPages(): Plugin {
     next()
   }
   return {
-    name: 'medicine-legal-pages',
+    name: 'pendik-legal-pages',
     configureServer: (server) => void server.middlewares.use(rewrite),
     configurePreviewServer: (server) => void server.middlewares.use(rewrite),
   }
@@ -32,7 +32,7 @@ function legalPages(): Plugin {
 // /knowledge-graph.json is written by the prerender step; `vite` builds it on request instead.
 function knowledgeGraphDev(): Plugin {
   return {
-    name: 'medicine-knowledge-graph',
+    name: 'pendik-knowledge-graph',
     apply: 'serve',
     configureServer(server) {
       let cached: string | null = null
@@ -63,7 +63,7 @@ function siteUrl(): Plugin {
   const origin = (process.env.SITE_URL || SITE_ORIGIN).replace(/\/+$/, '')
   const verification = process.env.GOOGLE_SITE_VERIFICATION?.replace(/[^A-Za-z0-9_-]/g, '')
   return {
-    name: 'medicine-site-url',
+    name: 'pendik-site-url',
     transformIndexHtml: (html) => {
       const withOrigin = html.replaceAll('%SITE_URL%', origin)
       return verification
@@ -91,10 +91,10 @@ export default defineConfig(async (): Promise<UserConfig> => ({
       injectRegister: false,
       includeAssets: ['pwa-icon.svg'],
       manifest: {
-        name: 'Medicine — Study Tool',
-        short_name: 'Medicine',
+        name: 'Pendik — Study Tool',
+        short_name: 'Pendik',
         description:
-          'Flashcards, quizzes, timed block exams, ebooks and summaries for medical school. Works offline, with optional sync across devices.',
+          'Flashcards, quizzes, past-paper exams, the class Drive, ebooks and summaries for Pendik 26 medical students.',
         categories: ['education', 'medical'],
         theme_color: '#0a0f0d',
         background_color: '#0a0f0d',

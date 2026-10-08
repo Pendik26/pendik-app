@@ -11,9 +11,9 @@
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, posix } from "node:path";
 
-const REPO = "https://github.com/neccrr/medicine";
+const REPO = "https://github.com/Pendik26/pendik-app";
 const BRANCH = "major";
-const SITE = "https://medicine.necr.help";
+const SITE = "https://pendik-app.vercel.app";
 const out = process.argv[2] ?? "wiki-out";
 
 /** "How the numbers are worked out" → "How-the-numbers-are-worked-out" (the wiki's file name). */

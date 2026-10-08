@@ -14,7 +14,7 @@ const KEPT = 8;
 /** Pages not worth jumping back to. */
 const SKIP = new Set(["/", "/search"]);
 
-/** A page's short title: "Anatomy flashcards", not "Anatomy flashcards · Medicine". */
+/** A page's short title: "Anatomy flashcards", not "Anatomy flashcards · Pendik". */
 export function shortTitle(path: string): string {
   return pageMeta(path).title.replace(new RegExp(`\\s*[·|]\\s*${SITE_NAME}$`), "");
 }
