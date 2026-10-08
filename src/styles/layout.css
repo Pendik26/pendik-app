@@ -1,0 +1,898 @@
+/* App shell: left sidebar navigation + content column, topbar (mobile), page wrapper */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.route-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  color: var(--accent);
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0.75rem;
+  align-self: flex-start;
+  height: calc(100vh - 1.5rem);
+  margin: 0.75rem 0 0.75rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, var(--glass-shadow);
+  /* Only the links scroll (on short windows), so the brand and the footer's search and theme
+     buttons are always in reach. */
+  overflow: hidden;
+  z-index: 60;
+  transition: width var(--dur-morph) var(--ease-glass), padding var(--dur-morph) var(--ease-glass);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  padding: 0 0.25rem 0 0.5rem;
+  margin-bottom: 2rem;
+  flex-shrink: 0;
+  justify-content: space-between;
+  transition: padding var(--dur-morph) var(--ease-glass), gap var(--dur-morph) var(--ease-glass), margin var(--dur-morph) var(--ease-glass);
+}
+
+.sidebar-brand-name {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 11rem;
+  transition: opacity 0.3s ease 0.08s, max-width var(--dur-morph) var(--ease-glass);
+}
+
+.sidebar-collapse-btn {
+  flex-shrink: 0;
+}
+
+/* How many reviews are due, beside Flashcards and Quizzes */
+.nav-due {
+  flex: none;
+  min-width: 1.35rem;
+  margin-left: auto;
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar-link.active .nav-due {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.sidebar-link-label {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 11rem;
+  transition: opacity 0.3s ease 0.08s, max-width var(--dur-morph) var(--ease-glass);
+}
+
+.sidebar-nav {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  /* Room for the lenses' glow, which the scroll box would otherwise clip. */
+  margin: -0.25rem -0.25rem 0;
+  padding: 0.25rem 0.25rem 0.5rem;
+}
+
+/* When the links scroll, the ends with more links past them fade out instead of cutting off. */
+.sidebar-nav[data-more-above] {
+  mask-image: linear-gradient(transparent, #000 1.5rem);
+}
+
+.sidebar-nav[data-more-below] {
+  mask-image: linear-gradient(#000 calc(100% - 1.5rem), transparent);
+}
+
+.sidebar-nav[data-more-above][data-more-below] {
+  mask-image: linear-gradient(transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
+}
+
+/* Glass lenses behind the links (positioned by Sidebar.tsx): one marks the current page, the
+   other follows the pointer, springing from link to link and catching a specular highlight. */
+.sidebar-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sidebar-lens-active {
+  width: var(--active-w, 0);
+  height: var(--active-h, 0);
+  transform: translate(var(--active-x, 0), var(--active-y, 0));
+  opacity: var(--active-o, 0);
+  background: var(--accent-soft);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.14) inset,
+    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent) inset,
+    0 8px 20px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.sidebar-lens-hover {
+  width: var(--hover-w, 0);
+  height: var(--hover-h, 0);
+  transform: translate(var(--hover-x, 0), var(--hover-y, 0));
+  opacity: var(--hover-o, 0);
+  scale: calc(0.9 + 0.1 * var(--hover-o, 0));
+  background:
+    radial-gradient(70px circle at var(--lens-px, 50%) var(--lens-py, 50%), var(--glass-specular), transparent 70%),
+    var(--glass-lens);
+  border: 1px solid var(--glass-border-strong);
+  backdrop-filter: blur(6px) saturate(180%);
+  -webkit-backdrop-filter: blur(6px) saturate(180%);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, 0 10px 22px -14px rgb(0 0 0 / 0.45);
+}
+
+.sidebar-nav[data-ready] .sidebar-lens {
+  transition:
+    transform 0.55s var(--ease-spring),
+    width 0.55s var(--ease-spring),
+    height 0.55s var(--ease-spring),
+    opacity 0.25s ease,
+    scale 0.4s var(--ease-spring);
+}
+
+.sidebar-nav[data-lens-jump] .sidebar-lens-hover {
+  transition: opacity 0.25s ease, scale 0.4s var(--ease-spring);
+}
+
+.sidebar-nav[data-morphing] .sidebar-lens {
+  transition: opacity 0.25s ease, scale 0.4s var(--ease-spring);
+}
+
+.sidebar-link {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition:
+    color 0.2s ease,
+    padding var(--dur-morph) var(--ease-glass),
+    gap var(--dur-morph) var(--ease-glass),
+    scale 0.35s var(--ease-spring);
+}
+
+.sidebar-link:hover {
+  color: var(--text);
+}
+
+.sidebar-link:active {
+  scale: 0.96;
+}
+
+.sidebar-link.active {
+  color: var(--accent);
+}
+
+.sidebar-group-label {
+  display: block;
+  margin: 0.9rem 0 0.2rem;
+  padding: 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  max-height: 1.2rem;
+  flex-shrink: 0;
+  border-top: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.2s ease, max-height var(--dur-morph) var(--ease-glass), margin var(--dur-morph) var(--ease-glass);
+}
+
+.sidebar-link-icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sidebar-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+.topbar {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 0.9rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: var(--surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset;
+}
+
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Collapsed sidebar (desktop only): an icon rail. Every change here is animatable (widths,
+   paddings, gaps, opacity), so the rail morphs rather than jumps. Labels only fade, so links
+   keep their accessible names; the title attribute shows them on hover. */
+@media (min-width: 961px) {
+  /* 72px wide with 12px padding and a 1px border leaves a 46px column; everything below is
+     centred in it. */
+  .sidebar.collapsed {
+    width: 72px;
+    padding: 1.25rem 0.75rem 1rem;
+  }
+
+  /* The toggle (38px) sits in the middle of the column: the faded name takes no room and no gap. */
+  .sidebar.collapsed .sidebar-brand {
+    padding: 0 4px;
+    gap: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  /* On the icon rail a group heading shrinks to a thin rule between groups (the text is
+     hidden, the top border stays). */
+  .sidebar.collapsed .sidebar-group-label {
+    color: transparent;
+    max-height: 0;
+    margin: 0.45rem 0.7rem;
+    padding: 0;
+    border-top-color: var(--border);
+  }
+
+  .sidebar.collapsed .sidebar-nav {
+    scrollbar-width: none;
+  }
+
+  .sidebar.collapsed .sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar.collapsed .sidebar-brand-name,
+  /* On the icon rail a due count shrinks to a dot on the icon. */
+  .sidebar.collapsed .nav-due {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.5rem;
+    min-width: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    overflow: hidden;
+    background: var(--accent);
+    color: transparent;
+    font-size: 0;
+  }
+
+  .sidebar.collapsed .sidebar-link-label {
+    opacity: 0;
+    max-width: 0;
+    transition: opacity 0.15s ease, max-width var(--dur-morph) var(--ease-glass);
+  }
+
+  /* Centres the 18px icon in the 46px column without switching justify-content. */
+  .sidebar.collapsed .sidebar-link {
+    padding: 0.6rem 14px;
+    gap: 0;
+  }
+
+  /* The footer re-flows into a column, so it cross-fades instead of jumping; the two
+     identical keyframes restart the animation on every toggle. */
+  .sidebar.collapsed .sidebar-footer {
+    animation: sidebar-footer-in-a 0.45s var(--ease-glass);
+  }
+
+  .sidebar:not(.collapsed) .sidebar-footer {
+    animation: sidebar-footer-in-b 0.45s var(--ease-glass);
+  }
+
+  .sidebar.collapsed .sidebar-footer,
+  .sidebar.collapsed .sidebar-footer-actions,
+  .sidebar.collapsed .sidebar-badges {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .sidebar.collapsed .sidebar-footer {
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  /* A badge-less footer leaves no empty slot above the buttons. */
+  .sidebar.collapsed .sidebar-badges:empty {
+    display: none;
+  }
+
+  /* Short windows: tighter rows, so the whole rail usually fits without scrolling. */
+  @media (max-height: 820px) {
+    .sidebar.collapsed .sidebar-link {
+      padding-block: 0.5rem;
+    }
+
+    .sidebar.collapsed .sidebar-group-label {
+      margin-block: 0.3rem;
+    }
+  }
+
+  @media (max-height: 740px) {
+    .sidebar.collapsed .sidebar-link {
+      padding-block: 0.4rem;
+    }
+
+    .sidebar.collapsed .sidebar-brand {
+      margin-bottom: 0.9rem;
+    }
+  }
+
+  .sidebar.collapsed .command-trigger kbd {
+    display: none;
+  }
+
+  .sidebar.collapsed .streak-badge,
+  .sidebar.collapsed .quiz-due-badge {
+    padding: 0.3rem 0.45rem;
+  }
+}
+
+@media (max-width: 960px) {
+  .sidebar .sidebar-collapse-btn {
+    display: none;
+  }
+
+  .app-shell {
+    display: block;
+  }
+
+  /* Nearly opaque: where the glass blur doesn't run (or is costly to run while scrolling on a
+     phone), the page scrolling under the bar must not show through crisply. */
+  .topbar {
+    display: block;
+    background: color-mix(in srgb, var(--surface-solid) 92%, transparent);
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    /* Past its own width plus the floating margin, so no edge peeks in; hidden while closed
+       so its links can't be tabbed to off-screen. */
+    transform: translateX(calc(-100% - 1rem));
+    /* Opaque: through the glass, the page behind the drawer was legible enough to clash with
+       the links. */
+    background: var(--surface-solid);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    visibility: hidden;
+    transition: transform 0.35s var(--ease-glass), visibility 0s linear 0.35s;
+    box-shadow: 0 20px 60px -20px rgb(0 0 0 / 0.5);
+  }
+
+  /* Above the phone tab bar (70) while open, with the backdrop dimming it too. */
+  .sidebar {
+    z-index: 90;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.35s var(--ease-glass), visibility 0s;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 85;
+    background: rgb(0 0 0 / 0.45);
+    animation: backdrop-in 0.2s ease;
+  }
+
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+@media (max-width: 460px) {
+  .command-trigger kbd {
+    display: none;
+  }
+
+  .topbar-brand {
+    font-size: 1.02rem;
+  }
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  /* The footer starts below the fold, so it doesn't jump down as a page's content loads. */
+  min-height: 100vh;
+  min-height: 100svh;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  transition: max-width var(--dur-morph) var(--ease-glass);
+}
+
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 1.5rem 1.75rem;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.site-footer-links,
+.site-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.1rem 1.25rem;
+  margin: 0;
+}
+
+.site-footer-meta {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.site-footer-dim {
+  opacity: 0.75;
+}
+
+.site-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+@media print {
+  .site-footer {
+    display: none;
+  }
+}
+
+/* With the sidebar collapsed to its icon rail, let pages (ebooks, PDFs, card grids) use the
+   width it gave back instead of leaving it as empty margin. */
+@media (min-width: 961px) {
+  .app-shell:has(.sidebar.collapsed) .main {
+    max-width: 1480px;
+  }
+
+  .app-shell:has(.sidebar.collapsed) .ebook-layout {
+    grid-template-columns: 230px 1fr;
+  }
+}
+
+.page {
+  animation: page-in 0.35s ease backwards;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    animation: none;
+  }
+}
+
+.page h1 {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+}
+
+@keyframes sidebar-footer-in-a {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes sidebar-footer-in-b {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-brand,
+  .sidebar-brand-name,
+  .sidebar-link,
+  .sidebar-link-label,
+  .sidebar-nav[data-ready] .sidebar-lens,
+  .main {
+    transition: none;
+  }
+
+  .sidebar .sidebar-footer {
+    animation: none;
+  }
+}
+
+/* Static page content written at build time for search engines (src/prerender/site.ts). React
+   replaces it on start; it's only seen without JavaScript. */
+.prerender {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.prerender nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.prerender nav ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prerender img,
+.prerender svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Phone tab bar: Home, Study, Read, Search, Me. Study, Read and Me open their group as a sheet. */
+.tabbar,
+.tabsheet-backdrop {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 70;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom));
+    background: var(--surface-solid);
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -8px 24px -18px rgb(0 0 0 / 0.35);
+  }
+
+  .tabbar-item {
+    font: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.35rem 0 0.25rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tabbar-item svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .tabbar-item.active,
+  .tabbar-item.open {
+    color: var(--accent);
+  }
+
+  .tabbar-item.open {
+    background: var(--accent-soft);
+  }
+
+  .tabsheet-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 65;
+    background: rgb(0 0 0 / 0.4);
+    animation: backdrop-in 0.2s ease;
+  }
+
+  .tabsheet {
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: calc(4.4rem + env(safe-area-inset-bottom));
+    padding: 0.5rem 1rem 1rem;
+    border-radius: var(--radius-xl);
+    background: var(--surface-solid);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.5);
+    animation: tabsheet-in 0.25s var(--ease-glass);
+  }
+
+  @keyframes tabsheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  .tabsheet-handle {
+    display: block;
+    width: 2.5rem;
+    height: 4px;
+    margin: 0 auto 0.6rem;
+    border-radius: 2px;
+    background: var(--border-strong);
+  }
+
+  .tabsheet-title {
+    margin: 0 0 0.6rem;
+    font-size: 1rem;
+  }
+
+  .tabsheet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .tabsheet-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+
+  .tabsheet-link.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .tabsheet-icon {
+    display: flex;
+    color: var(--accent);
+  }
+
+  .tabsheet-subtitle {
+    margin: 0.75rem 0 0.4rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .tabsheet-link .nav-due {
+    margin-left: auto;
+  }
+
+  .tabbar-item {
+    position: relative;
+  }
+
+  .tabbar-dot {
+    position: absolute;
+    top: 0.3rem;
+    left: calc(50% + 0.55rem);
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px var(--surface-solid);
+  }
+
+  /* Room for the tab bar under the last content and the footer. */
+  .app-content {
+    padding-bottom: calc(4.2rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 960px) and (prefers-reduced-motion: reduce) {
+  .tabsheet {
+    animation: none;
+  }
+}
+
+@media print {
+  .tabbar {
+    display: none;
+  }
+}
+
+/* Touch screens: small chips, toggles and text links get a finger-sized hit area (about 36px)
+   without changing how they look. */
+@media (pointer: coarse) {
+  .tag-toggle,
+  .io-toggle,
+  .explain-toggle,
+  .block-exam-link,
+  .topic-filter-toggle {
+    min-height: 2.25rem;
+  }
+
+  .site-footer a {
+    gap: 0.3em;
+  }
+
+  .back-link,
+  .trail a,
+  .material-tab,
+  .site-footer a,
+  .widget-link,
+  .io-read,
+  .subject-card-title-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+  }
+
+  .ebook-toc-link {
+    min-height: 2.5rem;
+  }
+}
+
+/* The collapsed rail's link names, shown beside the icon on hover or keyboard focus (positioned
+   by Sidebar.tsx; outside the sidebar, whose glass would otherwise clip it). */
+.sidebar-tip {
+  position: fixed;
+  z-index: 200;
+  transform: translateY(-50%);
+  padding: 0.35rem 0.65rem;
+  border-radius: 10px;
+  background: var(--surface-solid);
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: sidebar-tip-in 0.12s ease;
+}
+
+@keyframes sidebar-tip-in {
+  from {
+    opacity: 0;
+    translate: -4px 0;
+  }
+}
+
+@media (max-width: 960px), (prefers-reduced-motion: reduce) {
+  .sidebar-tip {
+    animation: none;
+  }
+}

@@ -1,0 +1,1280 @@
+[
+  {
+    "id": "q-block11-001",
+    "question": "What distinguishes an animal cell from a plant cell?",
+    "options": [
+      "Animal cells lack lysosomes",
+      "Animal cells lack centrioles and a cell wall",
+      "Plant cells lack a vacuole",
+      "Plant cells lack a cell wall and chloroplasts",
+      "Centrioles are found only in animal cells"
+    ],
+    "answer": 4,
+    "explanation": "Animal cells have centrioles and lack a cell wall/chloroplasts; plant cells have a cell wall, chloroplasts, and a large vacuole but lack centrioles — so centrioles being exclusive to animal cells is the correct distinguishing feature among these options."
+  },
+  {
+    "id": "q-block11-002",
+    "question": "A 58-year-old man arrives at the ER with severe chest pain for 8 hours. He is diagnosed with acute myocardial infarction and given streptokinase. How does this drug act on hemostasis?",
+    "options": [
+      "Fibrinolysis",
+      "Platelet activation"
+    ],
+    "answer": 0,
+    "explanation": "Streptokinase acts like plasmin, breaking down fibrin (fibrinolysis)."
+  },
+  {
+    "id": "q-block11-003",
+    "question": "A mutation in a single gene causing sickle cell disease gives carriers resistance to a certain disease. Which disease does it protect against?",
+    "options": [
+      "Tuberculosis",
+      "Influenza",
+      "Malaria"
+    ],
+    "answer": 2,
+    "explanation": "Sickle cell trait confers resistance to malaria, since the sickled red cells are hostile to the Plasmodium parasite's life cycle."
+  },
+  {
+    "id": "q-block11-004",
+    "question": "What type of connective tissue lines this membrane (shown in the diagram)?",
+    "options": [
+      "Dense regular connective tissue",
+      "Elastic connective tissue",
+      "Loose (areolar) connective tissue",
+      "Dense irregular connective tissue",
+      "Reticular connective tissue"
+    ],
+    "answer": 2,
+    "explanation": "The tissue shown is areolar connective tissue, i.e. loose connective tissue (areolar = longgar).",
+    "image": "<img src=\"/histology/guess-the-slide/ct_loose.jpg\" alt=\"Micrograph of loose (areolar) connective tissue, showing collagen and elastic fibers, fibroblasts, and scattered fat cells in a loose meshwork\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-005",
+    "question": "A Wolbachia-infected male mosquito reproduces with an uninfected female mosquito. What is the result?",
+    "options": [
+      "No eggs hatch",
+      "All offspring are Wolbachia-infected males",
+      "All offspring are Wolbachia-infected females",
+      "All offspring are Wolbachia-infected",
+      "All offspring are Wolbachia-free"
+    ],
+    "answer": 0,
+    "explanation": "Wolbachia causes cytoplasmic incompatibility: when an infected male mates with an uninfected female, the eggs fail to hatch, because the bacteria interferes with normal embryonic development."
+  },
+  {
+    "id": "q-block11-006",
+    "question": "In the peptide sequence Arg-Val-Glu-His-Asp-Thr, which pair of residues would pair up to form an ionic bond (salt bridge)?",
+    "options": [
+      "Arg and Glu",
+      "Val and Thr",
+      "His and Asp",
+      "Val and His",
+      "Asp and Thr"
+    ],
+    "answer": 0,
+    "explanation": "Arginine's side chain is positively charged and glutamate's is negatively charged; oppositely charged side chains coming within about 3 Angstroms of each other form a salt bridge (ion pair) — the other listed pairs lack this charge complementarity."
+  },
+  {
+    "id": "q-block11-007",
+    "question": "The HbS mutation causing sickle cell disease occurs on which globin chain?",
+    "options": [
+      "Alpha",
+      "Gamma",
+      "Beta",
+      "Zeta",
+      "Upsilon"
+    ],
+    "answer": 2,
+    "explanation": "Sickle cell hemoglobin (HbS) results from a point mutation in the beta-globin gene (HBB)."
+  },
+  {
+    "id": "q-block11-008",
+    "question": "Which amino acid is coded for first during translation?",
+    "options": [
+      "Methionine",
+      "Cytosine",
+      "Glycine",
+      "Proline",
+      "Valine"
+    ],
+    "answer": 0,
+    "explanation": "Translation always begins at the start codon AUG, which codes for methionine."
+  },
+  {
+    "id": "q-block11-009",
+    "question": "During translation, what is meant by the triplet/codon rule?",
+    "options": [
+      "3 nucleotides code for 1 amino acid",
+      "3 DNA bases code for 1 amino acid",
+      "1 nucleotide codes for 3 amino acids",
+      "3 introns code for 1 amino acid",
+      "3 nucleosides code for 1 amino acid"
+    ],
+    "answer": 0,
+    "explanation": "The genetic code is read in triplets — three consecutive nucleotides (a codon) specify one amino acid."
+  },
+  {
+    "id": "q-block11-010",
+    "question": "A unit of nitrogenous base bonded to ribose sugar (without phosphate) is called a",
+    "options": [
+      "DNA",
+      "RNA",
+      "Nucleoside",
+      "Nucleotide",
+      "Protein"
+    ],
+    "answer": 2,
+    "explanation": "A nucleoside is a base + sugar, with no phosphate group. Adding a phosphate group makes it a nucleotide."
+  },
+  {
+    "id": "q-block11-011",
+    "question": "Which hemoglobin is most dominant in the case shown (hydrops fetalis)?",
+    "options": [
+      "Hb M",
+      "Hb Barts",
+      "Hb S",
+      "Hb A",
+      "Hb H"
+    ],
+    "answer": 1,
+    "explanation": "In hydrops fetalis (from alpha-thalassemia major), Hb Barts is the dominant hemoglobin, typically making up 70-80% of total hemoglobin.",
+    "image": "<img src=\"/exams/1.1/hydrops-fetalis.jpg\" alt=\"Clinical photo of a stillborn neonate with hydrops fetalis, showing severe generalized edema, alongside the placenta\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-012",
+    "question": "The total collection of all genes in an organism's body is called the",
+    "options": [
+      "Genome",
+      "Gene locus",
+      "DNA",
+      "Amino acid"
+    ],
+    "answer": 0,
+    "explanation": "The genome is the entirety of an organism's DNA — in humans, stretched end to end it would span roughly 8 times the Earth-Moon distance."
+  },
+  {
+    "id": "q-block11-014",
+    "question": "Which component plays the main role in fibrinolysis?",
+    "options": [
+      "Thromboxane",
+      "Plasmin",
+      "Fibronectin",
+      "Fibrinogen"
+    ],
+    "answer": 1,
+    "explanation": "Plasmin is the principal enzyme responsible for fibrinolysis, breaking down fibrin clots."
+  },
+  {
+    "id": "q-block11-015",
+    "question": "What is the mechanism of coagulation in hemostasis?",
+    "options": [
+      "Collagen binding to platelet receptors",
+      "Thromboxane formation",
+      "Endothelin formation in blood vessels",
+      "Formation of thrombin from prothrombin"
+    ],
+    "answer": 3,
+    "explanation": "The core coagulation mechanism is the conversion of prothrombin into thrombin, which then converts fibrinogen into fibrin."
+  },
+  {
+    "id": "q-block11-016",
+    "question": "When chromosomes align with their homologs at the equatorial plate, this phase is called",
+    "options": [
+      "Metaphase",
+      "Prophase",
+      "Anaphase",
+      "Telophase",
+      "Interphase"
+    ],
+    "answer": 0,
+    "explanation": "Metaphase is defined by chromosomes aligning at the metaphase (equatorial) plate."
+  },
+  {
+    "id": "q-block11-017",
+    "question": "When a PRION forms in mad cow disease, which type of protein structure is disrupted?",
+    "options": [
+      "Tertiary",
+      "Primary",
+      "Secondary",
+      "Quaternary"
+    ],
+    "answer": 2,
+    "explanation": "Mad cow disease results from a shift from alpha-helix to beta-pleated-sheet conformations — both are secondary protein structures — so it is secondary structure that is disrupted."
+  },
+  {
+    "id": "q-block11-018",
+    "question": "Which epithelium type lines the intestine?",
+    "options": [
+      "Simple columnar",
+      "Stratified columnar",
+      "Pseudostratified columnar",
+      "Simple cuboidal",
+      "Simple squamous"
+    ],
+    "answer": 0,
+    "explanation": "The intestinal lining is simple columnar epithelium, suited for absorption and secretion.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_columnar_intestine.jpg\" alt=\"Micrograph of intestinal villi lined by simple columnar epithelium, with scattered goblet cells\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-019",
+    "question": "How many types of epithelial tissue are found in the kidney?",
+    "options": [
+      "One type",
+      "Two types",
+      "Three types",
+      "Four types",
+      "Five types"
+    ],
+    "answer": 2,
+    "explanation": "The kidney contains three epithelial types: simple squamous (Bowman's capsule/thin loop of Henle), simple cuboidal (renal tubules), and transitional (renal pelvis).",
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Micrograph of the kidney showing simple squamous epithelium lining Bowman's capsule\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-020",
+    "question": "What is the specific term for a biochemical process that requires energy?",
+    "options": [
+      "Metabolism",
+      "Anabolism",
+      "Catabolism",
+      "Splicing",
+      "Replication"
+    ],
+    "answer": 1,
+    "explanation": "Anabolism is the energy-requiring (ATP-consuming) set of biosynthetic reactions that build complex molecules from simpler ones."
+  },
+  {
+    "id": "q-block11-021",
+    "question": "This molecule is made of exons and has a poly-A tail (AAAA...) at one end. What is it?",
+    "options": [
+      "mRNA",
+      "tRNA",
+      "dRNA",
+      "DNA"
+    ],
+    "answer": 0,
+    "explanation": "Mature mRNA consists of spliced exons and carries a poly-A tail at its 3' end."
+  },
+  {
+    "id": "q-block11-022",
+    "question": "Which blood cell type forms memory cells?",
+    "options": [
+      "Lymphocytes",
+      "Basophils",
+      "Neutrophils",
+      "Eosinophils",
+      "Monocytes"
+    ],
+    "answer": 0,
+    "explanation": "Memory cells (memory B and T cells) are a specialized subset of lymphocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphocyte.jpg\" alt=\"Micrograph of a lymphocyte on a peripheral blood smear\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-023",
+    "question": "A 35-year-old woman has had painful swelling in the left inguinal region for 2 days. Examination shows inflammation of a lymphoid organ. Which histological feature would identify this organ as mucosa-associated lymphoid tissue (MALT), rather than the thymus, spleen, or a lymph node?",
+    "options": [
+      "Has Hassall's corpuscles with a cortex/medulla arrangement (thymus)",
+      "Parenchyma made of white pulp and red pulp (spleen)",
+      "Has no surrounding capsule",
+      "Dense connective tissue capsule with trabeculae (lymph node)",
+      "Encapsulated, with a distinct cortex and medulla (thymus)"
+    ],
+    "answer": 2,
+    "explanation": "MALT (e.g. in the appendix, gut, respiratory tract, and genitourinary tract) is lymphoid tissue with no surrounding capsule — unlike the thymus (capsule, Hassall's corpuscles, cortex/medulla), the spleen (capsule, white/red pulp), or lymph nodes (capsule with trabeculae).",
+    "image": "<img src=\"/histology/guess-the-slide/malt_appendix.jpg\" alt=\"Micrograph of mucosa-associated lymphoid tissue (MALT) in the appendix, showing lymphoid follicles with no surrounding capsule\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-024",
+    "question": "A patient with suspected dengue has an IgM/IgG blood test done on day 5 of illness. What is this type of test called?",
+    "options": [
+      "Protein assay",
+      "Cytokine assay",
+      "Non-protein nitrogen assay",
+      "Antiviral assay",
+      "Antibody assay"
+    ],
+    "answer": 4,
+    "explanation": "IgM and IgG are immunoglobulins (antibodies), so testing for them is an antibody (serology) test."
+  },
+  {
+    "id": "q-block11-026",
+    "question": "Chromatin threads shorten and thicken, becoming visible under a light microscope; the nucleolus and nuclear membrane begin to disappear. This phase is",
+    "options": [
+      "Prophase",
+      "Anaphase",
+      "Telophase",
+      "Interphase",
+      "Metaphase"
+    ],
+    "answer": 0,
+    "explanation": "This is prophase: chromatin condenses into visible chromosomes and the nuclear envelope/nucleolus break down."
+  },
+  {
+    "id": "q-block11-027",
+    "question": "Some extracellular signaling responses occur quickly, within seconds to minutes. Where does this fast reaction take place?",
+    "options": [
+      "Cytoplasm",
+      "Mitochondria",
+      "Cell membrane",
+      "Nucleus",
+      "Golgi apparatus"
+    ],
+    "answer": 2,
+    "explanation": "Receptors on the cell membrane bind lipophobic ligands (which can't cross the membrane) and trigger a fast response, since they act directly without needing to change gene expression — unlike cytosolic/nuclear receptors, whose gene-expression-mediated response is comparatively slow."
+  },
+  {
+    "id": "q-block11-029",
+    "question": "Which extracellular matrix component's disrupted synthesis explains the gum findings shown in this photo, from a patient with vitamin C deficiency?",
+    "options": [
+      "Ground substance",
+      "Elastic fibers",
+      "Collagen fibers",
+      "Fibrillin",
+      "Hyaluronic acid"
+    ],
+    "answer": 2,
+    "explanation": "Vitamin C is a required cofactor for the prolyl/lysyl hydroxylase enzymes in collagen synthesis; without it, collagen fibers are poorly cross-linked and disorganized, so gums bleed easily and ulcerate — the classic gingival presentation of scurvy.",
+    "image": "<img src=\"/exams/1.1/gingiva-scurvy.png\" alt=\"Photo of a patient's inflamed, bleeding gums (gingiva) consistent with scurvy\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-030",
+    "question": "Cell signaling plays several important roles in the body. Which of the following is one of them?",
+    "options": [
+      "It exclusively causes excessive cell growth",
+      "It has no relationship to immune system development",
+      "It can trigger the elimination of unneeded cells by inducing their death",
+      "It exclusively produces new cells and never removes them",
+      "It only regulates metabolism, with no role in development"
+    ],
+    "answer": 2,
+    "explanation": "Cell signaling's roles include controlling metabolism, differentiation and division; supporting immune system development; preventing excessive growth; and eliminating unneeded cells by inducing their death (a controlled process, more precisely termed apoptosis) — so it can trigger programmed elimination of cells, not just their growth or production."
+  },
+  {
+    "id": "q-block11-049",
+    "question": "Which extracellular matrix protein is abundant in lung tissue, allowing the lungs to expand and recoil with each breath?",
+    "options": [
+      "Collagen",
+      "Elastin",
+      "Fibronectin",
+      "Laminin",
+      "Proteoglycan"
+    ],
+    "answer": 1,
+    "explanation": "Elastin is an elastic protein fiber abundant in lung tissue, allowing the lungs to expand and deflate with each breath — unlike collagen, which provides tensile strength rather than elasticity."
+  },
+  {
+    "id": "q-block11-071",
+    "question": "A 62-year-old woman on hemodialysis was diagnosed with chronic kidney disease 1 year ago. Labs: Hb 7.1 g/dL, Hct 36.3%, leukocytes 3,500/mm3, platelets 340,000/mm3, erythrocytes 2.5 million/mm3. What is the underlying cause of these hematologic findings?",
+    "options": [
+      "Inability to produce erythropoietin",
+      "Vitamin B12 deficiency",
+      "Acute blood loss from the dialysis access",
+      "Bone marrow fibrosis",
+      "Iron malabsorption"
+    ],
+    "answer": 0,
+    "explanation": "In chronic kidney disease, damaged renal peritubular interstitial cells can no longer produce adequate erythropoietin, the hormone that stimulates red blood cell production in the bone marrow — leading to the normocytic anemia seen here."
+  },
+  {
+    "id": "q-block11-028",
+    "question": "Which enzymes are involved in the oxidation step of energy metabolism?",
+    "options": [
+      "Hydroxylase & reductase",
+      "Hydrogenase & oxidase",
+      "Hydrogenase & hydroxylase",
+      "Reductase & hydrogenase",
+      "Oxidase & dehydrogenase"
+    ],
+    "answer": 4,
+    "explanation": "Oxidase catalyzes electron transfer to oxygen, and dehydrogenase removes hydrogen from substrates and transfers it to coenzymes (e.g. NAD+/FAD) — both are central to oxidative energy metabolism."
+  },
+  {
+    "id": "q-block11-031",
+    "question": "Which bonds are hardest to break in a protein's structure?",
+    "options": [
+      "Ionic and disulfide bonds",
+      "Ionic and peptide bonds",
+      "Peptide and disulfide bonds",
+      "Ionic and hydrogen bonds"
+    ],
+    "answer": 0,
+    "explanation": "Disulfide bonds (between cysteine residues) and ionic interactions are both notably strong and harder to disrupt than hydrogen or peptide bonds."
+  },
+  {
+    "id": "q-block11-032",
+    "question": "Who proposed that all living things are composed of cells?",
+    "options": [
+      "Schwann",
+      "Virchow",
+      "Schleiden",
+      "Hooke",
+      "Leeuwenhoek"
+    ],
+    "answer": 0,
+    "explanation": "Theodor Schwann extended cell theory to animals (building on Schleiden's work on plants), and is credited with the generalized principle that all living things are made of cells."
+  },
+  {
+    "id": "q-block11-033",
+    "question": "Which molecule is primarily responsible for cell-cell adhesion?",
+    "options": [
+      "Integrin",
+      "Fibrin",
+      "Selectin",
+      "Cadherin"
+    ],
+    "answer": 3,
+    "explanation": "Cadherins are the classic calcium-dependent cell-cell adhesion molecules."
+  },
+  {
+    "id": "q-block11-034",
+    "question": "A red blood cell swells and eventually bursts after being placed in a solution. Which solution could cause this?",
+    "options": [
+      "Isotonic",
+      "Hypertonic",
+      "Hypotonic",
+      "Monotonic",
+      "Politonic"
+    ],
+    "answer": 2,
+    "explanation": "In a hypotonic solution, water moves into the cell by osmosis, causing it to swell and potentially lyse."
+  },
+  {
+    "id": "q-block11-035",
+    "question": "If platelet activity becomes excessive, what results?",
+    "options": [
+      "Blood vessel occlusion",
+      "Decreased thrombopoietin production",
+      "Inhibition of plasmin formation",
+      "Prolonged coagulation time"
+    ],
+    "answer": 0,
+    "explanation": "Platelet hyperactivity promotes excessive clot formation, raising the risk of vessel occlusion (e.g. deep vein thrombosis, myocardial infarction).",
+    "image": "<img src=\"/histology/guess-the-slide/platelet.jpg\" alt=\"Micrograph of platelets on a peripheral blood smear\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-036",
+    "question": "Which cell component regulates cell activity and contains the chromosomes carrying DNA that directs protein synthesis?",
+    "options": [
+      "Rough endoplasmic reticulum",
+      "Cell membrane",
+      "Ribosome",
+      "Nucleus",
+      "Lysosome"
+    ],
+    "answer": 3,
+    "explanation": "The nucleus houses the genetic material (DNA/chromosomes) and directs cellular processes including protein synthesis via transcription."
+  },
+  {
+    "id": "q-block11-037",
+    "question": "Extracellular signaling can proceed quickly or slowly. Under which condition is it slow?",
+    "options": [
+      "A change in receptor function",
+      "A change in gene expression",
+      "A change in lipophilic-ligand function"
+    ],
+    "answer": 1,
+    "explanation": "Signaling pathways that act through changes in gene expression (transcription) are comparatively slow, since they require new mRNA and protein synthesis, unlike fast receptor-mediated responses."
+  },
+  {
+    "id": "q-block11-038",
+    "question": "Heme synthesis begins with condensation of succinyl-CoA and glycine. What compound results from this step?",
+    "options": [
+      "Porphobilinogen",
+      "Uroporphyrinogen",
+      "Delta-aminolevulinic acid (ALA)",
+      "Coproporphyrin",
+      "Uroporphyrin"
+    ],
+    "answer": 2,
+    "explanation": "Succinyl-CoA and glycine condense (via ALA synthase) to form delta-aminolevulinic acid (ALA), the first committed step of heme synthesis."
+  },
+  {
+    "id": "q-block11-039",
+    "question": "What is the name of the cell adhesion molecule involved in platelet aggregation?",
+    "options": [
+      "Integrin",
+      "Cadherin",
+      "Desmoglein",
+      "Selectin",
+      "Desmocollin"
+    ],
+    "answer": 0,
+    "explanation": "Platelet aggregation is mediated primarily by integrin (GPIIb/IIIa), which binds fibrinogen to bridge adjacent platelets.",
+    "image": "<img src=\"/histology/guess-the-slide/platelet.jpg\" alt=\"Micrograph of platelets on a peripheral blood smear\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-041",
+    "question": "A man and woman, both asymptomatic for a genetic disorder, have 5 sons and 2 daughters. Three of the sons are affected, but none of the daughters are. What is the inheritance pattern?",
+    "options": [
+      "Y-linked",
+      "X-linked dominant",
+      "X-linked recessive",
+      "Autosomal dominant",
+      "Autosomal recessive"
+    ],
+    "answer": 2,
+    "explanation": "Unaffected carrier parents with only sons affected (no daughters) is the classic pattern of X-linked recessive inheritance."
+  },
+  {
+    "id": "q-block11-042",
+    "question": "A cell has no true nucleus (genetic material dispersed in the cytoplasm), only exons, and simple circular DNA. What kind of cell is this?",
+    "options": [
+      "Eukaryotic",
+      "Prokaryotic",
+      "Fungal",
+      "Plant",
+      "Protist"
+    ],
+    "answer": 1,
+    "explanation": "No nuclear membrane and simple circular DNA are hallmarks of prokaryotic cells."
+  },
+  {
+    "id": "q-block11-043",
+    "question": "For breast cancer, regimen individualization follows immunohistochemistry testing by a clinical pathologist. Which receptor's overexpression guides this?",
+    "options": [
+      "Death ligand",
+      "Estrogen",
+      "Progesterone",
+      "Human epidermal growth factor receptor 2 (HER2)",
+      "Endosomal vacuole growth factor"
+    ],
+    "answer": 3,
+    "explanation": "HER2 overexpression, detected by immunohistochemistry, guides individualized targeted therapy (e.g. trastuzumab) in breast cancer."
+  },
+  {
+    "id": "q-block11-044",
+    "question": "Hypoalbuminemia is a protein-deficiency condition. Which of the following is itself a disease of protein deficiency?",
+    "options": [
+      "Kwashiorkor",
+      "Nephrotic syndrome",
+      "Liver cirrhosis",
+      "Ascites",
+      "Edema"
+    ],
+    "answer": 0,
+    "explanation": "Kwashiorkor is a form of malnutrition caused directly by dietary protein deficiency, unlike the others listed, which are consequences of low albumin rather than causes."
+  },
+  {
+    "id": "q-block11-046",
+    "question": "A bodybuilder has enlarged muscles from frequent exercise. What has happened to the muscle tissue?",
+    "options": [
+      "Hypertrophy",
+      "Atrophy",
+      "Metaplasia",
+      "Dysplasia"
+    ],
+    "answer": 0,
+    "explanation": "Exercise-induced muscle enlargement from an increase in individual cell size is hypertrophy."
+  },
+  {
+    "id": "q-block11-047",
+    "question": "This tissue's characteristics point to mucous connective tissue (identified by the umbilical vein structure present). Which property is correct for it?",
+    "options": [
+      "Proliferates into many different cell types",
+      "Has phagocytic ability",
+      "Produces antibodies",
+      "Moves by ameboid motion",
+      "Protects the tissue from bacterial infection"
+    ],
+    "answer": 4,
+    "explanation": "By elimination: options describing mesenchyme (a), the claim that fibroblasts are its only cell type contradicts phagocytic ability (b), and leukocyte properties (c, d) don't apply — leaving protection against bacterial infection as the property attributed to mucous connective tissue (Wharton's jelly) here."
+  },
+  {
+    "id": "q-block11-048",
+    "question": "A cell has no nuclear membrane and simple, circular DNA with fewer nucleotide base pairs. What kind of cell is this?",
+    "options": [
+      "Prokaryotic cell",
+      "Animal cell",
+      "Eukaryotic cell"
+    ],
+    "answer": 0,
+    "explanation": "No nuclear envelope plus simple circular DNA are defining features of a prokaryotic cell."
+  },
+  {
+    "id": "q-block11-051",
+    "question": "Chromatin threads thicken then thin, and the nucleus begins to disappear. What is this phase called?",
+    "options": [
+      "Prophase",
+      "Metaphase",
+      "Anaphase",
+      "Telophase",
+      "Interphase"
+    ],
+    "answer": 0,
+    "explanation": "This describes prophase, during which chromatin condenses and the nuclear envelope starts breaking down."
+  },
+  {
+    "id": "q-block11-052",
+    "question": "What is the difference between animal and plant cells?",
+    "options": [
+      "Animal cells lack centrioles and a cell wall",
+      "Animal cells have centrioles",
+      "Plant cells lack a vacuole"
+    ],
+    "answer": 1,
+    "explanation": "Animal cells possess centrioles (used in cell division), while plant cells characteristically lack them."
+  },
+  {
+    "id": "q-block11-053",
+    "question": "Glucose enters a cell using the Na+ gradient from Na+/K+ transport, moving against its own lower-outside/higher-inside concentration gradient. What transport mechanism is this?",
+    "options": [
+      "Facilitated diffusion",
+      "Simple diffusion",
+      "Transcytosis",
+      "Endocytosis",
+      "Secondary active transport"
+    ],
+    "answer": 4,
+    "explanation": "Using the energy of an ion gradient (here, the Na+ gradient) to move another molecule against its own gradient is secondary active transport (e.g. SGLT symporters)."
+  },
+  {
+    "id": "q-block11-054",
+    "question": "Which organ is responsible for hematopoiesis in the fetus during gestation?",
+    "options": [
+      "Kidney",
+      "Liver",
+      "Lymph node",
+      "Lung"
+    ],
+    "answer": 1,
+    "explanation": "The liver is the major site of fetal hematopoiesis for most of gestation (after the early yolk-sac stage and before bone marrow takes over)."
+  },
+  {
+    "id": "q-block11-055",
+    "question": "A 32-year-old woman has had fever for 3 days. Leukocytes: 17,200/mm3, erythrocytes: 4.2 million/mm3. What does this indicate?",
+    "options": [
+      "Thrombocytosis",
+      "Anemia",
+      "Leukopenia",
+      "Leukocytosis"
+    ],
+    "answer": 3,
+    "explanation": "Normal adult female leukocyte count is roughly 6,000-10,000/mm3; 17,200 is elevated, indicating leukocytosis."
+  },
+  {
+    "id": "q-block11-056",
+    "question": "A molecule enters a cell via a channel protein. Its concentration is higher in the interstitial fluid than inside the cell, and the process requires no ATP. What process is this?",
+    "options": [
+      "Pinocytosis",
+      "Facilitated diffusion",
+      "Osmosis",
+      "Active transport",
+      "Endocytosis"
+    ],
+    "answer": 1,
+    "explanation": "Movement down a concentration gradient through a channel protein without ATP consumption is facilitated diffusion (unlike active transport, endo-/pinocytosis, which all require ATP; osmosis specifically refers to solvent/water movement)."
+  },
+  {
+    "id": "q-block11-057",
+    "question": "Which protein is responsible for glucose uptake into skeletal muscle cells?",
+    "options": [
+      "GLUT1",
+      "GLUT2",
+      "GLUT3",
+      "GLUT4",
+      "GLUT5"
+    ],
+    "answer": 3,
+    "explanation": "GLUT4 is the insulin/contraction-responsive glucose transporter that translocates to the plasma membrane and T-tubules in skeletal muscle."
+  },
+  {
+    "id": "q-block11-058",
+    "question": "Proteins can be distinguished from each other by electrophoresis based on their",
+    "options": [
+      "Molecular weight",
+      "Molecular function",
+      "Molecular type",
+      "Molecular structure"
+    ],
+    "answer": 0,
+    "explanation": "Standard protein electrophoresis (e.g. SDS-PAGE) separates proteins primarily by molecular weight."
+  },
+  {
+    "id": "q-block11-059",
+    "question": "A child presents with a strawberry-red tongue and is diagnosed with scarlet fever. Examination shows enlargement of the fungiform papillae. What condition explains this enlargement?",
+    "options": [
+      "Metaplasia",
+      "Hypertrophy",
+      "Apoptosis",
+      "Dysplasia",
+      "Atrophy"
+    ],
+    "answer": 1,
+    "explanation": "The papillary enlargement seen in scarlet fever's strawberry tongue is a hypertrophic change."
+  },
+  {
+    "id": "q-block11-060",
+    "question": "Looking at the chromosome rearrangement shown, (A-B-C-D)-(E-F-G-H) becomes (A-D-C-B)-(E-F-G-H). What type of mutation is this?",
+    "options": [
+      "Inversion",
+      "Deletion",
+      "Translocation",
+      "Substitution",
+      "Insertion"
+    ],
+    "answer": 0,
+    "explanation": "The B-C-D segment has been reversed in order to D-C-B while gene content is unchanged — this is a chromosomal inversion."
+  },
+  {
+    "id": "q-block11-062",
+    "question": "What is the function of tRNA?",
+    "options": [
+      "Determines the amino acid sequence",
+      "Carries an amino acid matching its anticodon",
+      "Sequences the nucleic acid bases",
+      "Transports protein"
+    ],
+    "answer": 1,
+    "explanation": "tRNA's role is to deliver a specific amino acid to the ribosome, matching its anticodon to the mRNA codon."
+  },
+  {
+    "id": "q-block11-063",
+    "question": "What is the normal range of albumin in blood?",
+    "options": [
+      "1.2-1.5 g/dL",
+      "20-40 g/dL",
+      "3.5-5.2 g/dL",
+      "35.5-37.2 g/dL",
+      "3-6.9 g/dL"
+    ],
+    "answer": 2,
+    "explanation": "Normal serum albumin concentration is approximately 3.5-5.2 g/dL."
+  },
+  {
+    "id": "q-block11-065",
+    "question": "Slow-acetylator NAT2 patients receiving certain drugs are prone to a particular adverse drug reaction: drug-induced liver injury (DILI). Which option names this ADR?",
+    "options": [
+      "Drug-induced cardiac injury",
+      "Drug-induced hemolysis",
+      "Drug-induced liver injury",
+      "Drug-induced malignancy"
+    ],
+    "answer": 2,
+    "explanation": "The adverse reaction described, abbreviated DILI in the question itself, is drug-induced liver injury."
+  },
+  {
+    "id": "q-block11-066",
+    "question": "What happens during the G1 phase of the cell cycle?",
+    "options": [
+      "Organelles replicate, but not DNA",
+      "DNA is synthesized into protein",
+      "Preparation for division as chromatin thickens",
+      "DNA and needed proteins are replicated"
+    ],
+    "answer": 0,
+    "explanation": "G1 is a growth phase: the cell synthesizes proteins and duplicates organelles in preparation for S phase, but DNA replication itself does not occur until S phase."
+  },
+  {
+    "id": "q-block11-069",
+    "question": "Cell communication proceeds correctly through which sequence of steps?",
+    "options": [
+      "Signaling - Receptor - Reception - Transduction - Response - Action",
+      "Signaling - Receptor - Transduction - Response - Reception - Action",
+      "Signaling - Receptor - Response - Reception - Transduction - Action",
+      "Signaling - Receptor - Transduction - Reception - Response - Action",
+      "Signaling - Receptor - Response - Transduction - Reception - Action"
+    ],
+    "answer": 0,
+    "explanation": "The correct sequence is: a signal is released, a receptor exists for it, reception (binding) occurs, the signal is transduced, a response is produced, and finally the cellular action takes place."
+  },
+  {
+    "id": "q-block11-070",
+    "question": "What happens when blood is placed into a hypotonic environment?",
+    "options": [
+      "Lysis (cell membrane rupture, cell swelling)",
+      "Turgid",
+      "No change",
+      "Shrinkage",
+      "Enlargement without rupture"
+    ],
+    "answer": 0,
+    "explanation": "In a hypotonic environment, water enters red blood cells by osmosis, causing swelling and eventually lysis."
+  },
+  {
+    "id": "q-block11-072",
+    "question": "A 37-year-old man's leukocyte count is 2,000 cells/mm3. What does the patient have?",
+    "options": [
+      "Leukocytosis",
+      "Leukopenia",
+      "Hemoglobinopathy"
+    ],
+    "answer": 1,
+    "explanation": "A leukocyte count well below the normal range (roughly 4,500-11,000/mm3) indicates leukopenia."
+  },
+  {
+    "id": "q-block11-073",
+    "question": "What is a difference between DNA and RNA?",
+    "options": [
+      "DNA has ribose sugar, RNA has deoxyribose sugar",
+      "DNA is the genetic material of prokaryotes, RNA of eukaryotes",
+      "DNA is double-stranded, RNA is single-stranded",
+      "DNA contains uracil, RNA contains thymine"
+    ],
+    "answer": 2,
+    "explanation": "DNA is typically double-stranded while RNA is typically single-stranded — the other listed statements reverse the true facts (DNA has deoxyribose and thymine; RNA has ribose and uracil; both molecule types occur in prokaryotes and eukaryotes)."
+  },
+  {
+    "id": "q-block11-074",
+    "question": "What is the basic operating principle of electrophoresis?",
+    "options": [
+      "Based on protein function",
+      "Based on protein molecular weight",
+      "Based on protein location",
+      "Based on protein composition"
+    ],
+    "answer": 1,
+    "explanation": "Standard electrophoresis separates proteins according to molecular weight."
+  },
+  {
+    "id": "q-block11-075",
+    "question": "Which substance does NOT require a transport protein to cross the cell membrane?",
+    "options": [
+      "Na+",
+      "MgCl",
+      "Glucose",
+      "H2O",
+      "Glycerol"
+    ],
+    "answer": 4,
+    "explanation": "Small, relatively nonpolar molecules like glycerol can cross the lipid bilayer directly by simple diffusion, unlike ions and glucose, which require dedicated channels or transporters."
+  },
+  {
+    "id": "q-block11-076",
+    "question": "Chronic myeloid leukemia (CML) therapy is individualized based on chromosome testing. What is the therapeutic target?",
+    "options": [
+      "TMPRSS2-ERG fusion",
+      "ErbB-1",
+      "BCR-ABL fusion",
+      "HER-2",
+      "c-K-RAS"
+    ],
+    "answer": 2,
+    "explanation": "CML is driven by the BCR-ABL fusion gene (Philadelphia chromosome), the target of tyrosine kinase inhibitors like imatinib."
+  },
+  {
+    "id": "q-block11-077",
+    "question": "A polymorphism in VKORC1 (vitamin K epoxide reductase complex) is linked to increased adverse drug reactions — specifically bleeding — in patients on warfarin. Which mechanism is affected?",
+    "options": [
+      "A pharmacodynamic effect at the immune-component-binding step",
+      "A pharmacokinetic effect at the distribution step",
+      "A pharmacodynamic effect at the receptor-binding step",
+      "A pharmacodynamic effect at the absorption step",
+      "A pharmacodynamic effect at a channel-binding step"
+    ],
+    "answer": 2,
+    "explanation": "VKORC1 is warfarin's direct molecular target (the enzyme it inhibits), so a polymorphism here affects the pharmacodynamic receptor-binding step, not warfarin's pharmacokinetics."
+  },
+  {
+    "id": "q-block11-079",
+    "question": "Which phase of division produces diploid daughter cells identical to the parent cell?",
+    "options": [
+      "Prophase",
+      "Metaphase",
+      "Interphase",
+      "Telophase",
+      "Anaphase"
+    ],
+    "answer": 3,
+    "explanation": "Telophase completes mitosis: two nuclei re-form, producing two diploid daughter cells genetically identical to the parent."
+  },
+  {
+    "id": "q-block11-080",
+    "question": "Ferrochelatase catalyzes heme formation by inserting iron into which compound?",
+    "options": [
+      "Porphobilinogen",
+      "Coproporphyrinogen",
+      "Protoporphyrinogen",
+      "Protoporphyrin"
+    ],
+    "answer": 3,
+    "explanation": "Ferrochelatase catalyzes the final step of heme synthesis: inserting Fe2+ into protoporphyrin IX to form heme."
+  },
+  {
+    "id": "q-block11-082",
+    "question": "Which of the following is an example of a beneficial mutation?",
+    "options": [
+      "The HEXA mutation in Tay-Sachs disease",
+      "The CFTR mutation in cystic fibrosis",
+      "A BRCA1 mutation",
+      "The Hb mutation in sickle cell anemia"
+    ],
+    "answer": 3,
+    "explanation": "The sickle cell hemoglobin mutation, despite causing disease, confers resistance to malaria — a classic example of a mutation that can be beneficial in certain environments."
+  },
+  {
+    "id": "q-block11-083",
+    "question": "A lump is biopsied and found to be composed of a certain tissue type. Given it is likely a tumor of this tissue, what type is it?",
+    "options": [
+      "Reticular tissue",
+      "Areolar tissue",
+      "Adipose (fat) tissue",
+      "Dense regular connective tissue",
+      "Mucous tissue"
+    ],
+    "answer": 2,
+    "explanation": "Given the described lump is most consistent with a lipoma, the tissue involved is adipose (fat) tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_fat.jpg\" alt=\"Micrograph of adipose (fat) tissue, showing signet-ring-shaped adipocytes\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-084",
+    "question": "Which organ is the primary site of hematopoiesis during the second trimester of fetal development?",
+    "options": [
+      "Bone marrow",
+      "Thymus",
+      "Yolk sac",
+      "Liver",
+      "Lymph node"
+    ],
+    "answer": 3,
+    "explanation": "By the second trimester, the liver has become the dominant hematopoietic organ."
+  },
+  {
+    "id": "q-block11-085",
+    "question": "How many types of epithelial tissue are present in the kidney?",
+    "options": [
+      "Two types",
+      "Three types",
+      "Four types",
+      "Five types",
+      "One type"
+    ],
+    "answer": 1,
+    "explanation": "The kidney contains three epithelial types: simple squamous, transitional, and simple cuboidal epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Micrograph of the kidney showing simple squamous epithelium lining Bowman's capsule\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-086",
+    "question": "Which type of protein is most abundant across the body's cells?",
+    "options": [
+      "Hormone",
+      "Storage",
+      "Transport",
+      "Enzyme",
+      "Receptor"
+    ],
+    "answer": 3,
+    "explanation": "Enzymes make up the most abundant functional class of proteins in the body's cells."
+  },
+  {
+    "id": "q-block11-087",
+    "question": "A patient has pain in the left inguinal region, in an organ with the following features: dense connective tissue capsule, reticular tissue present, and it is a secondary lymphoid organ. Which structural feature matches?",
+    "options": [
+      "The capsule is made of loose connective tissue",
+      "Reticular tissue is present",
+      "The parenchyma is lined by cells and reticular tissue",
+      "It is a primary lymphoid organ"
+    ],
+    "answer": 1,
+    "explanation": "These features describe the spleen: a dense connective tissue capsule, a reticular tissue stroma, and secondary (not primary) lymphoid organ status — matching the option that reticular tissue is present.",
+    "image": "<img src=\"/histology/guess-the-slide/spleen_pulp.jpg\" alt=\"Micrograph of splenic pulp, showing white pulp lymphoid nodules within red pulp\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-088",
+    "question": "Iron is essential for treating iron-deficiency anemia. Which vitamin aids its absorption in the intestinal mucosa?",
+    "options": [
+      "Vitamin A",
+      "Vitamin B",
+      "Vitamin C",
+      "Vitamin D",
+      "Vitamin E"
+    ],
+    "answer": 2,
+    "explanation": "Vitamin C aids iron absorption by reducing non-heme iron (Fe3+) to the more absorbable Fe2+ form."
+  },
+  {
+    "id": "q-block11-089",
+    "question": "What is the final product of a gene's expression?",
+    "options": [
+      "Amino acid",
+      "Protein",
+      "Peptide",
+      "Peptidoglycan",
+      "DNA"
+    ],
+    "answer": 1,
+    "explanation": "Gene expression proceeds through transcription and translation to ultimately produce a protein, the functional end product."
+  },
+  {
+    "id": "q-block11-091",
+    "question": "Which epithelium type lines the vagina?",
+    "options": [
+      "Keratinized stratified squamous",
+      "Non-keratinized stratified squamous",
+      "Ciliated stratified squamous",
+      "Simple squamous",
+      "Keratinized simple squamous"
+    ],
+    "answer": 1,
+    "explanation": "The vaginal lining is non-keratinized stratified squamous epithelium."
+  },
+  {
+    "id": "q-block11-096",
+    "question": "A genetic variant in OCT1 reduces metformin's effectiveness. What is the mechanism?",
+    "options": [
+      "Increased hepatocyte AMPK activity",
+      "Increased renal secretion of metformin",
+      "Metformin accumulation in hepatocytes",
+      "Decreased intestinal and hepatic uptake of metformin"
+    ],
+    "answer": 3,
+    "explanation": "OCT1 mediates hepatic (and intestinal) uptake of metformin; a variant that reduces OCT1 function decreases metformin uptake into these tissues, reducing its intracellular effect."
+  },
+  {
+    "id": "q-block11-098",
+    "question": "Which protein plays a central role in blood clotting?",
+    "options": [
+      "Albumin",
+      "Fibrinogen",
+      "Transferrin",
+      "Globulin"
+    ],
+    "answer": 1,
+    "explanation": "Fibrinogen is converted into fibrin during the coagulation cascade, forming the structural clot."
+  },
+  {
+    "id": "q-block11-099",
+    "question": "Which cytoskeletal filament is tough, flexible, and able to be stretched?",
+    "options": [
+      "Microtubules",
+      "Microfilaments",
+      "Intermediate filaments",
+      "Intermediate microfilaments"
+    ],
+    "answer": 2,
+    "explanation": "Intermediate filaments (e.g. keratin, vimentin) provide tensile strength while remaining flexible, distinguishing them from the more rigid microtubules and thinner microfilaments."
+  },
+  {
+    "id": "q-block11-100",
+    "question": "What is an early-phase symptom of rabies?",
+    "options": [
+      "Irritable bowel syndrome",
+      "Toxic shock syndrome",
+      "Shed skin syndrome",
+      "Guillain-Barre syndrome",
+      "Flu-like symptoms"
+    ],
+    "answer": 4,
+    "explanation": "The prodromal phase of rabies typically presents with nonspecific flu-like symptoms before progressing to neurological signs."
+  },
+  {
+    "id": "q-block11-101",
+    "question": "Which gland secretion type releases part of the apical cytoplasm along with the secretory product, as seen in the lactating mammary gland?",
+    "options": [
+      "Merocrine",
+      "Apocrine",
+      "Holocrine",
+      "Eccrine",
+      "Endocrine"
+    ],
+    "answer": 1,
+    "explanation": "Apocrine secretion pinches off a portion of the apical cytoplasm along with the product — the lactating mammary gland is a classic example — unlike merocrine (eccrine) secretion, which uses exocytosis with the cell staying fully intact, or holocrine secretion, which releases the entire cell (e.g. sebaceous glands)."
+  },
+  {
+    "id": "q-block11-102",
+    "question": "Which type of cartilage forms the intervertebral discs and pubic symphysis, and is characterized by dense bundles of type I collagen fibers?",
+    "options": [
+      "Hyaline cartilage",
+      "Elastic cartilage",
+      "Fibrocartilage",
+      "Articular cartilage",
+      "Perichondrium"
+    ],
+    "answer": 2,
+    "explanation": "Fibrocartilage contains dense type I collagen bundles, giving it high tensile strength, and is found at the intervertebral discs, pubic symphysis, and menisci — unlike hyaline cartilage (type II collagen, e.g. tracheal rings) or elastic cartilage (elastic fibers, e.g. the pinna of the ear)."
+  },
+  {
+    "id": "q-block11-103",
+    "question": "Which muscle tissue type has spindle-shaped, uninucleated cells with no visible striations, and is under involuntary control?",
+    "options": [
+      "Skeletal muscle",
+      "Cardiac muscle",
+      "Smooth muscle",
+      "Striated muscle",
+      "Voluntary muscle"
+    ],
+    "answer": 2,
+    "explanation": "Smooth muscle cells are spindle-shaped, have a single central nucleus, and lack the sarcomere striations seen in skeletal and cardiac muscle; it is controlled involuntarily by the autonomic nervous system."
+  },
+  {
+    "id": "q-block11-104",
+    "question": "Which type of cell junction allows direct passage of ions and small molecules between the cytoplasm of adjacent cells, and is responsible for electrical coupling between cardiac muscle cells?",
+    "options": [
+      "Tight junction",
+      "Adherens junction",
+      "Desmosome",
+      "Gap junction",
+      "Hemidesmosome"
+    ],
+    "answer": 3,
+    "explanation": "Gap junctions are made of connexon channels that directly connect the cytoplasm of neighboring cells, allowing ions and small molecules to pass — this electrical coupling lets cardiac muscle cells contract in a coordinated wave."
+  },
+  {
+    "id": "q-block11-105",
+    "question": "In compact bone, what is the name for the central channel of an osteon that carries blood vessels and nerves?",
+    "options": [
+      "Volkmann's canal",
+      "Haversian (central) canal",
+      "Lacuna",
+      "Canaliculus",
+      "Periosteum"
+    ],
+    "answer": 1,
+    "explanation": "The Haversian (central) canal runs down the middle of each osteon and carries the blood vessels and nerves supplying that unit — Volkmann's canals run perpendicular to connect adjacent Haversian canals, while lacunae house osteocytes and canaliculi connect them.",
+    "image": "<svg viewBox=\"0 0 300 300\" role=\"img\" aria-label=\"Cross-section of an osteon in compact bone\"><circle cx=\"150\" cy=\"150\" r=\"110\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"85\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"60\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"35\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"128\" cy=\"138\" r=\"3\" fill=\"var(--text-muted)\" /><circle cx=\"176\" cy=\"135\" r=\"3\" fill=\"var(--text-muted)\" /><circle cx=\"150\" cy=\"196\" r=\"3\" fill=\"var(--text-muted)\" /><circle cx=\"103\" cy=\"163\" r=\"3\" fill=\"var(--text-muted)\" /><circle cx=\"198\" cy=\"165\" r=\"3\" fill=\"var(--text-muted)\" /><circle cx=\"150\" cy=\"104\" r=\"3\" fill=\"var(--text-muted)\" /><circle cx=\"150\" cy=\"150\" r=\"16\" fill=\"var(--accent)\" /><line x1=\"150\" y1=\"150\" x2=\"150\" y2=\"40\" stroke=\"var(--accent)\" stroke-width=\"1.5\" stroke-dasharray=\"3 3\" /><text x=\"150\" y=\"30\" fill=\"var(--accent-ink, var(--text))\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\">Central (Haversian) canal</text><text x=\"150\" y=\"270\" fill=\"var(--text-muted)\" font-size=\"12\" text-anchor=\"middle\">Concentric bone lamellae, with osteocytes in lacunae between rings</text></svg>"
+  },
+  {
+    "id": "q-block11-106",
+    "question": "Transitional epithelium is specifically adapted to withstand stretching. In which organ is it found?",
+    "options": [
+      "Trachea",
+      "Esophagus",
+      "Urinary bladder",
+      "Small intestine",
+      "Stomach"
+    ],
+    "answer": 2,
+    "explanation": "Transitional epithelium (urothelium) lines the urinary bladder, ureters, and part of the urethra, allowing the organ wall to stretch considerably as it fills without the epithelium tearing.",
+    "image": "<img src=\"/histology/guess-the-slide/transitional_bladder.jpg\" alt=\"Micrograph of the urinary bladder wall showing transitional epithelium (urothelium)\" loading=\"lazy\" />"
+  },
+  {
+    "id": "q-block11-107",
+    "question": "Which level of protein structure describes the linear sequence of amino acids linked by peptide bonds?",
+    "options": [
+      "Primary",
+      "Secondary",
+      "Tertiary",
+      "Quaternary",
+      "Supersecondary"
+    ],
+    "answer": 0,
+    "explanation": "Primary structure is simply the amino acid sequence; secondary structure describes local folding (alpha helices, beta sheets), tertiary the overall 3D fold of a single chain, and quaternary the arrangement of multiple subunits."
+  },
+  {
+    "id": "q-block11-108",
+    "question": "An enzyme's reaction rate is measured at increasing substrate concentrations until it plateaus. What does this plateau represent?",
+    "options": [
+      "The enzyme has been denatured",
+      "The enzyme is saturated with substrate (Vmax)",
+      "The substrate has been fully converted to product",
+      "The reaction has reached equilibrium",
+      "The enzyme's Km has increased"
+    ],
+    "answer": 1,
+    "explanation": "At high substrate concentrations, essentially all enzyme active sites are occupied, so the reaction rate plateaus at Vmax — adding more substrate can't increase the rate further because the enzyme itself is now the limiting factor."
+  },
+  {
+    "id": "q-block11-109",
+    "question": "Which type of enzyme inhibitor binds at a site other than the active site, changing the enzyme's shape so that even a high substrate concentration cannot fully restore its activity?",
+    "options": [
+      "Competitive inhibitor",
+      "Non-competitive (allosteric) inhibitor",
+      "Substrate analog",
+      "Transition-state analog",
+      "Irreversible covalent inhibitor only"
+    ],
+    "answer": 1,
+    "explanation": "A non-competitive (allosteric) inhibitor binds away from the active site and alters enzyme conformation, lowering Vmax in a way that excess substrate cannot overcome — unlike a competitive inhibitor, which competes directly for the active site and can be outcompeted by enough substrate."
+  },
+  {
+    "id": "q-block11-110",
+    "question": "Which type of RNA carries the codon sequence read by the ribosome during translation?",
+    "options": [
+      "mRNA",
+      "tRNA",
+      "rRNA",
+      "snRNA",
+      "miRNA"
+    ],
+    "answer": 0,
+    "explanation": "Messenger RNA (mRNA) carries the codon sequence transcribed from DNA to the ribosome; tRNA delivers amino acids by matching its anticodon to each codon, and rRNA forms the ribosome's catalytic core."
+  },
+  {
+    "id": "q-block11-111",
+    "question": "DNA polymerase synthesizes a new strand in which direction relative to the growing strand?",
+    "options": [
+      "5' to 3'",
+      "3' to 5'",
+      "Bidirectionally from every nucleotide",
+      "Randomly, then ligated together",
+      "Only in the antisense direction"
+    ],
+    "answer": 0,
+    "explanation": "DNA polymerase always adds new nucleotides to the growing strand's 3' end, synthesizing 5' to 3' — this is why one strand (the lagging strand) must be made discontinuously, in Okazaki fragments, since its template runs in the opposite direction."
+  },
+  {
+    "id": "q-block11-112",
+    "question": "Which plasma globulin fraction is responsible for antibody (immunoglobulin) activity?",
+    "options": [
+      "Alpha-1 globulin",
+      "Alpha-2 globulin",
+      "Beta globulin",
+      "Gamma globulin",
+      "Albumin"
+    ],
+    "answer": 3,
+    "explanation": "Gamma globulins are the immunoglobulin fraction of plasma proteins, produced by plasma cells; alpha and beta globulins instead include transport and carrier proteins such as transferrin and ceruloplasmin, and albumin (not a globulin) is chiefly responsible for maintaining plasma oncotic pressure."
+  },
+  {
+    "id": "q-block11-113",
+    "question": "A red blood cell is placed into a solution with the same solute concentration as its cytoplasm. What happens to the cell?",
+    "options": [
+      "It swells and may lyse",
+      "It shrinks (crenates)",
+      "Its volume stays the same",
+      "It undergoes apoptosis",
+      "It becomes turgid"
+    ],
+    "answer": 2,
+    "explanation": "In an isotonic solution there is no net water movement across the membrane, since the solute concentration inside and outside the cell is equal — so the cell's volume remains unchanged."
+  },
+  {
+    "id": "q-block11-114",
+    "question": "Which phase of hemostasis involves vascular constriction and formation of a temporary platelet plug, before the coagulation cascade reinforces it with fibrin?",
+    "options": [
+      "Primary hemostasis",
+      "Secondary hemostasis",
+      "Tertiary hemostasis (fibrinolysis)",
+      "Thrombopoiesis",
+      "Vasculogenesis"
+    ],
+    "answer": 0,
+    "explanation": "Primary hemostasis covers vascular spasm and platelet plug formation immediately after injury; secondary hemostasis (coagulation) then reinforces that plug with a fibrin mesh, and tertiary hemostasis (fibrinolysis) later dissolves the clot once healing is underway."
+  },
+  {
+    "id": "q-block11-115",
+    "question": "At which cell-cycle checkpoint does the cell verify that DNA has been replicated correctly before proceeding into mitosis?",
+    "options": [
+      "G1/S checkpoint",
+      "G2/M checkpoint",
+      "Metaphase (spindle-assembly) checkpoint",
+      "G0 checkpoint",
+      "Anaphase checkpoint"
+    ],
+    "answer": 1,
+    "explanation": "The G2/M checkpoint checks for complete, accurate DNA replication (and DNA damage) before the cell is allowed to enter mitosis; the G1/S checkpoint instead governs the decision to begin DNA replication, and the metaphase checkpoint confirms proper spindle attachment to chromosomes."
+  },
+  {
+    "id": "q-block11-116",
+    "question": "Which hematopoietic growth factor primarily stimulates megakaryocyte development and platelet production?",
+    "options": [
+      "Erythropoietin",
+      "Thrombopoietin",
+      "Granulocyte colony-stimulating factor (G-CSF)",
+      "Interleukin-3",
+      "Stem cell factor"
+    ],
+    "answer": 1,
+    "explanation": "Thrombopoietin, produced mainly by the liver, stimulates megakaryocyte maturation and platelet release — analogous to how erythropoietin stimulates red cell production and G-CSF stimulates neutrophil production."
+  },
+  {
+    "id": "q-block11-117",
+    "question": "A hormone binds a G-protein-coupled receptor on the cell membrane and triggers a rise in intracellular cyclic AMP (cAMP). What role does cAMP play in this pathway?",
+    "options": [
+      "It is the original extracellular signal",
+      "It is a second messenger relaying the signal inside the cell",
+      "It is the receptor itself",
+      "It directly enters the nucleus to bind DNA",
+      "It is a degraded byproduct with no signaling role"
+    ],
+    "answer": 1,
+    "explanation": "cAMP is a classic second messenger: it's generated inside the cell in response to receptor activation (here, via adenylyl cyclase) and relays and amplifies the signal further downstream, e.g. by activating protein kinase A — the hormone itself is the first messenger, acting from outside the cell."
+  }
+]

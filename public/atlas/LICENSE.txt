@@ -1,0 +1,40 @@
+3D ANATOMY ATLAS: LICENCE AND CREDITS
+
+The files in this folder (the .glb.gz models, atlas.json, latin.json and descriptions.json) are
+NOT under the app's MIT licence. They are a derivative of Z-Anatomy and are
+distributed under the Creative Commons Attribution-ShareAlike 4.0 International
+licence (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/
+
+Source
+  Z-Anatomy - The open source atlas of anatomy - CC BY-SA 4.0
+  https://www.z-anatomy.com/  ·  https://github.com/LluisV/Z-Anatomy
+  The models are themselves derived from:
+  BodyParts3D - The Database Center for Life Science - CC BY-SA 2.1 Japan
+  https://lifesciencedb.jp/bp3d/
+
+  Z-Anatomy also includes and adapts:
+  - "Brainder" and "White matter", University of Washington
+  - "Cranial Nerves and Foramina", University of Dundee, CAHID - CC BY 4.0
+  - "Anatomy of the Inner Ear", University of Dundee School of Medicine
+    - CC BY-NC-SA 4.0 (non-commercial)
+  - "Kidney" by lissiecowley - CC BY-NC 4.0 (non-commercial)
+  The non-commercial parts mean this atlas must not be used commercially.
+
+Latin names
+  latin.json holds the Latin (Terminologia Anatomica) name of each structure,
+  group and landmark, from Z-Anatomy's translation table.
+
+Descriptions
+  The structure descriptions are Z-Anatomy's, which follow Wikipedia articles
+  (CC BY-SA). They have been shortened to their first paragraphs.
+
+Changes made here
+  The Z-Anatomy FBX models (PC-Version branch) were converted to glTF with
+  Blender 4.2, one file per body system plus the muscle attachment areas; label
+  markers were removed; meshes were simplified (meshoptimizer, up to half the
+  triangles), quantized, compressed (EXT_meshopt_compression) and gzipped. Colours are
+  assigned by the app from the models' material names. The conversion is
+  described in docs/atlas-3d.md in this repository.
+
+You may share and adapt these files under the same licence, crediting
+Z-Anatomy and BodyParts3D as above.

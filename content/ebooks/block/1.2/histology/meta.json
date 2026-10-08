@@ -1,0 +1,40 @@
+{
+  "title": "Histology: Muscle & Integument",
+  "description": "Study notes for the Block 1.2 histology practicum: smooth, skeletal and cardiac muscle, the layers and cells of the skin, its sensory nerve endings and appendages (hair, glands, nails), and a slide-identification guide for the practicum.",
+  "chapters": [
+    {
+      "id": "chapter-01",
+      "title": "Muscle Tissue Basics"
+    },
+    {
+      "id": "chapter-02",
+      "title": "Smooth, Skeletal & Cardiac Muscle"
+    },
+    {
+      "id": "chapter-03",
+      "title": "Skin Structure & the Epidermis"
+    },
+    {
+      "id": "chapter-04",
+      "title": "Dermis, Hypodermis & Sensory Endings"
+    },
+    {
+      "id": "chapter-05",
+      "title": "Skin Appendages: Hair, Glands & Nails"
+    },
+    {
+      "id": "chapter-06",
+      "title": "Practicum Guide: Identifying the Slides"
+    }
+  ],
+  "resources": [
+    {
+      "title": "University of Michigan Histology Atlas",
+      "url": "https://histology.medicine.umich.edu/"
+    },
+    {
+      "title": "OpenStax Anatomy & Physiology 2e: The Integumentary System (free textbook)",
+      "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/5-introduction"
+    }
+  ]
+}

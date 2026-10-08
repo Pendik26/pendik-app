@@ -1,0 +1,10 @@
+{
+  // Vercel type-checks each function against the nearest tsconfig.json. Without this file that
+  // is the root solution config, which sets no options (and TypeScript 6 no longer loads
+  // @types/node by default). Point it at the API's real settings instead. rootDir is the repo
+  // because the function imports from server/ and src/lib/.
+  "extends": "../tsconfig.api.json",
+  "compilerOptions": {
+    "rootDir": ".."
+  }
+}

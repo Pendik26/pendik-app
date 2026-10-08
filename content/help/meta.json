@@ -1,0 +1,128 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Getting started",
+    "group": "Start here",
+    "description": "What the app is, how it's organised by block and subject, studying as a guest, and installing it to work offline.",
+    "keywords": "start new install pwa offline home screen guest block subject theme dark light"
+  },
+  {
+    "id": "search-and-shortcuts",
+    "title": "Search and shortcuts",
+    "group": "Start here",
+    "description": "Finding any card, question or chapter, the command palette, and every keyboard shortcut in one table.",
+    "keywords": "search find command palette ctrl k keyboard shortcuts keys sidebar"
+  },
+  {
+    "id": "flashcards",
+    "title": "Flashcards",
+    "group": "Study",
+    "description": "How a review session works, what each grade button does to a card's next review, tag filters and your hardest cards.",
+    "keywords": "flashcards spaced repetition sm-2 grade due review tags hardest read aloud anki"
+  },
+  {
+    "id": "image-occlusion",
+    "title": "Image occlusion",
+    "group": "Study",
+    "description": "Learning anatomy figures label by label: review and browse modes, the gallery, zoom and every key that helps.",
+    "keywords": "image occlusion anatomy labels figures atlas anki red box gallery zoom"
+  },
+  {
+    "id": "quizzes",
+    "title": "Quizzes",
+    "group": "Study",
+    "description": "Taking a quiz, sections of big banks, reviewing missed questions, and why the order changes every time.",
+    "keywords": "quiz questions mcq sections missed retry due drill shuffle score explanation"
+  },
+  {
+    "id": "exams",
+    "title": "Timed exams",
+    "group": "Study",
+    "description": "Practice block exams from past papers: real exam or instant feedback mode, flags, the timer and reviewing afterwards.",
+    "keywords": "exam timed mock past paper package ub costraver flag timer real exam instant feedback"
+  },
+  {
+    "id": "virtual-lab",
+    "title": "Virtual Lab",
+    "group": "Study",
+    "description": "The PhysioEx skeletal muscle simulator: stimulating, measuring, recording data, plotting and checking your answers.",
+    "keywords": "virtual lab physioex dry lab praktikum muscle twitch tetanus fatigue length tension load velocity record plot csv"
+  },
+  {
+    "id": "reading",
+    "title": "Ebooks and summaries",
+    "group": "Read",
+    "description": "Reading chapters and summaries, marking chapters done, text size and the accessible font, and printing.",
+    "keywords": "ebook chapter summary read reading font size accessible print complete resume"
+  },
+  {
+    "id": "modules-and-drive",
+    "title": "Modules and the Class Drive",
+    "group": "Read",
+    "description": "Lecture and practicum PDFs, and the class's live Google Drive: slides, recordings, tutorials and exam files.",
+    "keywords": "modules pdf slides lecture practicum class drive google drive ppt recordings tutorial ub new this week"
+  },
+  {
+    "id": "anatomy-3d",
+    "title": "3D anatomy",
+    "group": "Read",
+    "description": "The 3D body: turning it, switching body systems, naming any structure, landmarks and where each muscle attaches.",
+    "keywords": "3d anatomy atlas body model skeleton bones muscles nerves vessels organs origin insertion attachment landmarks z-anatomy"
+  },
+  {
+    "id": "knowledge-map",
+    "title": "Knowledge map",
+    "group": "Read",
+    "description": "One map of every concept in the course: what links to what, where to read about it, and how well you know it.",
+    "keywords": "knowledge map concepts graph links mastery connections subjects obsidian local graph forces"
+  },
+  {
+    "id": "exam-plan",
+    "title": "Exam plan and today's plan",
+    "group": "Plan and track",
+    "description": "Setting your exam date, the readiness score, the phases before an exam, and how today's checklist is chosen.",
+    "keywords": "exam plan today plan readiness countdown phase learn strengthen mock target calendar ics"
+  },
+  {
+    "id": "progress",
+    "title": "Progress, streaks and backups",
+    "group": "Plan and track",
+    "description": "What the Progress page shows, how streaks and the heatmap count, weak spots, milestones and backing up as a guest.",
+    "keywords": "progress streak heatmap weak spots milestones backup export import json"
+  },
+  {
+    "id": "alfond",
+    "title": "Alfond and Explain this",
+    "group": "Plan and track",
+    "description": "The study assistant and the Explain this panel: what they can see, the daily AI allowance and turning them off.",
+    "keywords": "alfond ai assistant chat explain this explanation allowance limit"
+  },
+  {
+    "id": "account",
+    "title": "Accounts and sync",
+    "group": "Your account",
+    "description": "Creating an account, signing in with Google, how progress syncs between devices, and signing out safely.",
+    "keywords": "account sign in sign up google password sync devices cohort current block sign out delete"
+  },
+  {
+    "id": "leaderboard",
+    "title": "Leaderboard",
+    "group": "Your account",
+    "description": "Joining or leaving the leaderboard, your display name, and how points for the week, all time and streaks are earned.",
+    "keywords": "leaderboard points ranking cohort streak display name join leave"
+  },
+  {
+    "id": "privacy",
+    "title": "Your data and privacy",
+    "group": "Your account",
+    "description": "What is stored on your device and in your account, who can see what, and how to download or delete it all.",
+    "keywords": "privacy data stored delete download export guest account leaderboard visible"
+  },
+  {
+    "id": "troubleshooting",
+    "title": "Troubleshooting and FAQ",
+    "group": "Help",
+    "description": "Fixes for the common problems: missing progress, sign-in trouble, the app not updating, PDFs not loading and more.",
+    "keywords": "troubleshooting faq problem fix help broken error update sign in lost progress offline"
+  }
+]

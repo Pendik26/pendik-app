@@ -1,0 +1,776 @@
+/* Virtual Lab: the simulated muscle, oscilloscope, controls and data table. */
+
+.lab-page {
+  --lab-screen: #0b1612;
+  --lab-screen-grid: rgb(120 220 180 / 0.13);
+  --lab-screen-text: #9cc7b6;
+  --lab-measure: #f5d565;
+  --lab-metal: #9aa5a1;
+  --lab-danger: #e0645b;
+}
+
+.lab-kicker {
+  margin: 0.25rem 0 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.lab-card {
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, var(--glass-shadow);
+}
+
+.lab-card h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.lab-card p {
+  line-height: 1.6;
+}
+
+.lab-footnote {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Index */
+
+.lab-exercise {
+  margin: 1.25rem 0;
+}
+
+.lab-exercise > h2 {
+  font-size: 1.35rem;
+}
+
+.lab-activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.lab-activity-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.lab-activity-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.lab-activity-num {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.lab-activity-text {
+  display: grid;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.lab-activity-text span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.lab-activity-rows {
+  flex: none;
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+/* Activity page */
+
+.lab-activity-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.lab-activity-pill {
+  display: inline-grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.lab-activity-pill:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.lab-activity-pill.is-current {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg, #06110d);
+  font-weight: 700;
+}
+
+.lab-intro {
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.lab-background summary,
+.lab-expected summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.lab-background[open] summary {
+  margin-bottom: 0.4rem;
+}
+
+.lab-steps ol {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.35rem;
+  line-height: 1.55;
+}
+
+.lab-expected {
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+}
+
+.lab-expected p {
+  margin: 0.5rem 0 0;
+}
+
+.lab-bench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.85rem;
+}
+
+.lab-stage {
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem;
+}
+
+.lab-rig {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.lab-rig-metal {
+  fill: var(--lab-metal);
+}
+
+.lab-rig-box {
+  fill: var(--surface-2);
+  stroke: var(--lab-metal);
+  stroke-width: 1.5;
+}
+
+.lab-rig-small {
+  font-size: 10px;
+  fill: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.lab-rig-thread {
+  stroke: var(--text-muted);
+  stroke-width: 1.2;
+}
+
+.lab-rig-tendon {
+  stroke: #e8dcc8;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.lab-rig-muscle {
+  stroke: rgb(120 20 20 / 0.45);
+  stroke-width: 1;
+  transition: fill 0.08s linear;
+}
+
+.lab-rig-fibres {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.28);
+  stroke-width: 1;
+}
+
+.lab-rig-wire {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.2;
+}
+
+.lab-rig-led {
+  fill: #3a4a43;
+  stroke: var(--lab-metal);
+}
+
+.lab-rig-led.is-on {
+  fill: #6dff9e;
+  filter: drop-shadow(0 0 4px #6dff9e);
+}
+
+.lab-rig-weight {
+  fill: #6e7773;
+  stroke: #4b5350;
+}
+
+.lab-rig-weight-label {
+  font-size: 10px;
+  fill: #fff;
+  font-family: var(--font-mono);
+}
+
+.lab-scope-wrap {
+  min-width: 0;
+}
+
+.lab-scope {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+  background: #1b2622;
+  touch-action: pan-y;
+}
+
+.lab-scope.is-measuring {
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.lab-scope-screen {
+  fill: var(--lab-screen);
+}
+
+.lab-scope-grid {
+  stroke: var(--lab-screen-grid);
+  stroke-width: 1;
+}
+
+.lab-scope-tick {
+  font-size: 11px;
+  fill: var(--lab-screen-text);
+  font-family: var(--font-mono);
+}
+
+.lab-scope-label {
+  font-size: 12px;
+  fill: var(--lab-screen-text);
+}
+
+.lab-scope-trace {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: opacity 0.15s ease;
+}
+
+/* Each tracing has its own colour (set inline); the newest, or the one hovered in the legend,
+   is drawn heavier, and hovering one fades the rest. */
+.lab-scope-trace.is-latest {
+  stroke-width: 2.4;
+}
+
+.lab-scope-trace.is-muted {
+  opacity: 0.25;
+}
+
+.lab-scope-crosshair {
+  stroke: var(--lab-screen-text);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.lab-scope-dot {
+  stroke: var(--lab-screen);
+  stroke-width: 2;
+}
+
+.lab-scope-legend {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.lab-scope-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: default;
+}
+
+.lab-scope-legend li.is-focus {
+  color: var(--text);
+}
+
+.lab-scope-legend i {
+  display: inline-block;
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.lab-scope-legend b {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lab-scope-legend-x {
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.lab-scope-measure {
+  stroke: var(--lab-measure);
+  stroke-width: 1.5;
+}
+
+.lab-scope-measure-handle {
+  fill: var(--lab-measure);
+}
+
+.lab-scope-ref {
+  stroke: var(--lab-measure);
+  stroke-dasharray: 5 4;
+}
+
+.lab-scope-reflabel {
+  font-size: 11px;
+  fill: var(--lab-measure);
+}
+
+.lab-note {
+  margin: 0.45rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.lab-measure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.lab-measure input[type="range"] {
+  flex: 1 1 160px;
+  accent-color: var(--lab-measure);
+}
+
+
+.lab-controls {
+  display: grid;
+  gap: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+}
+
+.lab-controls-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+
+.lab-stepper {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.lab-stepper-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.lab-stepper-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.lab-stepper-btn {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.lab-stepper-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.lab-stepper-input {
+  width: 4.6rem;
+  height: 2.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+.lab-stepper-unit {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.lab-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.lab-weight {
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+
+.lab-weight.is-on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.lab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.lab-page .btn.btn-danger {
+  background: var(--lab-danger);
+  border-color: var(--lab-danger);
+  color: #fff;
+}
+
+.lab-page .btn.is-active {
+  border-color: var(--lab-measure);
+}
+
+.lab-readouts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.lab-readouts div {
+  padding: 0.4rem 0.7rem;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.lab-readouts dt {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.lab-readouts dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.lab-data {
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+}
+
+.lab-data-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.lab-data-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.lab-data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lab-table-wrap {
+  position: relative;
+  overflow-x: auto;
+}
+
+.lab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.lab-table th,
+.lab-table td {
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lab-table th {
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.lab-table td {
+  font-family: var(--font-mono);
+}
+
+.lab-table th:first-child,
+.lab-table td:first-child {
+  text-align: left;
+  color: var(--text-muted);
+}
+
+.lab-empty {
+  color: var(--text-muted);
+  text-align: center !important;
+  font-family: inherit !important;
+  padding: 1rem !important;
+}
+
+.lab-row-delete {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.lab-row-delete:hover {
+  color: var(--lab-danger);
+}
+
+.lab-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.lab-plot {
+  margin: 1rem 0 0;
+}
+
+.lab-plot svg {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  display: block;
+}
+
+.lab-plot-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.lab-plot-axis {
+  stroke: var(--text-muted);
+}
+
+.lab-plot-tick {
+  font-size: 11px;
+  fill: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.lab-plot-label {
+  font-size: 12px;
+  fill: var(--text);
+}
+
+.lab-plot-series polyline {
+  fill: none;
+  stroke-width: 2;
+}
+
+.lab-plot .tone-a {
+  --tone: var(--accent);
+}
+
+.lab-plot .tone-b {
+  --tone: var(--accent-2);
+}
+
+.lab-plot .tone-c {
+  --tone: #e8a33d;
+}
+
+.lab-plot-series polyline {
+  stroke: var(--tone);
+}
+
+.lab-plot-series circle {
+  fill: var(--tone);
+}
+
+.lab-plot-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.lab-plot-legend i {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--tone);
+  vertical-align: middle;
+  margin-right: 0.25rem;
+}
+
+.lab-questions {
+  margin-top: 1.25rem;
+}
+
+.lab-questions-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.lab-questions-score {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  display: inline-flex;
+  gap: 0.75rem;
+}
+
+.lab-question-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.lab-question .quiz-question-text {
+  margin-bottom: 0.6rem;
+}
+
+.lab-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 720px) {
+  .lab-stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    padding: 0.6rem;
+  }
+
+  /* The scope's SVG text scales down with it; enlarge it to stay readable. */
+  .lab-scope-tick {
+    font-size: 17px;
+  }
+
+  .lab-scope-label {
+    font-size: 15px;
+  }
+
+  /* The trace gets the full width; the apparatus sits small underneath. */
+  .lab-rig-wrap {
+    order: 2;
+    width: 110px;
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-activity-link,
+  .lab-rig-muscle,
+  .lab-scope-trace {
+    transition: none;
+  }
+}

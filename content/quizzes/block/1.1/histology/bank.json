@@ -1,0 +1,2364 @@
+[
+  {
+    "id": "q-histo-001",
+    "question": "A biopsy shows a single layer of flattened, scale-like cells lining a blood vessel. What type of epithelium is this?",
+    "options": [
+      "Stratified squamous epithelium",
+      "Simple squamous epithelium",
+      "Simple cuboidal epithelium",
+      "Pseudostratified columnar epithelium",
+      "Transitional epithelium"
+    ],
+    "answer": 1,
+    "explanation": "Simple squamous epithelium — a single layer of flat cells — lines blood vessels (where it's called endothelium) and body cavities, well suited for diffusion and filtration."
+  },
+  {
+    "id": "q-histo-002",
+    "question": "Which connective tissue cell releases histamine and heparin and is filled with metachromatic granules?",
+    "options": [
+      "Mast cell",
+      "Eosinophil",
+      "Fibroblast",
+      "Plasma cell",
+      "Macrophage"
+    ],
+    "answer": 0,
+    "explanation": "Mast cells store histamine and heparin in cytoplasmic granules and degranulate during allergic and inflammatory responses."
+  },
+  {
+    "id": "q-histo-003",
+    "question": "On a peripheral smear, a cell shows a bilobed nucleus and large, deep-purple/basophilic granules. Which cell is this most likely to be?",
+    "options": [
+      "Basophil",
+      "Eosinophil",
+      "Neutrophil",
+      "Monocyte",
+      "Lymphocyte"
+    ],
+    "answer": 0,
+    "explanation": "Basophils are the rarest granulocyte, identified by coarse, densely basophilic (dark purple) granules that often obscure the bilobed nucleus."
+  },
+  {
+    "id": "q-histo-004",
+    "question": "Which epithelium type lines the urinary bladder and is specialized to stretch as the organ fills?",
+    "options": [
+      "Transitional epithelium (urothelium)",
+      "Simple columnar epithelium",
+      "Stratified cuboidal epithelium",
+      "Simple squamous epithelium",
+      "Pseudostratified columnar epithelium"
+    ],
+    "answer": 0,
+    "explanation": "Transitional epithelium (urothelium) lines the renal pelvis, ureters, and bladder; its dome-shaped surface cells flatten out to accommodate distension."
+  },
+  {
+    "id": "q-histo-005",
+    "question": "What is the primary distinguishing microscopic feature of cardiac muscle compared to skeletal muscle?",
+    "options": [
+      "Cardiac muscle fibers form a functional syncytium with no cell membranes between cells",
+      "Cardiac muscle is non-striated",
+      "Cardiac muscle fibers have intercalated discs and typically one central nucleus",
+      "Cardiac muscle fibers are multinucleated with peripheral nuclei",
+      "Cardiac muscle lacks mitochondria"
+    ],
+    "answer": 2,
+    "explanation": "Intercalated discs — specialized junctions containing gap junctions and desmosomes — electrically and mechanically couple cardiac fibers, which typically have one or two central nuclei, unlike skeletal muscle's peripheral, multinucleated pattern."
+  },
+  {
+    "id": "q-histo-006",
+    "question": "A gland secretes its product by exocytosis without any loss of cytoplasm, keeping the cell fully intact. What mode of secretion is this?",
+    "options": [
+      "Apocrine",
+      "Holocrine",
+      "Merocrine",
+      "Endocrine",
+      "Paracrine"
+    ],
+    "answer": 2,
+    "explanation": "Merocrine secretion releases product by exocytosis with the cell remaining intact — the mechanism used by eccrine sweat glands and the exocrine pancreas."
+  },
+  {
+    "id": "q-histo-007",
+    "question": "Which cell junction anchors intermediate (keratin) filaments between adjacent epidermal cells, providing mechanical strength against shearing forces?",
+    "options": [
+      "Tight junction",
+      "Desmosome",
+      "Hemidesmosome",
+      "Gap junction",
+      "Zonula adherens (adherens junction)"
+    ],
+    "answer": 1,
+    "explanation": "Desmosomes are spot-like junctions that anchor intermediate filaments between neighboring cells; hemidesmosomes perform a similar role but anchor cells to the basement membrane, not to each other."
+  },
+  {
+    "id": "q-histo-008",
+    "question": "A tissue sample from a tendon shows densely packed collagen bundles running in a single parallel direction. What connective tissue type is this?",
+    "options": [
+      "Loose (areolar) connective tissue",
+      "Dense irregular connective tissue",
+      "Dense regular connective tissue",
+      "Elastic connective tissue",
+      "Reticular connective tissue"
+    ],
+    "answer": 2,
+    "explanation": "Dense regular connective tissue has collagen fibers aligned in parallel along the axis of mechanical stress, maximizing tensile strength — characteristic of tendons and ligaments."
+  },
+  {
+    "id": "q-histo-009",
+    "question": "What do goblet cells secrete, and what is their functional role in the respiratory and GI epithelium?",
+    "options": [
+      "Surfactant, to reduce alveolar surface tension",
+      "Lysozyme, for antibacterial defense",
+      "Hydrochloric acid, for pathogen defense",
+      "Serous fluid, for enzymatic digestion",
+      "Mucin, which hydrates into a protective mucus layer"
+    ],
+    "answer": 4,
+    "explanation": "Goblet cells are unicellular glands that secrete mucin, which absorbs water to form mucus — a protective, lubricating barrier on respiratory and GI epithelial surfaces."
+  },
+  {
+    "id": "q-histo-010",
+    "question": "Which junction, positioned apical-most in the junctional complex, seals the paracellular space between epithelial cells?",
+    "options": [
+      "Tight junction (zonula occludens)",
+      "Desmosome",
+      "Hemidesmosome",
+      "Gap junction",
+      "Zonula adherens"
+    ],
+    "answer": 0,
+    "explanation": "The tight junction (zonula occludens) sits closest to the apical surface and seals the space between adjacent cells, controlling paracellular passage."
+  },
+  {
+    "id": "q-histo-011",
+    "question": "Gap junction channels (connexons) allow which of the following to pass directly between adjacent cells' cytoplasm?",
+    "options": [
+      "Whole organelles",
+      "Nothing — gap junctions are purely mechanical anchors",
+      "Water and dissolved gases only, not ions",
+      "Only large signaling proteins",
+      "Small molecules and inorganic ions up to about 1.5 nm"
+    ],
+    "answer": 4,
+    "explanation": "Each connexon is built from six connexin proteins and forms a channel that permits small molecules and inorganic ions (roughly up to 1.5 nm) to pass directly from one cell's cytoplasm to the next; larger molecules cannot pass."
+  },
+  {
+    "id": "q-histo-012",
+    "question": "Roughly how much do microvilli increase an absorptive epithelial cell's apical surface area?",
+    "options": [
+      "About 30-fold",
+      "About 2-fold",
+      "About 100-fold",
+      "About 500-fold",
+      "About 10-fold"
+    ],
+    "answer": 0,
+    "explanation": "Microvilli — finger-like apical projections 0.5–1.0 µm long — increase absorptive surface area roughly 30-fold, the defining feature of brush-border epithelium like the small intestine."
+  },
+  {
+    "id": "q-histo-013",
+    "question": "What is the classic location of stereocilia in the body?",
+    "options": [
+      "Small intestine",
+      "Epididymis",
+      "Trachea",
+      "Vas deferens",
+      "Fallopian tube"
+    ],
+    "answer": 1,
+    "explanation": "Stereocilia — unusually long, immobile microvilli — are found in small numbers in the male reproductive tract, classically the epididymis, where they assist absorption."
+  },
+  {
+    "id": "q-histo-014",
+    "question": "What is the classic '9+2' arrangement seen in cross-section through a motile cilium?",
+    "options": [
+      "9 actin filaments surrounding 2 keratin filaments",
+      "9 central microtubules surrounded by 2 peripheral doublets",
+      "9 peripheral microtubule doublets surrounding 2 central single microtubules",
+      "9 peripheral single microtubules surrounding 2 central doublets",
+      "9 connexons surrounding 2 desmosomes"
+    ],
+    "answer": 2,
+    "explanation": "The ciliary axoneme has nine peripheral microtubule doublets arranged in a ring around a central pair of single microtubules — the core motile machinery shared by every cilium in the body."
+  },
+  {
+    "id": "q-histo-015",
+    "question": "Structurally (independent of secretion mechanism), how are exocrine glands classified?",
+    "options": [
+      "By duct branching (simple vs. compound) and secretory unit shape (tubular, alveolar, or tubuloalveolar)",
+      "By whether they are vascularized",
+      "By whether secretion is constitutive or regulated",
+      "By hormone type only",
+      "By the number of nuclei per cell"
+    ],
+    "answer": 0,
+    "explanation": "Structurally, exocrine glands are classified by whether their duct is simple (unbranched) or compound (branched), and by the shape of the secretory unit — tubular, alveolar/acinar, or a tubuloalveolar mix. This is separate from classification by secretion mechanism (merocrine/apocrine/holocrine)."
+  },
+  {
+    "id": "q-histo-016",
+    "question": "What type of epithelium lines the parietal layer of Bowman's capsule around the renal glomerulus?",
+    "options": [
+      "Simple cuboidal epithelium",
+      "Simple squamous epithelium",
+      "Transitional epithelium",
+      "Fenestrated simple squamous epithelium",
+      "Pseudostratified columnar epithelium"
+    ],
+    "answer": 1,
+    "explanation": "The parietal layer of Bowman's capsule is lined by simple squamous epithelium — a classic teaching example of this epithelium type. Fenestrated (pore-bearing) endothelium instead lines the glomerular capillaries themselves."
+  },
+  {
+    "id": "q-histo-017",
+    "question": "Which of the following is an unusual site where stratified columnar epithelium is the normal finding?",
+    "options": [
+      "Male urethra, pars cavernosa",
+      "Anal canal",
+      "Esophagus",
+      "Trachea",
+      "Stomach"
+    ],
+    "answer": 0,
+    "explanation": "The pars cavernosa of the male urethra is one of the few normal sites lined by stratified columnar epithelium, an otherwise uncommon epithelium type in the body."
+  },
+  {
+    "id": "q-histo-018",
+    "question": "Thyroid follicular cells, which secrete thyroid hormone into a colloid-filled follicle, are what type of epithelium?",
+    "options": [
+      "Transitional",
+      "Simple squamous",
+      "Simple cuboidal",
+      "Stratified columnar",
+      "Simple columnar"
+    ],
+    "answer": 2,
+    "explanation": "Thyroid follicular cells are simple cuboidal epithelium arranged around a colloid-filled follicle — the same basic cell shape seen lining renal tubules, but here functioning as an endocrine (ductless) gland."
+  },
+  {
+    "id": "q-histo-019",
+    "question": "In this Epidermis (Thin Skin) diagram, what structure is labeled ‘1’?",
+    "options": [
+      "Stratum Granulosum",
+      "Submucosa",
+      "Stratum Spinosum",
+      "Stratum Corneum",
+      "Stratum Basale"
+    ],
+    "answer": 3,
+    "explanation": "Stratum corneum: dead, anucleate, keratin-filled cells forming the outermost protective barrier.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 360 / 289;\"><img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Micrograph of thin skin epidermis showing keratinized stratified squamous epithelium\" loading=\"lazy\" /><div class=\"quiz-photo-band current\" style=\"top:0.0%;height:21.6%;\"><span class=\"quiz-photo-marker\">1</span></div><div class=\"quiz-photo-band\" style=\"top:21.6%;height:17.6%;\"><span class=\"quiz-photo-marker\">2</span></div><div class=\"quiz-photo-band\" style=\"top:39.2%;height:47.0%;\"><span class=\"quiz-photo-marker\">3</span></div><div class=\"quiz-photo-band\" style=\"top:86.2%;height:13.8%;\"><span class=\"quiz-photo-marker\">4</span></div></div>"
+  },
+  {
+    "id": "q-histo-020",
+    "question": "In this Epidermis (Thin Skin) diagram, what structure is labeled ‘2’?",
+    "options": [
+      "Stratum Spinosum",
+      "Stratum Basale",
+      "Stratum Corneum",
+      "Stratum Granulosum",
+      "Medulla"
+    ],
+    "answer": 3,
+    "explanation": "Stratum granulosum: cells accumulate keratohyalin granules as they flatten and begin to die.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 360 / 289;\"><img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Micrograph of thin skin epidermis showing keratinized stratified squamous epithelium\" loading=\"lazy\" /><div class=\"quiz-photo-band\" style=\"top:0.0%;height:21.6%;\"><span class=\"quiz-photo-marker\">1</span></div><div class=\"quiz-photo-band current\" style=\"top:21.6%;height:17.6%;\"><span class=\"quiz-photo-marker\">2</span></div><div class=\"quiz-photo-band\" style=\"top:39.2%;height:47.0%;\"><span class=\"quiz-photo-marker\">3</span></div><div class=\"quiz-photo-band\" style=\"top:86.2%;height:13.8%;\"><span class=\"quiz-photo-marker\">4</span></div></div>"
+  },
+  {
+    "id": "q-histo-021",
+    "question": "In this Epidermis (Thin Skin) diagram, what structure is labeled ‘3’?",
+    "options": [
+      "Stratum Basale",
+      "Stratum Corneum",
+      "Stratum Granulosum",
+      "Lacuna",
+      "Stratum Spinosum"
+    ],
+    "answer": 4,
+    "explanation": "Stratum spinosum: several cell layers thick, linked by desmosomes that give a 'spiny' look on fixed sections.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 360 / 289;\"><img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Micrograph of thin skin epidermis showing keratinized stratified squamous epithelium\" loading=\"lazy\" /><div class=\"quiz-photo-band\" style=\"top:0.0%;height:21.6%;\"><span class=\"quiz-photo-marker\">1</span></div><div class=\"quiz-photo-band\" style=\"top:21.6%;height:17.6%;\"><span class=\"quiz-photo-marker\">2</span></div><div class=\"quiz-photo-band current\" style=\"top:39.2%;height:47.0%;\"><span class=\"quiz-photo-marker\">3</span></div><div class=\"quiz-photo-band\" style=\"top:86.2%;height:13.8%;\"><span class=\"quiz-photo-marker\">4</span></div></div>"
+  },
+  {
+    "id": "q-histo-022",
+    "question": "In this Epidermis (Thin Skin) diagram, what structure is labeled ‘4’?",
+    "options": [
+      "Stratum Corneum",
+      "Stratum Granulosum",
+      "Stratum Spinosum",
+      "Stratum Basale",
+      "Submucosa"
+    ],
+    "answer": 3,
+    "explanation": "Stratum basale (germinativum): a single mitotically active layer that regenerates all layers above it.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 360 / 289;\"><img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Micrograph of thin skin epidermis showing keratinized stratified squamous epithelium\" loading=\"lazy\" /><div class=\"quiz-photo-band\" style=\"top:0.0%;height:21.6%;\"><span class=\"quiz-photo-marker\">1</span></div><div class=\"quiz-photo-band\" style=\"top:21.6%;height:17.6%;\"><span class=\"quiz-photo-marker\">2</span></div><div class=\"quiz-photo-band\" style=\"top:39.2%;height:47.0%;\"><span class=\"quiz-photo-marker\">3</span></div><div class=\"quiz-photo-band current\" style=\"top:86.2%;height:13.8%;\"><span class=\"quiz-photo-marker\">4</span></div></div>"
+  },
+  {
+    "id": "q-histo-023",
+    "question": "In this GI Tract Wall diagram, what structure is labeled ‘1’?",
+    "options": [
+      "Mucosa",
+      "Muscularis Externa",
+      "Serosa / Adventitia",
+      "Stratum Basale",
+      "Submucosa"
+    ],
+    "answer": 0,
+    "explanation": "The mucosa lines the lumen and includes the epithelium, lamina propria, and a thin muscularis mucosae.",
+    "image": "<svg viewBox=\"0 0 400 210\" role=\"img\" aria-label=\"GI Tract Wall diagram\"><rect x=\"20\" y=\"20\" width=\"360\" height=\"50\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"70\" width=\"360\" height=\"30\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"100\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"160\" width=\"360\" height=\"25\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"122\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" stroke-dasharray=\"4 3\" /><text x=\"200\" y=\"170\" fill=\"var(--text-muted)\" font-size=\"12\" text-anchor=\"middle\" font-style=\"italic\">(Dermis / connective tissue)</text><circle cx=\"40\" cy=\"45\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"40\" y=\"49\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"40\" cy=\"85\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"89\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"40\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"40\" cy=\"172\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"176\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-024",
+    "question": "In this GI Tract Wall diagram, what structure is labeled ‘2’?",
+    "options": [
+      "Serosa / Adventitia",
+      "Hilum",
+      "Mucosa",
+      "Submucosa",
+      "Muscularis Externa"
+    ],
+    "answer": 3,
+    "explanation": "The submucosa is dense connective tissue carrying larger vessels, lymphatics, and the submucosal (Meissner's) nerve plexus.",
+    "image": "<svg viewBox=\"0 0 400 210\" role=\"img\" aria-label=\"GI Tract Wall diagram\"><rect x=\"20\" y=\"20\" width=\"360\" height=\"50\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"70\" width=\"360\" height=\"30\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"100\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"160\" width=\"360\" height=\"25\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"122\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" stroke-dasharray=\"4 3\" /><text x=\"200\" y=\"170\" fill=\"var(--text-muted)\" font-size=\"12\" text-anchor=\"middle\" font-style=\"italic\">(Dermis / connective tissue)</text><circle cx=\"40\" cy=\"45\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"49\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"40\" cy=\"85\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"40\" y=\"89\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"40\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"40\" cy=\"172\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"176\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-025",
+    "question": "In this GI Tract Wall diagram, what structure is labeled ‘3’?",
+    "options": [
+      "Serosa / Adventitia",
+      "Submucosa",
+      "Muscularis Externa",
+      "Mucosa",
+      "Capsule"
+    ],
+    "answer": 2,
+    "explanation": "The muscularis externa drives peristalsis; the myenteric (Auerbach's) plexus sits between its two muscle layers.",
+    "image": "<svg viewBox=\"0 0 400 210\" role=\"img\" aria-label=\"GI Tract Wall diagram\"><rect x=\"20\" y=\"20\" width=\"360\" height=\"50\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"70\" width=\"360\" height=\"30\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"100\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"160\" width=\"360\" height=\"25\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"122\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" stroke-dasharray=\"4 3\" /><text x=\"200\" y=\"170\" fill=\"var(--text-muted)\" font-size=\"12\" text-anchor=\"middle\" font-style=\"italic\">(Dermis / connective tissue)</text><circle cx=\"40\" cy=\"45\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"49\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"40\" cy=\"85\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"89\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"40\" cy=\"130\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"40\" y=\"134\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"40\" cy=\"172\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"176\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-026",
+    "question": "In this GI Tract Wall diagram, what structure is labeled ‘4’?",
+    "options": [
+      "Central (Haversian) Canal",
+      "Submucosa",
+      "Mucosa",
+      "Muscularis Externa",
+      "Serosa / Adventitia"
+    ],
+    "answer": 4,
+    "explanation": "The outermost layer is serosa (mesothelium-covered, intraperitoneal organs) or adventitia (fused to surrounding tissue).",
+    "image": "<svg viewBox=\"0 0 400 210\" role=\"img\" aria-label=\"GI Tract Wall diagram\"><rect x=\"20\" y=\"20\" width=\"360\" height=\"50\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"70\" width=\"360\" height=\"30\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"100\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"160\" width=\"360\" height=\"25\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1\" /><rect x=\"20\" y=\"122\" width=\"360\" height=\"60\" fill=\"var(--surface)\" stroke=\"var(--border)\" stroke-width=\"1\" stroke-dasharray=\"4 3\" /><text x=\"200\" y=\"170\" fill=\"var(--text-muted)\" font-size=\"12\" text-anchor=\"middle\" font-style=\"italic\">(Dermis / connective tissue)</text><circle cx=\"40\" cy=\"45\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"49\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"40\" cy=\"85\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"89\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"40\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"40\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"40\" cy=\"172\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"40\" y=\"176\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-027",
+    "question": "In this Osteon (Compact Bone) diagram, what structure is labeled ‘1’?",
+    "options": [
+      "Cortex (Follicles)",
+      "Lacuna",
+      "Central (Haversian) Canal",
+      "Canaliculi",
+      "Lamellae"
+    ],
+    "answer": 2,
+    "explanation": "The central (Haversian) canal runs through the core of the osteon, carrying blood vessels and nerves.",
+    "image": "<svg viewBox=\"0 0 300 300\" role=\"img\" aria-label=\"Osteon (Compact Bone) diagram\"><circle cx=\"150\" cy=\"150\" r=\"110\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"85\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"60\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"35\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"18\" fill=\"var(--surface)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" /><circle cx=\"199\" cy=\"101\" r=\"4\" fill=\"var(--text-muted)\" /><line x1=\"192\" y1=\"108\" x2=\"184\" y2=\"116\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"206\" y1=\"108\" x2=\"214\" y2=\"100\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"199\" y1=\"94\" x2=\"199\" y2=\"84\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><circle cx=\"150\" cy=\"150\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"150\" y=\"154\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"245\" cy=\"150\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"245\" y=\"154\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"199\" cy=\"101\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"199\" y=\"105\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"172\" cy=\"128\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"172\" y=\"132\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-028",
+    "question": "In this Osteon (Compact Bone) diagram, what structure is labeled ‘2’?",
+    "options": [
+      "Canaliculi",
+      "Central (Haversian) Canal",
+      "Hilum",
+      "Lamellae",
+      "Lacuna"
+    ],
+    "answer": 3,
+    "explanation": "Lamellae are concentric rings of mineralized collagen matrix surrounding the central canal.",
+    "image": "<svg viewBox=\"0 0 300 300\" role=\"img\" aria-label=\"Osteon (Compact Bone) diagram\"><circle cx=\"150\" cy=\"150\" r=\"110\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"85\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"60\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"35\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"18\" fill=\"var(--surface)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" /><circle cx=\"199\" cy=\"101\" r=\"4\" fill=\"var(--text-muted)\" /><line x1=\"192\" y1=\"108\" x2=\"184\" y2=\"116\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"206\" y1=\"108\" x2=\"214\" y2=\"100\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"199\" y1=\"94\" x2=\"199\" y2=\"84\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><circle cx=\"150\" cy=\"150\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"150\" y=\"154\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"245\" cy=\"150\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"245\" y=\"154\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"199\" cy=\"101\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"199\" y=\"105\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"172\" cy=\"128\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"172\" y=\"132\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-029",
+    "question": "In this Osteon (Compact Bone) diagram, what structure is labeled ‘3’?",
+    "options": [
+      "Submucosa",
+      "Lacuna",
+      "Canaliculi",
+      "Central (Haversian) Canal",
+      "Lamellae"
+    ],
+    "answer": 1,
+    "explanation": "A lacuna is a small cavity housing an osteocyte, sitting between concentric lamellae.",
+    "image": "<svg viewBox=\"0 0 300 300\" role=\"img\" aria-label=\"Osteon (Compact Bone) diagram\"><circle cx=\"150\" cy=\"150\" r=\"110\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"85\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"60\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"35\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"18\" fill=\"var(--surface)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" /><circle cx=\"199\" cy=\"101\" r=\"4\" fill=\"var(--text-muted)\" /><line x1=\"192\" y1=\"108\" x2=\"184\" y2=\"116\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"206\" y1=\"108\" x2=\"214\" y2=\"100\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"199\" y1=\"94\" x2=\"199\" y2=\"84\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><circle cx=\"150\" cy=\"150\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"150\" y=\"154\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"245\" cy=\"150\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"245\" y=\"154\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"199\" cy=\"101\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"199\" y=\"105\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"172\" cy=\"128\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"172\" y=\"132\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-030",
+    "question": "In this Osteon (Compact Bone) diagram, what structure is labeled ‘4’?",
+    "options": [
+      "Canaliculi",
+      "Lamellae",
+      "Serosa / Adventitia",
+      "Lacuna",
+      "Central (Haversian) Canal"
+    ],
+    "answer": 0,
+    "explanation": "Canaliculi are thin channels connecting lacunae, letting osteocytes exchange nutrients and signals.",
+    "image": "<svg viewBox=\"0 0 300 300\" role=\"img\" aria-label=\"Osteon (Compact Bone) diagram\"><circle cx=\"150\" cy=\"150\" r=\"110\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"85\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"60\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"35\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"150\" cy=\"150\" r=\"18\" fill=\"var(--surface)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" /><circle cx=\"199\" cy=\"101\" r=\"4\" fill=\"var(--text-muted)\" /><line x1=\"192\" y1=\"108\" x2=\"184\" y2=\"116\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"206\" y1=\"108\" x2=\"214\" y2=\"100\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><line x1=\"199\" y1=\"94\" x2=\"199\" y2=\"84\" stroke=\"var(--text-muted)\" stroke-width=\"1\" /><circle cx=\"150\" cy=\"150\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"150\" y=\"154\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"245\" cy=\"150\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"245\" y=\"154\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"199\" cy=\"101\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"199\" y=\"105\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"172\" cy=\"128\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"172\" y=\"132\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-031",
+    "question": "In this Lymph Node diagram, what structure is labeled ‘1’?",
+    "options": [
+      "Hilum",
+      "Capsule",
+      "Central (Haversian) Canal",
+      "Cortex (Follicles)",
+      "Medulla"
+    ],
+    "answer": 1,
+    "explanation": "The capsule is the dense connective tissue covering that surrounds the lymph node.",
+    "image": "<svg viewBox=\"0 0 320 260\" role=\"img\" aria-label=\"Lymph Node diagram\"><ellipse cx=\"160\" cy=\"130\" rx=\"140\" ry=\"100\" fill=\"var(--surface)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><ellipse cx=\"160\" cy=\"130\" rx=\"115\" ry=\"80\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"100\" cy=\"90\" r=\"10\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"220\" cy=\"95\" r=\"8\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"160\" cy=\"60\" r=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><ellipse cx=\"160\" cy=\"130\" rx=\"55\" ry=\"40\" fill=\"var(--surface-2)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><path d=\"M296,110 Q280,130 296,150\" fill=\"var(--bg)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><line x1=\"296\" y1=\"130\" x2=\"316\" y2=\"130\" stroke=\"var(--text-muted)\" stroke-width=\"2\" /><circle cx=\"160\" cy=\"32\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"160\" y=\"36\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"95\" cy=\"78\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"95\" y=\"82\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"160\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"160\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"288\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"288\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-032",
+    "question": "In this Lymph Node diagram, what structure is labeled ‘2’?",
+    "options": [
+      "Stratum Spinosum",
+      "Hilum",
+      "Capsule",
+      "Cortex (Follicles)",
+      "Medulla"
+    ],
+    "answer": 3,
+    "explanation": "The cortex contains lymphoid follicles (with germinal centers where B cells proliferate) beneath the capsule.",
+    "image": "<svg viewBox=\"0 0 320 260\" role=\"img\" aria-label=\"Lymph Node diagram\"><ellipse cx=\"160\" cy=\"130\" rx=\"140\" ry=\"100\" fill=\"var(--surface)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><ellipse cx=\"160\" cy=\"130\" rx=\"115\" ry=\"80\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"100\" cy=\"90\" r=\"10\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"220\" cy=\"95\" r=\"8\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"160\" cy=\"60\" r=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><ellipse cx=\"160\" cy=\"130\" rx=\"55\" ry=\"40\" fill=\"var(--surface-2)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><path d=\"M296,110 Q280,130 296,150\" fill=\"var(--bg)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><line x1=\"296\" y1=\"130\" x2=\"316\" y2=\"130\" stroke=\"var(--text-muted)\" stroke-width=\"2\" /><circle cx=\"160\" cy=\"32\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"160\" y=\"36\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"95\" cy=\"78\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"95\" y=\"82\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"160\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"160\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"288\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"288\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-033",
+    "question": "In this Lymph Node diagram, what structure is labeled ‘3’?",
+    "options": [
+      "Cortex (Follicles)",
+      "Capsule",
+      "Serosa / Adventitia",
+      "Medulla",
+      "Hilum"
+    ],
+    "answer": 3,
+    "explanation": "The medulla contains medullary cords (rich in plasma cells) and sinuses that drain lymph toward the hilum.",
+    "image": "<svg viewBox=\"0 0 320 260\" role=\"img\" aria-label=\"Lymph Node diagram\"><ellipse cx=\"160\" cy=\"130\" rx=\"140\" ry=\"100\" fill=\"var(--surface)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><ellipse cx=\"160\" cy=\"130\" rx=\"115\" ry=\"80\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"100\" cy=\"90\" r=\"10\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"220\" cy=\"95\" r=\"8\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"160\" cy=\"60\" r=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><ellipse cx=\"160\" cy=\"130\" rx=\"55\" ry=\"40\" fill=\"var(--surface-2)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><path d=\"M296,110 Q280,130 296,150\" fill=\"var(--bg)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><line x1=\"296\" y1=\"130\" x2=\"316\" y2=\"130\" stroke=\"var(--text-muted)\" stroke-width=\"2\" /><circle cx=\"160\" cy=\"32\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"160\" y=\"36\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"95\" cy=\"78\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"95\" y=\"82\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"160\" cy=\"130\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"160\" y=\"134\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"288\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"288\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-034",
+    "question": "In this Lymph Node diagram, what structure is labeled ‘4’?",
+    "options": [
+      "Lamellae",
+      "Capsule",
+      "Medulla",
+      "Cortex (Follicles)",
+      "Hilum"
+    ],
+    "answer": 4,
+    "explanation": "The hilum is the indented region where the efferent lymphatic vessel exits and blood vessels enter/leave the node.",
+    "image": "<svg viewBox=\"0 0 320 260\" role=\"img\" aria-label=\"Lymph Node diagram\"><ellipse cx=\"160\" cy=\"130\" rx=\"140\" ry=\"100\" fill=\"var(--surface)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><ellipse cx=\"160\" cy=\"130\" rx=\"115\" ry=\"80\" fill=\"var(--accent-soft)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><circle cx=\"100\" cy=\"90\" r=\"10\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"220\" cy=\"95\" r=\"8\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><circle cx=\"160\" cy=\"60\" r=\"9\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"1.2\" /><ellipse cx=\"160\" cy=\"130\" rx=\"55\" ry=\"40\" fill=\"var(--surface-2)\" stroke=\"var(--border)\" stroke-width=\"1.5\" /><path d=\"M296,110 Q280,130 296,150\" fill=\"var(--bg)\" stroke=\"var(--text)\" stroke-width=\"2.5\" /><line x1=\"296\" y1=\"130\" x2=\"316\" y2=\"130\" stroke=\"var(--text-muted)\" stroke-width=\"2\" /><circle cx=\"160\" cy=\"32\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"160\" y=\"36\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">1</text><circle cx=\"95\" cy=\"78\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"95\" y=\"82\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">2</text><circle cx=\"160\" cy=\"130\" r=\"10\" fill=\"var(--surface)\" stroke=\"var(--text-muted)\" stroke-width=\"1.5\" opacity=\"0.65\" /><text x=\"160\" y=\"134\" fill=\"var(--text-muted)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">3</text><circle cx=\"288\" cy=\"130\" r=\"13\" fill=\"var(--accent)\" stroke=\"var(--accent)\" stroke-width=\"1.5\" opacity=\"1\" /><text x=\"288\" y=\"134\" fill=\"var(--accent-ink)\" font-size=\"12\" font-weight=\"700\" text-anchor=\"middle\">4</text></svg>"
+  },
+  {
+    "id": "q-histo-035",
+    "question": "What TYPE is this?",
+    "options": [
+      "Fixed cell",
+      "Cell fragment",
+      "Red blood cell",
+      "Agranulocyte",
+      "Transitional epithelium"
+    ],
+    "answer": 2,
+    "explanation": "Erythrocytes are red blood cells, not classified as granulocytes/agranulocytes since they are not leukocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/erythrocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-036",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Monocyte",
+      "Appendix",
+      "Trachea",
+      "Tendon",
+      "Erythrocyte"
+    ],
+    "answer": 4,
+    "explanation": "This is an erythrocyte (red blood cell).",
+    "image": "<img src=\"/histology/guess-the-slide/erythrocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-037",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Attached to the cecum",
+      "Left hypochondrium",
+      "Ovary surface, pigmented layer of the retina, and lens capsule surface",
+      "Most of the male reproductive excretory ducts",
+      "Bone marrow"
+    ],
+    "answer": 4,
+    "explanation": "Erythrocytes are produced in the bone marrow, then circulate in peripheral blood.",
+    "image": "<img src=\"/histology/guess-the-slide/erythrocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-038",
+    "question": "What TYPE is this?",
+    "options": [
+      "Simple columnar epithelium",
+      "Degenerated epithelial reticular cells",
+      "Non-keratinized stratified squamous epithelium",
+      "Simple squamous epithelium",
+      "Cell fragment"
+    ],
+    "answer": 4,
+    "explanation": "Platelets are cytoplasmic fragments of megakaryocytes, not true granulocytes/agranulocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/platelet.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-039",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Monocyte",
+      "Mesenchyme",
+      "Reticular tissue",
+      "Intestine",
+      "Platelet"
+    ],
+    "answer": 4,
+    "explanation": "This is a platelet (thrombocyte).",
+    "image": "<img src=\"/histology/guess-the-slide/platelet.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-040",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Embryonic tissue; source of all adult connective tissue",
+      "Dermis of the skin, mammary glands",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Medulla of the thymus",
+      "Bone marrow"
+    ],
+    "answer": 4,
+    "explanation": "Platelets are produced in the bone marrow from the fragmentation of megakaryocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/platelet.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-041",
+    "question": "What TYPE is this?",
+    "options": [
+      "Dense regular connective tissue",
+      "Cell fragment",
+      "Granulocyte",
+      "Primary lymphoid organ",
+      "Keratinized stratified squamous epithelium"
+    ],
+    "answer": 2,
+    "explanation": "Neutrophils are granulocytes, containing small neutrophilic granules.",
+    "image": "<img src=\"/histology/guess-the-slide/neutrophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-042",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Neutrophil",
+      "Platelet",
+      "Monocyte",
+      "Erythrocyte",
+      "Eosinophil"
+    ],
+    "answer": 0,
+    "explanation": "This is a neutrophil.",
+    "image": "<img src=\"/histology/guess-the-slide/neutrophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-043",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Dermis of the skin, mammary glands",
+      "Bone marrow and thymus",
+      "Bone marrow",
+      "Kupffer cells in the liver, microglia in the cns, osteoclasts in bone",
+      "Vertebral column ligaments, penile suspensory ligament, arterial walls"
+    ],
+    "answer": 2,
+    "explanation": "Neutrophils are produced and mature in the bone marrow.",
+    "image": "<img src=\"/histology/guess-the-slide/neutrophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-044",
+    "question": "What TYPE is this?",
+    "options": [
+      "Agranulocyte",
+      "Pseudostratified ciliated columnar epithelium",
+      "Mucosal connective tissue",
+      "Pseudostratified columnar epithelium",
+      "Non-keratinized stratified squamous epithelium"
+    ],
+    "answer": 0,
+    "explanation": "Lymphocytes are agranulocytes, along with monocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-045",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Thymus",
+      "Lymphocyte",
+      "Intestine",
+      "Trachea",
+      "Platelet"
+    ],
+    "answer": 1,
+    "explanation": "This is a lymphocyte.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-046",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Subcutaneous tissue and around organs",
+      "Dermis of the skin, mammary glands",
+      "Stroma of lymph nodes, spleen, thymus, and bone marrow",
+      "Connective tissue in general",
+      "Bone marrow and thymus"
+    ],
+    "answer": 4,
+    "explanation": "Lymphocytes originate in the bone marrow (B cells) and thymus (T cells), both primary lymphoid organs.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-047",
+    "question": "What TYPE is this?",
+    "options": [
+      "Transitional epithelium",
+      "Granulocyte",
+      "Agranulocyte",
+      "Dense regular connective tissue",
+      "Reticular connective tissue"
+    ],
+    "answer": 2,
+    "explanation": "Monocytes are agranulocytes, along with lymphocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/monocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-048",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Urinary bladder",
+      "Intestine",
+      "Macrophage",
+      "Monocyte",
+      "Appendix"
+    ],
+    "answer": 3,
+    "explanation": "This is a monocyte.",
+    "image": "<img src=\"/histology/guess-the-slide/monocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-049",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Along lymphatic vessels",
+      "Tendons, ligaments, aponeuroses",
+      "Lamina propria of mucous membranes",
+      "Bone marrow",
+      "Vertebral column ligaments, penile suspensory ligament, arterial walls"
+    ],
+    "answer": 3,
+    "explanation": "Monocytes are produced in the bone marrow before circulating and later migrating into tissues.",
+    "image": "<img src=\"/histology/guess-the-slide/monocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-050",
+    "question": "What TYPE is this?",
+    "options": [
+      "Pseudostratified columnar epithelium",
+      "Mesenchymal connective tissue",
+      "Granulocyte",
+      "Simple columnar epithelium",
+      "Agranulocyte"
+    ],
+    "answer": 2,
+    "explanation": "Eosinophils are granulocytes, containing large eosinophilic (red-staining) granules.",
+    "image": "<img src=\"/histology/guess-the-slide/eosinophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-051",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Urinary bladder",
+      "Trachea",
+      "Eosinophil",
+      "Fibroblast",
+      "Mesenchyme"
+    ],
+    "answer": 2,
+    "explanation": "This is an eosinophil.",
+    "image": "<img src=\"/histology/guess-the-slide/eosinophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-052",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Alveoli, loop of henle, rete testis, and mesothelium/endothelium",
+      "Bone marrow",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Ovary surface, pigmented layer of the retina, and lens capsule surface",
+      "Subcutaneous tissue and around organs"
+    ],
+    "answer": 1,
+    "explanation": "Eosinophils are produced and mature in the bone marrow.",
+    "image": "<img src=\"/histology/guess-the-slide/eosinophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-053",
+    "question": "What TYPE is this?",
+    "options": [
+      "Dense irregular connective tissue",
+      "Granulocyte",
+      "Secondary lymphoid organ",
+      "Mesenchymal connective tissue",
+      "Simple squamous epithelium"
+    ],
+    "answer": 1,
+    "explanation": "Basophils are granulocytes, containing large basophilic (dark purple) granules with histamine.",
+    "image": "<img src=\"/histology/guess-the-slide/basophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-054",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Trachea",
+      "Thymus",
+      "Basophil",
+      "Spleen",
+      "Mast cell"
+    ],
+    "answer": 2,
+    "explanation": "This is a basophil.",
+    "image": "<img src=\"/histology/guess-the-slide/basophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-055",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Medulla of the thymus",
+      "Bone marrow",
+      "Kupffer cells in the liver, microglia in the cns, osteoclasts in bone",
+      "Larynx, conjunctival fornix, and pharynx",
+      "Thickest on palms and soles"
+    ],
+    "answer": 1,
+    "explanation": "Basophils are produced and mature in the bone marrow.",
+    "image": "<img src=\"/histology/guess-the-slide/basophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-056",
+    "question": "What TYPE is this?",
+    "options": [
+      "Wandering cell",
+      "Primary lymphoid organ",
+      "Reticular connective tissue",
+      "Secondary lymphoid organ",
+      "Agranulocyte"
+    ],
+    "answer": 1,
+    "explanation": "The thymus is a primary lymphoid organ, the site of T lymphocyte production and maturation.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_lobule.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-057",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Neutrophil",
+      "Plasma cell",
+      "Mast cell",
+      "Thymus",
+      "Basophil"
+    ],
+    "answer": 3,
+    "explanation": "This organ is the thymus.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_lobule.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-058",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Mediastinum",
+      "Umbilical cord, pulp of primary teeth, vitreous cavity of the eye",
+      "Attached to the cecum",
+      "Stroma of lymph nodes, spleen, thymus, and bone marrow"
+    ],
+    "answer": 1,
+    "explanation": "The thymus is located in the mediastinum, behind the sternum.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_lobule.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-059",
+    "question": "What TYPE is this?",
+    "options": [
+      "Simple squamous epithelium",
+      "Transitional epithelium",
+      "Degenerated epithelial reticular cells",
+      "Secondary lymphoid organ (malt/galt)",
+      "Simple cuboidal epithelium"
+    ],
+    "answer": 2,
+    "explanation": "Hassall's corpuscles are formed from degenerated epithelial reticular cells containing keratohyalin granules.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_medulla.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-060",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Hassall's corpuscle",
+      "Ovary",
+      "Monocyte",
+      "Skin",
+      "Tendon"
+    ],
+    "answer": 0,
+    "explanation": "This structure is Hassall's corpuscle.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_medulla.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-061",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Medulla of the thymus",
+      "Most of the respiratory tract and the auditory (eustachian) tube",
+      "Along lymphatic vessels",
+      "Connective tissue in general",
+      "Lamina propria of mucous membranes"
+    ],
+    "answer": 0,
+    "explanation": "Hassall's corpuscles are found in the medulla of the thymus.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_medulla.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-062",
+    "question": "What TYPE is this?",
+    "options": [
+      "Elastic connective tissue",
+      "Stratified columnar epithelium",
+      "Degenerated epithelial reticular cells",
+      "Reticular connective tissue",
+      "Secondary lymphoid organ"
+    ],
+    "answer": 4,
+    "explanation": "The spleen is a secondary lymphoid organ, involved in filtering blood and mounting immune responses.",
+    "image": "<img src=\"/histology/guess-the-slide/spleen_pulp.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-063",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Spleen",
+      "Platelet",
+      "Wharton's jelly",
+      "Areolar tissue",
+      "Neutrophil"
+    ],
+    "answer": 0,
+    "explanation": "This organ is the spleen.",
+    "image": "<img src=\"/histology/guess-the-slide/spleen_pulp.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-064",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Dermis of the skin, mammary glands",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Medulla of the thymus",
+      "Left hypochondrium",
+      "Lamina propria of mucous membranes"
+    ],
+    "answer": 3,
+    "explanation": "The spleen is located in the left hypochondrium, below the left hemidiaphragm.",
+    "image": "<img src=\"/histology/guess-the-slide/spleen_pulp.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-065",
+    "question": "What TYPE is this?",
+    "options": [
+      "Adipose tissue",
+      "Degenerated epithelial reticular cells",
+      "Primary lymphoid organ",
+      "Red blood cell",
+      "Secondary lymphoid organ"
+    ],
+    "answer": 4,
+    "explanation": "Lymph nodes are secondary lymphoid organs where lymphocyte activation and proliferation occur.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphnode_cortex.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-066",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Ovary",
+      "Lymph node",
+      "Fibroblast",
+      "Trachea",
+      "Plasma cell"
+    ],
+    "answer": 1,
+    "explanation": "This organ is a lymph node.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphnode_cortex.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-067",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Dermis of the skin, mammary glands",
+      "Along lymphatic vessels",
+      "Medulla of the thymus",
+      "Alveoli, loop of henle, rete testis, and mesothelium/endothelium",
+      "Thickest on palms and soles"
+    ],
+    "answer": 1,
+    "explanation": "Lymph nodes are distributed along lymphatic vessels throughout the body.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphnode_cortex.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-068",
+    "question": "What TYPE is this?",
+    "options": [
+      "Secondary lymphoid organ (malt/galt)",
+      "Dense irregular connective tissue",
+      "Elastic connective tissue",
+      "Keratinized stratified squamous epithelium",
+      "Non-keratinized stratified squamous epithelium"
+    ],
+    "answer": 0,
+    "explanation": "The appendix contains GALT (Gut-Associated Lymphoid Tissue), a form of MALT — a secondary lymphoid tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/malt_appendix.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-069",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Tendon",
+      "Dermis",
+      "Erythrocyte",
+      "Epididymis",
+      "Appendix"
+    ],
+    "answer": 4,
+    "explanation": "This organ is the appendix.",
+    "image": "<img src=\"/histology/guess-the-slide/malt_appendix.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-070",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Connective tissue in general",
+      "Tendons, ligaments, aponeuroses",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Attached to the cecum",
+      "Stomach wall and gallbladder"
+    ],
+    "answer": 3,
+    "explanation": "The appendix is attached to the cecum, in the right lower abdomen.",
+    "image": "<img src=\"/histology/guess-the-slide/malt_appendix.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-071",
+    "question": "What TYPE is this?",
+    "options": [
+      "Fixed cell",
+      "Reticular connective tissue",
+      "Dense regular connective tissue",
+      "Stratified columnar epithelium",
+      "Simple squamous epithelium"
+    ],
+    "answer": 0,
+    "explanation": "Fibroblasts are classified as fixed cells of connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/fibroblast.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-072",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Macrophage",
+      "Mast cell",
+      "Plasma cell",
+      "Fibroblast",
+      "Spleen"
+    ],
+    "answer": 3,
+    "explanation": "This cell is a fibroblast.",
+    "image": "<img src=\"/histology/guess-the-slide/fibroblast.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-073",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Connective tissue in general",
+      "Along lymphatic vessels",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Left hypochondrium",
+      "Bone marrow and thymus"
+    ],
+    "answer": 0,
+    "explanation": "Fibroblasts are widely and generally distributed throughout connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/fibroblast.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-074",
+    "question": "What TYPE is this?",
+    "options": [
+      "Secondary lymphoid organ",
+      "Mesenchymal connective tissue",
+      "Fixed cell",
+      "Stratified cuboidal epithelium",
+      "Reticular connective tissue"
+    ],
+    "answer": 2,
+    "explanation": "Mast cells are classified as fixed cells of connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/mastcell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-075",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Macrophage",
+      "Mast cell",
+      "Basophil",
+      "Eosinophil",
+      "Spleen"
+    ],
+    "answer": 1,
+    "explanation": "This cell is a mast cell.",
+    "image": "<img src=\"/histology/guess-the-slide/mastcell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-076",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Attached to the cecum",
+      "Vertebral column ligaments, penile suspensory ligament, arterial walls",
+      "Larynx, conjunctival fornix, and pharynx",
+      "Connective tissue near blood vessels and mucosal surfaces",
+      "Medulla of the thymus"
+    ],
+    "answer": 3,
+    "explanation": "Mast cells are distributed in connective tissue, especially near blood vessels and mucosal surfaces.",
+    "image": "<img src=\"/histology/guess-the-slide/mastcell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-077",
+    "question": "What TYPE is this?",
+    "options": [
+      "Red blood cell",
+      "Wandering cell",
+      "Fixed cell",
+      "Stratified cuboidal epithelium",
+      "Simple squamous epithelium"
+    ],
+    "answer": 1,
+    "explanation": "Plasma cells are classified as wandering (migratory) cells of connective tissue, derived from B lymphocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/plasmacell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-078",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Reticular tissue",
+      "Plasma cell",
+      "Elastic ligament",
+      "Platelet",
+      "Appendix"
+    ],
+    "answer": 1,
+    "explanation": "This cell is a plasma cell.",
+    "image": "<img src=\"/histology/guess-the-slide/plasmacell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-079",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Ovary surface, pigmented layer of the retina, and lens capsule surface",
+      "Lamina propria of mucous membranes",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Kupffer cells in the liver, microglia in the cns, osteoclasts in bone",
+      "Umbilical cord, pulp of primary teeth, vitreous cavity of the eye"
+    ],
+    "answer": 1,
+    "explanation": "Plasma cells are especially distributed in the lamina propria of mucous membranes.",
+    "image": "<img src=\"/histology/guess-the-slide/plasmacell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-080",
+    "question": "What TYPE is this?",
+    "options": [
+      "Wandering cell",
+      "Dense irregular connective tissue",
+      "Fixed cell",
+      "Simple cuboidal epithelium",
+      "Primary lymphoid organ"
+    ],
+    "answer": 0,
+    "explanation": "Macrophages are classified as wandering (migratory) cells of connective tissue, derived from monocytes.",
+    "image": "<img src=\"/histology/guess-the-slide/macrophage.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-081",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Reticular tissue",
+      "Tendon",
+      "Macrophage",
+      "Mesenchyme",
+      "Skin"
+    ],
+    "answer": 2,
+    "explanation": "This cell is a macrophage.",
+    "image": "<img src=\"/histology/guess-the-slide/macrophage.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-082",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Thickest on palms and soles",
+      "Larynx, conjunctival fornix, and pharynx",
+      "Subcutaneous tissue and around organs",
+      "Kupffer cells in the liver, microglia in the cns, osteoclasts in bone",
+      "Most of the male reproductive excretory ducts"
+    ],
+    "answer": 3,
+    "explanation": "Macrophages are distributed throughout connective tissue and take specialized forms/names in specific organs, e.g. Kupffer cells (liver), microglia (CNS), and osteoclasts (bone).",
+    "image": "<img src=\"/histology/guess-the-slide/macrophage.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-083",
+    "question": "What TYPE is this?",
+    "options": [
+      "Agranulocyte",
+      "Stratified cuboidal epithelium",
+      "Simple squamous epithelium",
+      "Simple columnar epithelium",
+      "Granulocyte"
+    ],
+    "answer": 2,
+    "explanation": "This is simple squamous epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-084",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Spleen",
+      "Bowman's capsule",
+      "Esophagus",
+      "Thyroid gland",
+      "Thymus"
+    ],
+    "answer": 1,
+    "explanation": "This specimen shows the parietal layer of Bowman's capsule in the kidney.",
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-085",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Attached to the cecum",
+      "Connective tissue in general",
+      "Alveoli, loop of henle, rete testis, and mesothelium/endothelium",
+      "Thickest on palms and soles",
+      "Along lymphatic vessels"
+    ],
+    "answer": 2,
+    "explanation": "Simple squamous epithelium is also distributed in the alveoli, thin segment of the loop of Henle, rete testis, and as mesothelium/endothelium lining vessels and body cavities.",
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-086",
+    "question": "What TYPE is this?",
+    "options": [
+      "Secondary lymphoid organ (malt/galt)",
+      "Keratinized stratified squamous epithelium",
+      "Agranulocyte",
+      "Non-keratinized stratified squamous epithelium",
+      "Reticular connective tissue"
+    ],
+    "answer": 3,
+    "explanation": "This is non-keratinized stratified squamous epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_esophagus.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-087",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Elastic ligament",
+      "Esophagus",
+      "Neutrophil",
+      "Trachea",
+      "Fibroblast"
+    ],
+    "answer": 1,
+    "explanation": "This specimen shows the esophagus.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_esophagus.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-088",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Umbilical cord, pulp of primary teeth, vitreous cavity of the eye",
+      "Dermis of the skin, mammary glands",
+      "Stomach wall and gallbladder",
+      "Subcutaneous tissue and around organs",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina"
+    ],
+    "answer": 4,
+    "explanation": "Non-keratinized stratified squamous epithelium is also distributed in the oral cavity, part of the epiglottis, cornea and conjunctiva, and vagina.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_esophagus.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-089",
+    "question": "What TYPE is this?",
+    "options": [
+      "Primary lymphoid organ",
+      "Keratinized stratified squamous epithelium",
+      "Reticular connective tissue",
+      "Agranulocyte",
+      "Pseudostratified ciliated columnar epithelium"
+    ],
+    "answer": 1,
+    "explanation": "This is keratinized stratified squamous epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-090",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Thyroid gland",
+      "Areolar tissue",
+      "Urinary bladder",
+      "Urethra",
+      "Skin"
+    ],
+    "answer": 4,
+    "explanation": "This specimen shows the skin (epidermis).",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-091",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Stroma of lymph nodes, spleen, thymus, and bone marrow",
+      "Along lymphatic vessels",
+      "Subcutaneous tissue and around organs",
+      "Left hypochondrium",
+      "Thickest on palms and soles"
+    ],
+    "answer": 4,
+    "explanation": "Keratinized stratified squamous epithelium is found over the entire body surface, and is especially thick on the palms and soles.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-092",
+    "question": "What TYPE is this?",
+    "options": [
+      "Adipose tissue",
+      "Reticular connective tissue",
+      "Keratinized stratified squamous epithelium",
+      "Simple cuboidal epithelium",
+      "Simple squamous epithelium"
+    ],
+    "answer": 3,
+    "explanation": "This is simple cuboidal epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_thyroid.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-093",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Esophagus",
+      "Lymph node",
+      "Reticular tissue",
+      "Thyroid gland",
+      "Monocyte"
+    ],
+    "answer": 3,
+    "explanation": "This specimen shows a thyroid gland follicle.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_thyroid.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-094",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Stroma of lymph nodes, spleen, thymus, and bone marrow",
+      "Dermis of the skin, mammary glands",
+      "Peritoneum, lamina propria, dermis, around vessels",
+      "Ovary surface, pigmented layer of the retina, and lens capsule surface",
+      "Vertebral column ligaments, penile suspensory ligament, arterial walls"
+    ],
+    "answer": 3,
+    "explanation": "Simple cuboidal epithelium is also distributed on the outer surface of the ovary, the pigmented layer of the retina, and the inner surface of the lens capsule.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_thyroid.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-095",
+    "question": "What TYPE is this?",
+    "options": [
+      "Wandering cell",
+      "Dense regular connective tissue",
+      "Stratified cuboidal epithelium",
+      "Adipose tissue",
+      "Transitional epithelium"
+    ],
+    "answer": 2,
+    "explanation": "This is stratified cuboidal epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_cuboidal_ovary.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-096",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Wharton's jelly",
+      "Epididymis",
+      "Appendix",
+      "Tendon",
+      "Ovary"
+    ],
+    "answer": 4,
+    "explanation": "This specimen shows a secondary ovarian follicle in the ovary.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_cuboidal_ovary.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-097",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Along lymphatic vessels",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Ovary surface, pigmented layer of the retina, and lens capsule surface",
+      "Most of the respiratory tract and the auditory (eustachian) tube",
+      "Peritoneum, lamina propria, dermis, around vessels"
+    ],
+    "answer": 1,
+    "explanation": "Stratified cuboidal epithelium is also distributed in sweat gland excretory ducts and the epidermis of fetal skin.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_cuboidal_ovary.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-098",
+    "question": "What TYPE is this?",
+    "options": [
+      "Wandering cell",
+      "Simple squamous epithelium",
+      "Simple columnar epithelium",
+      "Keratinized stratified squamous epithelium",
+      "Loose connective tissue"
+    ],
+    "answer": 2,
+    "explanation": "This is simple columnar epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_columnar_intestine.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-099",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Intestine",
+      "Thyroid gland",
+      "Mesenchyme",
+      "Dermis",
+      "Reticular tissue"
+    ],
+    "answer": 0,
+    "explanation": "This specimen shows intestinal villi.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_columnar_intestine.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-100",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Medulla of the thymus",
+      "Tendons, ligaments, aponeuroses",
+      "Peritoneum, lamina propria, dermis, around vessels",
+      "Thickest on palms and soles",
+      "Stomach wall and gallbladder"
+    ],
+    "answer": 4,
+    "explanation": "Simple columnar epithelium is also distributed in the wall of the digestive tract (e.g. stomach) and the gallbladder.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_columnar_intestine.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-101",
+    "question": "What TYPE is this?",
+    "options": [
+      "Mucosal connective tissue",
+      "Reticular connective tissue",
+      "Wandering cell",
+      "Stratified columnar epithelium",
+      "Non-keratinized stratified squamous epithelium"
+    ],
+    "answer": 3,
+    "explanation": "This is stratified columnar epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_columnar_urethra.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-102",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Urethra",
+      "Bowman's capsule",
+      "Eosinophil",
+      "Trachea",
+      "Fibroblast"
+    ],
+    "answer": 0,
+    "explanation": "This specimen shows the cavernous part of the male urethra.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_columnar_urethra.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-103",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Larynx, conjunctival fornix, and pharynx",
+      "Left hypochondrium",
+      "Along lymphatic vessels",
+      "Most of the male reproductive excretory ducts",
+      "Embryonic tissue; source of all adult connective tissue"
+    ],
+    "answer": 0,
+    "explanation": "Stratified columnar epithelium is also distributed in the larynx, conjunctival fornix, and pharynx.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_columnar_urethra.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-104",
+    "question": "What TYPE is this?",
+    "options": [
+      "Pseudostratified ciliated columnar epithelium",
+      "Granulocyte",
+      "Keratinized stratified squamous epithelium",
+      "Stratified columnar epithelium",
+      "Loose connective tissue"
+    ],
+    "answer": 0,
+    "explanation": "This is ciliated pseudostratified columnar epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_trachea.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-105",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Neutrophil",
+      "Dermis",
+      "Trachea",
+      "Urethra",
+      "Wharton's jelly"
+    ],
+    "answer": 2,
+    "explanation": "This specimen shows the trachea.",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_trachea.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-106",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Left hypochondrium",
+      "Most of the respiratory tract and the auditory (eustachian) tube",
+      "Ureter, renal pelvis, and part of the urethra",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Connective tissue in general"
+    ],
+    "answer": 1,
+    "explanation": "Ciliated pseudostratified columnar epithelium is also distributed in most of the respiratory tract and the auditory (Eustachian) tube.",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_trachea.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-107",
+    "question": "What TYPE is this?",
+    "options": [
+      "Pseudostratified columnar epithelium",
+      "Granulocyte",
+      "Red blood cell",
+      "Dense regular connective tissue",
+      "Keratinized stratified squamous epithelium"
+    ],
+    "answer": 0,
+    "explanation": "This is pseudostratified columnar epithelium (with stereocilia).",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_epididymis.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-108",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Epididymis",
+      "Bowman's capsule",
+      "Skin",
+      "Appendix",
+      "Eosinophil"
+    ],
+    "answer": 0,
+    "explanation": "This specimen shows the ductus epididymis.",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_epididymis.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-109",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Bone marrow",
+      "Most of the male reproductive excretory ducts",
+      "Subcutaneous tissue and around organs",
+      "Left hypochondrium",
+      "Most of the respiratory tract and the auditory (eustachian) tube"
+    ],
+    "answer": 1,
+    "explanation": "Pseudostratified columnar epithelium is also distributed in most of the male reproductive excretory ducts (e.g. ductus deferens).",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_epididymis.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-110",
+    "question": "What TYPE is this?",
+    "options": [
+      "Secondary lymphoid organ",
+      "Stratified cuboidal epithelium",
+      "Fixed cell",
+      "Transitional epithelium",
+      "Red blood cell"
+    ],
+    "answer": 3,
+    "explanation": "This is transitional epithelium.",
+    "image": "<img src=\"/histology/guess-the-slide/transitional_bladder.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-111",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Esophagus",
+      "Urinary bladder",
+      "Epididymis",
+      "Erythrocyte",
+      "Monocyte"
+    ],
+    "answer": 1,
+    "explanation": "This specimen shows the urinary bladder.",
+    "image": "<img src=\"/histology/guess-the-slide/transitional_bladder.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-112",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Mediastinum",
+      "Stroma of lymph nodes, spleen, thymus, and bone marrow",
+      "Ureter, renal pelvis, and part of the urethra",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Left hypochondrium"
+    ],
+    "answer": 2,
+    "explanation": "Transitional epithelium is also distributed in the ureter, renal pelvis, major calyx, and part of the urethra.",
+    "image": "<img src=\"/histology/guess-the-slide/transitional_bladder.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-113",
+    "question": "What TYPE is this?",
+    "options": [
+      "Mucosal connective tissue",
+      "Keratinized stratified squamous epithelium",
+      "Non-keratinized stratified squamous epithelium",
+      "Mesenchymal connective tissue",
+      "Simple columnar epithelium"
+    ],
+    "answer": 3,
+    "explanation": "This is mesenchymal connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mesenchymal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-114",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Thymus",
+      "Mesenchyme",
+      "Fibroblast",
+      "Trachea",
+      "Eosinophil"
+    ],
+    "answer": 1,
+    "explanation": "This tissue is mesenchyme.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mesenchymal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-115",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Embryonic tissue; source of all adult connective tissue",
+      "Larynx, conjunctival fornix, and pharynx",
+      "Alveoli, loop of henle, rete testis, and mesothelium/endothelium",
+      "Tendons, ligaments, aponeuroses",
+      "Most of the male reproductive excretory ducts"
+    ],
+    "answer": 0,
+    "explanation": "Mesenchymal connective tissue is embryonic, arising from the mesoderm, and is the source of all adult connective tissue types.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mesenchymal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-116",
+    "question": "What TYPE is this?",
+    "options": [
+      "Mucosal connective tissue",
+      "Degenerated epithelial reticular cells",
+      "Agranulocyte",
+      "Adipose tissue",
+      "Simple columnar epithelium"
+    ],
+    "answer": 0,
+    "explanation": "This is mucosal (gelatinous) connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mucosal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-117",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Mesenchyme",
+      "Wharton's jelly",
+      "Bowman's capsule",
+      "Appendix",
+      "Urethra"
+    ],
+    "answer": 1,
+    "explanation": "This tissue is Wharton's jelly.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mucosal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-118",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Umbilical cord, pulp of primary teeth, vitreous cavity of the eye",
+      "Embryonic tissue; source of all adult connective tissue",
+      "Bone marrow",
+      "Attached to the cecum",
+      "Larynx, conjunctival fornix, and pharynx"
+    ],
+    "answer": 0,
+    "explanation": "Mucosal connective tissue is distributed in the umbilical cord, the pulp chamber of primary teeth, and the vitreous cavity of the eye.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mucosal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-119",
+    "question": "What TYPE is this?",
+    "options": [
+      "Degenerated epithelial reticular cells",
+      "Loose connective tissue",
+      "Pseudostratified columnar epithelium",
+      "Granulocyte",
+      "Agranulocyte"
+    ],
+    "answer": 1,
+    "explanation": "This is loose (areolar) connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_loose.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-120",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Areolar tissue",
+      "Bowman's capsule",
+      "Hassall's corpuscle",
+      "Spleen",
+      "Wharton's jelly"
+    ],
+    "answer": 0,
+    "explanation": "This tissue is also called areolar tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_loose.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-121",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Lamina propria of mucous membranes",
+      "Peritoneum, lamina propria, dermis, around vessels",
+      "Larynx, conjunctival fornix, and pharynx",
+      "Dermis of the skin, mammary glands",
+      "Most of the respiratory tract and the auditory (eustachian) tube"
+    ],
+    "answer": 1,
+    "explanation": "Loose connective tissue is distributed in the peritoneum, the lamina propria of mucosa, the dermis, and around blood and lymphatic vessels.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_loose.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-122",
+    "question": "What TYPE is this?",
+    "options": [
+      "Pseudostratified columnar epithelium",
+      "Pseudostratified ciliated columnar epithelium",
+      "Simple cuboidal epithelium",
+      "Dense irregular connective tissue",
+      "Dense regular connective tissue"
+    ],
+    "answer": 4,
+    "explanation": "This is dense regular connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_regular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-123",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Macrophage",
+      "Platelet",
+      "Tendon",
+      "Plasma cell",
+      "Thymus"
+    ],
+    "answer": 2,
+    "explanation": "This tissue is a tendon.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_regular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-124",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Tendons, ligaments, aponeuroses",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Along lymphatic vessels",
+      "Connective tissue in general",
+      "Ovary surface, pigmented layer of the retina, and lens capsule surface"
+    ],
+    "answer": 0,
+    "explanation": "Dense regular connective tissue is distributed in tendons, ligaments, and aponeuroses.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_regular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-125",
+    "question": "What TYPE is this?",
+    "options": [
+      "Stratified columnar epithelium",
+      "Simple cuboidal epithelium",
+      "Red blood cell",
+      "Dense irregular connective tissue",
+      "Granulocyte"
+    ],
+    "answer": 3,
+    "explanation": "This is dense irregular connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_irregular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-126",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Basophil",
+      "Platelet",
+      "Elastic ligament",
+      "Dermis",
+      "Neutrophil"
+    ],
+    "answer": 3,
+    "explanation": "This tissue is the dermis.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_irregular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-127",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Embryonic tissue; source of all adult connective tissue",
+      "Oral cavity, epiglottis, cornea/conjunctiva, and vagina",
+      "Dermis of the skin, mammary glands",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Most of the respiratory tract and the auditory (eustachian) tube"
+    ],
+    "answer": 2,
+    "explanation": "Dense irregular connective tissue is distributed in the dermis of the skin and mammary glands.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_irregular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-128",
+    "question": "What TYPE is this?",
+    "options": [
+      "Non-keratinized stratified squamous epithelium",
+      "Secondary lymphoid organ",
+      "Elastic connective tissue",
+      "Primary lymphoid organ",
+      "Wandering cell"
+    ],
+    "answer": 2,
+    "explanation": "This is elastic connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_elastic.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-129",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Erythrocyte",
+      "Ovary",
+      "Elastic ligament",
+      "Tendon",
+      "Esophagus"
+    ],
+    "answer": 2,
+    "explanation": "This tissue is an elastic ligament.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_elastic.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-130",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Umbilical cord, pulp of primary teeth, vitreous cavity of the eye",
+      "Vertebral column ligaments, penile suspensory ligament, arterial walls",
+      "Connective tissue near blood vessels and mucosal surfaces",
+      "Embryonic tissue; source of all adult connective tissue",
+      "Lamina propria of mucous membranes"
+    ],
+    "answer": 1,
+    "explanation": "Elastic connective tissue is distributed in ligaments of the vertebral column, the penile suspensory ligament, and arterial walls.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_elastic.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-131",
+    "question": "What TYPE is this?",
+    "options": [
+      "Simple squamous epithelium",
+      "Fixed cell",
+      "Adipose tissue",
+      "Loose connective tissue",
+      "Simple cuboidal epithelium"
+    ],
+    "answer": 2,
+    "explanation": "This is adipose (fat) tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_fat.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-132",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Mast cell",
+      "Platelet",
+      "Adipose tissue",
+      "Hassall's corpuscle",
+      "Macrophage"
+    ],
+    "answer": 2,
+    "explanation": "This tissue is adipose (fat) tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_fat.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-133",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Subcutaneous tissue and around organs",
+      "Lamina propria of mucous membranes",
+      "Larynx, conjunctival fornix, and pharynx",
+      "Stomach wall and gallbladder",
+      "Medulla of the thymus"
+    ],
+    "answer": 0,
+    "explanation": "Adipose tissue is distributed in the subcutaneous tissue (panniculus adiposus) and around internal organs.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_fat.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-134",
+    "question": "What TYPE is this?",
+    "options": [
+      "Degenerated epithelial reticular cells",
+      "Reticular connective tissue",
+      "Dense irregular connective tissue",
+      "Pseudostratified columnar epithelium",
+      "Secondary lymphoid organ (malt/galt)"
+    ],
+    "answer": 1,
+    "explanation": "This is reticular connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_reticular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-135",
+    "question": "What is the NAME of this?",
+    "options": [
+      "Elastic ligament",
+      "Intestine",
+      "Mast cell",
+      "Reticular tissue",
+      "Platelet"
+    ],
+    "answer": 3,
+    "explanation": "This tissue is reticular tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_reticular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-136",
+    "question": "Where is the DISTRIBUTION (location) of this?",
+    "options": [
+      "Vertebral column ligaments, penile suspensory ligament, arterial walls",
+      "Sweat gland ducts and fetal skin epidermis",
+      "Stroma of lymph nodes, spleen, thymus, and bone marrow",
+      "Thickest on palms and soles",
+      "Umbilical cord, pulp of primary teeth, vitreous cavity of the eye"
+    ],
+    "answer": 2,
+    "explanation": "Reticular connective tissue forms the stroma of lymph nodes, spleen, thymus, and bone marrow.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_reticular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-137",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Provides immune surveillance of the gut",
+      "Phagocytoses pathogens and debris, presents antigens",
+      "Provides protection and some secretory function",
+      "Transports oxygen"
+    ],
+    "answer": 4,
+    "explanation": "Erythrocytes transport oxygen from the lungs to tissues (and some CO2 back) using hemoglobin.",
+    "image": "<img src=\"/histology/guess-the-slide/erythrocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-138",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Allows tissue to stretch and recoil",
+      "Blood clotting",
+      "Provides immune surveillance of the gut",
+      "Stores energy and provides insulation/cushioning"
+    ],
+    "answer": 2,
+    "explanation": "Platelets aggregate at sites of vascular injury and are essential for hemostasis (clot formation).",
+    "image": "<img src=\"/histology/guess-the-slide/platelet.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-139",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Provides protection and some secretory function",
+      "Transmits mechanical force from muscle to bone",
+      "Forms a supportive meshwork (stroma) for other cells",
+      "Phagocytoses bacteria",
+      "Defends against parasitic infections"
+    ],
+    "answer": 3,
+    "explanation": "Neutrophils are phagocytic cells that are typically the first responders to bacterial infection and acute inflammation.",
+    "image": "<img src=\"/histology/guess-the-slide/neutrophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-140",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Resists mechanical stress from multiple directions",
+      "Adaptive immunity",
+      "Produces collagen and other extracellular matrix components",
+      "Allows filtration of fluid",
+      "Protects against abrasion from passing food"
+    ],
+    "answer": 1,
+    "explanation": "Lymphocytes mediate adaptive immunity: B cells produce antibodies and T cells carry out cell-mediated immune responses.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-141",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Stores energy and provides insulation/cushioning",
+      "Absorbs fluid and aids sperm maturation/storage",
+      "Differentiates into macrophages for phagocytosis",
+      "Moves mucus and trapped debris out of the airway",
+      "Phagocytoses pathogens and debris, presents antigens"
+    ],
+    "answer": 2,
+    "explanation": "Monocytes migrate into tissues and differentiate into macrophages (or dendritic cells), which phagocytose pathogens and debris.",
+    "image": "<img src=\"/histology/guess-the-slide/monocyte.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-142",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Resists mechanical stress from multiple directions",
+      "Defends against parasitic infections",
+      "Site of T lymphocyte maturation and selection",
+      "Provides protection with some secretory capacity",
+      "Allows the organ to stretch and distend"
+    ],
+    "answer": 1,
+    "explanation": "Eosinophils defend against parasitic infections and participate in allergic/hypersensitivity reactions.",
+    "image": "<img src=\"/histology/guess-the-slide/eosinophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-143",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Provides a protective, waterproof barrier",
+      "Absorbs nutrients and secretes mucus",
+      "Allows filtration of fluid",
+      "Helps eliminate self-reactive T cells",
+      "Releases histamine and heparin in allergic reactions"
+    ],
+    "answer": 4,
+    "explanation": "Basophils release histamine and heparin, contributing to allergic and inflammatory responses.",
+    "image": "<img src=\"/histology/guess-the-slide/basophil.jpg\" alt=\"Blood Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-144",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Absorbs fluid and aids sperm maturation/storage",
+      "Allows tissue to stretch and recoil",
+      "Produces and secretes antibodies",
+      "Site of T lymphocyte maturation and selection",
+      "Phagocytoses pathogens and debris, presents antigens"
+    ],
+    "answer": 3,
+    "explanation": "The thymus is the site where T lymphocytes mature and undergo positive/negative selection.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_lobule.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-145",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Transports oxygen",
+      "Gives rise to all adult connective tissue types",
+      "Phagocytoses pathogens and debris, presents antigens",
+      "Filters lymph and activates lymphocytes",
+      "Helps eliminate self-reactive T cells"
+    ],
+    "answer": 4,
+    "explanation": "Hassall's corpuscles are thought to help induce negative selection of self-reactive T cells and generation of regulatory T cells, contributing to central tolerance.",
+    "image": "<img src=\"/histology/guess-the-slide/thymus_medulla.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-146",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Adaptive immunity",
+      "Allows the organ to stretch and distend",
+      "Produces and secretes antibodies",
+      "Absorbs nutrients and secretes mucus",
+      "Filters blood and removes old red blood cells"
+    ],
+    "answer": 4,
+    "explanation": "The spleen filters blood, removing old or damaged erythrocytes, and mounts immune responses against blood-borne antigens.",
+    "image": "<img src=\"/histology/guess-the-slide/spleen_pulp.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-147",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Filters lymph and activates lymphocytes",
+      "Defends against parasitic infections",
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Phagocytoses bacteria",
+      "Releases histamine and heparin in allergic reactions"
+    ],
+    "answer": 0,
+    "explanation": "Lymph nodes filter lymph and are sites where lymphocytes encounter antigens and become activated.",
+    "image": "<img src=\"/histology/guess-the-slide/lymphnode_cortex.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-148",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Gives rise to all adult connective tissue types",
+      "Transports oxygen",
+      "Phagocytoses bacteria",
+      "Provides protection with some secretory capacity",
+      "Provides immune surveillance of the gut"
+    ],
+    "answer": 4,
+    "explanation": "MALT/GALT structures like the appendix provide immune surveillance and defense against pathogens in the gut.",
+    "image": "<img src=\"/histology/guess-the-slide/malt_appendix.jpg\" alt=\"Lymphatic Organ micrograph\" />"
+  },
+  {
+    "id": "q-histo-149",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Phagocytoses pathogens and debris, presents antigens",
+      "Differentiates into macrophages for phagocytosis",
+      "Resists mechanical stress from multiple directions",
+      "Produces collagen and other extracellular matrix components",
+      "Provides immune surveillance of the gut"
+    ],
+    "answer": 3,
+    "explanation": "Fibroblasts synthesize collagen, elastin, and ground substance, maintaining the extracellular matrix of connective tissue.",
+    "image": "<img src=\"/histology/guess-the-slide/fibroblast.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-150",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Differentiates into macrophages for phagocytosis",
+      "Provides protection with some secretory capacity",
+      "Transmits mechanical force from muscle to bone",
+      "Releases histamine during allergic and inflammatory reactions",
+      "Forms a supportive meshwork (stroma) for other cells"
+    ],
+    "answer": 3,
+    "explanation": "Mast cells release histamine and other mediators, triggering immediate hypersensitivity (allergic) and inflammatory reactions.",
+    "image": "<img src=\"/histology/guess-the-slide/mastcell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-151",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Produces collagen and other extracellular matrix components",
+      "Provides immune surveillance of the gut",
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Produces and secretes antibodies",
+      "Releases histamine and heparin in allergic reactions"
+    ],
+    "answer": 3,
+    "explanation": "Plasma cells are terminally differentiated B lymphocytes specialized for producing and secreting large quantities of antibodies.",
+    "image": "<img src=\"/histology/guess-the-slide/plasmacell.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-152",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Allows the organ to stretch and distend",
+      "Blood clotting",
+      "Site of T lymphocyte maturation and selection",
+      "Defends against parasitic infections",
+      "Phagocytoses pathogens and debris, presents antigens"
+    ],
+    "answer": 4,
+    "explanation": "Macrophages phagocytose pathogens and cellular debris and act as antigen-presenting cells, linking innate and adaptive immunity.",
+    "image": "<img src=\"/histology/guess-the-slide/macrophage.jpg\" alt=\"Connective Tissue Cell micrograph\" />"
+  },
+  {
+    "id": "q-histo-153",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Allows filtration of fluid",
+      "Gives rise to all adult connective tissue types",
+      "Provides a protective, waterproof barrier",
+      "Resists mechanical stress from multiple directions",
+      "Provides immune surveillance of the gut"
+    ],
+    "answer": 0,
+    "explanation": "Simple squamous epithelium is thin, allowing rapid filtration or diffusion, as seen in Bowman's capsule.",
+    "image": "<img src=\"/histology/guess-the-slide/ss_bowmans.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-154",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Provides protection and some secretory function",
+      "Protects against abrasion from passing food",
+      "Absorbs nutrients and secretes mucus",
+      "Produces and secretes antibodies",
+      "Phagocytoses bacteria"
+    ],
+    "answer": 1,
+    "explanation": "Non-keratinized stratified squamous epithelium protects against abrasion in moist areas subject to friction, like the esophagus.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_esophagus.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-155",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Differentiates into macrophages for phagocytosis",
+      "Produces collagen and other extracellular matrix components",
+      "Provides a protective, waterproof barrier",
+      "Provides protection and some secretory function",
+      "Blood clotting"
+    ],
+    "answer": 2,
+    "explanation": "Keratinized stratified squamous epithelium forms a tough, waterproof barrier that protects against abrasion, pathogens, and water loss.",
+    "image": "<img src=\"/histology/guess-the-slide/ssq_skin.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-156",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Allows tissue to stretch and recoil",
+      "Transports oxygen",
+      "Secretes hormones (or facilitates absorption/secretion)",
+      "Filters lymph and activates lymphocytes",
+      "Provides protection with some secretory capacity"
+    ],
+    "answer": 2,
+    "explanation": "Simple cuboidal epithelium is specialized for secretion and absorption; here it secretes thyroid hormone.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_thyroid.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-157",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Allows filtration of fluid",
+      "Allows tissue to stretch and recoil",
+      "Provides protection with some secretory capacity",
+      "Forms a supportive meshwork (stroma) for other cells",
+      "Produces and secretes antibodies"
+    ],
+    "answer": 2,
+    "explanation": "Stratified cuboidal epithelium provides added protection over a duct or surface while retaining some secretory ability.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_cuboidal_ovary.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-158",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Absorbs nutrients and secretes mucus",
+      "Allows tissue to stretch and recoil",
+      "Differentiates into macrophages for phagocytosis",
+      "Secretes hormones (or facilitates absorption/secretion)",
+      "Blood clotting"
+    ],
+    "answer": 0,
+    "explanation": "Simple columnar epithelium is specialized for absorption (and secretion via goblet cells), key to nutrient uptake in the intestine.",
+    "image": "<img src=\"/histology/guess-the-slide/sc_columnar_intestine.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-159",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Provides protection and some secretory function",
+      "Helps eliminate self-reactive T cells",
+      "Resists mechanical stress from multiple directions",
+      "Provides a protective, waterproof barrier",
+      "Gives rise to all adult connective tissue types"
+    ],
+    "answer": 0,
+    "explanation": "Stratified columnar epithelium protects the lining of larger ducts/passages, such as the urethra, while allowing some secretion.",
+    "image": "<img src=\"/histology/guess-the-slide/strat_columnar_urethra.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-160",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Forms a supportive meshwork (stroma) for other cells",
+      "Provides a protective, waterproof barrier",
+      "Moves mucus and trapped debris out of the airway",
+      "Resists mechanical stress from multiple directions",
+      "Stores energy and provides insulation/cushioning"
+    ],
+    "answer": 2,
+    "explanation": "Ciliated pseudostratified columnar epithelium performs mucociliary clearance, sweeping mucus and trapped particles out of the airway.",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_trachea.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-161",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Allows the organ to stretch and distend",
+      "Transmits mechanical force from muscle to bone",
+      "Moves mucus and trapped debris out of the airway",
+      "Absorbs fluid and aids sperm maturation/storage",
+      "Helps eliminate self-reactive T cells"
+    ],
+    "answer": 3,
+    "explanation": "Pseudostratified columnar epithelium with stereocilia absorbs fluid and supports maturation and storage of sperm in the epididymis.",
+    "image": "<img src=\"/histology/guess-the-slide/pseudostrat_epididymis.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-162",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Transmits mechanical force from muscle to bone",
+      "Stores energy and provides insulation/cushioning",
+      "Cushions and protects the umbilical vessels",
+      "Allows the organ to stretch and distend",
+      "Allows tissue to stretch and recoil"
+    ],
+    "answer": 3,
+    "explanation": "Transitional epithelium allows organs like the bladder to stretch and distend to accommodate variable volumes of urine.",
+    "image": "<img src=\"/histology/guess-the-slide/transitional_bladder.jpg\" alt=\"Epithelium micrograph\" />"
+  },
+  {
+    "id": "q-histo-163",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Stores energy and provides insulation/cushioning",
+      "Protects against abrasion from passing food",
+      "Secretes hormones (or facilitates absorption/secretion)",
+      "Allows the organ to stretch and distend",
+      "Gives rise to all adult connective tissue types"
+    ],
+    "answer": 4,
+    "explanation": "Mesenchyme is the embryonic connective tissue that differentiates into all adult connective tissue types.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mesenchymal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-164",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Stores energy and provides insulation/cushioning",
+      "Transmits mechanical force from muscle to bone",
+      "Defends against parasitic infections",
+      "Cushions and protects the umbilical vessels",
+      "Differentiates into macrophages for phagocytosis"
+    ],
+    "answer": 3,
+    "explanation": "Wharton's jelly provides a cushioning, protective matrix around the vessels of the umbilical cord.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_mucosal.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-165",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Forms a supportive meshwork (stroma) for other cells",
+      "Moves mucus and trapped debris out of the airway",
+      "Allows filtration of fluid",
+      "Provides a protective, waterproof barrier"
+    ],
+    "answer": 0,
+    "explanation": "Loose (areolar) connective tissue provides flexible support to organs and structures while allowing diffusion of nutrients and waste.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_loose.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-166",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Resists mechanical stress from multiple directions",
+      "Produces and secretes antibodies",
+      "Allows the organ to stretch and distend",
+      "Absorbs fluid and aids sperm maturation/storage",
+      "Transmits mechanical force from muscle to bone"
+    ],
+    "answer": 4,
+    "explanation": "Dense regular connective tissue's parallel collagen fibers let tendons transmit strong, unidirectional mechanical forces from muscle to bone.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_regular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-167",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Blood clotting",
+      "Helps eliminate self-reactive T cells",
+      "Resists mechanical stress from multiple directions",
+      "Phagocytoses bacteria",
+      "Cushions and protects the umbilical vessels"
+    ],
+    "answer": 2,
+    "explanation": "Dense irregular connective tissue's randomly oriented collagen fibers let it resist mechanical stress from multiple directions, as in the dermis.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_dense_irregular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-168",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Produces and secretes antibodies",
+      "Allows tissue to stretch and recoil",
+      "Provides protection and some secretory function",
+      "Phagocytoses pathogens and debris, presents antigens",
+      "Filters lymph and activates lymphocytes"
+    ],
+    "answer": 1,
+    "explanation": "Elastic connective tissue's elastic fibers allow structures like ligaments and arterial walls to stretch and then recoil back to shape.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_elastic.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-169",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Stores energy and provides insulation/cushioning",
+      "Absorbs fluid and aids sperm maturation/storage",
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Protects against abrasion from passing food",
+      "Releases histamine during allergic and inflammatory reactions"
+    ],
+    "answer": 0,
+    "explanation": "Adipose tissue stores energy as lipid, and also provides insulation and cushioning for the body and organs.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_fat.jpg\" alt=\"Connective Tissue micrograph\" />"
+  },
+  {
+    "id": "q-histo-170",
+    "question": "What is the FUNCTION of this?",
+    "options": [
+      "Forms a supportive meshwork (stroma) for other cells",
+      "Supports organs while allowing diffusion of nutrients/waste",
+      "Moves mucus and trapped debris out of the airway",
+      "Resists mechanical stress from multiple directions",
+      "Allows filtration of fluid"
+    ],
+    "answer": 0,
+    "explanation": "Reticular connective tissue forms a fine fibrous meshwork (stroma) that supports and organizes cells within lymphoid organs and bone marrow.",
+    "image": "<img src=\"/histology/guess-the-slide/ct_reticular.jpg\" alt=\"Connective Tissue micrograph\" />"
+  }
+]

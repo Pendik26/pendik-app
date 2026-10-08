@@ -1,0 +1,493 @@
+[
+  {
+    "id": "mphys-001",
+    "front": "Define skeletal (striated) muscle.",
+    "back": "Tissue of bundles of contractile cells (myofibers) able to contract, produce body movement and maintain the position of body parts.",
+    "tags": [
+      "structure"
+    ]
+  },
+  {
+    "id": "mphys-002",
+    "front": "Name the four properties of muscle tissue.",
+    "back": "Excitability, contractility, extensibility and elasticity.",
+    "tags": [
+      "structure"
+    ]
+  },
+  {
+    "id": "mphys-003",
+    "front": "Give the levels of organization of skeletal muscle.",
+    "back": "Muscle → fascicle → muscle fiber (cell) → myofibril → sarcomere → myofilaments (actin, myosin).",
+    "tags": [
+      "structure"
+    ]
+  },
+  {
+    "id": "mphys-004",
+    "front": "Connective tissue layers of muscle from outside in?",
+    "back": "Epimysium (whole muscle) → perimysium (fascicle) → endomysium (each fiber) → sarcolemma (cell membrane).",
+    "tags": [
+      "structure"
+    ]
+  },
+  {
+    "id": "mphys-005",
+    "front": "Sarcolemma, sarcoplasm, sarcoplasmic reticulum: what are they?",
+    "back": "The muscle cell's plasma membrane, cytoplasm and smooth endoplasmic reticulum (stores Ca²⁺), respectively.",
+    "tags": [
+      "structure",
+      "terminology"
+    ]
+  },
+  {
+    "id": "mphys-006",
+    "front": "What is a T-tubule and what is a triad?",
+    "back": "T-tubule: an inward folding of the sarcolemma that carries the action potential into the fiber. Triad: one T-tubule plus the two terminal cisternae beside it.",
+    "tags": [
+      "structure",
+      "terminology"
+    ]
+  },
+  {
+    "id": "mphys-007",
+    "front": "Define the sarcomere.",
+    "back": "The smallest functional unit of striated muscle: the segment of a myofibril between two Z discs.",
+    "tags": [
+      "structure",
+      "sarcomere"
+    ]
+  },
+  {
+    "id": "mphys-008",
+    "front": "Which sarcomere bands shorten during contraction and which stays the same?",
+    "back": "The I band and H zone shorten; the A band (length of the thick filament) stays the same.",
+    "tags": [
+      "structure",
+      "sarcomere"
+    ]
+  },
+  {
+    "id": "mphys-009",
+    "front": "Classify the sarcomere proteins by function.",
+    "back": "Contractile: actin, myosin. Regulatory: troponin, tropomyosin. Structural: titin, nebulin, myomesin, dystrophin.",
+    "tags": [
+      "structure",
+      "proteins"
+    ]
+  },
+  {
+    "id": "mphys-010",
+    "front": "What are the three subunits of troponin?",
+    "back": "TnC binds Ca²⁺; TnI inhibits actin–myosin binding; TnT binds the complex to tropomyosin.",
+    "tags": [
+      "structure",
+      "proteins"
+    ]
+  },
+  {
+    "id": "mphys-011",
+    "front": "What does titin do?",
+    "back": "It runs from the Z disc to the M line, keeps the thick filament centered and acts as a spring that produces most of the passive tension when muscle is stretched.",
+    "tags": [
+      "structure",
+      "proteins"
+    ]
+  },
+  {
+    "id": "mphys-012",
+    "front": "Which muscle type lacks troponin and what replaces it?",
+    "back": "Smooth muscle; Ca²⁺ binds calmodulin, which activates myosin light-chain kinase.",
+    "tags": [
+      "muscle-types"
+    ]
+  },
+  {
+    "id": "mphys-013",
+    "front": "Compare initiation of contraction in skeletal, smooth and cardiac muscle.",
+    "back": "Skeletal: needs ACh from a somatic motor neuron. Smooth: stretch or chemical signals, can be autorhythmic. Cardiac: autorhythmic.",
+    "tags": [
+      "muscle-types"
+    ]
+  },
+  {
+    "id": "mphys-014",
+    "front": "Which muscle type is fastest and which is slowest?",
+    "back": "Skeletal is fastest, cardiac intermediate, smooth slowest.",
+    "tags": [
+      "muscle-types"
+    ]
+  },
+  {
+    "id": "mphys-015",
+    "front": "List the five links from nerve to twitch.",
+    "back": "Events at the neuromuscular junction → excitation–contraction coupling → Ca²⁺ signal → contraction–relaxation cycle → muscle twitch (sliding filament theory).",
+    "tags": [
+      "mechanism"
+    ]
+  },
+  {
+    "id": "mphys-016",
+    "front": "What happens at the neuromuscular junction?",
+    "back": "The nerve AP opens Ca²⁺ channels → ACh release → ACh binds nicotinic receptors on the motor end plate → Na⁺ entry → end-plate potential → muscle action potential. Acetylcholinesterase breaks ACh down.",
+    "tags": [
+      "mechanism",
+      "nmj"
+    ]
+  },
+  {
+    "id": "mphys-017",
+    "front": "State the all-or-none principle for muscle.",
+    "back": "A single fiber contracts fully once the stimulus reaches threshold and not at all below it.",
+    "tags": [
+      "mechanism"
+    ]
+  },
+  {
+    "id": "mphys-018",
+    "front": "How is the action potential coupled to Ca²⁺ release in skeletal muscle?",
+    "back": "The AP travels down the T-tubule; the DHP receptor (voltage sensor) is mechanically linked to RyR1 on the SR, which opens and releases Ca²⁺.",
+    "tags": [
+      "mechanism",
+      "ec-coupling"
+    ]
+  },
+  {
+    "id": "mphys-019",
+    "front": "How does Ca²⁺ switch on contraction?",
+    "back": "Ca²⁺ binds troponin C → the troponin complex shifts tropomyosin off actin's myosin-binding sites → myosin heads bind and make a power stroke.",
+    "tags": [
+      "mechanism"
+    ]
+  },
+  {
+    "id": "mphys-020",
+    "front": "Describe the crossbridge cycle starting from rigor.",
+    "back": "Rigor (head bound at 45°) → ATP binds, head detaches → ATP hydrolyzed, head cocks to 90° and binds weakly → Pi release triggers the power stroke → ADP released → rigor.",
+    "tags": [
+      "mechanism",
+      "crossbridge"
+    ]
+  },
+  {
+    "id": "mphys-021",
+    "front": "What are the three uses of ATP in contraction and relaxation?",
+    "back": "Energy for the power stroke (hydrolysis cocks the head), detachment of myosin from actin, and pumping Ca²⁺ back into the SR (SERCA).",
+    "tags": [
+      "mechanism",
+      "atp"
+    ]
+  },
+  {
+    "id": "mphys-022",
+    "front": "State the sliding filament theory.",
+    "back": "Muscle shortens because thin filaments slide over thick filaments toward the M line; neither filament changes length.",
+    "tags": [
+      "mechanism"
+    ]
+  },
+  {
+    "id": "mphys-023",
+    "front": "How does skeletal muscle relax?",
+    "back": "Nerve firing stops, ACh is destroyed, RyR closes, SERCA pumps Ca²⁺ back into the SR (bound by calsequestrin), Ca²⁺ leaves troponin and tropomyosin re-covers the binding sites.",
+    "tags": [
+      "mechanism",
+      "relaxation"
+    ]
+  },
+  {
+    "id": "mphys-024",
+    "front": "Name the three pathways that regenerate ATP in muscle, with yield and duration.",
+    "back": "Direct phosphorylation by creatine phosphate (1 ATP per CP, ~10–15 s); anaerobic glycolysis (2 ATP/glucose, lactic acid, ~30–40 s); aerobic respiration (~32 ATP/glucose, hours).",
+    "tags": [
+      "energy"
+    ]
+  },
+  {
+    "id": "mphys-025",
+    "front": "Give sport examples for each energy pathway.",
+    "back": "Creatine phosphate: sprinting, weightlifting. Anaerobic glycolysis: tennis, football, 100 m swim. Aerobic: marathon, jogging.",
+    "tags": [
+      "energy"
+    ]
+  },
+  {
+    "id": "mphys-026",
+    "front": "Hypertrophy vs atrophy?",
+    "back": "Hypertrophy: more actin and myosin (larger fibers), e.g. resistance training. Atrophy: loss of actin and myosin, from disuse, denervation or aging (sarcopenia).",
+    "tags": [
+      "clinical"
+    ]
+  },
+  {
+    "id": "mphys-027",
+    "front": "Why does rigor mortis occur?",
+    "back": "After death no ATP is made, so myosin heads cannot detach from actin: crossbridges lock in the rigor state. It is a physiological process.",
+    "tags": [
+      "clinical"
+    ]
+  },
+  {
+    "id": "mphys-028",
+    "front": "What is a muscle cramp and how is it relieved?",
+    "back": "A sudden, involuntary, painful sustained contraction from hyperexcitability of the somatic motor neuron; relieved by stretching. Triggers: electrolyte loss, heavy sweating.",
+    "tags": [
+      "clinical"
+    ]
+  },
+  {
+    "id": "mphys-029",
+    "front": "Name the three factors that determine contraction strength.",
+    "back": "Degree of stretch (length–tension), number of motor units recruited, and frequency of stimulation.",
+    "tags": [
+      "phenomena",
+      "factors"
+    ]
+  },
+  {
+    "id": "mphys-030",
+    "front": "What is the optimal sarcomere length and why?",
+    "back": "About 2.0–2.2 µm, where every myosin head can reach actin, giving maximal crossbridges and maximal active tension.",
+    "tags": [
+      "phenomena",
+      "length-tension"
+    ]
+  },
+  {
+    "id": "mphys-031",
+    "front": "Active vs passive vs total tension?",
+    "back": "Active: from crossbridges, maximal at optimal length. Passive: elastic recoil of stretched titin and connective tissue, rises with stretch. Total = active + passive.",
+    "tags": [
+      "phenomena",
+      "length-tension"
+    ]
+  },
+  {
+    "id": "mphys-032",
+    "front": "Define a motor unit.",
+    "back": "One motor neuron plus all the skeletal muscle fibers it innervates.",
+    "tags": [
+      "phenomena",
+      "motor-unit"
+    ]
+  },
+  {
+    "id": "mphys-033",
+    "front": "What is the size principle?",
+    "back": "Motor units are recruited from smallest (fatigue-resistant) to largest (powerful, fast-fatiguing) as more force is needed (Henneman).",
+    "tags": [
+      "phenomena",
+      "motor-unit"
+    ]
+  },
+  {
+    "id": "mphys-034",
+    "front": "What is a twitch and what are its phases?",
+    "back": "The response to a single stimulus: latent period (Ca²⁺ release), contraction phase (to peak tension), relaxation phase (Ca²⁺ pumped back).",
+    "tags": [
+      "phenomena",
+      "twitch"
+    ]
+  },
+  {
+    "id": "mphys-035",
+    "front": "What is treppe?",
+    "back": "A stepwise increase in twitch strength with repeated stimuli of the same intensity, each given after complete relaxation (staircase effect of Bowditch), due to warm-up effects.",
+    "tags": [
+      "phenomena",
+      "treppe"
+    ]
+  },
+  {
+    "id": "mphys-036",
+    "front": "What is summation?",
+    "back": "A new contraction beginning before the previous one has ended, so tension adds on top of the last; it increases with frequency.",
+    "tags": [
+      "phenomena",
+      "summation"
+    ]
+  },
+  {
+    "id": "mphys-037",
+    "front": "Unfused vs fused tetanus?",
+    "back": "Unfused (incomplete): partial relaxation between stimuli, wavy plateau with valleys. Fused (complete): no relaxation, smooth straight plateau at maximal tension.",
+    "tags": [
+      "phenomena",
+      "tetanus"
+    ]
+  },
+  {
+    "id": "mphys-038",
+    "front": "What is fatigue and what are its two types?",
+    "back": "A fall in force despite continued stimulation. Central (CNS, psychological/protective) and peripheral (NMJ, E–C coupling, Ca²⁺ signal, metabolite depletion and accumulation).",
+    "tags": [
+      "phenomena",
+      "fatigue"
+    ]
+  },
+  {
+    "id": "mphys-039",
+    "front": "Isotonic vs isometric contraction?",
+    "back": "Isotonic: muscle length changes (concentric shortening, eccentric lengthening) while tension is roughly constant. Isometric: tension develops without change in length.",
+    "tags": [
+      "phenomena",
+      "contraction-types"
+    ]
+  },
+  {
+    "id": "mphys-040",
+    "front": "How does load affect isotonic contraction?",
+    "back": "Heavier loads lengthen the latent period and reduce shortening velocity and distance; when the load exceeds maximal force, the contraction becomes isometric.",
+    "tags": [
+      "phenomena",
+      "contraction-types"
+    ]
+  },
+  {
+    "id": "mphys-041",
+    "front": "Define a reflex.",
+    "back": "A rapid, spontaneous, predictable motor reaction to a stimulus on a receptor, occurring without conscious control.",
+    "tags": [
+      "reflex"
+    ]
+  },
+  {
+    "id": "mphys-042",
+    "front": "What makes a stimulus adequate for a reflex?",
+    "back": "It suits the receptor, reaches threshold, is sudden and is not anticipated by the subject.",
+    "tags": [
+      "reflex"
+    ]
+  },
+  {
+    "id": "mphys-043",
+    "front": "Name the five components of a reflex arc.",
+    "back": "Sensory receptor → sensory (afferent) neuron → integration center → motor (efferent) neuron → effector.",
+    "tags": [
+      "reflex"
+    ]
+  },
+  {
+    "id": "mphys-044",
+    "front": "Give four ways to classify reflexes.",
+    "back": "By integration site (cranial vs spinal), efferent system (somatic vs autonomic), number of synapses (monosynaptic vs polysynaptic), development (innate vs learned).",
+    "tags": [
+      "reflex"
+    ]
+  },
+  {
+    "id": "mphys-045",
+    "front": "Which reflexes are monosynaptic?",
+    "back": "Only the stretch (tendon) reflexes, such as the knee jerk. Withdrawal and superficial reflexes are polysynaptic.",
+    "tags": [
+      "reflex"
+    ]
+  },
+  {
+    "id": "mphys-046",
+    "front": "Describe the stretch reflex pathway.",
+    "back": "Tap stretches the muscle spindle → Ia afferent → synapses directly on the alpha motor neuron of the same muscle → contraction; interneurons inhibit the antagonist (reciprocal inhibition).",
+    "tags": [
+      "reflex"
+    ]
+  },
+  {
+    "id": "mphys-047",
+    "front": "Give the segments of the biceps, triceps, patellar and Achilles reflexes.",
+    "back": "Biceps C5–C6, triceps C7, patellar L3–L4 (L2–L4), Achilles S1.",
+    "tags": [
+      "reflex",
+      "exam"
+    ]
+  },
+  {
+    "id": "mphys-048",
+    "front": "What is the normal response to the abdominal reflex?",
+    "back": "Stroking each quadrant toward the midline makes the underlying muscles contract and the umbilicus move toward the stimulated side (T8–T12).",
+    "tags": [
+      "reflex",
+      "exam"
+    ]
+  },
+  {
+    "id": "mphys-049",
+    "front": "Direct vs consensual pupillary light reflex?",
+    "back": "Light in one eye constricts that pupil (direct) and the other pupil equally (consensual), because the pretectal nuclei project to both Edinger–Westphal nuclei.",
+    "tags": [
+      "reflex",
+      "exam"
+    ]
+  },
+  {
+    "id": "mphys-050",
+    "front": "How are tendon reflexes graded?",
+    "back": "0 absent, 1+ diminished, 2+ normal, 3+ brisk, 4+ very brisk with clonus.",
+    "tags": [
+      "reflex",
+      "exam"
+    ]
+  },
+  {
+    "id": "mphys-051",
+    "front": "Hyperreflexia vs hyporeflexia?",
+    "back": "Hyperreflexia (with clonus, Babinski) suggests an upper motor neuron lesion; hyporeflexia/areflexia suggests a lower motor neuron or reflex-arc lesion.",
+    "tags": [
+      "reflex",
+      "exam"
+    ]
+  },
+  {
+    "id": "mphys-052",
+    "front": "Why is a frog (Rana sp.) used in the wet lab?",
+    "back": "It is poikilothermic (no temperature control needed), has a large gastrocnemius that is easy to prepare, and is easy to obtain.",
+    "tags": [
+      "practicum",
+      "wet-lab"
+    ]
+  },
+  {
+    "id": "mphys-053",
+    "front": "Why is the frog pithed before the experiment?",
+    "back": "To kill it humanely and destroy the brain and spinal cord so that CNS reflexes cannot interfere; limp hind legs confirm success.",
+    "tags": [
+      "practicum",
+      "wet-lab"
+    ]
+  },
+  {
+    "id": "mphys-054",
+    "front": "What does a kymograph record?",
+    "back": "Muscle shortening against time: a rotating drum turns time into horizontal distance, and a writing lever magnifies shortening into vertical deflection.",
+    "tags": [
+      "practicum",
+      "wet-lab"
+    ]
+  },
+  {
+    "id": "mphys-055",
+    "front": "In PhysioEx, what happens as stimulus voltage increases?",
+    "back": "No force below threshold (~0.8 V); force rises as more fibers are recruited, then plateaus at the maximal stimulus (~8.5 V).",
+    "tags": [
+      "practicum",
+      "physioex"
+    ]
+  },
+  {
+    "id": "mphys-056",
+    "front": "In PhysioEx, why does 10 V give no more force than 8.5 V for a single twitch?",
+    "back": "All fibers are already recruited at the maximal stimulus; further force needs higher stimulus frequency.",
+    "tags": [
+      "practicum",
+      "physioex"
+    ]
+  },
+  {
+    "id": "mphys-057",
+    "front": "What is maximal tetanic tension?",
+    "back": "The force reached when further increases in stimulus frequency no longer increase tension (≈140–150 stimuli/s in PhysioEx).",
+    "tags": [
+      "practicum",
+      "physioex"
+    ]
+  }
+]

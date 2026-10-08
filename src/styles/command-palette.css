@@ -1,0 +1,198 @@
+/* Command palette (Cmd+K) */
+
+.command-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(4 8 7 / 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  z-index: 200;
+  animation: overlay-in 0.15s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.command-palette {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 1rem;
+  background: var(--surface);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-xl);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, 0 24px 70px -12px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+  animation: palette-in 0.16s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.command-input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.command-input:focus {
+  outline: none;
+}
+
+.command-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.command-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.command-item.active {
+  background: var(--accent-soft);
+}
+
+.command-item-type {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.command-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.command-empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.command-footer {
+  display: flex;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.command-footer kbd {
+  margin-right: 0.2rem;
+}
+
+/* What the empty palette offers first: today's next step, then pages opened recently */
+.command-item-type.command-item-next {
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.command-item-type.command-item-recent {
+  color: var(--text-muted);
+}
+
+/* "?": the keyboard shortcuts */
+.shortcuts-panel {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(76vh, 40rem);
+  overflow: auto;
+  padding: 1rem 1.25rem 1.25rem;
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-solid);
+  box-shadow: var(--glass-shadow);
+}
+
+.shortcuts-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shortcuts-head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.shortcuts-panel h3 {
+  margin: 1rem 0 0.4rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shortcuts-list {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+}
+
+.shortcuts-row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 0.88rem;
+}
+
+.shortcuts-row dt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  color: var(--text-muted);
+}
+
+.shortcuts-row dd {
+  margin: 0;
+}
+
+.shortcuts-more {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--accent);
+  font-size: 0.85rem;
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Physiology: Muscle Contraction & Reflexes",
+  "description": "Study notes for the Block 1.2 physiology practicum: skeletal muscle structure, the contraction mechanism, contraction phenomena (twitch, treppe, summation, tetanus, fatigue), reflexes and the reflex examination, and a guide to the frog wet lab and PhysioEx dry lab.",
+  "chapters": [
+    { "id": "chapter-01", "title": "Skeletal Muscle Structure" },
+    { "id": "chapter-02", "title": "How Skeletal Muscle Contracts" },
+    { "id": "chapter-03", "title": "Phenomena of Muscle Contraction" },
+    { "id": "chapter-04", "title": "Reflexes & the Reflex Examination" },
+    { "id": "chapter-05", "title": "Practicum Guide: Frog Wet Lab & PhysioEx Dry Lab" }
+  ],
+  "resources": [
+    { "title": "PhysioEx 9.1 (Pearson)", "url": "https://www.physioex.com/" },
+    { "title": "OpenStax Anatomy & Physiology 2e (free textbook)", "url": "https://openstax.org/details/books/anatomy-and-physiology-2e" },
+    { "title": "Stanford Medicine 25: deep tendon reflexes", "url": "https://stanfordmedicine25.stanford.edu/the25/tendon.html" }
+  ]
+}

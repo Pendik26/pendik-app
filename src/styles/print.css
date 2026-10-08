@@ -1,0 +1,57 @@
+/* Print: readable ebook chapters and summaries, everything else stripped away */
+
+@media print {
+  .sidebar,
+  .topbar,
+  .back-link,
+  .subject-trail,
+  .reading-controls,
+  .ebook-toc,
+  .ebook-nav,
+  .mark-complete-btn,
+  .backup-nudge,
+  body::before {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .app-shell,
+  .app-content,
+  .main,
+  .page,
+  .ebook-layout,
+  .ebook-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  .summary-content {
+    color: #000 !important;
+    font-size: 12pt !important;
+  }
+
+  .summary-content a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  .summary-content h1,
+  .summary-content h2,
+  .summary-content h3 {
+    page-break-after: avoid;
+  }
+
+  .summary-content figure.diagram,
+  .summary-content table {
+    page-break-inside: avoid;
+  }
+}

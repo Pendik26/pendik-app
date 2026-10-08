@@ -1,0 +1,1288 @@
+[
+  {
+    "id": "anat-001",
+    "front": "Describe the anatomical position.",
+    "back": "Standing upright, head and eyes facing forward, upper limbs at the sides with the palms facing forward, lower limbs together with feet flat and toes pointing forward.",
+    "tags": [
+      "terminology"
+    ]
+  },
+  {
+    "id": "anat-002",
+    "front": "Which plane divides the body into right and left halves through the midline?",
+    "back": "The median (midsagittal) plane. Any vertical plane parallel to it, off the midline, is a sagittal (parasagittal) plane.",
+    "tags": [
+      "terminology",
+      "planes"
+    ]
+  },
+  {
+    "id": "anat-003",
+    "front": "Which plane divides the body into anterior and posterior parts?",
+    "back": "A frontal (coronal) plane: vertical, at right angles to the median plane.",
+    "tags": [
+      "terminology",
+      "planes"
+    ]
+  },
+  {
+    "id": "anat-004",
+    "front": "What is the difference between proximal/distal and superior/inferior?",
+    "back": "Proximal/distal describe position relative to the origin of a limb or tube (closer to or further from the trunk or start); superior/inferior describe position relative to the head. The elbow is proximal to the wrist.",
+    "tags": [
+      "terminology"
+    ]
+  },
+  {
+    "id": "anat-005",
+    "front": "Ipsilateral vs contralateral?",
+    "back": "Ipsilateral: on the same side as a reference point. Contralateral: on the opposite side (a left hemisphere stroke weakens the contralateral, right, side).",
+    "tags": [
+      "terminology"
+    ]
+  },
+  {
+    "id": "anat-006",
+    "front": "Name the vertical reference lines on the lateral chest wall.",
+    "back": "Anterior axillary line (along pectoralis major fold), midaxillary line, posterior axillary line (along latissimus dorsi fold).",
+    "tags": [
+      "terminology",
+      "surface-anatomy"
+    ]
+  },
+  {
+    "id": "anat-007",
+    "front": "What do the abbreviations a., v., n., m., lig. and art. stand for?",
+    "back": "a. = arteria, v. = vena, n. = nervus, m. = musculus, lig. = ligamentum, art. = articulatio. Plurals double the letter: aa., vv., nn., mm., ligg., artt.",
+    "tags": [
+      "terminology",
+      "latin"
+    ]
+  },
+  {
+    "id": "anat-008",
+    "front": "Foramen, fossa, incisura, fissura: what does each mean?",
+    "back": "Foramen = hole; fossa = shallow depression; incisura = notch; fissura = long narrow cleft.",
+    "tags": [
+      "latin"
+    ]
+  },
+  {
+    "id": "anat-009",
+    "front": "Tuber, tuberculum, tuberositas: how do they differ?",
+    "back": "Tuber = rounded bump; tuberculum = small bump; tuberositas = rough raised area (usually a tendon attachment).",
+    "tags": [
+      "latin"
+    ]
+  },
+  {
+    "id": "anat-010",
+    "front": "Classify bones by shape, with an example of each.",
+    "back": "Long (humerus, femur), short (carpals), flat (parietal bone, sternum), irregular (vertebrae), sesamoid (patella, developing in a tendon).",
+    "tags": [
+      "osteology"
+    ]
+  },
+  {
+    "id": "anat-011",
+    "front": "Name the parts of a long bone.",
+    "back": "Epiphysis (ends, spongy bone, articular cartilage), metaphysis (contains the growth plate in children), diaphysis (shaft with medullary cavity) and periosteum (outer fibrous covering).",
+    "tags": [
+      "osteology"
+    ]
+  },
+  {
+    "id": "anat-012",
+    "front": "Give the three subtypes of fibrous joint with an example of each.",
+    "back": "Sutura (skull sutures), gomphosis (tooth in its socket), syndesmosis (radius–ulna interosseous membrane).",
+    "tags": [
+      "arthrology"
+    ]
+  },
+  {
+    "id": "anat-013",
+    "front": "Synchondrosis vs symphysis?",
+    "back": "Both cartilaginous joints. Synchondrosis (primary) uses hyaline cartilage, e.g. the epiphyseal plate; symphysis (secondary) uses fibrocartilage, e.g. intervertebral discs and pubic symphysis.",
+    "tags": [
+      "arthrology"
+    ]
+  },
+  {
+    "id": "anat-014",
+    "front": "Match each synovial joint type to an example: ginglymus, trochoidea, sellaris, spheroidea, plana.",
+    "back": "Ginglymus (hinge): elbow, interphalangeal. Trochoidea (pivot): atlantoaxial, proximal radioulnar. Sellaris (saddle): 1st carpometacarpal. Spheroidea (ball and socket): hip, shoulder. Plana: acromioclavicular, intercarpal.",
+    "tags": [
+      "arthrology"
+    ]
+  },
+  {
+    "id": "anat-015",
+    "front": "Define origin, insertion and action of a muscle.",
+    "back": "Origin: fixed, usually proximal attachment. Insertion: movable, usually distal attachment. Action: what it does when it contracts, pulling the insertion toward the origin.",
+    "tags": [
+      "myology"
+    ]
+  },
+  {
+    "id": "anat-016",
+    "front": "Nucleus vs ganglion; tractus vs nervus?",
+    "back": "Nucleus and ganglion are both clusters of nerve cell bodies (nucleus in the CNS, ganglion in the PNS). Tractus and nervus are both bundles of axons (tractus in the CNS, nervus in the PNS).",
+    "tags": [
+      "nervous-system"
+    ]
+  },
+  {
+    "id": "anat-017",
+    "front": "Where does the thoracic duct empty?",
+    "back": "At the junction of the left subclavian and left internal jugular veins. The right upper quadrant drains via the right lymphatic duct.",
+    "tags": [
+      "lymphatics"
+    ]
+  },
+  {
+    "id": "anat-018",
+    "front": "List the four steps of fertilization.",
+    "back": "Capacitation → acrosome reaction (on binding the zona pellucida) → fusion of membranes (oocyte completes meiosis II) → cortical (zona) reaction, which blocks polyspermy.",
+    "tags": [
+      "embryology",
+      "week-1"
+    ]
+  },
+  {
+    "id": "anat-019",
+    "front": "Where does fertilization usually occur?",
+    "back": "In the ampulla of the uterine (fallopian) tube.",
+    "tags": [
+      "embryology",
+      "week-1"
+    ]
+  },
+  {
+    "id": "anat-020",
+    "front": "What do the inner and outer cell masses of the morula become?",
+    "back": "Inner cell mass → embryoblast (the embryo). Outer cell mass → trophoblast (embryonic part of the placenta).",
+    "tags": [
+      "embryology",
+      "week-1"
+    ]
+  },
+  {
+    "id": "anat-021",
+    "front": "Why is week 2 called the 'week of twos'?",
+    "back": "Trophoblast → cytotrophoblast + syncytiotrophoblast; embryoblast → epiblast + hypoblast (bilaminar disc); two cavities → amniotic cavity + primitive yolk sac.",
+    "tags": [
+      "embryology",
+      "week-2"
+    ]
+  },
+  {
+    "id": "anat-022",
+    "front": "Which layer produces hCG?",
+    "back": "The syncytiotrophoblast.",
+    "tags": [
+      "embryology",
+      "week-2"
+    ]
+  },
+  {
+    "id": "anat-023",
+    "front": "What is gastrulation and which layer gives rise to all three germ layers?",
+    "back": "The week-3 conversion of the bilaminar disc into three germ layers via the primitive streak. All three (ectoderm, mesoderm, endoderm) come from the epiblast.",
+    "tags": [
+      "embryology",
+      "week-3"
+    ]
+  },
+  {
+    "id": "anat-024",
+    "front": "What are the two key jobs of the notochord?",
+    "back": "It induces the overlying ectoderm to form the neural plate (via Sonic hedgehog), and it persists as the nucleus pulposus of the intervertebral discs.",
+    "tags": [
+      "embryology",
+      "week-3"
+    ]
+  },
+  {
+    "id": "anat-025",
+    "front": "When do the cranial and caudal neuropores close, and what happens if they fail to?",
+    "back": "Cranial ≈ day 25 (failure → anencephaly); caudal ≈ day 28 (failure → spina bifida). Folic acid before conception reduces the risk.",
+    "tags": [
+      "embryology",
+      "neurulation"
+    ]
+  },
+  {
+    "id": "anat-026",
+    "front": "Name the derivatives of the neural crest.",
+    "back": "Sensory and autonomic ganglia, Schwann cells, melanocytes, adrenal medulla, and much of the bone, cartilage and connective tissue of the face and skull.",
+    "tags": [
+      "embryology",
+      "neurulation"
+    ]
+  },
+  {
+    "id": "anat-027",
+    "front": "What does each part of a somite form?",
+    "back": "Sclerotome → vertebrae and ribs. Dermatome → dermis of the back. Myotome → skeletal muscle of the trunk and limbs.",
+    "tags": [
+      "embryology",
+      "mesoderm"
+    ]
+  },
+  {
+    "id": "anat-028",
+    "front": "What does intermediate mesoderm form?",
+    "back": "The urogenital system: kidneys and ureters, gonads and their ducts.",
+    "tags": [
+      "embryology",
+      "mesoderm"
+    ]
+  },
+  {
+    "id": "anat-029",
+    "front": "Foregut, midgut and hindgut: which artery supplies each?",
+    "back": "Foregut: coeliac trunk. Midgut: superior mesenteric artery. Hindgut: inferior mesenteric artery.",
+    "tags": [
+      "embryology",
+      "endoderm"
+    ]
+  },
+  {
+    "id": "anat-030",
+    "front": "Which genes set left-sidedness, and what keeps them on the left?",
+    "back": "FGF8 → Nodal and Lefty2 → PITX2 (master left gene). Lefty1 at the midline (with SHH from the notochord) acts as a barrier. Serotonin on the left is also needed.",
+    "tags": [
+      "embryology",
+      "lateralization"
+    ]
+  },
+  {
+    "id": "anat-031",
+    "front": "What are the three parts of the sternum?",
+    "back": "Manubrium sterni, corpus sterni and processus xiphoideus.",
+    "tags": [
+      "thoracic-cage",
+      "sternum"
+    ]
+  },
+  {
+    "id": "anat-032",
+    "front": "Why is the sternal angle (angle of Louis) an important landmark?",
+    "back": "Rib II's costal cartilage joins here, so rib and intercostal-space counting starts here; it lies at the T4/T5 disc level, the boundary between superior and inferior mediastinum.",
+    "tags": [
+      "thoracic-cage",
+      "sternum"
+    ]
+  },
+  {
+    "id": "anat-033",
+    "front": "True, false and floating ribs: which ribs are which?",
+    "back": "True (costae verae) I–VII attach directly to the sternum; false (costae spuriae) VIII–X attach to the cartilage above; floating (fluctuantes) XI–XII end free in the abdominal wall.",
+    "tags": [
+      "thoracic-cage",
+      "ribs"
+    ]
+  },
+  {
+    "id": "anat-034",
+    "front": "Name the parts of a typical rib.",
+    "back": "Caput (head, two facets separated by the crista), collum (neck), tuberculum (tubercle), corpus (shaft) with angulus costae, and the sulcus costae (costal groove) on the inferior inner border.",
+    "tags": [
+      "thoracic-cage",
+      "ribs"
+    ]
+  },
+  {
+    "id": "anat-035",
+    "front": "Which ribs are atypical?",
+    "back": "Ribs I, II, X, XI and XII. Typical ribs are III–IX.",
+    "tags": [
+      "thoracic-cage",
+      "ribs"
+    ]
+  },
+  {
+    "id": "anat-036",
+    "front": "What lies in front of and behind the scalene tubercle on rib I?",
+    "back": "In front: sulcus venae subclaviae (subclavian vein). Behind: sulcus arteriae subclaviae (subclavian artery and lower trunk of the brachial plexus).",
+    "tags": [
+      "thoracic-cage",
+      "ribs"
+    ]
+  },
+  {
+    "id": "anat-037",
+    "front": "An intercostal space is numbered after which rib, and where is the normal apex beat?",
+    "back": "After the rib above it. The apex beat (ictus cordis) is in the 5th intercostal space, left midclavicular line.",
+    "tags": [
+      "thoracic-cage",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-038",
+    "front": "Name the three layers of thoracic wall muscles and their main actions.",
+    "back": "External (external intercostals: raise ribs, inspiration), middle (internal intercostals: lower ribs, forced expiration), internal (innermost intercostals, subcostales, transversus thoracis).",
+    "tags": [
+      "thoracic-cage",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-039",
+    "front": "What is the order of the intercostal neurovascular bundle in the costal groove?",
+    "back": "Vein, artery, nerve (VAN) from above down. Needles are therefore passed just above the rib below.",
+    "tags": [
+      "thoracic-cage",
+      "vessels"
+    ]
+  },
+  {
+    "id": "anat-040",
+    "front": "Where do the posterior intercostal arteries of spaces 1–2 and 3–11 come from?",
+    "back": "Spaces 1–2: a. intercostalis suprema (from the costocervical trunk). Spaces 3–11: directly from the thoracic aorta.",
+    "tags": [
+      "thoracic-cage",
+      "vessels"
+    ]
+  },
+  {
+    "id": "anat-041",
+    "front": "What is thoracic outlet syndrome and a classic cause?",
+    "back": "Compression of the subclavian vessels and lower trunk of the brachial plexus at the thoracic outlet, e.g. by a cervical rib from C7: medial forearm/hand paraesthesia (C8–T1), weak small hand muscles, vascular signs.",
+    "tags": [
+      "thoracic-cage",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-042",
+    "front": "How many vertebrae are there in each region?",
+    "back": "7 cervical, 12 thoracic, 5 lumbar, sacrum (5 fused), coccyx (usually 4 fused): 33 in total.",
+    "tags": [
+      "vertebral-column"
+    ]
+  },
+  {
+    "id": "anat-043",
+    "front": "Primary vs secondary curvatures of the spine?",
+    "back": "Primary (fetal, kyphoses): thoracic and sacral. Secondary (after birth, lordoses): cervical (holding up the head) and lumbar (sitting and walking).",
+    "tags": [
+      "vertebral-column"
+    ]
+  },
+  {
+    "id": "anat-044",
+    "front": "How do you identify a cervical, thoracic and lumbar vertebra?",
+    "back": "Cervical: foramen transversarium. Thoracic: costal facets (heart-shaped body, long downward spine). Lumbar: neither, with a large kidney-shaped body and hatchet-shaped spine.",
+    "tags": [
+      "vertebral-column"
+    ]
+  },
+  {
+    "id": "anat-045",
+    "front": "What makes the atlas (C1) and axis (C2) distinctive?",
+    "back": "Atlas: no body and no spinous process, a ring of anterior and posterior arches with lateral masses; fovea dentis on the anterior arch. Axis: the dens (developmentally the body of C1) and a large bifid spinous process.",
+    "tags": [
+      "vertebral-column",
+      "cervical"
+    ]
+  },
+  {
+    "id": "anat-046",
+    "front": "Why is C7 called the vertebra prominens?",
+    "back": "It has the longest, non-bifid cervical spinous process, easily felt at the base of the neck. Its foramina transversaria usually carry only the vertebral vein.",
+    "tags": [
+      "vertebral-column",
+      "cervical"
+    ]
+  },
+  {
+    "id": "anat-047",
+    "front": "What is the hiatus sacralis and why does it matter?",
+    "back": "The gap at the lower end of the sacrum where the S5 (often S4) laminae fail to meet, flanked by the sacral cornua; the entry point for caudal epidural injection.",
+    "tags": [
+      "vertebral-column",
+      "sacrum"
+    ]
+  },
+  {
+    "id": "anat-048",
+    "front": "Name the two parts of an intervertebral disc and the origin of the core.",
+    "back": "Anulus fibrosus (outer fibrocartilage lamellae) and nucleus pulposus (gel core, remnant of the notochord).",
+    "tags": [
+      "vertebral-column",
+      "disc"
+    ]
+  },
+  {
+    "id": "anat-049",
+    "front": "In which direction and at which levels does a disc usually herniate?",
+    "back": "Posterolaterally (where the posterior longitudinal ligament is thin), most commonly at L4–L5 and L5–S1, compressing the nerve root and causing sciatica.",
+    "tags": [
+      "vertebral-column",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-050",
+    "front": "Which ligament limits extension of the vertebral column, and which joins the laminae?",
+    "back": "Lig. longitudinale anterius limits extension. Ligamenta flava (yellow, elastic) join adjacent laminae.",
+    "tags": [
+      "vertebral-column",
+      "ligaments"
+    ]
+  },
+  {
+    "id": "anat-051",
+    "front": "Name the columns of erector spinae from lateral to medial.",
+    "back": "Iliocostalis, longissimus, spinalis ('I Love Spine'). They are supplied by dorsal rami of spinal nerves.",
+    "tags": [
+      "vertebral-column",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-052",
+    "front": "Which movements occur at the atlanto-occipital and atlantoaxial joints?",
+    "back": "Atlanto-occipital: flexion and extension (nodding 'yes'). Atlantoaxial: rotation (shaking the head 'no').",
+    "tags": [
+      "vertebral-column",
+      "joints"
+    ]
+  },
+  {
+    "id": "anat-053",
+    "front": "Neurocranium vs viscerocranium: how do they develop?",
+    "back": "Neurocranium: vault by intramembranous ossification, base by endochondral ossification (chondrocranium). Viscerocranium: from the pharyngeal arches, largely neural crest.",
+    "tags": [
+      "cranium",
+      "development"
+    ]
+  },
+  {
+    "id": "anat-054",
+    "front": "Anterior vs posterior fontanelle: shape and closure time?",
+    "back": "Anterior (bregma): rhomboid, largest, closes about 18–24 months. Posterior (lambda): triangular, closes about 2–3 months.",
+    "tags": [
+      "cranium",
+      "development"
+    ]
+  },
+  {
+    "id": "anat-055",
+    "front": "List the 8 bones of the neurocranium.",
+    "back": "Unpaired: frontal, ethmoid, sphenoid, occipital. Paired: temporal, parietal.",
+    "tags": [
+      "cranium",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-056",
+    "front": "List the 14 bones of the viscerocranium.",
+    "back": "Unpaired: mandible, vomer. Paired: maxilla, zygomatic, nasal, lacrimal, palatine, inferior nasal concha.",
+    "tags": [
+      "cranium",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-057",
+    "front": "What is pterion and why is it clinically important?",
+    "back": "The H-shaped junction of frontal, parietal, sphenoid (greater wing) and temporal bones. Its thin bone overlies the anterior branch of the middle meningeal artery; fracture can cause an epidural haematoma.",
+    "tags": [
+      "cranium",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-058",
+    "front": "Define bregma and lambda.",
+    "back": "Bregma: meeting of coronal and sagittal sutures (site of the anterior fontanelle). Lambda: meeting of sagittal and lambdoid sutures (site of the posterior fontanelle).",
+    "tags": [
+      "cranium",
+      "sutures"
+    ]
+  },
+  {
+    "id": "anat-059",
+    "front": "Name the four parts of the temporal bone.",
+    "back": "Pars squamosa, pars tympanica, pars petrosa (inner ear, internal acoustic meatus, carotid canal) and pars mastoidea (mastoid process).",
+    "tags": [
+      "cranium",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-060",
+    "front": "What forms the hard palate?",
+    "back": "Palatine processes of the maxillae (front two-thirds) and horizontal plates of the palatine bones (back). Openings: incisive, greater palatine and lesser palatine foramina.",
+    "tags": [
+      "cranium",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-061",
+    "front": "Through which openings do V1, V2 and V3 leave the skull?",
+    "back": "V1: superior orbital fissure. V2: foramen rotundum. V3: foramen ovale ('Standing Room Only').",
+    "tags": [
+      "cranium",
+      "foramina"
+    ]
+  },
+  {
+    "id": "anat-062",
+    "front": "What passes through the foramen jugulare?",
+    "back": "CN IX, X and XI, the sigmoid sinus becoming the internal jugular vein, and the inferior petrosal sinus.",
+    "tags": [
+      "cranium",
+      "foramina"
+    ]
+  },
+  {
+    "id": "anat-063",
+    "front": "What passes through the internal acoustic meatus and the stylomastoid foramen?",
+    "back": "Internal acoustic meatus: CN VII, CN VIII and the labyrinthine artery. Stylomastoid foramen: CN VII leaving the skull to the face.",
+    "tags": [
+      "cranium",
+      "foramina"
+    ]
+  },
+  {
+    "id": "anat-064",
+    "front": "Which bones form each cranial fossa?",
+    "back": "Anterior: frontal orbital plates, ethmoid cribriform plate, lesser wings of sphenoid. Middle: sphenoid body and greater wings, squamous and petrous temporal. Posterior: occipital bone and posterior petrous temporal.",
+    "tags": [
+      "cranium",
+      "fossae"
+    ]
+  },
+  {
+    "id": "anat-065",
+    "front": "Name the five layers of the scalp.",
+    "back": "Skin, Connective tissue (dense), Aponeurosis (galea), Loose connective tissue ('danger space'), Pericranium: SCALP.",
+    "tags": [
+      "face-neck",
+      "scalp"
+    ]
+  },
+  {
+    "id": "anat-066",
+    "front": "Why is the loose connective tissue layer of the scalp called the danger space?",
+    "back": "Blood or infection spreads freely through it and can reach the intracranial venous sinuses through emissary veins.",
+    "tags": [
+      "face-neck",
+      "scalp"
+    ]
+  },
+  {
+    "id": "anat-067",
+    "front": "Which nerve supplies the muscles of facial expression, and from which pharyngeal arch do they develop?",
+    "back": "The facial nerve (CN VII); second pharyngeal arch.",
+    "tags": [
+      "face-neck",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-068",
+    "front": "Pars orbitalis vs pars palpebralis of orbicularis oculi?",
+    "back": "Pars orbitalis closes the eye tightly (squinting); pars palpebralis closes it gently (blinking).",
+    "tags": [
+      "face-neck",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-069",
+    "front": "What does buccinator do?",
+    "back": "Presses the cheek against the teeth, keeping food between the teeth during chewing; used in blowing.",
+    "tags": [
+      "face-neck",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-070",
+    "front": "List the muscles of mastication and their nerve.",
+    "back": "Temporalis, masseter, medial pterygoid, lateral pterygoid; all supplied by the mandibular nerve (V3), first pharyngeal arch.",
+    "tags": [
+      "face-neck",
+      "mastication"
+    ]
+  },
+  {
+    "id": "anat-071",
+    "front": "Which muscle of mastication opens the jaw?",
+    "back": "The lateral pterygoid (depresses and protrudes the mandible). Temporalis, masseter and medial pterygoid close it.",
+    "tags": [
+      "face-neck",
+      "mastication"
+    ]
+  },
+  {
+    "id": "anat-072",
+    "front": "List the branches of the external carotid artery from below up.",
+    "back": "Superior thyroid, ascending pharyngeal, lingual, facial, occipital, posterior auricular, then terminal maxillary and superficial temporal ('Some Anatomists Like Freaking Out Poor Medical Students').",
+    "tags": [
+      "face-neck",
+      "arteries"
+    ]
+  },
+  {
+    "id": "anat-073",
+    "front": "Where can the facial and superficial temporal pulses be felt?",
+    "back": "Facial: over the lower border of the mandible just in front of masseter. Superficial temporal: just in front of the ear.",
+    "tags": [
+      "face-neck",
+      "arteries"
+    ]
+  },
+  {
+    "id": "anat-074",
+    "front": "What is the 'danger triangle' of the face?",
+    "back": "The area around the nose and upper lip, whose veins (valveless facial vein) connect through the ophthalmic veins with the cavernous sinus, so infection can spread intracranially.",
+    "tags": [
+      "face-neck",
+      "veins",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-075",
+    "front": "Which sensory nerve supplies the skin over the angle of the mandible?",
+    "back": "The great auricular nerve (C2–C3), not the trigeminal nerve.",
+    "tags": [
+      "face-neck",
+      "nerves"
+    ]
+  },
+  {
+    "id": "anat-076",
+    "front": "Name the five terminal branches of the facial nerve.",
+    "back": "Temporal, zygomatic, buccal, marginal mandibular, cervical ('To Zanzibar By Motor Car'). They branch in the parotid gland but do not supply it.",
+    "tags": [
+      "face-neck",
+      "nerves"
+    ]
+  },
+  {
+    "id": "anat-077",
+    "front": "What are the contents of the carotid sheath?",
+    "back": "Common and internal carotid arteries, internal jugular vein and vagus nerve (with deep cervical lymph nodes).",
+    "tags": [
+      "face-neck",
+      "neck"
+    ]
+  },
+  {
+    "id": "anat-078",
+    "front": "What is unique about the hyoid bone and at what level does it lie?",
+    "back": "It is the only bone that does not articulate with another bone; it lies at C3.",
+    "tags": [
+      "face-neck",
+      "neck"
+    ]
+  },
+  {
+    "id": "anat-079",
+    "front": "Boundaries of the anterior and posterior triangles of the neck?",
+    "back": "Anterior: midline, anterior border of SCM, lower border of mandible. Posterior: posterior border of SCM, anterior border of trapezius, middle third of clavicle.",
+    "tags": [
+      "face-neck",
+      "triangles"
+    ]
+  },
+  {
+    "id": "anat-080",
+    "front": "Boundaries and contents of the carotid triangle?",
+    "back": "SCM, posterior belly of digastric, superior belly of omohyoid. Contains the carotid bifurcation, internal jugular vein, vagus and hypoglossal nerves.",
+    "tags": [
+      "face-neck",
+      "triangles"
+    ]
+  },
+  {
+    "id": "anat-081",
+    "front": "Which nerve crosses the posterior triangle to trapezius?",
+    "back": "The accessory nerve (CN XI), in the occipital triangle.",
+    "tags": [
+      "face-neck",
+      "triangles"
+    ]
+  },
+  {
+    "id": "anat-082",
+    "front": "Which nerve supplies the infrahyoid (strap) muscles?",
+    "back": "The ansa cervicalis (C1–C3), except thyrohyoid (C1 fibres carried by CN XII).",
+    "tags": [
+      "face-neck",
+      "neck"
+    ]
+  },
+  {
+    "id": "anat-083",
+    "front": "Which nerve runs close behind the thyroid and what does injury cause?",
+    "back": "The recurrent laryngeal nerve, in the tracheo-oesophageal groove near the inferior thyroid artery; injury causes hoarseness.",
+    "tags": [
+      "face-neck",
+      "viscera",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-084",
+    "front": "Thyroid vs parathyroid hormones: effect on blood calcium?",
+    "back": "Calcitonin (thyroid C cells) lowers blood calcium; parathyroid hormone raises it (bone, kidney, vitamin D/gut).",
+    "tags": [
+      "face-neck",
+      "viscera"
+    ]
+  },
+  {
+    "id": "anat-085",
+    "front": "Where do all lymph vessels of the head and neck ultimately drain?",
+    "back": "To the deep cervical lymph nodes along the internal jugular vein, then the jugular trunk.",
+    "tags": [
+      "face-neck",
+      "lymph"
+    ]
+  },
+  {
+    "id": "anat-086",
+    "front": "What is Virchow's node and why does it matter?",
+    "back": "An enlarged left supraclavicular node; it can be the first sign of abdominal cancer because the thoracic duct drains past it.",
+    "tags": [
+      "face-neck",
+      "lymph",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-087",
+    "front": "How does Bell's palsy differ from a stroke affecting the face?",
+    "back": "Bell's palsy (lower motor neuron CN VII lesion) paralyses the whole side including the forehead; an upper motor neuron lesion spares the forehead.",
+    "tags": [
+      "face-neck",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-088",
+    "front": "What is the most commonly fractured bone in the body?",
+    "back": "The clavicle, usually at the junction of its middle and lateral thirds, after a fall onto the outstretched hand.",
+    "tags": [
+      "upper-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-089",
+    "front": "What attaches to the supraglenoid and infraglenoid tubercles?",
+    "back": "Supraglenoid: long head of biceps. Infraglenoid: long head of triceps.",
+    "tags": [
+      "upper-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-090",
+    "front": "Which nerves are at risk at the surgical neck, radial groove and medial epicondyle of the humerus?",
+    "back": "Surgical neck: axillary nerve. Radial groove: radial nerve. Behind the medial epicondyle: ulnar nerve.",
+    "tags": [
+      "upper-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-091",
+    "front": "Name the carpal bones, proximal then distal row, lateral to medial.",
+    "back": "Proximal: scaphoid, lunate, triquetrum, pisiform. Distal: trapezium, trapezoid, capitate, hamate ('Some Lovers Try Positions That They Can't Handle').",
+    "tags": [
+      "upper-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-092",
+    "front": "Which carpal bone is most often fractured and what is the risk?",
+    "back": "The scaphoid; a waist fracture can cut off blood to the proximal fragment, causing avascular necrosis. Suspect it with snuffbox tenderness.",
+    "tags": [
+      "upper-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-093",
+    "front": "Name the rotator cuff muscles and which one initiates abduction.",
+    "back": "Supraspinatus, infraspinatus, teres minor, subscapularis (SITS). Supraspinatus initiates the first 15° of abduction. Teres major is not part of the cuff.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-094",
+    "front": "Which rotator cuff muscle inserts on the lesser tubercle?",
+    "back": "Subscapularis (medial rotation). The other three insert on the greater tubercle.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-095",
+    "front": "Which nerves supply trapezius, latissimus dorsi and serratus anterior?",
+    "back": "Trapezius: accessory nerve (XI). Latissimus dorsi: thoracodorsal nerve. Serratus anterior: long thoracic nerve.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-096",
+    "front": "What is the main elbow flexor and what is biceps's strongest action?",
+    "back": "Brachialis is the main flexor of the elbow; biceps brachii's strongest action is supination of the forearm.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-097",
+    "front": "Which forearm flexors are not supplied by the median nerve?",
+    "back": "Flexor carpi ulnaris and the ulnar (medial) half of flexor digitorum profundus, both supplied by the ulnar nerve.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-098",
+    "front": "Which hand muscles does the median nerve supply?",
+    "back": "LOAF: lumbricals I–II, opponens pollicis, abductor pollicis brevis, flexor pollicis brevis. The rest are ulnar.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-099",
+    "front": "PAD and DAB?",
+    "back": "Palmar interossei ADduct the fingers; Dorsal interossei ABduct them. Both are supplied by the deep branch of the ulnar nerve.",
+    "tags": [
+      "upper-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-100",
+    "front": "Contents of the quadrangular space and triangular interval?",
+    "back": "Quadrangular space: axillary nerve and posterior circumflex humeral artery. Triangular interval: radial nerve and profunda brachii artery.",
+    "tags": [
+      "upper-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-101",
+    "front": "Contents of the cubital fossa from lateral to medial?",
+    "back": "Radial nerve (deep to brachioradialis), biceps tendon, brachial artery, median nerve: 'TAN' (Tendon, Artery, Nerve) for the central three.",
+    "tags": [
+      "upper-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-102",
+    "front": "Contents of the carpal tunnel?",
+    "back": "Four FDS tendons, four FDP tendons, flexor pollicis longus tendon and the median nerve. The ulnar nerve and artery pass outside (Guyon's canal).",
+    "tags": [
+      "upper-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-103",
+    "front": "Boundaries and content of the anatomical snuffbox?",
+    "back": "Medial: extensor pollicis longus. Lateral: extensor pollicis brevis and abductor pollicis longus. Floor: scaphoid and trapezium. Content: radial artery.",
+    "tags": [
+      "upper-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-104",
+    "front": "Name the stages and roots of the brachial plexus.",
+    "back": "Roots (C5–T1), trunks (superior C5–6, middle C7, inferior C8–T1), divisions, cords (lateral, medial, posterior), branches: 'Read That Damn Cadaver Book'.",
+    "tags": [
+      "upper-limb",
+      "brachial-plexus"
+    ]
+  },
+  {
+    "id": "anat-105",
+    "front": "Which terminal branches come from the posterior cord?",
+    "back": "Upper and lower subscapular, thoracodorsal, axillary and radial nerves.",
+    "tags": [
+      "upper-limb",
+      "brachial-plexus"
+    ]
+  },
+  {
+    "id": "anat-106",
+    "front": "Match nerve injury to deformity: wrist drop, claw hand, hand of benediction, winged scapula.",
+    "back": "Wrist drop: radial. Claw hand: ulnar. Hand of benediction: median (at or above the elbow). Winged scapula: long thoracic.",
+    "tags": [
+      "upper-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-107",
+    "front": "Which superficial vein runs up the thumb side, and which is used for venepuncture?",
+    "back": "The cephalic vein runs up the radial side to the deltopectoral groove; the median cubital vein in the cubital fossa is the usual venepuncture site.",
+    "tags": [
+      "upper-limb",
+      "veins"
+    ]
+  },
+  {
+    "id": "anat-108",
+    "front": "Which group of axillary nodes drains most of the breast?",
+    "back": "The anterior (pectoral) group, along the lower border of pectoralis minor.",
+    "tags": [
+      "upper-limb",
+      "lymph"
+    ]
+  },
+  {
+    "id": "anat-109",
+    "front": "Tennis elbow vs golfer's elbow?",
+    "back": "Tennis elbow: lateral epicondylitis of the common extensor origin (esp. ECRB). Golfer's elbow: medial epicondylitis of the common flexor origin.",
+    "tags": [
+      "upper-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-110",
+    "front": "Which three bones fuse to form the os coxae, and where?",
+    "back": "Ilium, ischium and pubis, fusing at the acetabulum.",
+    "tags": [
+      "lower-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-111",
+    "front": "Name four palpable landmarks of the hip bone.",
+    "back": "Anterior superior iliac spine (ASIS), iliac crest, pubic tubercle and ischial tuberosity.",
+    "tags": [
+      "lower-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-112",
+    "front": "What is the neck–shaft angle of the femur, and what attaches to the linea aspera?",
+    "back": "About 125°. The adductors and hamstrings (and vasti) attach along the linea aspera.",
+    "tags": [
+      "lower-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-113",
+    "front": "Which is the largest sesamoid bone and what does it do?",
+    "back": "The patella; it lies in the quadriceps tendon and increases the muscle's leverage.",
+    "tags": [
+      "lower-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-114",
+    "front": "Which tarsal bone has no muscle attachments?",
+    "back": "The talus. Its trochlea articulates with the tibia and fibula at the ankle.",
+    "tags": [
+      "lower-limb",
+      "bones"
+    ]
+  },
+  {
+    "id": "anat-115",
+    "front": "Chopart's joint vs Lisfranc's joint?",
+    "back": "Chopart's (transverse tarsal): talonavicular + calcaneocuboid joints. Lisfranc's: the tarsometatarsal joints.",
+    "tags": [
+      "lower-limb",
+      "joints"
+    ]
+  },
+  {
+    "id": "anat-116",
+    "front": "What is the strongest ligament in the body?",
+    "back": "The Y-shaped iliofemoral ligament of the hip joint.",
+    "tags": [
+      "lower-limb",
+      "joints"
+    ]
+  },
+  {
+    "id": "anat-117",
+    "front": "What do the ACL and PCL each prevent?",
+    "back": "ACL: forward sliding of the tibia on the femur (anterior drawer, Lachman). PCL: backward sliding of the tibia (posterior drawer, dashboard injury).",
+    "tags": [
+      "lower-limb",
+      "joints"
+    ]
+  },
+  {
+    "id": "anat-118",
+    "front": "Which ligament is torn first in an inversion ankle sprain?",
+    "back": "The anterior talofibular ligament (lateral ligament complex). The medial deltoid ligament is much stronger.",
+    "tags": [
+      "lower-limb",
+      "joints",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-119",
+    "front": "What is the strongest hip flexor and where does it insert?",
+    "back": "M. iliopsoas (psoas major + iliacus), inserting on the lesser trochanter.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-120",
+    "front": "Gluteus maximus vs gluteus medius: action and nerve?",
+    "back": "Maximus: extends and laterally rotates the hip; inferior gluteal nerve. Medius (and minimus): abducts the hip and keeps the pelvis level; superior gluteal nerve.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-121",
+    "front": "What is the Trendelenburg sign?",
+    "back": "When standing on the affected leg, the pelvis drops on the opposite side, from weak hip abductors (superior gluteal nerve lesion).",
+    "tags": [
+      "lower-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-122",
+    "front": "Where are gluteal intramuscular injections given, and why?",
+    "back": "The upper outer quadrant of the buttock, to avoid the sciatic nerve emerging below piriformis.",
+    "tags": [
+      "lower-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-123",
+    "front": "Name the four heads of quadriceps and their nerve.",
+    "back": "Rectus femoris (from AIIS, also flexes the hip), vastus lateralis, vastus medialis, vastus intermedius. Femoral nerve; they extend the knee via the patellar ligament.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-124",
+    "front": "Which is the longest muscle in the body?",
+    "back": "M. sartorius, from the ASIS to the medial tibia; it produces the cross-legged position.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-125",
+    "front": "Which nerve supplies the medial thigh adductors, and which two exceptions exist?",
+    "back": "Obturator nerve. Pectineus is supplied by the femoral nerve; the hamstring part of adductor magnus by the tibial part of the sciatic nerve.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-126",
+    "front": "Name the hamstrings and their nerve.",
+    "back": "Biceps femoris (long head tibial part, short head common fibular part), semitendinosus and semimembranosus (tibial part of the sciatic nerve). They flex the knee and extend the hip.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-127",
+    "front": "Match each leg compartment to its nerve and main action.",
+    "back": "Anterior: deep fibular, dorsiflexion. Lateral: superficial fibular, eversion. Posterior (superficial and deep): tibial, plantar flexion.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-128",
+    "front": "What is triceps surae?",
+    "back": "Gastrocnemius (two heads) and soleus, inserting via the Achilles tendon (tendo calcaneus) to plantar flex the ankle; tibial nerve.",
+    "tags": [
+      "lower-limb",
+      "muscles"
+    ]
+  },
+  {
+    "id": "anat-129",
+    "front": "What passes above and below piriformis through the greater sciatic foramen?",
+    "back": "Above: superior gluteal artery, vein and nerve. Below: sciatic nerve, inferior gluteal vessels and nerve, posterior femoral cutaneous nerve, pudendal nerve and internal pudendal vessels.",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-130",
+    "front": "What passes through the lesser sciatic foramen?",
+    "back": "The tendon of obturator internus, and the pudendal nerve and internal pudendal vessels on their way to the perineum.",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-131",
+    "front": "Lacuna musculorum vs lacuna vasorum?",
+    "back": "Musculorum (lateral): iliopsoas, femoral nerve, lateral femoral cutaneous nerve. Vasorum (medial): femoral artery and vein, femoral branch of the genitofemoral nerve, lymphatics.",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-132",
+    "front": "Boundaries of the femoral ring and why femoral hernias strangulate.",
+    "back": "Inguinal ligament (front), lacunar ligament (medial), femoral vein (lateral), pectineal ligament (behind). The ring is narrow and rigid, so a hernia through it is prone to strangulation.",
+    "tags": [
+      "lower-limb",
+      "topography",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-133",
+    "front": "Boundaries and contents of the femoral triangle.",
+    "back": "Inguinal ligament, sartorius, adductor longus. Contents lateral → medial: femoral Nerve, Artery, Vein, Empty space, Lymphatics (NAVEL).",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-134",
+    "front": "Contents of the adductor (Hunter's) canal.",
+    "back": "Femoral artery and vein, saphenous nerve and nerve to vastus medialis. Roof: sartorius.",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-135",
+    "front": "Boundaries and contents of the popliteal fossa (superficial to deep).",
+    "back": "Semitendinosus/semimembranosus, biceps femoris, two heads of gastrocnemius. Contents: tibial and common fibular nerves, popliteal vein, popliteal artery (deepest).",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-136",
+    "front": "What passes behind the medial malleolus?",
+    "back": "Tibialis posterior, flexor Digitorum longus, posterior tibial Artery and Vein, tibial Nerve, flexor Hallucis longus ('Tom, Dick And Very Nervous Harry').",
+    "tags": [
+      "lower-limb",
+      "topography"
+    ]
+  },
+  {
+    "id": "anat-137",
+    "front": "Where are the dorsalis pedis and posterior tibial pulses felt?",
+    "back": "Dorsalis pedis: lateral to the extensor hallucis longus tendon on the dorsum of the foot. Posterior tibial: behind the medial malleolus.",
+    "tags": [
+      "lower-limb",
+      "arteries"
+    ]
+  },
+  {
+    "id": "anat-138",
+    "front": "Which artery mainly supplies the femoral head?",
+    "back": "Branches of the medial circumflex femoral artery running along the neck; torn in displaced neck fractures → avascular necrosis.",
+    "tags": [
+      "lower-limb",
+      "arteries",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-139",
+    "front": "Great vs small saphenous vein: course.",
+    "back": "Great: medial foot, in front of the medial malleolus, up the medial leg and thigh to the femoral vein at the saphenous opening. Small: lateral foot, behind the lateral malleolus, up the calf to the popliteal vein.",
+    "tags": [
+      "lower-limb",
+      "veins"
+    ]
+  },
+  {
+    "id": "anat-140",
+    "front": "What are the roots of the sciatic nerve and its two terminal divisions?",
+    "back": "L4–S3. It divides above the knee into the tibial nerve and the common fibular (peroneal) nerve.",
+    "tags": [
+      "lower-limb",
+      "nerves"
+    ]
+  },
+  {
+    "id": "anat-141",
+    "front": "Where is the common fibular nerve vulnerable and what does injury cause?",
+    "back": "Where it winds around the neck of the fibula; injury causes foot drop with steppage gait, loss of eversion and numbness over the dorsum of the foot.",
+    "tags": [
+      "lower-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-142",
+    "front": "What is the Thompson test?",
+    "back": "Squeezing the calf normally plantar flexes the foot; no movement (positive test) indicates a ruptured Achilles tendon.",
+    "tags": [
+      "lower-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-143",
+    "front": "Genu varum vs genu valgum?",
+    "back": "Varum (bow legs): knees apart, ankles together, loads the medial compartment. Valgum (knock knees): knees together, ankles apart, loads the lateral compartment.",
+    "tags": [
+      "lower-limb",
+      "clinical"
+    ]
+  },
+  {
+    "id": "anat-144",
+    "front": "Early signs of compartment syndrome?",
+    "back": "Pain out of proportion to the injury and pain on passive stretch, with tense swelling; numbness and weakness follow; loss of pulse is late. Treat with urgent fasciotomy.",
+    "tags": [
+      "lower-limb",
+      "clinical"
+    ]
+  }
+]

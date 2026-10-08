@@ -1,0 +1,295 @@
+/* Progress page: streak stats + heatmap + study plan + mastery-by-subject */
+
+.streak-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.stat-tile {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 2.5rem 0.9rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 140px;
+  overflow: hidden;
+}
+
+.stat-tile::before {
+  content: "";
+  position: absolute;
+  top: 0.95rem;
+  left: 0.6rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: vital-blink 2.4s ease-in-out infinite;
+}
+
+@keyframes vital-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-tile::before {
+    animation: none;
+  }
+}
+
+.stat-tile-icon {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  display: flex;
+  color: var(--accent);
+  opacity: 0.3;
+}
+
+.stat-tile-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.section-divider {
+  height: 1px;
+  border: none;
+  margin: 0 0 1.75rem;
+  background: linear-gradient(90deg, var(--accent), transparent 60%);
+  opacity: 0.4;
+}
+
+.heatmap-wrapper {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.study-plan {
+  margin-bottom: 2rem;
+}
+
+.study-plan h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem;
+}
+
+.study-plan-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.75rem 0;
+}
+
+.form-select,
+.form-input {
+  padding: 0.55rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.study-plan-message {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.study-plan-tight {
+  color: var(--amber);
+}
+
+.study-plan-done {
+  color: var(--accent);
+}
+
+.study-plan-past {
+  color: var(--red);
+}
+
+.global-hardest-cards {
+  margin-bottom: 2rem;
+}
+
+.global-hardest-cards h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem;
+}
+
+.global-hardest-cards ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.global-hardest-card-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+.global-hardest-card-link:hover {
+  border-color: var(--border-strong);
+}
+
+.global-hardest-card-front {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.mastery-by-subject {
+  margin-bottom: 2rem;
+}
+
+.mastery-by-subject h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem;
+}
+
+.mastery-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mastery-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+.mastery-row:hover {
+  border-color: var(--border-strong);
+}
+
+.mastery-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.mastery-row-label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.mastery-row-detail {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.heatmap {
+  display: flex;
+  gap: 3px;
+  width: max-content;
+}
+
+.heatmap-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.heatmap-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--surface-2);
+}
+
+.heatmap-cell.level-1 {
+  background: color-mix(in srgb, var(--accent) 35%, var(--surface-2));
+}
+
+.heatmap-cell.level-2 {
+  background: color-mix(in srgb, var(--accent) 65%, var(--surface-2));
+}
+
+.heatmap-cell.level-3 {
+  background: var(--accent);
+}
+
+/*
+ * Liquid-glass finish for the remaining panel-style surfaces: a light-catching
+ * rim plus a frosted blur of whatever's behind them (the drifting blobs, page
+ * content). Kept off small/high-count elements (badges, pills, kbd, heatmap
+ * cells) where backdrop-filter would cost more than it's worth.
+ */
+.continue-item,
+.subject-card,
+.dashboard-widget,
+.exam-timer,
+.exam-mode-btn,
+.exam-flag-btn,
+.quiz-feedback,
+.quiz-score-hero,
+.quiz-review-item,
+.reading-control-btn,
+.search-input,
+.search-result a,
+.backup-nudge,
+.session-summary,
+.quiz-start,
+.quiz-section-btn,
+.quiz-question-image,
+.quiz-due-banner,
+.ebook-toc,
+.stat-tile,
+.form-input,
+.global-hardest-card-link,
+.mastery-row {
+  border-color: var(--glass-border);
+  backdrop-filter: var(--glass-blur-soft);
+  -webkit-backdrop-filter: var(--glass-blur-soft);
+}

@@ -1,0 +1,1030 @@
+[
+  {
+    "id": "q-mhisto-001",
+    "question": "What tissue is shown in this slide?",
+    "options": [
+      "Smooth muscle",
+      "Skeletal muscle",
+      "Cardiac muscle",
+      "Dense regular connective tissue",
+      "Peripheral nerve"
+    ],
+    "answer": 0,
+    "explanation": "Spindle-shaped (fusiform) cells without cross-striations, each with an elongated nucleus in its center. Smooth muscle is also called visceral muscle.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 568;\"><img src=\"/histology/1.2/m-image13.jpg\" alt=\"Longitudinal section of pink spindle-shaped muscle cells with elongated central nuclei and no cross-bands\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-002",
+    "question": "What shape are the cells in this slide?",
+    "options": [
+      "Cylindrical and branched",
+      "Fusiform (spindle-shaped)",
+      "Long, unbranched cylinders",
+      "Polygonal",
+      "Stellate (star-shaped)"
+    ],
+    "answer": 1,
+    "explanation": "Smooth muscle cells are fusiform: thick in the middle and tapering at both ends. Each is wrapped in endomysium.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 568;\"><img src=\"/histology/1.2/m-image13.jpg\" alt=\"Longitudinal section of pink spindle-shaped muscle cells with elongated central nuclei and no cross-bands\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-003",
+    "question": "Where is the nucleus of each cell in this slide?",
+    "options": [
+      "At the periphery, just beneath the sarcolemma",
+      "At one tapered end of the cell",
+      "In the center of the cell",
+      "Scattered, many per cell",
+      "There is no nucleus"
+    ],
+    "answer": 2,
+    "explanation": "Smooth muscle has one elongated (oval to cigar-shaped) nucleus in the center of each cell.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 568;\"><img src=\"/histology/1.2/m-image13.jpg\" alt=\"Longitudinal section of pink spindle-shaped muscle cells with elongated central nuclei and no cross-bands\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-004",
+    "question": "Which part of the nervous system innervates the muscle in this slide?",
+    "options": [
+      "The somatic motor nervous system",
+      "The special sensory nerves",
+      "The central nervous system directly, without nerves",
+      "The autonomic nervous system",
+      "None: it is not innervated"
+    ],
+    "answer": 3,
+    "explanation": "Smooth muscle is innervated by the autonomic nervous system; its myoneural junction is called a synapse. It contracts slowly and involuntarily.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 568;\"><img src=\"/histology/1.2/m-image13.jpg\" alt=\"Longitudinal section of pink spindle-shaped muscle cells with elongated central nuclei and no cross-bands\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-005",
+    "question": "What tissue is shown in this slide?",
+    "options": [
+      "Cardiac muscle",
+      "Smooth muscle",
+      "Dense regular connective tissue",
+      "Peripheral nerve",
+      "Skeletal (striated) muscle"
+    ],
+    "answer": 4,
+    "explanation": "Cylindrical fibers with light and dark cross-striations and many nuclei at the edges of each fiber.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 720 / 482;\"><img src=\"/histology/1.2/m-image30.jpg\" alt=\"Longitudinal section of long cylindrical muscle fibers with cross-striations and nuclei at their edges\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-006",
+    "question": "Where are the nuclei located in this slide?",
+    "options": [
+      "At the periphery, just beneath the sarcolemma",
+      "In the center of each fiber",
+      "In the intercalated discs",
+      "Only at the ends of each fiber",
+      "In the endomysium only"
+    ],
+    "answer": 0,
+    "explanation": "Skeletal muscle fibers have many oval nuclei (multinucleated), located peripherally just beneath the sarcolemma. No other muscle type puts its nuclei at the edge.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 720 / 482;\"><img src=\"/histology/1.2/m-image30.jpg\" alt=\"Longitudinal section of long cylindrical muscle fibers with cross-striations and nuclei at their edges\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-007",
+    "question": "Which neurotransmitter triggers contraction of the muscle in this slide?",
+    "options": [
+      "Norepinephrine",
+      "Acetylcholine (ACh)",
+      "Dopamine",
+      "GABA",
+      "Serotonin"
+    ],
+    "answer": 1,
+    "explanation": "Acetylcholine is released at the motor end plate (MEP), also called the neuromuscular junction (NMJ). Skeletal muscle contraction is voluntary.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 720 / 482;\"><img src=\"/histology/1.2/m-image30.jpg\" alt=\"Longitudinal section of long cylindrical muscle fibers with cross-striations and nuclei at their edges\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-008",
+    "question": "The part of this slide labeled “OL” is what kind of section?",
+    "options": [
+      "Longitudinal section",
+      "Oblique section",
+      "Transverse (cross) section",
+      "Tangential section",
+      "Frontal section"
+    ],
+    "answer": 2,
+    "explanation": "OL marks the transverse section, where fibers appear as round islands. IC marks the longitudinal section, where they appear as long strips. Indonesian: melintang = transverse, membujur = longitudinal.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 349 / 321;\"><img src=\"/histology/1.2/m-image7.jpg\" alt=\"Muscle tissue cut in two planes, with round profiles labeled OL and long strips labeled IC\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-009",
+    "question": "How was the skeletal muscle in this slide cut?",
+    "options": [
+      "Longitudinally",
+      "Obliquely",
+      "Tangentially",
+      "Transversely (cross-section)",
+      "It is a whole-mount, not a section"
+    ],
+    "answer": 3,
+    "explanation": "The fibers appear as round or polygonal profiles grouped into fascicles, so this is a transverse section.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 288 / 275;\"><img src=\"/histology/1.2/m-image28.jpg\" alt=\"Skeletal muscle cut across, showing many polygonal fibers grouped into bundles\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-010",
+    "question": "In this section, what are the island-like bundles of myofibrils inside each fiber called?",
+    "options": [
+      "Intercalated discs",
+      "Haversian systems",
+      "Nissl bodies",
+      "Sarcomeres",
+      "Cohnheim's areas"
+    ],
+    "answer": 4,
+    "explanation": "When a skeletal muscle fiber is cut across, its bundles of myofibrils appear as small islands in the sarcoplasm, called Cohnheim's areas (fields).",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 288 / 275;\"><img src=\"/histology/1.2/m-image28.jpg\" alt=\"Skeletal muscle cut across, showing many polygonal fibers grouped into bundles\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-011",
+    "question": "What is the thin connective tissue that surrounds each individual muscle fiber called?",
+    "options": [
+      "Endomysium",
+      "Perimysium",
+      "Epimysium",
+      "Deep fascia",
+      "Sarcolemma"
+    ],
+    "answer": 0,
+    "explanation": "The endomysium is a very thin layer of fine reticular fibers around each myofiber. The sarcolemma is the cell's own membrane, not connective tissue.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 600 / 434;\"><img src=\"/histology/1.2/m-image25.jpg\" alt=\"Cross-section of skeletal muscle fibers separated by thin connective tissue, with lines pointing to the layers\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-012",
+    "question": "What is the connective tissue that surrounds one fascicle called?",
+    "options": [
+      "Endomysium",
+      "Perimysium",
+      "Epimysium",
+      "Sarcolemma",
+      "Basal lamina"
+    ],
+    "answer": 1,
+    "explanation": "From outside in: epimysium (whole muscle) → perimysium (one fascicle) → endomysium (one fiber).",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 600 / 434;\"><img src=\"/histology/1.2/m-image25.jpg\" alt=\"Cross-section of skeletal muscle fibers separated by thin connective tissue, with lines pointing to the layers\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-013",
+    "question": "What is the dark band in this longitudinal section called?",
+    "options": [
+      "I band (isotropic)",
+      "H zone",
+      "A band (anisotropic)",
+      "Z line",
+      "M line"
+    ],
+    "answer": 2,
+    "explanation": "The dark A band is anisotropic and contains the thick myosin filaments, overlapping with actin at its ends.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 747 / 439;\"><img src=\"/histology/1.2/m-image15.jpg\" alt=\"Striated muscle fibers in longitudinal section with alternating dark and light cross-bands\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-014",
+    "question": "What is the light band in this section called?",
+    "options": [
+      "A band (anisotropic)",
+      "H zone",
+      "M line",
+      "I band (isotropic)",
+      "Z line"
+    ],
+    "answer": 3,
+    "explanation": "The light I band is isotropic and contains only thin actin filaments.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 747 / 439;\"><img src=\"/histology/1.2/m-image15.jpg\" alt=\"Striated muscle fibers in longitudinal section with alternating dark and light cross-bands\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-015",
+    "question": "What is the dark line in the middle of each I band called?",
+    "options": [
+      "M line",
+      "H zone",
+      "A band",
+      "Intercalated disc",
+      "Z line (Z disc)"
+    ],
+    "answer": 4,
+    "explanation": "The Z line crosses the middle of the I band. The M line is the dark line in the middle of the A band; the H zone is the light region in the middle of the A band.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 630 / 437;\"><img src=\"/histology/1.2/m-image20.jpg\" alt=\"Longitudinal section of skeletal muscle fibers with regular cross-striations and label lines\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-016",
+    "question": "What is the contractile unit between two Z lines called?",
+    "options": [
+      "Sarcomere",
+      "Myofibril",
+      "Myofiber",
+      "Fascicle",
+      "Sarcosome"
+    ],
+    "answer": 0,
+    "explanation": "Z line to Z line is one sarcomere, the smallest contractile unit of striated muscle. A myofibril is a chain of sarcomeres.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 630 / 437;\"><img src=\"/histology/1.2/m-image20.jpg\" alt=\"Longitudinal section of skeletal muscle fibers with regular cross-striations and label lines\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-017",
+    "question": "What tissue is shown in this slide?",
+    "options": [
+      "Skeletal muscle",
+      "Cardiac muscle",
+      "Smooth muscle",
+      "Dense regular connective tissue",
+      "Peripheral nerve"
+    ],
+    "answer": 1,
+    "explanation": "Striated fibers that branch and anastomose, with large oval central nuclei and intercalated discs.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 526 / 500;\"><img src=\"/histology/1.2/m-image17.jpg\" alt=\"Striated muscle with central nuclei labeled N and dark transverse lines labeled I, two of them circled\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-018",
+    "question": "What is the structure labeled “I” in this slide?",
+    "options": [
+      "Z line",
+      "M line",
+      "Intercalated disc",
+      "Nucleus",
+      "Endomysium"
+    ],
+    "answer": 2,
+    "explanation": "Intercalated discs are irregular dark transverse lines marking the junctions between cardiac muscle cells.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 526 / 500;\"><img src=\"/histology/1.2/m-image17.jpg\" alt=\"Striated muscle with central nuclei labeled N and dark transverse lines labeled I, two of them circled\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-019",
+    "question": "What is the circled branching of fibers that rejoin each other called?",
+    "options": [
+      "Intercalated disc",
+      "Cohnheim's area",
+      "Triad",
+      "Anastomosis",
+      "Sarcomere"
+    ],
+    "answer": 3,
+    "explanation": "Cardiac muscle fibers branch and join again, forming intercellular anastomoses.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 544 / 513;\"><img src=\"/histology/1.2/m-image27.jpg\" alt=\"Cardiac muscle through a microscope, with fibers that split and rejoin\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-020",
+    "question": "Which layer of the skin is shown in this slide?",
+    "options": [
+      "Papillary dermis",
+      "Reticular dermis",
+      "Hypodermis",
+      "Oral mucosa",
+      "Epidermis"
+    ],
+    "answer": 4,
+    "explanation": "The epidermis is the outermost layer of the skin and develops from the ectoderm.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 513;\"><img src=\"/histology/1.2/i-image15.jpg\" alt=\"Stratified epithelium with a pink keratin layer on its surface above loose connective tissue\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-021",
+    "question": "What type of epithelium forms this layer?",
+    "options": [
+      "Keratinized stratified squamous epithelium",
+      "Non-keratinized stratified squamous epithelium",
+      "Stratified cuboidal epithelium",
+      "Pseudostratified columnar epithelium",
+      "Transitional epithelium"
+    ],
+    "answer": 0,
+    "explanation": "The epidermis is keratinized stratified squamous epithelium. It has no blood vessels and is nourished by diffusion from the dermis.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 513;\"><img src=\"/histology/1.2/i-image15.jpg\" alt=\"Stratified epithelium with a pink keratin layer on its surface above loose connective tissue\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-022",
+    "question": "Is this slide thick skin or thin skin?",
+    "options": [
+      "Thin skin",
+      "Thick skin",
+      "Thin skin of the scalp",
+      "Lip (oral mucosa)",
+      "Thin skin of the eyelid"
+    ],
+    "answer": 1,
+    "explanation": "The stratum corneum is very thick and there is a stratum lucidum. Thick skin is found on the palms and soles.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 508;\"><img src=\"/histology/1.2/i-image26.jpg\" alt=\"Skin with an extremely thick, pale surface layer over deep epidermal ridges\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-023",
+    "question": "Which layer of the epidermis is found only in this type of skin?",
+    "options": [
+      "Stratum granulosum",
+      "Stratum spinosum",
+      "Stratum lucidum",
+      "Stratum basale",
+      "Stratum corneum"
+    ],
+    "answer": 2,
+    "explanation": "The stratum lucidum is a clear layer between the granulosum and the corneum: flattened, pale, anucleate cells containing eleidin.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 508;\"><img src=\"/histology/1.2/i-image26.jpg\" alt=\"Skin with an extremely thick, pale surface layer over deep epidermal ridges\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-024",
+    "question": "Which layer of the epidermis is enlarged in the box?",
+    "options": [
+      "Stratum basale",
+      "Stratum granulosum",
+      "Stratum lucidum",
+      "Stratum spinosum",
+      "Stratum corneum"
+    ],
+    "answer": 3,
+    "explanation": "Polygonal cells with spine-like projections (desmosomes). Together with the basale it forms the stratum Malpighii.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 511;\"><img src=\"/histology/1.2/i-image17.jpg\" alt=\"Epidermis with a boxed area enlarged to show polygonal cells joined by spiny bridges, with yellow arrows\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-025",
+    "question": "What do the yellow arrows point to?",
+    "options": [
+      "Keratohyalin granules",
+      "Melanin granules",
+      "Eleidin droplets",
+      "Lamellar granules",
+      "Tonofibrils"
+    ],
+    "answer": 4,
+    "explanation": "Tonofibrils are bundles of keratin intermediate filaments that run into the desmosomes. (On the electron micrograph of this layer, the red arrows mark the desmosomes.)",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 511;\"><img src=\"/histology/1.2/i-image17.jpg\" alt=\"Epidermis with a boxed area enlarged to show polygonal cells joined by spiny bridges, with yellow arrows\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-026",
+    "question": "Which layer of the dermis do the blue arrows mark?",
+    "options": [
+      "Stratum papillare (papillary layer)",
+      "Stratum reticulare (reticular layer)",
+      "Hypodermis",
+      "Stratum basale",
+      "Stratum spinosum"
+    ],
+    "answer": 0,
+    "explanation": "The thin papillary layer of loose connective tissue forms the dermal papillae and contains blood vessels and Meissner's corpuscles.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 510;\"><img src=\"/histology/1.2/i-image43.jpg\" alt=\"Skin section with blue arrows marking the thin loose layer just beneath the epidermis\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-027",
+    "question": "Which layer does the blue arrow mark?",
+    "options": [
+      "Reticular dermis",
+      "Hypodermis (subcutis)",
+      "Papillary dermis",
+      "Epidermis",
+      "Stratum basale"
+    ],
+    "answer": 1,
+    "explanation": "Loose connective tissue with many adipocytes, richly vascular, containing Vater-Pacini corpuscles.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 511;\"><img src=\"/histology/1.2/i-image48.jpg\" alt=\"Low-power skin section with a long blue arrow spanning the deep layer beneath the dermis\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-028",
+    "question": "What cells do the blue arrows point to?",
+    "options": [
+      "Langerhans cells",
+      "Merkel cells",
+      "Melanocytes",
+      "Lymphocytes",
+      "Keratinocytes of the stratum spinosum"
+    ],
+    "answer": 2,
+    "explanation": "Melanocytes sit among the cells of the stratum basale and produce eumelanin. Their number is similar in light and dark skin.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 511;\"><img src=\"/histology/1.2/i-image30.jpg\" alt=\"Two micrographs of the basal epidermis with blue arrows pointing to pale cells, one with brown pigment around them\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-029",
+    "question": "What cell does the red arrow point to?",
+    "options": [
+      "Melanocyte",
+      "Merkel cell",
+      "Mast cell",
+      "Langerhans cell",
+      "Lymphocyte"
+    ],
+    "answer": 3,
+    "explanation": "Langerhans cells look like melanocytes but have no melanin. They lie mainly in the stratum spinosum and act as macrophages (immune cells). Special stains such as gold chloride show them dark.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 500;\"><img src=\"/histology/1.2/i-image24.jpg\" alt=\"Blue-stained epidermis with a red arrow pointing to a dark dendritic cell\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-030",
+    "question": "What structure do the arrows point to?",
+    "options": [
+      "Meissner's corpuscle",
+      "Hair follicle in cross-section",
+      "Ruffini ending",
+      "Krause end bulb",
+      "Vater-Pacini corpuscle"
+    ],
+    "answer": 4,
+    "explanation": "Oval, onion-like structures of concentric lamellae in the deep dermis and hypodermis.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 383 / 493;\"><img src=\"/histology/1.2/i-image45.jpg\" alt=\"Two large onion-like structures in the deep dermis, each marked by a black arrow\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-031",
+    "question": "This structure is a receptor for what?",
+    "options": [
+      "Pressure and vibration",
+      "Light touch",
+      "Pain",
+      "Cold",
+      "Itch"
+    ],
+    "answer": 0,
+    "explanation": "Vater-Pacini corpuscles detect crude touch, sustained pressure and vibration.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 383 / 493;\"><img src=\"/histology/1.2/i-image45.jpg\" alt=\"Two large onion-like structures in the deep dermis, each marked by a black arrow\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-032",
+    "question": "What is the encapsulated nerve ending inside this dermal papilla?",
+    "options": [
+      "Vater-Pacini corpuscle",
+      "Meissner's corpuscle",
+      "Ruffini ending",
+      "Krause end bulb",
+      "Merkel's disc"
+    ],
+    "answer": 1,
+    "explanation": "Cylindrical, with branched nerve endings in a thin capsule of transversely stacked flattened cells, located in the dermal papillae.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 660 / 392;\"><img src=\"/histology/1.2/i-image64.jpg\" alt=\"A dermal papilla containing an oval encapsulated ending with transversely stacked cells\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-033",
+    "question": "This structure is a receptor for what?",
+    "options": [
+      "Pressure and vibration",
+      "Pain",
+      "Light touch",
+      "Heat",
+      "Stretch of the skin"
+    ],
+    "answer": 2,
+    "explanation": "Meissner's corpuscles detect light touch. In the practicum, Ruffini and Krause endings are receptors for pressure.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 660 / 392;\"><img src=\"/histology/1.2/i-image64.jpg\" alt=\"A dermal papilla containing an oval encapsulated ending with transversely stacked cells\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-034",
+    "question": "What does this slide show?",
+    "options": [
+      "A Vater-Pacini corpuscle",
+      "An eccrine sweat gland duct",
+      "A sebaceous gland",
+      "A hair follicle in transverse section",
+      "A hair follicle in longitudinal section"
+    ],
+    "answer": 3,
+    "explanation": "The hair shaft sits in the center, surrounded by the epithelial root sheaths and the connective tissue sheath.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 609;\"><img src=\"/histology/1.2/i-image63.jpg\" alt=\"A round structure with a pigmented core ringed by layers of epithelial cells and connective tissue\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-035",
+    "question": "Which gland is shown?",
+    "options": [
+      "Eccrine sweat gland",
+      "Apocrine sweat gland",
+      "Adipose tissue lobule",
+      "Hair bulb",
+      "Sebaceous gland"
+    ],
+    "answer": 4,
+    "explanation": "Simple branched acinar gland of large pale cells, opening into the hair follicle (the pilosebaceous unit).",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 505;\"><img src=\"/histology/1.2/i-image46.jpg\" alt=\"Hairy skin with a boxed gland beside a follicle, enlarged to show clusters of large pale cells\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-036",
+    "question": "How does this gland release its secretion?",
+    "options": [
+      "Holocrine secretion",
+      "Merocrine secretion",
+      "Apocrine secretion",
+      "Endocrine secretion",
+      "Paracrine secretion"
+    ],
+    "answer": 0,
+    "explanation": "In holocrine secretion the whole gland cell is released with its product (sebum).",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 505;\"><img src=\"/histology/1.2/i-image46.jpg\" alt=\"Hairy skin with a boxed gland beside a follicle, enlarged to show clusters of large pale cells\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-037",
+    "question": "Which gland is shown?",
+    "options": [
+      "Apocrine sweat gland",
+      "Eccrine sweat gland",
+      "Sebaceous gland",
+      "Hair follicle",
+      "Vater-Pacini corpuscle"
+    ],
+    "answer": 1,
+    "explanation": "Simple coiled tubular gland with merocrine secretion, in the dermis, opening onto the skin surface at a sweat pore.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 514;\"><img src=\"/histology/1.2/i-image51.jpg\" alt=\"Dermis containing a cluster of small coiled tubules cut in many places, enlarged on the right\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-038",
+    "question": "What cell does the red arrow point to?",
+    "options": [
+      "Clear cell",
+      "Dark cell",
+      "Myoepithelial cell",
+      "Fibroblast",
+      "Melanocyte"
+    ],
+    "answer": 2,
+    "explanation": "Myoepithelial cells are found in the secretory portion of the gland (not in the excretory duct). The secretory cells are dark cells and clear cells.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 504;\"><img src=\"/histology/1.2/i-image72.jpg\" alt=\"Secretory tubules of a gland with a red arrow pointing to a flat cell at the edge of a tubule\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-039",
+    "question": "Which gland is circled?",
+    "options": [
+      "Eccrine sweat gland",
+      "Sebaceous gland",
+      "Hair follicle",
+      "Apocrine sweat gland",
+      "Adipose tissue"
+    ],
+    "answer": 3,
+    "explanation": "Larger than eccrine glands, with a wide lumen, opening into a hair follicle. Found in the axilla, the areola of the breast and the anal region.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 506;\"><img src=\"/histology/1.2/i-image50.jpg\" alt=\"Dermis with a circled cluster of large glands with wide lumens\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-040",
+    "question": "What does this slide show?",
+    "options": [
+      "Hair in longitudinal section",
+      "Stratum corneum of thick skin",
+      "Tendon",
+      "Hyaline cartilage",
+      "Nail"
+    ],
+    "answer": 4,
+    "explanation": "A plate of keratin on the dorsal surface of the distal phalanx: the eponychium lies proximally and the hyponychium distally.",
+    "image": "<div class=\"quiz-photo-diagram\" style=\"aspect-ratio: 760 / 608;\"><img src=\"/histology/1.2/i-image66.jpg\" alt=\"Longitudinal section of a fingertip with a dense, dark plate along its upper surface\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mhisto-041",
+    "question": "Muscle tissue is characterized above all by:",
+    "options": [
+      "A large number of contractile cytoplasmic filaments",
+      "Abundant extracellular matrix",
+      "Cells joined by tight junctions into a lining",
+      "Long processes that conduct impulses",
+      "Cells that store large lipid droplets"
+    ],
+    "answer": 0,
+    "explanation": "Muscle tissue is a collection of muscle cells whose cytoplasm is packed with contractile filaments (actin and myosin)."
+  },
+  {
+    "id": "q-mhisto-042",
+    "question": "Which muscle type is striated but involuntary?",
+    "options": [
+      "Skeletal muscle",
+      "Cardiac muscle",
+      "Smooth muscle",
+      "Visceral muscle",
+      "Arrector pili muscle"
+    ],
+    "answer": 1,
+    "explanation": "Histologically, skeletal and cardiac muscle are striated; physiologically, cardiac and smooth muscle are involuntary. Only cardiac muscle is both."
+  },
+  {
+    "id": "q-mhisto-043",
+    "question": "In muscle cell terminology, a sarcosome is a:",
+    "options": [
+      "Myofibril",
+      "Muscle cell",
+      "Mitochondrion",
+      "Sarcomere",
+      "Ribosome"
+    ],
+    "answer": 2,
+    "explanation": "Sarcosome = mitochondrion; sarcoplasm = cytoplasm; sarcoplasmic reticulum = endoplasmic reticulum; sarcolemma = cell membrane."
+  },
+  {
+    "id": "q-mhisto-044",
+    "question": "Which term means the cell membrane of a muscle cell?",
+    "options": [
+      "Sarcoplasm",
+      "Sarcoplasmic reticulum",
+      "Endomysium",
+      "Sarcolemma",
+      "Myofibril"
+    ],
+    "answer": 3,
+    "explanation": "The sarcolemma (plasmalemma) is the muscle cell membrane. Endomysium is connective tissue outside it."
+  },
+  {
+    "id": "q-mhisto-045",
+    "question": "A myofibril is best described as:",
+    "options": [
+      "A whole muscle cell",
+      "A bundle of muscle fibers",
+      "The connective tissue around a muscle fiber",
+      "A mitochondrion of a muscle cell",
+      "A subunit inside a muscle cell, made of repeating sarcomeres"
+    ],
+    "answer": 4,
+    "explanation": "Myofiber = the muscle cell; myofibril = a long subunit within it; myofilaments (actin, myosin) make up the myofibril."
+  },
+  {
+    "id": "q-mhisto-046",
+    "question": "Smooth muscle is found in all of the following EXCEPT:",
+    "options": [
+      "The biceps brachii",
+      "The wall of the gastrointestinal tract",
+      "The wall of blood vessels",
+      "The wall of the urinary bladder",
+      "The uterus"
+    ],
+    "answer": 0,
+    "explanation": "Smooth muscle lines internal organs: vessels, gut, airways, uterus and bladder. The biceps is skeletal muscle."
+  },
+  {
+    "id": "q-mhisto-047",
+    "question": "In a transverse section of smooth muscle, why do only some profiles contain a nucleus?",
+    "options": [
+      "Most smooth muscle cells have lost their nuclei",
+      "The cells are fusiform, so only cuts through the thick middle include the central nucleus",
+      "The nuclei lie at the periphery and are cut off",
+      "Only cells at the edge of a bundle have nuclei",
+      "Nuclei are only visible in longitudinal section"
+    ],
+    "answer": 1,
+    "explanation": "Cutting across spindle cells gives profiles of different sizes; only the larger ones pass through the central nucleus."
+  },
+  {
+    "id": "q-mhisto-048",
+    "question": "Which muscle type regenerates best after injury?",
+    "options": [
+      "Skeletal muscle, because its fibers divide",
+      "Cardiac muscle, through satellite cells",
+      "Smooth muscle, because its cells can still divide by mitosis",
+      "All three regenerate equally well",
+      "None of the muscle types can regenerate at all"
+    ],
+    "answer": 2,
+    "explanation": "Smooth muscle cells divide by mitosis. Skeletal muscle has limited repair through satellite cells; cardiac muscle shows essentially no regeneration after injury."
+  },
+  {
+    "id": "q-mhisto-049",
+    "question": "The epimysium is made of:",
+    "options": [
+      "Fine reticular fibers",
+      "Loose areolar connective tissue",
+      "Adipose tissue",
+      "Dense irregular connective tissue",
+      "Dense regular connective tissue arranged like a tendon"
+    ],
+    "answer": 3,
+    "explanation": "The epimysium, the outermost layer around the whole muscle, is dense irregular connective tissue; so is the perimysium. The endomysium is fine reticular fibers."
+  },
+  {
+    "id": "q-mhisto-050",
+    "question": "In a skeletal muscle sarcomere, what is the lighter region in the center of the A band called?",
+    "options": [
+      "I band",
+      "Z line",
+      "M line",
+      "Intercalated disc",
+      "H zone"
+    ],
+    "answer": 4,
+    "explanation": "The H zone is the light center of the A band, where only myosin is present. The M line crosses its middle."
+  },
+  {
+    "id": "q-mhisto-051",
+    "question": "The M line lies:",
+    "options": [
+      "In the center of the A band",
+      "In the center of the I band",
+      "At each end of the sarcomere",
+      "Between two cells of cardiac muscle",
+      "At the junction of the A and I bands"
+    ],
+    "answer": 0,
+    "explanation": "The Z line is in the center of the I band; the M line is in the center of the A band."
+  },
+  {
+    "id": "q-mhisto-052",
+    "question": "Which feature best distinguishes cardiac from skeletal muscle in longitudinal section?",
+    "options": [
+      "Cross-striations",
+      "Intercalated discs, branching fibers and central nuclei",
+      "A clearly visible sarcolemma",
+      "Connective tissue between the fibers",
+      "Eosinophilic cytoplasm"
+    ],
+    "answer": 1,
+    "explanation": "Both are striated. Cardiac muscle branches, has intercalated discs and one or two central nuclei; skeletal fibers are unbranched with many peripheral nuclei."
+  },
+  {
+    "id": "q-mhisto-053",
+    "question": "The nucleus of a cardiac muscle cell is:",
+    "options": [
+      "Small, flat and peripheral, many per cell",
+      "Elongated and twisted like a corkscrew, at the edge of the cell",
+      "Large, oval and central, usually single but sometimes double",
+      "Absent in mature cells",
+      "Located in the intercalated disc"
+    ],
+    "answer": 2,
+    "explanation": "Cardiac muscle cells have one (sometimes two) large, oval, central nuclei."
+  },
+  {
+    "id": "q-mhisto-054",
+    "question": "Skeletal muscle is said to have limited regeneration because:",
+    "options": [
+      "It regenerates by mitosis of mature fibers",
+      "It has no stem cells at all",
+      "It is replaced by smooth muscle after injury",
+      "Its fibers cannot divide, but satellite cells can repair small injuries",
+      "It regenerates only through intercalated discs"
+    ],
+    "answer": 3,
+    "explanation": "Satellite cells beneath the basal lamina allow limited repair; large losses heal with scar."
+  },
+  {
+    "id": "q-mhisto-055",
+    "question": "The epidermis develops from which germ layer?",
+    "options": [
+      "Mesoderm",
+      "Endoderm",
+      "Neural crest only",
+      "Mesenchyme of the dermis",
+      "Ectoderm"
+    ],
+    "answer": 4,
+    "explanation": "The epidermis comes from surface ectoderm; the dermis and hypodermis come from mesoderm."
+  },
+  {
+    "id": "q-mhisto-056",
+    "question": "How is the epidermis nourished?",
+    "options": [
+      "By diffusion from capillaries in the dermal papillae",
+      "By its own capillaries in the stratum basale",
+      "By lymph vessels in the stratum spinosum",
+      "By sweat from eccrine glands",
+      "It needs no nutrients because its cells are dead"
+    ],
+    "answer": 0,
+    "explanation": "The epidermis is avascular; blood vessels in the papillary dermis supply it by diffusion."
+  },
+  {
+    "id": "q-mhisto-057",
+    "question": "Which layer of the epidermis contains the stem cells that give rise to all epidermal cells?",
+    "options": [
+      "Stratum spinosum",
+      "Stratum basale",
+      "Stratum granulosum",
+      "Stratum lucidum",
+      "Stratum corneum"
+    ],
+    "answer": 1,
+    "explanation": "The stratum basale is a single layer of cuboidal or columnar cells with high mitotic activity, attached to the basal lamina by hemidesmosomes."
+  },
+  {
+    "id": "q-mhisto-058",
+    "question": "Cells of the stratum basale are anchored to the basal lamina by:",
+    "options": [
+      "Desmosomes",
+      "Tight junctions",
+      "Hemidesmosomes",
+      "Gap junctions",
+      "Intercalated discs"
+    ],
+    "answer": 2,
+    "explanation": "Hemidesmosomes attach basal cells to the basal lamina; desmosomes join cells to each other on their apical and lateral surfaces."
+  },
+  {
+    "id": "q-mhisto-059",
+    "question": "The stratum corneum consists of:",
+    "options": [
+      "A single layer of cuboidal cells",
+      "Several layers of pale cells containing eleidin",
+      "3–5 layers of cells with keratohyalin granules",
+      "15–20 layers of flattened, dead, anucleate cells filled with keratin",
+      "Polygonal cells joined by spiny bridges"
+    ],
+    "answer": 3,
+    "explanation": "The stratum corneum is 15–20 layers of dead, anucleate cells full of refractile keratin; its surface is shed (desquamation)."
+  },
+  {
+    "id": "q-mhisto-060",
+    "question": "Eleidin droplets are characteristic of which layer?",
+    "options": [
+      "Stratum granulosum",
+      "Stratum spinosum",
+      "Stratum basale",
+      "Stratum corneum",
+      "Stratum lucidum"
+    ],
+    "answer": 4,
+    "explanation": "The stratum lucidum (thick skin only) has flattened, pale, anucleate cells containing eleidin. Keratohyalin granules belong to the granulosum."
+  },
+  {
+    "id": "q-mhisto-061",
+    "question": "Where is thick skin found?",
+    "options": [
+      "The palms and soles",
+      "The scalp",
+      "The back",
+      "The eyelids",
+      "The face"
+    ],
+    "answer": 0,
+    "explanation": "Thick skin (with a stratum lucidum and a very thick corneum) covers the palms and soles; it has no hair follicles or sebaceous glands."
+  },
+  {
+    "id": "q-mhisto-062",
+    "question": "Which pair of layers together forms the stratum Malpighii?",
+    "options": [
+      "Stratum granulosum and stratum lucidum",
+      "Stratum basale and stratum spinosum",
+      "Stratum lucidum and stratum corneum",
+      "Papillary and reticular dermis",
+      "Epidermis and dermis"
+    ],
+    "answer": 1,
+    "explanation": "The basale and spinosum are the living, dividing part of the epidermis, together called the stratum Malpighii."
+  },
+  {
+    "id": "q-mhisto-063",
+    "question": "Melanocytes produce which pigment?",
+    "options": [
+      "Hemosiderin",
+      "Lipofuscin",
+      "Eumelanin",
+      "Carotene",
+      "Bilirubin"
+    ],
+    "answer": 2,
+    "explanation": "Melanocytes in the stratum basale produce eumelanin and pass it to keratinocytes."
+  },
+  {
+    "id": "q-mhisto-064",
+    "question": "Compared with light skin, dark skin has:",
+    "options": [
+      "Many more melanocytes",
+      "Melanocytes in every layer of the epidermis",
+      "Melanin made by keratinocytes instead of melanocytes",
+      "A similar number of melanocytes that make and transfer more melanin",
+      "Melanin stored in Langerhans cells"
+    ],
+    "answer": 3,
+    "explanation": "Skin color depends on melanocyte activity (melanin production and transfer), not on the number of melanocytes."
+  },
+  {
+    "id": "q-mhisto-065",
+    "question": "Which epidermal cell is involved mainly in immune defense and lies mostly in the stratum spinosum?",
+    "options": [
+      "Melanocyte",
+      "Merkel cell",
+      "Keratinocyte of the basal layer",
+      "Mast cell",
+      "Langerhans cell"
+    ],
+    "answer": 4,
+    "explanation": "Langerhans cells look like melanocytes but make no melanin; they act as macrophage-like antigen-presenting cells."
+  },
+  {
+    "id": "q-mhisto-066",
+    "question": "Merkel cells are found mainly in:",
+    "options": [
+      "The basal layer of the epidermis, especially in thick skin",
+      "The stratum corneum",
+      "The reticular dermis",
+      "The hypodermis",
+      "The hair shaft"
+    ],
+    "answer": 0,
+    "explanation": "Merkel cells sit in the stratum basale. A free nerve ending attaches to each, forming a Merkel corpuscle, a mechanoreceptor."
+  },
+  {
+    "id": "q-mhisto-067",
+    "question": "SALT (skin-associated lymphoid tissue) is formed by:",
+    "options": [
+      "Melanocytes, Merkel cells and adipocytes",
+      "Langerhans cells, lymphocytes and keratinocytes",
+      "Fibroblasts and mast cells only",
+      "Sebaceous and sweat glands",
+      "Meissner and Pacinian corpuscles"
+    ],
+    "answer": 1,
+    "explanation": "Epidermal lymphocytes (mostly immature T cells), Langerhans cells and keratinocytes together form the skin's immune system."
+  },
+  {
+    "id": "q-mhisto-068",
+    "question": "Anchoring fibrils of type VII collagen are found in:",
+    "options": [
+      "The reticular dermis",
+      "The hypodermis",
+      "The papillary dermis",
+      "The stratum corneum",
+      "The hair shaft"
+    ],
+    "answer": 2,
+    "explanation": "Anchoring fibrils in the papillary layer tie the epidermal basal lamina to the dermis."
+  },
+  {
+    "id": "q-mhisto-069",
+    "question": "The reticular layer of the dermis is made mainly of:",
+    "options": [
+      "Loose connective tissue with many capillaries",
+      "Adipose tissue",
+      "Reticular fibers only",
+      "Dense irregular connective tissue with type I collagen and elastic fibers",
+      "Keratinized epithelium"
+    ],
+    "answer": 3,
+    "explanation": "The thick reticular layer is dense irregular connective tissue: coarse type I collagen plus elastic fibers."
+  },
+  {
+    "id": "q-mhisto-070",
+    "question": "Which receptor is unencapsulated?",
+    "options": [
+      "Meissner's corpuscle",
+      "Vater-Pacini corpuscle",
+      "Ruffini ending",
+      "Krause end bulb",
+      "Merkel's disc (corpusculum Merkeli)"
+    ],
+    "answer": 4,
+    "explanation": "The Merkel corpuscle is a free nerve ending attached to a Merkel cell, with no capsule."
+  },
+  {
+    "id": "q-mhisto-071",
+    "question": "Which sensory ending is round and has a thick connective tissue capsule?",
+    "options": [
+      "Krause end bulb",
+      "Meissner's corpuscle",
+      "Ruffini ending",
+      "Merkel's disc",
+      "Vater-Pacini corpuscle"
+    ],
+    "answer": 0,
+    "explanation": "Krause end bulbs are round, with branched endings in a thick capsule, in the dermis. The practicum lists them as pressure receptors."
+  },
+  {
+    "id": "q-mhisto-072",
+    "question": "Which ending has nerve branches spread in a spray-like pattern inside a thin capsule?",
+    "options": [
+      "Krause end bulb",
+      "Ruffini ending",
+      "Meissner's corpuscle",
+      "Vater-Pacini corpuscle",
+      "Merkel's disc"
+    ],
+    "answer": 1,
+    "explanation": "Ruffini endings are small cylindrical corpuscles in the dermis with spray-like branching; they respond to pressure."
+  },
+  {
+    "id": "q-mhisto-073",
+    "question": "From the inside out, the layers of a hair are:",
+    "options": [
+      "Cuticle, cortex, medulla",
+      "Cortex, medulla, cuticle",
+      "Medulla, cortex, cuticle",
+      "Medulla, cuticle, cortex",
+      "Cuticle, medulla, cortex"
+    ],
+    "answer": 2,
+    "explanation": "The hair consists of three concentric layers: medulla (core), cortex, and cuticle (outermost)."
+  },
+  {
+    "id": "q-mhisto-074",
+    "question": "The arrector pili muscle attaches to which part of the hair follicle?",
+    "options": [
+      "The inner root sheath",
+      "The hair cuticle",
+      "The hair medulla",
+      "The dermal (connective tissue) root sheath",
+      "The stratum corneum"
+    ],
+    "answer": 3,
+    "explanation": "The dermal root sheath, the outer connective tissue part of the follicle, is the attachment site for one end of the arrector pili (a smooth muscle)."
+  },
+  {
+    "id": "q-mhisto-075",
+    "question": "The dermal and epidermal root sheaths of a hair follicle are separated by:",
+    "options": [
+      "The dermal papilla",
+      "The arrector pili",
+      "The sebaceous gland",
+      "The hair cuticle",
+      "The glassy membrane"
+    ],
+    "answer": 4,
+    "explanation": "The glassy membrane (a thick basement membrane) separates the outer dermal root sheath from the inner epidermal root sheath."
+  },
+  {
+    "id": "q-mhisto-076",
+    "question": "Where does an eccrine sweat gland open?",
+    "options": [
+      "Onto the skin surface through a sweat pore",
+      "Into a hair follicle",
+      "Into a sebaceous gland",
+      "Into a lymph vessel",
+      "Into the dermal papilla"
+    ],
+    "answer": 0,
+    "explanation": "Eccrine glands open directly onto the skin surface; apocrine and sebaceous glands open into hair follicles."
+  }
+]

@@ -1,0 +1,1070 @@
+[
+  {
+    "id": "q-mphys-001",
+    "question": "In the figure, which connective tissue layer (?) wraps each individual muscle fiber?",
+    "options": [
+      "Epimysium",
+      "Perimysium",
+      "Deep fascia",
+      "Sarcolemma",
+      "Endomysium"
+    ],
+    "answer": 4,
+    "explanation": "From the outside in: epimysium around the whole muscle, perimysium around each fascicle, endomysium around each fiber. The sarcolemma is the fiber's own cell membrane, not connective tissue.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 752 / 1190;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-001.webp\" alt=\"A skeletal muscle cut open from tendon to single fiber, with its connective tissue layers labelled; the layer around each fiber is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-002",
+    "question": "The label hidden in the figure points to a T-tubule lying between two sacs of sarcoplasmic reticulum. Together these form a triad, which consists of:",
+    "options": [
+      "One myofibril and two mitochondria",
+      "Two T-tubules and one terminal cisterna",
+      "A thick filament and two thin filaments",
+      "Actin, myosin and troponin",
+      "One T-tubule and two terminal cisternae"
+    ],
+    "answer": 4,
+    "explanation": "A triad is one transverse (T) tubule flanked by two terminal cisternae of the sarcoplasmic reticulum. It carries the action potential into the fiber right next to the Ca²⁺ store that it releases.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 690;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-002.webp\" alt=\"Cut-away muscle fiber showing myofibrils, sarcoplasmic reticulum, mitochondria and a sarcomere; the triad's labels are hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-003",
+    "question": "The segment of a myofibril marked ? in the figure, running from one Z disc to the next, is the:",
+    "options": [
+      "Fascicle",
+      "Motor unit",
+      "Sarcomere",
+      "Myofilament",
+      "Myofibril"
+    ],
+    "answer": 2,
+    "explanation": "The sarcomere, bounded by two Z discs, is the smallest functional (contractile) unit of striated muscle. Myofibrils are chains of sarcomeres; fascicles are bundles of whole fibers.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 838;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-003.webp\" alt=\"A myofibril with its bands, the arrangement of thick and thin filaments, and the myosin and actin molecules; one label above the myofibril is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-004",
+    "question": "During contraction, which part of the sarcomere stays the same length?",
+    "options": [
+      "A band",
+      "I band",
+      "H zone",
+      "Sarcomere length",
+      "Distance between Z discs"
+    ],
+    "answer": 0,
+    "explanation": "The A band is the full length of the thick filaments, which do not shorten. As thin filaments slide inward, the I band and H zone narrow and the Z discs move closer together.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 956;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-004.webp\" alt=\"Diagram of a myofibril and sarcomere showing the A band, I band, H zone, M line and Z lines\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-005",
+    "question": "Which protein subunit binds Ca²⁺ to start contraction in skeletal muscle (step 2, hidden in the figure)?",
+    "options": [
+      "Troponin I",
+      "Titin",
+      "Calmodulin",
+      "Tropomyosin",
+      "Troponin C"
+    ],
+    "answer": 4,
+    "explanation": "Ca²⁺ binds troponin C; the troponin–Ca²⁺ complex then pulls tropomyosin off actin's myosin-binding sites. Troponin I is the inhibitory subunit, and calmodulin plays this role in smooth muscle.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 464;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-005.webp\" alt=\"Thin and thick filaments at rest and at the start of contraction, with numbered steps; the step where calcium binds is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-006",
+    "question": "In the figure of the thin filament, which protein (?) lies along the actin helix and covers the myosin-binding sites at rest?",
+    "options": [
+      "Troponin C",
+      "Tropomyosin",
+      "Nebulin",
+      "Titin",
+      "Myomesin"
+    ],
+    "answer": 1,
+    "explanation": "Tropomyosin strands run in the groove of the actin helix and block the binding sites until troponin–Ca²⁺ moves them aside. Nebulin aligns actin; titin and myomesin belong to the thick-filament side.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 822 / 790;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-006.webp\" alt=\"Actin molecules, the actin helix, and the regulatory proteins that join it to form the thin filament; one protein's name is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-007",
+    "question": "Which protein is mainly responsible for passive tension when a muscle is stretched?",
+    "options": [
+      "Actin",
+      "Dystrophin",
+      "Nebulin",
+      "Troponin",
+      "Titin"
+    ],
+    "answer": 4,
+    "explanation": "Titin runs from the Z disc to the M line and acts as a molecular spring: it resists overstretching and recoils afterwards. Dystrophin anchors the cytoskeleton to the membrane; nebulin aligns actin."
+  },
+  {
+    "id": "q-mphys-008",
+    "question": "Which feature is characteristic of smooth muscle but not skeletal muscle?",
+    "options": [
+      "Ca²⁺ acts through calmodulin rather than troponin",
+      "Requirement for ACh from a somatic motor neuron",
+      "Multinucleated fibers",
+      "Fastest contraction speed",
+      "Sarcomeres"
+    ],
+    "answer": 0,
+    "explanation": "Smooth muscle has no troponin and no sarcomeres: Ca²⁺ binds calmodulin, which activates myosin light-chain kinase. Somatic motor control, multiple nuclei, sarcomeres and the fastest contraction all belong to skeletal muscle."
+  },
+  {
+    "id": "q-mphys-009",
+    "question": "Which statement about skeletal muscle fibers is correct?",
+    "options": [
+      "They are controlled by autonomic neurons",
+      "Fibers are linked electrically by gap junctions",
+      "Each fiber contracts only when its own motor neuron fires",
+      "Their single-fiber twitch is graded",
+      "They are autorhythmic"
+    ],
+    "answer": 2,
+    "explanation": "Skeletal fibers are independent of one another and contract only when their somatic motor neuron fires, so whole-muscle force is graded by recruiting more fibers. Gap junctions, autorhythmicity and autonomic control describe cardiac or smooth muscle."
+  },
+  {
+    "id": "q-mphys-010",
+    "question": "At the neuromuscular junction, acetylcholine binds:",
+    "options": [
+      "Troponin C",
+      "DHP receptors in the T-tubule",
+      "Nicotinic receptors on the motor end plate",
+      "Muscarinic receptors on the sarcolemma",
+      "Ryanodine receptors on the SR"
+    ],
+    "answer": 2,
+    "explanation": "Nicotinic ACh receptors are ligand-gated cation channels; their opening produces the end-plate potential that triggers a muscle action potential. Muscarinic receptors are G-protein-coupled and found on autonomic targets."
+  },
+  {
+    "id": "q-mphys-011",
+    "question": "In skeletal muscle, the DHP receptor opens the ryanodine receptor by:",
+    "options": [
+      "The Na⁺/Ca²⁺ exchanger",
+      "Binding acetylcholine",
+      "Direct mechanical coupling",
+      "Calcium-induced calcium release from extracellular Ca²⁺",
+      "cAMP-dependent phosphorylation"
+    ],
+    "answer": 2,
+    "explanation": "In skeletal muscle the voltage-sensing DHP receptor is physically linked to RyR1, so depolarization opens it directly, with no need for Ca²⁺ entry. Calcium-induced calcium release is the cardiac mechanism."
+  },
+  {
+    "id": "q-mphys-012",
+    "question": "In the crossbridge cycle (step 2, hidden in the figure), binding of ATP to the myosin head causes:",
+    "options": [
+      "Release of Ca²⁺ from the SR",
+      "The power stroke",
+      "Cocking of the head to 90°",
+      "Binding of Ca²⁺ to troponin",
+      "Detachment of myosin from actin"
+    ],
+    "answer": 4,
+    "explanation": "ATP binding lowers myosin's affinity for actin, so the head lets go and leaves the rigor state. Hydrolysis of that ATP then cocks the head; the power stroke comes later, when Pi is released.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 1134;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-012.webp\" alt=\"The six-step crossbridge cycle between myosin and actin; the labels for two of the steps are hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-013",
+    "question": "Using the same cycle, the power stroke is triggered by release of:",
+    "options": [
+      "ATP",
+      "Ca²⁺",
+      "Acetylcholine",
+      "ADP",
+      "Inorganic phosphate (Pi)"
+    ],
+    "answer": 4,
+    "explanation": "Release of Pi lets the myosin head swing back on its hinge, pulling the thin filament toward the M line. ADP leaves at the end of the stroke, returning the head to the tightly bound rigor state.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 1134;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-012.webp\" alt=\"The six-step crossbridge cycle between myosin and actin; the labels for two of the steps are hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-014",
+    "question": "Rigor mortis occurs because:",
+    "options": [
+      "Troponin is destroyed after death",
+      "Lactic acid denatures actin",
+      "No ATP is available to detach myosin from actin",
+      "Ca²⁺ cannot be released from the SR",
+      "Acetylcholine accumulates at the NMJ"
+    ],
+    "answer": 2,
+    "explanation": "After death ATP runs out, so crossbridges that form cannot be broken: every head stays locked in the rigor state and the muscles stiffen. It is a physiological, not a pathological, change."
+  },
+  {
+    "id": "q-mphys-015",
+    "question": "Relaxation of skeletal muscle depends mainly on:",
+    "options": [
+      "SERCA pumping Ca²⁺ back into the sarcoplasmic reticulum",
+      "Opening of ryanodine receptors",
+      "Binding of ATP to troponin",
+      "The Na⁺/Ca²⁺ exchanger",
+      "Release of more acetylcholine"
+    ],
+    "answer": 0,
+    "explanation": "SERCA uses ATP to pump Ca²⁺ from the cytosol back into the SR; as Ca²⁺ falls it leaves troponin and tropomyosin covers actin again. The Na⁺/Ca²⁺ exchanger matters more in cardiac muscle."
+  },
+  {
+    "id": "q-mphys-016",
+    "question": "According to the sliding filament theory, during contraction:",
+    "options": [
+      "Thin filaments shorten",
+      "Thick filaments shorten",
+      "The A band shortens",
+      "Thin filaments slide toward the M line without shortening",
+      "Z discs move apart"
+    ],
+    "answer": 3,
+    "explanation": "Myosin heads pull the thin filaments toward the M line, so filament overlap increases and the sarcomere shortens, while both filaments keep their own length."
+  },
+  {
+    "id": "q-mphys-017",
+    "question": "During a 100 m sprint, the ATP used after the first few seconds comes mainly from which source (hidden in the figure)?",
+    "options": [
+      "Ketone bodies",
+      "Anaerobic glycolysis only",
+      "Creatine phosphate (direct phosphorylation)",
+      "Aerobic oxidation of fatty acids",
+      "Protein breakdown"
+    ],
+    "answer": 2,
+    "explanation": "ATP stored in the muscle lasts about 6 seconds; creatine kinase then regenerates ATP from creatine phosphate and ADP for roughly the next 10 seconds. Anaerobic glycolysis takes over for 30–40 seconds, and aerobic pathways for hours.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 544;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-017.webp\" alt=\"A runner at 6 seconds, 10 seconds and 30–40 seconds of a sprint and during prolonged running, with the energy source for each; the source at 10 seconds is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-018",
+    "question": "Anaerobic glycolysis yields how much ATP per glucose?",
+    "options": [
+      "1 ATP",
+      "32 ATP",
+      "2 ATP",
+      "36 ATP",
+      "No net ATP"
+    ],
+    "answer": 2,
+    "explanation": "Glycolysis to lactic acid nets 2 ATP per glucose, fast but inefficient. Aerobic respiration in the mitochondria yields about 32 ATP; creatine phosphate gives 1 ATP per molecule."
+  },
+  {
+    "id": "q-mphys-019",
+    "question": "Look at the three pathways in the figure. Which activity relies mainly on the aerobic pathway?",
+    "options": [
+      "Sprinting",
+      "Marathon running",
+      "A 100 m swim",
+      "Weightlifting",
+      "A tennis rally"
+    ],
+    "answer": 1,
+    "explanation": "The aerobic pathway needs oxygen but can run for hours on glucose, fatty acids and amino acids, which suits marathons and jogging. Sprints and lifting use creatine phosphate; tennis, soccer and a 100 m swim lean on anaerobic glycolysis.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 618;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-019.webp\" alt=\"Direct phosphorylation, the anaerobic pathway and the aerobic pathway, with the fuel, oxygen use, products and duration of each\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-020",
+    "question": "The arm on the right of the figure shows muscle hypertrophy after resistance training. This is due mainly to:",
+    "options": [
+      "More connective tissue",
+      "Fluid retention",
+      "More mitochondria only",
+      "More actin and myosin in each fiber",
+      "More muscle fibers"
+    ],
+    "answer": 3,
+    "explanation": "Hypertrophy is an increase in muscle size from more actin and myosin (more myofibrils) in each fiber, typically after high-intensity anaerobic work such as weightlifting. The number of fibers barely changes in adults.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 573;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-020.webp\" alt=\"The same upper arm before and after training, the muscle visibly larger afterwards\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-021",
+    "question": "A muscle cramp is best relieved by:",
+    "options": [
+      "Contracting it harder",
+      "Immobilizing it in a shortened position",
+      "Applying a tourniquet",
+      "Stretching the affected muscle",
+      "Giving acetylcholine"
+    ],
+    "answer": 3,
+    "explanation": "A cramp is a painful, involuntary sustained contraction from hyperexcitable somatic motor nerves. Stretching relieves it, partly through inhibitory reflexes from the Golgi tendon organ."
+  },
+  {
+    "id": "q-mphys-022",
+    "question": "Using the length–tension diagram for one sarcomere, maximal active tension is produced at a sarcomere length of about:",
+    "options": [
+      "1.5 µm",
+      "1.0–1.2 µm",
+      "3.6 µm or more",
+      "2.0–2.2 µm",
+      "3.0 µm"
+    ],
+    "answer": 3,
+    "explanation": "Between B and C (about 2.0–2.2 µm) every myosin head can reach actin without the thin filaments overlapping each other. Shorter sarcomeres crowd the filaments; at about 3.6 µm there is no overlap and no active tension.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 512 / 298;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-022.webp\" alt=\"Graph of tension against sarcomere length in micrometres, rising from A to a plateau at B–C and falling to D, with the filament overlap at each point\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-023",
+    "question": "In the graph, as the muscle is stretched beyond the length of maximum crossbridge overlap, passive tension:",
+    "options": [
+      "Increases",
+      "Decreases",
+      "Equals active tension at all lengths",
+      "Stays zero",
+      "Becomes negative"
+    ],
+    "answer": 0,
+    "explanation": "Passive tension comes from stretched titin and connective tissue, so it rises steeply with stretch even as active tension falls with less overlap. Total tension is the sum of the two.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 408;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-023.webp\" alt=\"Muscle tension against length: active, passive and total tension curves\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-024",
+    "question": "A motor unit, as in the figure, is:",
+    "options": [
+      "One motor neuron and all the muscle fibers it innervates",
+      "One muscle fiber and its nerve endings",
+      "A group of sarcomeres",
+      "All the motor neurons to one muscle",
+      "One motor neuron and the myofibrils it innervates"
+    ],
+    "answer": 0,
+    "explanation": "A motor unit is a single somatic motor neuron with all the muscle fibers it supplies; all of them contract together when it fires. A neuron innervates whole fibers (cells), not individual myofibrils.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 580 / 595;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-024.webp\" alt=\"Three motor neurons leaving the spinal cord, each supplying its own colour-coded group of muscle fibers\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-025",
+    "question": "Muscles used for fine movements, such as the extraocular muscles, have:",
+    "options": [
+      "Gap junctions between fibers",
+      "Only slow fibers",
+      "Large motor units",
+      "No motor units",
+      "Small motor units"
+    ],
+    "answer": 4,
+    "explanation": "With only a few fibers per neuron, each extra motor unit adds a little force, so movement can be finely graded. Large postural muscles such as the gastrocnemius have hundreds of fibers per unit."
+  },
+  {
+    "id": "q-mphys-026",
+    "question": "According to the size principle, which motor units are recruited first?",
+    "options": [
+      "The units closest to the tendon",
+      "Small, fatigue-resistant units",
+      "Units in random order",
+      "Large, fast-fatiguing units",
+      "All units simultaneously"
+    ],
+    "answer": 1,
+    "explanation": "Henneman's size principle: small motor neurons reach threshold first, so small, slow, fatigue-resistant units are recruited first, and larger, fast units join as more force is needed."
+  },
+  {
+    "id": "q-mphys-027",
+    "question": "The interval marked ? in the twitch tracing, between the stimulus and the start of tension, is the latent period. It corresponds to:",
+    "options": [
+      "Fatigue",
+      "The time taken by SERCA to pump Ca²⁺",
+      "The time for relaxation",
+      "Excitation–contraction coupling, including Ca²⁺ release",
+      "The refractory period of the neuron"
+    ],
+    "answer": 3,
+    "explanation": "Nothing is seen yet, but the action potential spreads down the T-tubules and Ca²⁺ is released from the SR and binds troponin. Tension rises only once crossbridges begin cycling.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 564 / 711;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-027.webp\" alt=\"A muscle twitch above the action potential that triggers it, with the contraction and relaxation phases; the first phase's label is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-028",
+    "question": "Why can a second stimulus summate with the first twitch?",
+    "options": [
+      "The muscle is fatigued",
+      "The twitch is shorter than the action potential",
+      "The first stimulus was below threshold",
+      "The action potential and refractory period last only a few ms, far shorter than the twitch",
+      "Ca²⁺ cannot be pumped back"
+    ],
+    "answer": 3,
+    "explanation": "A muscle action potential lasts about 1–2 ms while the twitch lasts up to 100 ms, so the fiber can be excited again while still contracting, and the new Ca²⁺ release adds to the tension already there."
+  },
+  {
+    "id": "q-mphys-029",
+    "question": "Treppe is produced by repeated stimuli of the same intensity given:",
+    "options": [
+      "Before relaxation is complete",
+      "With increasing voltage",
+      "So fast that no relaxation occurs",
+      "Only after complete relaxation",
+      "Only once"
+    ],
+    "answer": 3,
+    "explanation": "In treppe each twitch returns fully to baseline, yet each is a little stronger than the last (the staircase effect), probably from more available Ca²⁺ and warming. Stimuli before full relaxation give summation instead."
+  },
+  {
+    "id": "q-mphys-030",
+    "question": "Stimuli that arrive before the muscle has fully relaxed produce:",
+    "options": [
+      "Fatigue",
+      "Rigor",
+      "Summation",
+      "A single twitch",
+      "Treppe"
+    ],
+    "answer": 2,
+    "explanation": "The second contraction starts from the tension left by the first, so the two add together (wave summation). Treppe needs complete relaxation between stimuli."
+  },
+  {
+    "id": "q-mphys-031",
+    "question": "The tracing shows tension rising to a plateau with small valleys between stimuli. What is the hidden label?",
+    "options": [
+      "Fused (complete) tetanus",
+      "A single twitch",
+      "Unfused (incomplete) tetanus",
+      "Fatigue",
+      "Treppe"
+    ],
+    "answer": 2,
+    "explanation": "Stimuli far enough apart let the fiber relax a little between them, leaving the ripples of unfused tetanus. Faster stimulation removes the valleys and gives fused tetanus.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 452 / 330;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-031.webp\" alt=\"Tension rising with each stimulus and levelling off near maximum with small dips between stimuli; the label on the plateau is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-032",
+    "question": "With stimuli this close together, tension rises to a smooth plateau at maximum. What is the hidden label?",
+    "options": [
+      "A wavy plateau of unfused tetanus",
+      "Separate twitches of increasing height",
+      "Fatigue",
+      "Treppe",
+      "Fused (complete) tetanus"
+    ],
+    "answer": 4,
+    "explanation": "In fused (complete) tetanus there is no relaxation between stimuli, so tension is a smooth, straight plateau well above single-twitch tension. If stimulation continues, fatigue makes it fall.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 503 / 330;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-032.webp\" alt=\"A single twitch, then high-frequency stimuli producing a smooth maximal plateau that later falls as the muscle fatigues; the plateau's label is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-033",
+    "question": "Which is NOT a proposed mechanism of peripheral fatigue?",
+    "options": [
+      "Reduced ACh release",
+      "Accumulation of inorganic phosphate",
+      "Loss of motivation",
+      "Depletion of glycogen",
+      "Ca²⁺ leak from the SR"
+    ],
+    "answer": 2,
+    "explanation": "Loss of motivation and protective reflexes in the CNS are central fatigue. Peripheral fatigue arises at the neuromuscular junction, in excitation–contraction coupling, in the Ca²⁺ signal or in the contractile machinery itself.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 550 / 884;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-033.webp\" alt=\"Where muscle fatigue can arise, from the CNS through the neuromuscular junction and excitation–contraction coupling to the contraction itself\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-034",
+    "question": "Muscle fatigue during prolonged exercise correlates most closely with depletion of:",
+    "options": [
+      "Titin",
+      "Actin",
+      "Acetylcholinesterase",
+      "Myoglobin",
+      "Muscle glycogen"
+    ],
+    "answer": 4,
+    "explanation": "The capacity for sustained work falls almost in step with muscle glycogen stores, which is why endurance athletes 'carbo-load'."
+  },
+  {
+    "id": "q-mphys-035",
+    "question": "Holding a heavy bag still at your side is an example of:",
+    "options": [
+      "Eccentric isotonic contraction",
+      "Concentric isotonic contraction",
+      "Tetanus of the disease type",
+      "Isometric contraction",
+      "Treppe"
+    ],
+    "answer": 3,
+    "explanation": "In an isometric contraction the muscle develops tension but does not change length, because the load equals the force produced."
+  },
+  {
+    "id": "q-mphys-036",
+    "question": "In the upper picture the biceps lengthens while still holding the weight, as when lowering a cup slowly. This is a(n):",
+    "options": [
+      "Treppe",
+      "Isometric contraction",
+      "Eccentric contraction",
+      "Concentric contraction",
+      "Fused tetanus"
+    ],
+    "answer": 2,
+    "explanation": "An eccentric contraction generates force while the muscle lengthens under the load. Lifting the weight, with the muscle shortening, is concentric; both are isotonic.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 346 / 727;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-036.webp\" alt=\"Two arms holding a weight: in the upper one the biceps lengthens as the weight is lowered, in the lower one it shortens to lift it; the upper label is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-037",
+    "question": "In an isotonic contraction, a heavier load causes:",
+    "options": [
+      "No change in velocity",
+      "Greater shortening distance",
+      "A longer latent period and slower shortening",
+      "Faster shortening",
+      "A shorter latent period"
+    ],
+    "answer": 2,
+    "explanation": "Tension must first rise until it equals the load, so the delay before shortening grows, and the velocity of shortening falls as the load rises (the load–velocity relationship)."
+  },
+  {
+    "id": "q-mphys-038",
+    "question": "A reflex is best defined as:",
+    "options": [
+      "A rapid, predictable, involuntary motor response to a stimulus",
+      "A slow postural adjustment",
+      "A conscious response to pain",
+      "A learned skill",
+      "Any voluntary movement"
+    ],
+    "answer": 0,
+    "explanation": "A reflex is fast, predictable and occurs without conscious control, through a reflex arc: receptor, sensory neuron, integration centre, motor neuron and effector."
+  },
+  {
+    "id": "q-mphys-039",
+    "question": "A tendon reflex is NOT triggered by stroking the tendon because:",
+    "options": [
+      "Stroking is always anticipated",
+      "The reflex needs visual input",
+      "The stimulus does not suit the receptor (it must suddenly stretch the spindle)",
+      "The stimulus is too strong",
+      "Tendons have no nerves"
+    ],
+    "answer": 2,
+    "explanation": "An adequate stimulus must match the receptor, reach threshold, and be sudden and unanticipated. The muscle spindle responds to a brisk stretch, which a tap gives and a stroke does not."
+  },
+  {
+    "id": "q-mphys-040",
+    "question": "In the reflex arc shown, the sensory neuron enters the spinal cord through the (?):",
+    "options": [
+      "Ventral horn",
+      "Ventral root",
+      "Dorsal root",
+      "Spinal meninges",
+      "Sympathetic trunk"
+    ],
+    "answer": 2,
+    "explanation": "Afferent fibres enter through the dorsal root, with their cell bodies in the dorsal root ganglion; motor axons leave through the ventral root to the effector.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 898 / 554;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-040.webp\" alt=\"The five steps of a reflex arc from receptor in the hand through the spinal cord to the effector muscle; the label where the sensory fibre enters the cord is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-041",
+    "question": "The only truly monosynaptic reflexes in humans are the:",
+    "options": [
+      "Abdominal reflexes",
+      "Pupillary light reflexes",
+      "Stretch (tendon) reflexes",
+      "Crossed extensor reflexes",
+      "Withdrawal reflexes"
+    ],
+    "answer": 2,
+    "explanation": "In a stretch reflex the Ia afferent from the muscle spindle synapses directly on the alpha motor neuron, one synapse as in part (a). Withdrawal, crossed extensor and most other reflexes run through interneurons, as in part (b).",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1036 / 830;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-041.webp\" alt=\"A monosynaptic reflex with one synapse between sensory and motor neuron, and a polysynaptic reflex with an interneuron\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-042",
+    "question": "An autonomic reflex differs from a somatic reflex in that its efferent pathway:",
+    "options": [
+      "Is integrated in the cerebral cortex",
+      "Has no synapse",
+      "Has two neurons with a synapse in an autonomic ganglion",
+      "Ends on skeletal muscle",
+      "Uses the dorsal root"
+    ],
+    "answer": 2,
+    "explanation": "Autonomic efferents are a preganglionic and a postganglionic neuron synapsing in a ganglion, and they supply smooth muscle, cardiac muscle or glands. A somatic efferent is one motor neuron to skeletal muscle."
+  },
+  {
+    "id": "q-mphys-043",
+    "question": "Compared with an innate spinal reflex, a learned reflex usually has:",
+    "options": [
+      "A longer reaction time",
+      "A shorter reaction time",
+      "No effector",
+      "No sensory input",
+      "No synapses"
+    ],
+    "answer": 0,
+    "explanation": "Learned (acquired) responses pass through higher brain centres and many more synapses, so they take longer than an innate spinal reflex."
+  },
+  {
+    "id": "q-mphys-044",
+    "question": "The biceps reflex in the figure tests spinal segments:",
+    "options": [
+      "C5–C6",
+      "T8–T12",
+      "L3–L4",
+      "S1–S2",
+      "C7–C8"
+    ],
+    "answer": 0,
+    "explanation": "Tapping the examiner's thumb on the biceps tendon makes the elbow flex, through the musculocutaneous nerve, C5–C6 ('5–6, pick up sticks').",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 490 / 301;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-044.webp\" alt=\"The examiner's thumb on the biceps tendon at the elbow being tapped with a reflex hammer\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-045",
+    "question": "The triceps reflex is tested by tapping the tendon just above the:",
+    "options": [
+      "Olecranon",
+      "Styloid process of the radius",
+      "Radial tuberosity",
+      "Medial epicondyle",
+      "Biceps tendon"
+    ],
+    "answer": 0,
+    "explanation": "With the arm flexed and hanging, tapping the triceps tendon just above the olecranon extends the elbow (radial nerve, C7–C8)."
+  },
+  {
+    "id": "q-mphys-046",
+    "question": "During the abdominal reflex, the umbilicus normally moves:",
+    "options": [
+      "Upward only",
+      "Away from the stimulated side",
+      "Not at all",
+      "Downward only",
+      "Toward the stimulated side"
+    ],
+    "answer": 4,
+    "explanation": "Stroking the skin of one quadrant makes the abdominal muscles beneath contract, so the umbilicus moves toward the stroke (T8–T12). It is a superficial, polysynaptic reflex."
+  },
+  {
+    "id": "q-mphys-047",
+    "question": "The patellar reflex shown in the figure tests:",
+    "options": [
+      "L2–L4 via the femoral nerve",
+      "L5 via the common fibular nerve",
+      "C5–C6 via the musculocutaneous nerve",
+      "T10 via intercostal nerves",
+      "S1 via the tibial nerve"
+    ],
+    "answer": 0,
+    "explanation": "Tapping the patellar ligament stretches the quadriceps spindles; the quadriceps contracts and the knee extends, through the femoral nerve, L2–L4 ('3–4, kick the door').",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 500 / 369;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-047.webp\" alt=\"A seated subject's knee being tapped below the patella, with the reflex pathway to the spinal cord and the leg kicking forward\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-048",
+    "question": "The Achilles reflex shown in the figure tests which segment?",
+    "options": [
+      "S1",
+      "L2",
+      "T12",
+      "C7",
+      "L4"
+    ],
+    "answer": 0,
+    "explanation": "Tapping the calcaneal tendon with the foot slightly dorsiflexed gives plantar flexion, through the tibial nerve, S1 ('1–2, buckle my shoe').",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 446 / 354;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-048.webp\" alt=\"An examiner holding the foot slightly dorsiflexed and tapping the calcaneal (Achilles) tendon\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-049",
+    "question": "Light shone into the right eye also constricts the left pupil, as in the 'normal response' row of the figure. This is the:",
+    "options": [
+      "Direct light reflex",
+      "Consensual light reflex",
+      "Ciliospinal reflex",
+      "Corneal reflex",
+      "Accommodation reflex"
+    ],
+    "answer": 1,
+    "explanation": "Each pretectal nucleus projects to both Edinger–Westphal nuclei, so light in one eye constricts both pupils: directly in the lit eye, consensually in the other.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 310 / 330;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-049.webp\" alt=\"Both pupils without light, both constricting when light is shone into one eye, and an abnormal response\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-050",
+    "question": "If a tendon reflex seems absent, the examiner should first:",
+    "options": [
+      "Stop the examination",
+      "Ask the subject to tense the muscle",
+      "Record it as 0 immediately",
+      "Repeat it with reinforcement, e.g. the Jendrassik maneuver",
+      "Strike the muscle belly instead"
+    ],
+    "answer": 3,
+    "explanation": "Reinforcement, such as hooking the fingers together and pulling (Jendrassik), or simply distracting the subject, raises reflex excitability and often brings out a reflex that seemed absent."
+  },
+  {
+    "id": "q-mphys-051",
+    "question": "Brisk reflexes with clonus and an extensor plantar response suggest a lesion of the:",
+    "options": [
+      "Peripheral sensory nerve only",
+      "Lower motor neuron",
+      "Upper motor neuron",
+      "Neuromuscular junction",
+      "Muscle itself"
+    ],
+    "answer": 2,
+    "explanation": "Losing descending inhibition from upper motor neurons causes hyperreflexia, clonus and a Babinski sign. A lower motor neuron lesion gives weak or absent reflexes instead."
+  },
+  {
+    "id": "q-mphys-052",
+    "question": "Frogs are used for the wet lab mainly because they are:",
+    "options": [
+      "Poikilothermic and have a large, easily prepared gastrocnemius",
+      "Free of skeletal muscle reflexes",
+      "Unaffected by electrical stimulation",
+      "Unable to fatigue",
+      "Homeothermic like humans"
+    ],
+    "answer": 0,
+    "explanation": "As cold-blooded animals they need no temperature control, and the gastrocnemius with its sciatic nerve is large and easy to dissect and stimulate."
+  },
+  {
+    "id": "q-mphys-053",
+    "question": "Pithing the frog destroys the brain and spinal cord in order to:",
+    "options": [
+      "Prevent treppe",
+      "Lower the stimulation threshold",
+      "Kill it humanely and abolish interfering CNS reflexes",
+      "Increase muscle glycogen",
+      "Keep the muscle warm"
+    ],
+    "answer": 2,
+    "explanation": "Pithing ends consciousness and removes reflexes that would interfere with the recordings; limp hind legs confirm that it is complete."
+  },
+  {
+    "id": "q-mphys-054",
+    "question": "The nerve prepared with the frog gastrocnemius is the:",
+    "options": [
+      "Vagus nerve",
+      "Sciatic nerve (n. ischiadicus)",
+      "Obturator nerve",
+      "Femoral nerve",
+      "Tibial nerve only"
+    ],
+    "answer": 1,
+    "explanation": "The sciatic nerve is freed, tied and cut proximally so that a length stays attached to the gastrocnemius for stimulation."
+  },
+  {
+    "id": "q-mphys-055",
+    "question": "During the practicum the nerve–muscle preparation is kept moist with:",
+    "options": [
+      "Alcohol",
+      "Ringer lactate",
+      "Formalin",
+      "Distilled water",
+      "Hypertonic saline"
+    ],
+    "answer": 1,
+    "explanation": "Ringer lactate contains sodium chloride, sodium lactate, potassium chloride and calcium chloride in water, keeping the tissue's internal conditions (and so its excitability) close to normal. Distilled water or hypertonic saline would damage the cells osmotically."
+  },
+  {
+    "id": "q-mphys-056",
+    "question": "In PhysioEx, the electrical stimulus replaces:",
+    "options": [
+      "The sarcoplasmic reticulum",
+      "ATP",
+      "Calcium",
+      "Acetylcholine released at the neuromuscular junction",
+      "Troponin"
+    ],
+    "answer": 3,
+    "explanation": "The current depolarizes the muscle membrane to threshold directly, standing in for the end-plate potential that ACh would normally produce."
+  },
+  {
+    "id": "q-mphys-057",
+    "question": "In PhysioEx Activity 1, as voltage increases above threshold, the latent period:",
+    "options": [
+      "Increases steadily",
+      "Doubles at each step",
+      "Decreases to zero",
+      "Stays roughly constant",
+      "Disappears above 4 V"
+    ],
+    "answer": 3,
+    "explanation": "The latent period is the time taken by excitation–contraction coupling, which does not depend on how strong the stimulus is, so it stays about the same at every voltage."
+  },
+  {
+    "id": "q-mphys-058",
+    "question": "Increasing voltage from 8.5 V to 10 V gives no increase in single-twitch force because:",
+    "options": [
+      "Treppe has ended",
+      "Voltage above 8.5 V blocks the NMJ",
+      "All motor units are already recruited",
+      "The muscle is fatigued",
+      "The latent period is too long"
+    ],
+    "answer": 2,
+    "explanation": "8.5 V is the maximal stimulus: every motor unit is already active. More force from then on needs a higher stimulus frequency (summation and tetanus), not more voltage."
+  },
+  {
+    "id": "q-mphys-059",
+    "question": "In PhysioEx Activity 6, shortening the muscle below its optimal length (75 mm):",
+    "options": [
+      "Lowers active force while passive force stays zero",
+      "Has no effect on force",
+      "Produces fused tetanus",
+      "Raises active force",
+      "Raises passive force"
+    ],
+    "answer": 0,
+    "explanation": "With too much overlap the thin filaments collide and fewer crossbridges work, so active force falls. Passive force appears only when the muscle is stretched beyond its resting length."
+  },
+  {
+    "id": "q-mphys-060",
+    "question": "Stimuli of the same strength are given every 0.5 s, and the muscle relaxes fully after each one, yet each twitch is a little stronger than the one before. What is the hidden label?",
+    "options": [
+      "Wave summation",
+      "Unfused tetanus",
+      "Fused tetanus",
+      "Treppe",
+      "Fatigue"
+    ],
+    "answer": 3,
+    "explanation": "Treppe (the staircase phenomenon) is the stepwise rise in twitch height when a rested muscle is stimulated repeatedly after full relaxation. Summation and tetanus need stimuli that arrive before relaxation ends.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 900 / 461;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-060.webp\" alt=\"Twitches to repeated stimuli at 0.5 second intervals, each returning to baseline but rising stepwise in height before levelling off; the label over the steps is hidden\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-061",
+    "question": "The figure shows Ca²⁺ entering through L-type channels, Ca²⁺ sparks from ryanodine receptors, and an Na⁺/Ca²⁺ exchanger. Which feature shows that it depicts cardiac rather than skeletal muscle?",
+    "options": [
+      "The sarcoplasmic reticulum stores Ca²⁺",
+      "Ca²⁺ binds troponin to start contraction",
+      "Ca²⁺ entering from outside the cell triggers Ca²⁺ release from the SR",
+      "Relaxation follows when Ca²⁺ unbinds from troponin",
+      "ATP powers the Ca²⁺ pump of the SR"
+    ],
+    "answer": 2,
+    "explanation": "Calcium-induced calcium release, in which extracellular Ca²⁺ opens the ryanodine receptors, is the cardiac mechanism. Skeletal muscle couples the DHP receptor to the ryanodine receptor mechanically; the other options are true of both.",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 1100 / 749;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-061.webp\" alt=\"Excitation–contraction coupling and relaxation in a muscle cell: an action potential opens L-type Ca²⁺ channels, ryanodine receptors release Ca²⁺ sparks, and Ca²⁺ is removed by the SR pump and the Na⁺/Ca²⁺ exchanger\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-062",
+    "question": "The arm on the right has been inactive, for example during long bed rest. Its smaller, weaker muscle reflects:",
+    "options": [
+      "Hypertrophy from more myofibrils",
+      "Atrophy from loss of actin and myosin",
+      "Rigor from lack of ATP",
+      "Tetanus from repeated stimulation",
+      "A cramp from motor nerve hyperexcitability"
+    ],
+    "answer": 1,
+    "explanation": "Disuse atrophy is a reduction in actin and myosin, giving smaller, weaker muscles. It follows prolonged bed rest, nerve damage that prevents contraction, or ageing (sarcopenia).",
+    "image": "<div class=\"quiz-photo-diagram quiz-diagram-wide\" style=\"aspect-ratio: 962 / 721;\"><img src=\"/ebook-figures/physiology-quiz/q-mphys-062.webp\" alt=\"The same upper arm when active and when inactive, the inactive biceps visibly thinner\" loading=\"lazy\" /></div>"
+  },
+  {
+    "id": "q-mphys-063",
+    "question": "A single skeletal muscle fiber stimulated above threshold contracts:",
+    "options": [
+      "In proportion to the stimulus strength",
+      "Fully, because contraction is all-or-none",
+      "Only if the stimulus is repeated",
+      "Weakly at first, then more strongly",
+      "Only if Ca²⁺ is added from outside"
+    ],
+    "answer": 1,
+    "explanation": "A fiber's contraction is all-or-none: once a stimulus reaches threshold, the action potential and twitch are complete. Whole-muscle force is graded by recruiting fibers and by stimulus frequency."
+  },
+  {
+    "id": "q-mphys-064",
+    "question": "A muscle cramp ('charley horse') is caused mainly by:",
+    "options": [
+      "Hyperexcitability of the somatic motor nerves that supply the muscle",
+      "Depletion of ATP, as in rigor mortis",
+      "Loss of actin and myosin",
+      "Damage to the sarcomeres",
+      "Too little acetylcholine at the NMJ"
+    ],
+    "answer": 0,
+    "explanation": "Cramps are continuous, involuntary, painful contractions from hyperexcitable motor nerves. They last seconds to minutes, are linked to electrolyte deficits and heavy sweating, and are relieved by stretching."
+  },
+  {
+    "id": "q-mphys-065",
+    "question": "During the reflex practicum, the pupil constricts when a bright light is shone into the eye. This constriction is called:",
+    "options": [
+      "Mydriasis",
+      "Miosis",
+      "Accommodation",
+      "Nystagmus",
+      "Ptosis"
+    ],
+    "answer": 1,
+    "explanation": "Miosis is constriction of the pupil in bright light; mydriasis is dilation in dim light or darkness."
+  },
+  {
+    "id": "q-mphys-066",
+    "question": "Which sweat glands are responsible for thermoregulatory sweating?",
+    "options": [
+      "Apocrine glands of the axillae",
+      "Sebaceous glands",
+      "Ceruminous glands",
+      "Eccrine (merocrine) glands",
+      "Mammary glands"
+    ],
+    "answer": 3,
+    "explanation": "Eccrine glands, densest on the forehead, palms and soles, secrete mostly water with a little Na⁺ and Cl⁻; its evaporation cools the body. Apocrine glands (axillae, areolae, beard region) respond to emotional and sexual stimuli and take no part in thermoregulation."
+  },
+  {
+    "id": "q-mphys-067",
+    "question": "Sweat production by the eccrine glands depends on:",
+    "options": [
+      "Sympathetic nerve stimulation",
+      "Parasympathetic nerve stimulation",
+      "Androgens",
+      "Melanocyte-stimulating hormone",
+      "Insulin"
+    ],
+    "answer": 0,
+    "explanation": "Sweating is driven by the sympathetic nervous system, and the composition of the sweat depends on how strong that stimulation is. Androgens drive the sebaceous glands instead."
+  },
+  {
+    "id": "q-mphys-068",
+    "question": "How does apocrine sweat differ from eccrine sweat?",
+    "options": [
+      "It is mostly water with no solutes",
+      "It contains extra protein and lipid, and bacteria acting on it cause body odour",
+      "It is the main means of heat loss",
+      "It is produced all over the body surface",
+      "It is controlled by the parasympathetic system"
+    ],
+    "answer": 1,
+    "explanation": "Apocrine secretion is milky or yellowish: eccrine sweat plus proteins and lipids. It is odourless when secreted; bacterial breakdown produces body odour."
+  },
+  {
+    "id": "q-mphys-069",
+    "question": "After a massive haemorrhage, a patient's skin turns pale. Why?",
+    "options": [
+      "Melanin production stops",
+      "Dermal vessels constrict, shifting blood from the skin to vital organs",
+      "The skin loses its keratin",
+      "Sweat glands release all their water",
+      "The epidermis thickens"
+    ],
+    "answer": 1,
+    "explanation": "The dermis holds about 8–10% of the resting blood flow and acts as a blood reservoir. After heavy blood loss, sympathetic vasoconstriction empties it toward the brain, heart and other vital organs, so the skin pales."
+  },
+  {
+    "id": "q-mphys-070",
+    "question": "Which statement about thermoreceptors in the skin is correct?",
+    "options": [
+      "Warmth receptors outnumber cold receptors",
+      "Cold receptors attach to myelinated Aδ fibres, warmth receptors to unmyelinated C fibres",
+      "Both are encapsulated corpuscles",
+      "Extreme heat is detected only by warmth receptors",
+      "Thermoreceptors are spread evenly over the body"
+    ],
+    "answer": 1,
+    "explanation": "Cold and warmth receptors are free nerve endings. Cold receptors (on Aδ fibres) outnumber warmth receptors (on C fibres), so the skin mainly detects cooling; extreme heat or cold stimulates pain receptors, and receptor numbers vary between regions."
+  },
+  {
+    "id": "q-mphys-071",
+    "question": "Which chemicals enhance the sensitivity of pain receptors without directly exciting them?",
+    "options": [
+      "Bradykinin and serotonin",
+      "Histamine and potassium ions",
+      "Prostaglandins and substance P",
+      "Acetylcholine and acids",
+      "Proteolytic enzymes and histamine"
+    ],
+    "answer": 2,
+    "explanation": "Bradykinin, serotonin, histamine, K⁺, acids, acetylcholine and proteolytic enzymes excite pain endings directly. Prostaglandins and substance P only sensitize them, which is why NSAIDs that block prostaglandin synthesis reduce pain."
+  },
+  {
+    "id": "q-mphys-072",
+    "question": "Itch, as described in the lecture, results from stimulation of:",
+    "options": [
+      "Lamellated (Pacinian) corpuscles",
+      "Free nerve endings by chemicals such as bradykinin or mosquito antigens",
+      "Muscle spindles",
+      "Merkel discs by deep pressure",
+      "Cold receptors on Aδ fibres"
+    ],
+    "answer": 1,
+    "explanation": "Itch comes from chemical stimulation of free nerve endings; tickle from free nerve endings in the superficial skin. Vibration comes from repeated signals from touch and lamellated corpuscles."
+  },
+  {
+    "id": "q-mphys-073",
+    "question": "Which substance can penetrate intact skin well enough to be given as a transdermal patch?",
+    "options": [
+      "Glucose",
+      "Sodium chloride",
+      "Nitroglycerin",
+      "Insulin",
+      "Water-soluble vitamin C"
+    ],
+    "answer": 2,
+    "explanation": "Skin absorbs fat-soluble substances (vitamins A, D, E and K, O₂, CO₂ and lipid-soluble drugs) while absorption of water-soluble substances is negligible. Transdermal patches deliver nitroglycerin, estradiol, contraceptives, nicotine and fentanyl."
+  },
+  {
+    "id": "q-mphys-074",
+    "question": "In vitamin D synthesis, UV light in the skin produces cholecalciferol (D₃). Where is it converted to the active form, calcitriol?",
+    "options": [
+      "Liver",
+      "Kidney",
+      "Small intestine",
+      "Bone marrow",
+      "Skin"
+    ],
+    "answer": 1,
+    "explanation": "UV converts a cholesterol derivative in the skin to cholecalciferol; the liver makes calcidiol, and the kidney converts it to calcitriol, which increases Ca²⁺ and phosphate absorption in the small intestine."
+  },
+  {
+    "id": "q-mphys-075",
+    "question": "Why do surgical incisions made parallel to the skin's tension (cleavage) lines heal with less scarring?",
+    "options": [
+      "They cut fewer blood vessels",
+      "They run along the collagen fibres, so the wound is not pulled open",
+      "They avoid the sweat glands",
+      "They stay within the epidermis",
+      "They contain more elastic fibres"
+    ],
+    "answer": 1,
+    "explanation": "Tension lines follow the arrangement of dermal collagen. A cut parallel to them is not pulled apart as the skin moves and heals with a fine scar; a cut across them gapes and scars more."
+  },
+  {
+    "id": "q-mphys-076",
+    "question": "Why do people differ in skin colour?",
+    "options": [
+      "They have different numbers of melanocytes",
+      "Their melanocytes produce different amounts of melanin",
+      "Some lack tyrosinase in the dermis",
+      "Keratinocytes make the pigment themselves",
+      "Melanin is made only in the stratum corneum"
+    ],
+    "answer": 1,
+    "explanation": "Everyone has about the same number of melanocytes in the stratum basale. Skin colour depends on how much melanin they make (from tyrosine by tyrosinase) and pass to keratinocytes, where it shields the nucleus from UV."
+  },
+  {
+    "id": "q-mphys-077",
+    "question": "Sebum is produced by sebaceous glands under the stimulation of:",
+    "options": [
+      "Androgens",
+      "Sympathetic nerves",
+      "Insulin",
+      "Melanocyte-stimulating hormone",
+      "Vitamin D"
+    ],
+    "answer": 0,
+    "explanation": "Sebaceous glands respond to androgens, which is why sebum rises at puberty. Sebum, a mix of triglycerides, cholesterol, proteins and electrolytes, coats the hair, lubricates the skin, limits evaporation and is antimicrobial."
+  },
+  {
+    "id": "q-mphys-078",
+    "question": "Which of these is NOT a function of the epidermal ridges that form fingerprints?",
+    "options": [
+      "Strengthening the bond between epidermis and dermis",
+      "Increasing friction for grip",
+      "Increasing the area for touch corpuscles",
+      "Producing sweat for thermoregulation",
+      "Resisting mechanical stress"
+    ],
+    "answer": 3,
+    "explanation": "Epidermal ridges project into the dermis between the dermal papillae; they lock the layers together, improve grip and hold more touch corpuscles. Sweat comes from the eccrine glands, which only open onto the ridges."
+  },
+  {
+    "id": "q-mphys-079",
+    "question": "The water-repellent sealant that limits water loss through the epidermis is lipid produced by:",
+    "options": [
+      "Melanocytes in the stratum basale",
+      "Lamellar granules of keratinocytes in the stratum granulosum",
+      "Langerhans cells",
+      "Sebaceous glands in the dermis",
+      "Merkel cells"
+    ],
+    "answer": 1,
+    "explanation": "Keratinocytes in the stratum granulosum release lipid from lamellar granules, sealing the spaces between cells against evaporation and the entry of water. Langerhans cells take part in immune responses."
+  },
+  {
+    "id": "q-mphys-080",
+    "question": "Which type of pain can be produced by chemical stimuli?",
+    "options": [
+      "Fast pain only",
+      "Slow pain only",
+      "Both fast and slow pain equally",
+      "Neither: chemicals cause only itch",
+      "Pain only from deep tissues"
+    ],
+    "answer": 1,
+    "explanation": "Fast pain is elicited by mechanical and thermal stimuli; slow pain by mechanical, thermal and chemical stimuli. All pain receptors are free nerve endings."
+  }
+]

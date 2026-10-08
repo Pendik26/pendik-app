@@ -1,0 +1,12 @@
+{
+  "name": "atlas-build",
+  "private": true,
+  "type": "module",
+  "description": "Converts Z-Anatomy into the app's 3D atlas (public/atlas/). See docs/atlas-3d.md.",
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "meshoptimizer": "^0.22.0"
+  }
+}

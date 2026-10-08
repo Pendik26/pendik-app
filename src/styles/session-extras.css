@@ -1,0 +1,446 @@
+/* Flashcard session extras: key hints, session summary, hardest-cards list.
+   Quiz extras: header/trend, start screen, sections picker, question images,
+   photo-diagram markers, game links, due banner, correct/incorrect micro-animations */
+
+.key-hint {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.session-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.session-summary .btn {
+  margin-top: 1.5rem;
+}
+
+.session-summary h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}
+
+.session-stats {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.session-stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.session-stats strong {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.session-stats span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+
+.hardest-cards {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.hardest-cards h3 {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hardest-cards ul {
+  padding-left: 1.25rem;
+}
+
+.hardest-cards li {
+  margin-bottom: 0.3rem;
+}
+
+.lapse-count {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* Quiz extras: header/trend, feedback animation, retry row */
+
+.quiz-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.quiz-trend {
+  padding-top: 0.5rem;
+}
+
+.quiz-start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 1.75rem;
+  max-width: 480px;
+  margin: 1.5rem auto 0;
+}
+
+.quiz-start-badge {
+  margin-bottom: 0.25rem;
+}
+
+.quiz-start-badge .subject-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
+.quiz-start-badge .subject-badge svg {
+  width: 30px;
+  height: 30px;
+}
+
+.quiz-start h1 {
+  margin: 0;
+}
+
+.quiz-start .subtitle {
+  margin: 0 0 0.5rem;
+}
+
+.quiz-start-trend {
+  padding: 0;
+}
+
+.quiz-start .quiz-game-links,
+.quiz-start .quiz-due-banner {
+  width: 100%;
+  margin: 0;
+}
+
+.quiz-start-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.quiz-start-btn {
+  font-size: 1rem;
+  padding: 0.75rem 1.6rem;
+}
+
+.quiz-sections {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.quiz-sections-label {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.quiz-sections-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.quiz-section-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+.quiz-section-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.quiz-section-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.quiz-section-range {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.quiz-question-image {
+  margin: 0 0 1.1rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-question-image svg {
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  display: block;
+}
+
+.quiz-question-image img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  display: block;
+  background: #0a0f0d;
+}
+
+.quiz-question-image-zoomable {
+  cursor: zoom-in;
+}
+
+.quiz-question-image-zoomable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Anatomy atlas figures: labelled diagrams need the full card width to stay legible. */
+.quiz-photo-diagram.quiz-diagram-wide {
+  max-width: 720px;
+  max-height: 440px;
+  background: #fff;
+}
+
+/* When max-height wins over the aspect ratio, letterbox rather than crop the labels. */
+.quiz-photo-diagram.quiz-diagram-wide img {
+  object-fit: contain;
+}
+
+.quiz-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgb(4 8 7 / 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: auto;
+  cursor: zoom-out;
+  animation: overlay-in 0.15s ease;
+}
+
+.quiz-zoom img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+  cursor: zoom-in;
+}
+
+/* Second tap shows the figure at its natural size; the overlay scrolls. */
+.quiz-zoom img.quiz-zoom-full {
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  cursor: zoom-out;
+}
+
+.quiz-zoom-close {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-zoom {
+    animation: none;
+  }
+}
+
+.quiz-question-image-small {
+  margin-bottom: 0.85rem;
+  max-width: 280px;
+}
+
+.quiz-question-image-small img {
+  max-height: 200px;
+}
+
+.quiz-photo-diagram {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.quiz-question-image-small .quiz-photo-diagram {
+  max-width: 260px;
+}
+
+.quiz-photo-diagram img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  display: block;
+}
+
+.quiz-photo-band {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.quiz-photo-marker {
+  margin-left: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1.5px solid var(--text-muted);
+  opacity: 0.8;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.45);
+}
+
+.quiz-photo-band.current .quiz-photo-marker {
+  width: 2rem;
+  height: 2rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  opacity: 1;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.quiz-game-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.quiz-due-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 1.25rem;
+}
+
+.quiz-due-banner p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.quiz-due-banner strong {
+  color: var(--text);
+}
+
+@keyframes pulse-correct {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake-incorrect {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.quiz-option.correct {
+  animation: pulse-correct 0.3s ease;
+}
+
+.quiz-option.incorrect {
+  animation: shake-incorrect 0.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-option.correct,
+  .quiz-option.incorrect {
+    animation: none;
+  }
+}
+
+.quiz-retry-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

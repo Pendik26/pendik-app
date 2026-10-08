@@ -1,0 +1,267 @@
+/* Nav-card header (badge + title) variant, block-section headings, subject badges,
+   icon buttons (theme toggle, streak, command trigger) */
+
+.nav-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.nav-card-header h2 {
+  margin: 0;
+}
+
+.nav-card-meta {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.nav-card-upcoming {
+  border-style: dashed;
+  cursor: default;
+  opacity: 0.7;
+}
+
+.nav-card-upcoming:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+.nav-card-upcoming .subject-badge {
+  filter: grayscale(0.5);
+}
+
+.block-section {
+  margin-bottom: 2rem;
+}
+
+.block-section:last-child {
+  margin-bottom: 0;
+}
+
+.block-section-heading {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+  color: var(--text-muted);
+}
+
+.block-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.block-section-head .section-heading {
+  margin: 0;
+}
+
+.block-exam-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--type-exam);
+  border: 1px solid color-mix(in srgb, var(--type-exam) 40%, var(--border));
+  background: color-mix(in srgb, var(--type-exam) 10%, transparent);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.block-exam-link:hover {
+  border-color: var(--type-exam);
+  background: color-mix(in srgb, var(--type-exam) 18%, transparent);
+}
+
+.block-exam-link svg {
+  width: 13px;
+  height: 13px;
+}
+
+.subject-card-upcoming {
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.subject-card-upcoming-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.subject-badge {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-ink);
+  box-shadow: 0 4px 14px -6px rgb(0 0 0 / 0.45);
+}
+
+.subject-badge svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Icon buttons: theme toggle, streak, command palette trigger */
+
+.icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 0.4rem 0.55rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    scale 0.35s var(--ease-spring);
+}
+
+/* Liquid-glass hover: the button swells slightly and a specular highlight follows the pointer
+   (position set by useCardSpotlight). */
+.icon-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(48px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--glass-specular), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.icon-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--glass-border-strong);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, 0 6px 16px -10px rgb(0 0 0 / 0.45);
+  scale: 1.06;
+}
+
+.icon-btn:hover::after {
+  opacity: 0.55;
+}
+
+.icon-btn:active {
+  scale: 0.94;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-btn {
+    transition: none;
+  }
+
+  .icon-btn:hover {
+    scale: none;
+  }
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  color: var(--text-muted);
+}
+
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--red) 22%, var(--surface-2)),
+    color-mix(in srgb, var(--amber) 22%, var(--surface-2))
+  );
+  border: 1px solid color-mix(in srgb, var(--amber) 45%, var(--border));
+  color: var(--amber);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.streak-badge svg {
+  width: 14px;
+  height: 14px;
+  color: var(--red);
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--red) 55%, transparent));
+}
+
+.quiz-due-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  background: color-mix(in srgb, var(--accent-2) 16%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--accent-2) 45%, var(--border));
+  color: var(--accent-2);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.quiz-due-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* A subject's cover picture across the top of its card, fading into the card below. */
+.subject-cover {
+  display: block;
+  height: 8.5rem;
+  object-fit: cover;
+  background: #fff;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent);
+  transition: transform 0.6s var(--ease-spring);
+}
+
+.nav-card > .subject-cover {
+  width: calc(100% + 2.7rem);
+  max-width: none;
+  margin: -1.35rem -1.35rem 0.4rem;
+}
+
+.subject-card > .subject-cover {
+  width: calc(100% + 2.5rem);
+  max-width: none;
+  height: 7rem;
+  margin: -1.1rem -1.25rem 0.5rem;
+}
+
+.nav-card:hover > .subject-cover {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subject-cover {
+    transition: none;
+  }
+
+  .nav-card:hover > .subject-cover {
+    transform: none;
+  }
+}

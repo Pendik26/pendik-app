@@ -1,0 +1,377 @@
+/* Account page: sign in / create account, profile, sync status, device and data controls */
+
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.account-grid-guest {
+  grid-template-columns: minmax(300px, 420px) minmax(280px, 1fr);
+}
+
+.account-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.account-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.account-card p {
+  margin: 0;
+}
+
+.account-card > .btn,
+.account-row .btn {
+  align-self: flex-start;
+}
+
+.account-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: var(--surface-2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+}
+
+.account-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease-glass), color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.account-tab:hover {
+  color: var(--text);
+}
+
+.account-tab.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 0 0 var(--glass-highlight) inset, 0 4px 14px -8px rgb(0 0 0 / 0.45);
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.account-form .btn {
+  align-self: flex-start;
+}
+
+.account-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.account-field > span {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.account-field em {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.account-field small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.account-field .form-input,
+.account-field .form-select {
+  width: 100%;
+}
+
+.account-error {
+  color: var(--red);
+  font-size: 0.85rem;
+}
+
+.account-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.account-divider::before,
+.account-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.account-google {
+  justify-content: center;
+}
+
+.account-why ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.account-why strong {
+  color: var(--text);
+}
+
+.account-profile-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.account-avatar {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  font-weight: 700;
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.35) inset, 0 8px 18px -10px var(--accent);
+}
+
+.account-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.account-email {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.account-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.account-note {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.account-sync {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.account-sync-error {
+  color: var(--amber);
+}
+
+.account-sync-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 22%, transparent);
+}
+
+.account-sync-dot.account-sync-syncing {
+  background: var(--accent-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 22%, transparent);
+  animation: account-pulse 1s ease-in-out infinite;
+}
+
+.account-sync-dot.account-sync-error {
+  background: var(--amber);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 22%, transparent);
+}
+
+@keyframes account-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.btn.account-danger {
+  background: linear-gradient(135deg, var(--red), color-mix(in srgb, var(--red) 70%, #000));
+  color: #fff;
+}
+
+.account-delete summary {
+  cursor: pointer;
+  color: var(--red);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.account-delete[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.your-block-pill {
+  margin-left: 0.6rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+@media (max-width: 720px) {
+  .account-grid-guest {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-sync-dot.account-sync-syncing {
+    animation: none;
+  }
+}
+
+/* Google sign-in */
+
+.account-google-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.account-google-block .account-google {
+  width: 100%;
+  gap: 0.6rem;
+  font-weight: 600;
+}
+
+.account-inapp {
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--amber) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+}
+
+.btn-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.account-success {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  font-size: 0.9rem;
+}
+
+.account-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.account-methods h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.account-methods ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.account-methods li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2rem;
+  font-size: 0.9rem;
+}
+
+.account-method-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.account-method-on {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.account-method-off {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.account-legal {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.account-legal a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
