@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { driveDownloadUrl, drivePreviewUrl, driveViewUrl, fileFacts, fileTitle, kindLabel } from "../../lib/drive";
+import { driveDownloadUrl, drivePreviewUrl, driveViewUrl, fileFacts, fileTitle, kindLabel, youtubeVideoId } from "../../lib/drive";
 import type { DriveFile, DriveFileKind } from "../../lib/driveTypes";
 
 /** A small tag for what a row is: a folder, slides, a PDF, a recording… */
@@ -67,6 +67,7 @@ export function DriveFileView({
 }) {
   const [loaded, setLoaded] = useState(false);
   const title = fileTitle(file.name);
+  const download = driveDownloadUrl(file.id);
 
   useEffect(() => {
     onShown?.(file);
@@ -96,11 +97,13 @@ export function DriveFileView({
               </button>
             </span>
           )}
-          <a href={driveDownloadUrl(file.id)} className="icon-btn" aria-label="Download" title="Download" rel="noopener noreferrer">
-            <Icon d="M12 4.5v10M7.5 10l4.5 4.5 4.5-4.5M5 19.5h14" />
-          </a>
+          {download && (
+            <a href={download} className="icon-btn" aria-label="Download" title="Download" rel="noopener noreferrer">
+              <Icon d="M12 4.5v10M7.5 10l4.5 4.5 4.5-4.5M5 19.5h14" />
+            </a>
+          )}
           <a href={driveViewUrl(file.id)} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-small">
-            Open in Drive
+            {youtubeVideoId(file.id) ? "Open on YouTube" : "Open in Drive"}
             <Icon d="M7 17 17 7M9 7h8v8" />
           </a>
           {onClose && (

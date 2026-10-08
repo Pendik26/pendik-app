@@ -75,3 +75,44 @@ grant select on public.drive_files to authenticated;
 grant update (hidden_at) on public.drive_files to authenticated;
 grant select on public.drive_sync_runs to authenticated;
 grant select, insert, update on public.drive_files, public.drive_sync_runs to service_role;
+
+-- For the drive-sync function (service role): the steps a sync takes in bulk.
+
+-- Marks the saved video rows of these Docs as seen (the Docs didn't change, so weren't re-read).
+create or replace function public.drive_touch_videos(p_doc_ids text[], p_at timestamptz)
+returns void
+language sql
+set search_path = ''
+as $$
+  update public.drive_files set synced_at = p_at, missing_since = null
+   where kind = 'youtube' and split_part(drive_file_id, ':', 2) = any(p_doc_ids);
+$$;
+
+-- Files shown now, and how many of them a run that started at p_since hasn't seen.
+create or replace function public.drive_counts(p_since timestamptz)
+returns table (live int, unseen int)
+language sql
+stable
+set search_path = ''
+as $$
+  select count(*)::int, (count(*) filter (where synced_at < p_since))::int
+    from public.drive_files where missing_since is null;
+$$;
+
+create or replace function public.drive_mark_missing(p_since timestamptz)
+returns int
+language sql
+set search_path = ''
+as $$
+  with gone as (
+    update public.drive_files set missing_since = now()
+     where missing_since is null and synced_at < p_since
+    returning 1
+  )
+  select count(*)::int from gone;
+$$;
+
+revoke execute on function public.drive_touch_videos(text[], timestamptz), public.drive_counts(timestamptz),
+  public.drive_mark_missing(timestamptz) from public, anon, authenticated;
+grant execute on function public.drive_touch_videos(text[], timestamptz), public.drive_counts(timestamptz),
+  public.drive_mark_missing(timestamptz) to service_role;

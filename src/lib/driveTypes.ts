@@ -20,7 +20,7 @@ export interface DriveFolder {
   name: string;
   folders: DriveFolder[];
   files: DriveFile[];
-  /** A folder of an archive, listed but not walked: its contents load from /api/drive/folder?key=. */
+  /** A folder listed but not walked yet (the synced listing has none; kept for the folder views). */
   deferred?: string;
   /** An archive (a past cohorts' folder): its subfolders load when they're opened. */
   archive?: true;

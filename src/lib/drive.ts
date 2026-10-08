@@ -285,9 +285,27 @@ export function driveHref(path: readonly string[], fileId?: string): string {
   return qs ? `/drive?${qs}` : "/drive";
 }
 
-export const drivePreviewUrl = (id: string) => `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`;
-export const driveViewUrl = (id: string) => `https://drive.google.com/file/d/${encodeURIComponent(id)}/view`;
-export const driveDownloadUrl = (id: string) => `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`;
+/** A video a Doc in the Drive links to is listed as "youtube:<doc id>:<video id>". */
+export function youtubeVideoId(id: string): string | null {
+  const m = /^youtube:[^:]+:([A-Za-z0-9_-]{11})$/.exec(id);
+  return m ? m[1] : null;
+}
+
+export function drivePreviewUrl(id: string): string {
+  const video = youtubeVideoId(id);
+  if (video) return `https://www.youtube-nocookie.com/embed/${video}`;
+  return `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`;
+}
+export function driveViewUrl(id: string): string {
+  const video = youtubeVideoId(id);
+  if (video) return `https://www.youtube.com/watch?v=${video}`;
+  return `https://drive.google.com/file/d/${encodeURIComponent(id)}/view`;
+}
+/** Null for a YouTube video, which can't be downloaded. */
+export function driveDownloadUrl(id: string): string | null {
+  if (youtubeVideoId(id)) return null;
+  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`;
+}
 
 /** "today", "yesterday", "3 days ago", or the date. */
 export function addedWhen(at: number, now: number = Date.now()): string {
