@@ -27,9 +27,11 @@ import {
   SlidesIcon,
   SummaryIcon,
   TimerIcon,
+  ShieldIcon,
   TrophyIcon,
   UserIcon,
 } from "./icons";
+import { useAccount } from "../hooks/useAccount";
 
 interface NavItem {
   to: string;
@@ -38,6 +40,8 @@ interface NavItem {
   icon: ReactNode;
   /** Shows how many reviews are due here. */
   due?: "cards" | "questions";
+  /** Only admins see it. */
+  admin?: true;
 }
 
 interface NavGroup {
@@ -63,7 +67,7 @@ const groups: NavGroup[] = [
       { to: "/flashcards", label: "Flashcards", icon: <CardsIcon />, due: "cards" },
       { to: "/quizzes", label: "Quizzes", icon: <QuizIcon />, due: "questions" },
       { to: "/occlusion", label: "Image Occlusion", icon: <OcclusionIcon /> },
-      { to: "/exam", label: "Mock exam", icon: <TimerIcon /> },
+      { to: "/exam", label: "Exams", icon: <TimerIcon /> },
       { to: "/plan", label: "Exam plan", icon: <CalendarIcon /> },
     ],
   },
@@ -91,6 +95,7 @@ const groups: NavGroup[] = [
       { to: "/leaderboard", label: "Leaderboard", icon: <TrophyIcon /> },
       { to: "/account", label: "Account", icon: <UserIcon /> },
       { to: "/docs", label: "Help", icon: <HelpIcon /> },
+      { to: "/admin", label: "Admin", icon: <ShieldIcon />, admin: true },
     ],
   },
 ];
@@ -103,6 +108,13 @@ const tabs: { id: string; label: string; icon: ReactNode; to?: string; sections?
   { id: "search", label: "Search", icon: <SearchIcon />, to: "/search" },
   { id: "me", label: "Me", icon: <UserIcon />, sections: [{ items: [groups[0].items[2], ...groups[4].items] }] },
 ];
+
+/** Filters groups to what this student sees: admin links only for admins. */
+function useVisibleSectionsFilter(): <T extends { items: NavItem[] }>(list: T[]) => T[] {
+  const { user } = useAccount();
+  const isAdmin = user?.role === "admin";
+  return (list) => list.map((g) => ({ ...g, items: g.items.filter((i) => isAdmin || !i.admin) }));
+}
 
 /** The due count for a link, if it has one and anything is due. */
 function dueFor(item: NavItem, counts: { cards: number; questions: number }): number {
@@ -125,6 +137,7 @@ export function MobileTabBar() {
   const { pathname } = useLocation();
   const counts = useDueCounts();
   const [open, setOpen] = useState<string | null>(null);
+  const visibleSections = useVisibleSectionsFilter();
   // A new page closes the sheet that led to it.
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
@@ -140,7 +153,8 @@ export function MobileTabBar() {
     return () => { window.removeEventListener("keydown", onKeyDown); };
   }, [open]);
 
-  const sheet = tabs.find((t) => t.id === open);
+  const visibleTabs = tabs.map((tab) => ({ ...tab, sections: tab.sections && visibleSections(tab.sections) }));
+  const sheet = visibleTabs.find((t) => t.id === open);
   return (
     <>
       {sheet?.sections && (
@@ -166,7 +180,7 @@ export function MobileTabBar() {
         </div>
       )}
       <nav className="tabbar" aria-label="Sections">
-        {tabs.map((tab) => {
+        {visibleTabs.map((tab) => {
           // Subject pages sit under Home: they're reached from its subject cards.
           const items = (tab.sections ?? []).flatMap((s) => s.items);
           const active = tab.to ? inSection(pathname, tab.to) : items.some((i) => inSection(pathname, i.to));
@@ -212,6 +226,7 @@ export function Sidebar() {
   const hoveredLink = useRef<HTMLElement | null>(null);
   const { pathname } = useLocation();
   const counts = useDueCounts();
+  const visibleGroups = useVisibleSectionsFilter()(groups);
   // On the collapsed rail, the hovered or focused link's name, shown beside it right away
   // (a title attribute takes a second to appear and can't be styled).
   const [tip, setTip] = useState<{ label: string; x: number; y: number; path: string } | null>(null);
@@ -418,7 +433,7 @@ export function Sidebar() {
         >
           <span className="sidebar-lens sidebar-lens-active" aria-hidden="true" />
           <span className="sidebar-lens sidebar-lens-hover" aria-hidden="true" />
-          {groups.map((group, gi) => (
+          {visibleGroups.map((group, gi) => (
             <Fragment key={group.label ?? gi}>
               {group.label && (
                 <span className="sidebar-group-label" aria-hidden="true">

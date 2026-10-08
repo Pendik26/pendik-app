@@ -33,3 +33,7 @@ verify_jwt = false
 [functions.ai]
 # Needs a signed-in student's token; the function also checks they're on the roster.
 verify_jwt = true
+
+[functions.admin-accounts]
+# Needs an admin's token; the function checks the role.
+verify_jwt = true

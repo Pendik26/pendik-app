@@ -43,6 +43,11 @@ const ExamBlocks = lazy(() =>
 const ExamPlay = lazy(() => import("./pages/ExamPlay").then((m) => ({ default: m.ExamPlay })));
 const ExamPackage = lazy(() => import("./pages/ExamPackage").then((m) => ({ default: m.ExamPackage })));
 const ExamAttempt = lazy(() => import("./pages/ExamAttempt").then((m) => ({ default: m.ExamAttempt })));
+const Admin = lazy(() => import("./pages/admin/Admin").then((m) => ({ default: m.Admin })));
+const AdminStudents = lazy(() => import("./pages/admin/AdminStudents").then((m) => ({ default: m.AdminStudents })));
+const AdminPackages = lazy(() => import("./pages/admin/AdminPackages").then((m) => ({ default: m.AdminPackages })));
+const AdminImport = lazy(() => import("./pages/admin/AdminImport").then((m) => ({ default: m.AdminImport })));
+const AdminDrive = lazy(() => import("./pages/admin/AdminDrive").then((m) => ({ default: m.AdminDrive })));
 const ExamResult = lazy(() => import("./pages/ExamResult").then((m) => ({ default: m.ExamResult })));
 const Modules = lazy(() => import("./pages/Modules").then((m) => ({ default: m.Modules })));
 const ClassDrive = lazy(() => import("./pages/ClassDrive").then((m) => ({ default: m.ClassDrive })));
@@ -115,6 +120,13 @@ function AppRoutes() {
           <Route path="/exam/attempt/:attemptId" element={<ExamAttempt />} />
           <Route path="/exam/result/:attemptId" element={<ExamResult />} />
           <Route path="/exam/:blockId" element={<ExamPlay />} />
+          <Route path="/admin" element={<Admin />}>
+            <Route index element={<Navigate to="/admin/students" replace />} />
+            <Route path="students" element={<AdminStudents />} />
+            <Route path="packages" element={<AdminPackages />} />
+            <Route path="import" element={<AdminImport />} />
+            <Route path="drive" element={<AdminDrive />} />
+          </Route>
           <Route path="/modules" element={<Modules />} />
           <Route path="/modules/:blockId/:subjectId" element={<ModuleViewer />} />
           <Route path="/drive" element={<ClassDrive />} />

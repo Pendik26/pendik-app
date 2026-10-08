@@ -2,6 +2,7 @@
 // exactly the same keys (i18n.test.ts checks), and the same {placeholders}. Larger areas keep
 // theirs in sections/ and are merged here.
 
+import { adminEn, adminId } from "./sections/admin";
 import { examEn, examId } from "./sections/exam";
 
 const coreEn = {
@@ -182,8 +183,8 @@ const coreId: { [K in keyof typeof coreEn]: string } = {
   "nav.admin": "Admin",
 };
 
-export const en = { ...coreEn, ...examEn };
+export const en = { ...coreEn, ...examEn, ...adminEn };
 
 export type Messages = { [K in keyof typeof en]: string };
 
-export const id: Messages = { ...coreId, ...examId };
+export const id: Messages = { ...coreId, ...examId, ...adminId };
