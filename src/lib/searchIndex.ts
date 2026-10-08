@@ -4,7 +4,6 @@ import { labExercises } from "./labActivities";
 import {
   ebookMeta,
   ebookSubjects,
-  examPackagesByBlock,
   flashcardDecks,
   flashcardSubjects,
   keyOf,
@@ -108,11 +107,7 @@ function subjectDocs(): SearchDoc[] {
       to: `/quizzes/${s.blockId}/${s.id}`,
     })),
     ...studyBlocks
-      .filter(
-        (b) =>
-          (examPackagesByBlock.get(b.id)?.length ?? 0) > 0 ||
-          quizQuestionsInBlock(b.id).length > 0,
-      )
+      .filter((b) => quizQuestionsInBlock(b.id).length > 0)
       .map((b) => ({
         type: "exam" as const,
         id: `xb-${b.id}`,

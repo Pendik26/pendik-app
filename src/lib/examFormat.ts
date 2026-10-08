@@ -12,3 +12,12 @@ export function buildExamFormat(poolSize: number): ExamFormat {
   const questionCount = Math.min(EXAM_QUESTION_TARGET, poolSize);
   return { questionCount, timeLimitSec: questionCount * SECONDS_PER_QUESTION };
 }
+
+/** "mm:ss", or "h:mm:ss" from an hour up. */
+export function formatClock(totalSec: number): string {
+  const sec = Math.max(0, Math.round(totalSec));
+  const h = Math.floor(sec / 3600);
+  const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+}

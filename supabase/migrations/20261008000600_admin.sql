@@ -60,7 +60,7 @@ end;
 $$;
 
 -- Saves an imported Markdown file and its questions (as drafts) in one step.
--- p_questions: [{ block, source, year, subject, type, stem, stem_image, options, correct_index,
+-- p_questions: [{ block, source, year, subject, type, stem, stem_image, stem_image_alt, options, correct_index,
 --                 accepted_answers, explanation }], in file order. Returns the import id.
 create or replace function public.admin_import_questions(p_title text, p_source_text text, p_questions jsonb)
 returns uuid
@@ -78,10 +78,10 @@ begin
   insert into public.question_imports (title, source_text, created_by)
   values (btrim(p_title), p_source_text, me) returning id into import_id;
 
-  insert into public.questions (block, source, year, subject, type, stem, stem_image, options, correct_index,
+  insert into public.questions (block, source, year, subject, type, stem, stem_image, stem_image_alt, options, correct_index,
                                 accepted_answers, explanation, import_id, import_position, created_by)
   select q ->> 'block', nullif(q ->> 'source', ''), (q ->> 'year')::int, nullif(q ->> 'subject', ''), q ->> 'type',
-         q ->> 'stem', nullif(q ->> 'stem_image', ''), q -> 'options', (q ->> 'correct_index')::int,
+         q ->> 'stem', nullif(q ->> 'stem_image', ''), nullif(q ->> 'stem_image_alt', ''), q -> 'options', (q ->> 'correct_index')::int,
          case when jsonb_typeof(q -> 'accepted_answers') = 'array'
               then array(select jsonb_array_elements_text(q -> 'accepted_answers')) end,
          nullif(q ->> 'explanation', ''), import_id, n::int, me

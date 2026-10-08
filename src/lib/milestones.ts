@@ -1,5 +1,6 @@
 import { getActivityDays, getLongestStreak } from "./activity";
-import { ebookMeta, examPackagesByBlock, flashcardDecks, quizBanks } from "./content";
+import { ebookMeta, flashcardDecks, quizBanks } from "./content";
+import { examRecords } from "./exams";
 import { studyBlocks } from "./blocks";
 import { readJSON, STORAGE_KEYS } from "./storage";
 import { MASTERED_DAYS } from "./readiness";
@@ -56,12 +57,15 @@ export function gatherMilestoneInput(): MilestoneInput {
   let mocks = 0;
   let bestMock = 0;
   for (const block of studyBlocks) {
-    for (const id of [block.id, ...(examPackagesByBlock.get(block.id) ?? []).map((p) => `${block.id}/${p.id}`)]) {
-      for (const a of readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(id), [])) {
-        mocks += 1;
-        if (a.total > 0) bestMock = Math.max(bestMock, (a.score / a.total) * 100);
-      }
+    for (const a of readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(block.id), [])) {
+      mocks += 1;
+      if (a.total > 0) bestMock = Math.max(bestMock, (a.score / a.total) * 100);
     }
+  }
+  for (const a of examRecords().attempts) {
+    if (a.mode !== "exam" || a.status !== "finished") continue;
+    mocks += 1;
+    if (a.score !== null) bestMock = Math.max(bestMock, a.score);
   }
   let booksFinished = 0;
   for (const [key, meta] of ebookMeta) {

@@ -6,7 +6,6 @@ import { blockById, studyBlocks } from "./blocks";
 import {
   ebookMeta,
   ebookSubjects,
-  examPackagesByBlock,
   flashcardDecks,
   flashcardSubjects,
   keyOf,
@@ -222,10 +221,13 @@ const SECTIONS = new Map<string, { name: string; meta: PageMeta }>(Object.entrie
   drive: { name: "Class Drive", meta: { title: titled("Class Drive"), description: HOME_DESCRIPTION, indexable: false } },
 }));
 
-/** Whether a block has an exam: its own past-paper packages, or else its quiz questions. */
+/** Whether a block has a pooled exam (from its quiz questions). Past papers are on the server. */
 export function blockHasExam(blockId: string): boolean {
-  return (examPackagesByBlock.get(blockId)?.length ?? 0) > 0 || quizQuestionsInBlock(blockId).length > 0;
+  return quizQuestionsInBlock(blockId).length > 0;
 }
+
+/** Past-paper pages: packages, attempts and results, all behind sign-in. */
+const EXAM_ACCOUNT_PAGES = new Set(["papers", "attempt", "result"]);
 
 const NOT_FOUND: PageMeta = { title: titled("Page not found"), description: HOME_DESCRIPTION, indexable: false };
 
@@ -244,20 +246,13 @@ export function pageMeta(pathname: string): PageMeta {
   if (section === "plan") return parts.length === 2 ? { ...sectionInfo.meta, title: titled(`Exam Plan: ${blockShort(blockId)}`) } : NOT_FOUND;
 
   if (section === "exam") {
-    const packages = examPackagesByBlock.get(blockId) ?? [];
-    if (!blockHasExam(blockId) || parts.length > 3) return NOT_FOUND;
-    if (parts.length === 2) {
-      return {
-        title: titled(`${blockShort(blockId)} Practice Exam`),
-        description: describe(`Timed practice exam for ${blockLabel(blockId)}: up to 100 questions, scored at the end with explanations.`),
-        indexable: true,
-      };
+    if (EXAM_ACCOUNT_PAGES.has(blockId) && parts.length === 3) {
+      return { title: titled("Exam"), description: HOME_DESCRIPTION, indexable: false };
     }
-    const pkg = packages.find((p) => p.id === subjectId);
-    if (!pkg) return NOT_FOUND;
+    if (!blockHasExam(blockId) || parts.length > 2) return NOT_FOUND;
     return {
-      title: titled(`${pkg.name} (${blockShort(blockId)})`),
-      description: describe(`${pkg.name}: a timed practice exam for ${blockLabel(blockId)}, scored at the end with explanations.`),
+      title: titled(`${blockShort(blockId)} Practice Exam`),
+      description: describe(`Timed practice exam for ${blockLabel(blockId)}: up to 100 questions, scored at the end with explanations.`),
       indexable: true,
     };
   }
@@ -380,10 +375,6 @@ export function breadcrumbs(pathname: string): Crumb[] {
       if (chapter) crumbs.push({ name: chapter.title, path: `/${section}/${blockId}/${subjectId}/${chapterId}` });
     }
   }
-  if (section === "exam" && blockId && subjectId) {
-    const pkg = examPackagesByBlock.get(blockId)?.find((p) => p.id === subjectId);
-    if (pkg) crumbs.push({ name: pkg.name, path: `/exam/${blockId}/${subjectId}` });
-  }
   return crumbs;
 }
 
@@ -397,10 +388,7 @@ export function indexablePaths(): string[] {
   for (const s of allSubjects()) paths.push(`/subjects/${s.key}`);
   for (const s of quizSubjects) paths.push(`/quizzes/${keyOf(s)}`);
   for (const block of studyBlocks) {
-    if (!blockHasExam(block.id)) continue;
-    const packages = examPackagesByBlock.get(block.id) ?? [];
-    paths.push(`/exam/${block.id}`);
-    if (packages.length > 1) for (const p of packages) paths.push(`/exam/${block.id}/${p.id}`);
+    if (blockHasExam(block.id)) paths.push(`/exam/${block.id}`);
   }
   for (const s of moduleSubjects) paths.push(`/modules/${keyOf(s)}`);
   for (const s of ebookSubjects) {

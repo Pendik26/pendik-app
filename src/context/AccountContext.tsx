@@ -4,6 +4,7 @@ import { AccountContext, type AccountContextValue, type AccountStatus, type Auth
 import { isFirstPassword, studentEmail, supabase } from "../lib/supabase";
 import { clearProgress, loadProgress, pendingSaves, queueSave, refreshProgress, saveNow, subscribeSaveState, type SaveState } from "../lib/progressSync";
 import { clearDeviceSettings, PROGRESS_CHANGED_EVENT } from "../lib/storage";
+import { clearExamRecords, loadExamRecords } from "../lib/exams";
 
 const PROFILE_COLUMNS =
   "id, student_id, full_name, class_group, cohort, role, must_change_password, display_name, leaderboard_joined";
@@ -82,7 +83,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         return;
       }
       try {
-        await loadProgress(uid);
+        await Promise.all([loadProgress(uid), loadExamRecords()]);
       } catch {
         if (!cancelled) setStatus("failed");
         return;
@@ -102,7 +103,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     const onChanged = (e: Event) => { queueSave((e as CustomEvent<{ key: string }>).detail.key); };
     const onVisibility = () => {
       if (document.visibilityState === "hidden") void saveNow();
-      else void refreshProgress();
+      else {
+        void refreshProgress();
+        void loadExamRecords().catch(() => undefined);
+      }
     };
     const onOnline = () => { if (pendingSaves() > 0) void saveNow(); };
     // Leaving with unsaved progress: ask the browser to wait.
@@ -184,6 +188,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         if (pendingSaves() > 0) await saveNow();
         await supabase.auth.signOut();
         clearProgress();
+        clearExamRecords();
         if (clearDevice) clearDeviceSettings();
       },
       saveNow,

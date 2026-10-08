@@ -1,5 +1,6 @@
 import { getStudyLog, localDateKey, type StudyKind, type StudyLog } from "./activity";
-import { ebookMeta, examPackagesByBlock, summaries } from "./content";
+import { ebookMeta, summaries } from "./content";
+import { packagesForBlock } from "./exams";
 import { PHASE_STARTS, type Phase } from "./examPlan";
 import type { BlockReadiness, SubjectReadiness } from "./readiness";
 import { readJSON, STORAGE_KEYS, writeJSON } from "./storage";
@@ -100,17 +101,17 @@ function candidates(br: BlockReadiness, phase: Phase, daysLeft: number | null): 
   }
 
   if (phase === "mock") {
-    const papers = examPackagesByBlock.get(br.blockId) ?? [];
+    const papers = packagesForBlock(br.blockId).filter((p) => p.mode === "exam");
     const taken = new Set(br.mocks.map((m) => m.paper));
-    const next = papers.find((p) => !taken.has(p.name));
+    const next = papers.find((p) => !taken.has(p.title));
     out.push({
       id: `mock:${br.blockId}`,
       kind: "exams",
       subject: `block:${br.blockId}`,
-      title: next ? `Sit a timed mock: ${next.name}` : "Sit a timed mock exam",
+      title: next ? `Sit a timed mock: ${next.title}` : "Sit a timed mock exam",
       detail: "Then review every miss",
       target: 1,
-      to: next ? `/exam/${br.blockId}/${next.id}` : `/exam/${br.blockId}`,
+      to: next ? `/exam/papers/${next.id}` : `/exam/${br.blockId}`,
       priority: 0.5,
       // A mock is the point of this phase: it gets its slot even past the minutes.
       review: true,

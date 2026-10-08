@@ -13,7 +13,6 @@ import { groupByBlock, studyBlocks } from "../lib/blocks";
 import {
   ebookMeta,
   ebookSubjects,
-  examPackagesByBlock,
   flashcardDecks,
   flashcardSubjects,
   keyOf,
@@ -180,15 +179,8 @@ async function content(path: string): Promise<string> {
     case "summaries/*":
       return `<article>${renderMarkdown(summaries.get(key) ?? "")}</article>`;
     case "exam/*": {
-      // Past papers belong to the institution: list the exams, never their questions.
-      const packages = examPackagesByBlock.get(blockId) ?? [];
-      if (packages.length === 0) {
-        return `<p>A timed exam drawn from the block's ${quizQuestionsInBlock(blockId).length} quiz questions.</p>`;
-      }
-      const shown = subjectId ? packages.filter((p) => p.id === subjectId) : packages;
-      return `<ul>${shown
-        .map((p) => `<li>${packages.length > 1 && !subjectId ? `<a href="/exam/${blockId}/${p.id}">${esc(p.name)}</a>` : esc(p.name)}: ${p.questionCount} questions, timed</li>`)
-        .join("")}</ul>`;
+      // Past papers are on the server, for signed-in students only.
+      return `<p>A timed exam drawn from the block's ${quizQuestionsInBlock(blockId).length} quiz questions.</p>`;
     }
     case "ebooks/*": {
       const book = ebookMeta.get(key);
@@ -313,11 +305,11 @@ export async function renderSite(template: string, origin: string): Promise<Rend
     [
       "User-agent: *",
       "Allow: /",
-      "# Course material that belongs to its authors: lecture PDFs, slide figures and past exam",
+      "# Course material that belongs to its authors: lecture PDFs, slide figures and exam",
       "# paper images.",
       "Disallow: /*.pdf$",
       "Disallow: /ebook-figures/",
-      "Disallow: /exams/",
+      "Disallow: /question-images/",
       "",
       `Sitemap: ${origin}/sitemap.xml`,
       "",

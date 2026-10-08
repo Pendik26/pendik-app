@@ -1,5 +1,6 @@
 import { allSubjects } from "./routeMeta";
-import { ebookMeta, examPackagesByBlock, flashcardDecks, quizBanks } from "./content";
+import { ebookMeta, flashcardDecks, quizBanks } from "./content";
+import { examRecords, packagesForBlock } from "./exams";
 import { blockSubjectKeys } from "./examPlan";
 import { isDue } from "./sm2";
 import { readJSON, STORAGE_KEYS } from "./storage";
@@ -152,16 +153,31 @@ export function subjectReadiness(key: string, occlusion: OcclusionIds = {}, now:
   return { key, label, blockId, ...out, parts, readiness };
 }
 
-/** Every timed exam taken for a block, oldest first. */
+/**
+ * Every timed exam taken for a block, oldest first: the block's pooled exam (saved as progress)
+ * and its past-paper exams (attempts on the server).
+ */
 export function blockMocks(blockId: string): MockAttempt[] {
-  const papers: (string | null)[] = [null, ...(examPackagesByBlock.get(blockId) ?? []).map((p) => p.id)];
   const out: MockAttempt[] = [];
-  for (const paper of papers) {
-    const id = paper ? `${blockId}/${paper}` : blockId;
-    const name = paper ? ((examPackagesByBlock.get(blockId) ?? []).find((p) => p.id === paper)?.name ?? paper) : null;
-    for (const a of readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(id), [])) {
-      if (a.total > 0) out.push({ ...a, paper: name, percent: (a.score / a.total) * 100 });
-    }
+  for (const a of readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(blockId), [])) {
+    if (a.total > 0) out.push({ ...a, paper: null, percent: (a.score / a.total) * 100 });
+  }
+  const papers = new Map(packagesForBlock(blockId).filter((p) => p.mode === "exam").map((p) => [p.id, p]));
+  for (const a of examRecords().attempts) {
+    const paper = papers.get(a.packageId);
+    if (!paper || a.status !== "finished" || a.score === null || !a.finishedAt) continue;
+    const total = (a.correctCount ?? 0) + (a.wrongCount ?? 0) + (a.blankCount ?? 0);
+    const limitSec = (a.timeLimitMinutes ?? 0) * 60;
+    out.push({
+      score: a.correctCount ?? 0,
+      total,
+      date: a.finishedAt,
+      missedIds: [],
+      timeTakenSec: Math.min(limitSec || Infinity, (Date.parse(a.finishedAt) - Date.parse(a.startedAt)) / 1000),
+      timeLimitSec: limitSec,
+      paper: paper.title,
+      percent: a.score,
+    });
   }
   return out.sort((a, b) => a.date.localeCompare(b.date));
 }

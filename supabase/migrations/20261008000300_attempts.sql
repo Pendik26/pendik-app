@@ -195,6 +195,7 @@ as $$
       'subject', q.subject,
       'stem', q.stem,
       'stem_image', q.stem_image,
+      'stem_image_alt', q.stem_image_alt,
       'revision', q.revision,
       'options', (
         select jsonb_agg(q.options -> (o.v::int) order by o.n)

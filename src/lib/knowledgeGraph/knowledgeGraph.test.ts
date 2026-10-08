@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { buildFromContent, buildKnowledgeGraph, cleanTerm, splitSections, termKey } from "./build";
 import { nodeMastery } from "./mastery";
 import { renderMarkdown } from "../markdownHtml";
-import { examPackagesByBlock } from "../content";
 
 describe("concept terms", () => {
   it("keeps bold concepts and drops labels, numbers and filler", () => {
@@ -59,17 +58,13 @@ describe("building the map", () => {
 });
 
 describe("the course's map", () => {
-  it("covers every block, joins subjects, and never includes past-paper questions", async () => {
+  it("covers every block and joins subjects", async () => {
     const g = await buildFromContent();
     expect(g.nodes.length).toBeGreaterThan(200);
     const blocks = new Set(g.nodes.flatMap((n) => n.subjects.map((s) => s.split("/")[0])));
     expect(blocks.has("1.1") && blocks.has("1.2")).toBe(true);
     const bridging = g.nodes.filter((n) => new Set(n.subjects.map((s) => s.split("/")[0])).size > 1);
     expect(bridging.length).toBeGreaterThan(10);
-    const json = JSON.stringify(g);
-    const first = [...examPackagesByBlock.values()].flat()[0];
-    const question = first ? (await first.load())[0]?.question : undefined;
-    if (question) expect(json.includes(question.slice(0, 40))).toBe(false);
   }, 60_000);
 });
 

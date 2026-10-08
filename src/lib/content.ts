@@ -11,17 +11,6 @@ const quizModules = import.meta.glob<QuizQuestion[]>(
   "../../content/quizzes/block/*/*/bank.json",
   { eager: true, import: "default" },
 );
-// Dedicated, curated question banks for a study block's exam (e.g. each sourced from a
-// different real past exam) — a block can have more than one package to choose between.
-// Falls back to pooling that block's regular quiz banks when none exist. The questions load
-// when an exam opens; every other page needs only each package's name and size (meta.json).
-const examBankLoaders = import.meta.glob<QuizQuestion[]>("../../content/exams/block/*/*/bank.json", { import: "default" });
-// A package without its meta.json gets a name from its folder.
-const examPackageMetaModules = new Map<string, { name?: string; questions?: number }>(
-  Object.entries(
-    import.meta.glob<{ name: string; questions: number }>("../../content/exams/block/*/*/meta.json", { eager: true, import: "default" }),
-  ),
-);
 const summaryModules = import.meta.glob<string>(
   "../../content/summaries/block/*/*.md",
   { eager: true, import: "default", query: "?raw" },
@@ -90,11 +79,6 @@ function pdfName(path: string): string {
 function moduleSection(path: string): string {
   const match = path.match(/modules\/block\/[^/]+\/[^/]+\/(.+)\/[^/]+\.pdf$/);
   return match ? match[1].toLowerCase() : "";
-}
-
-function examPackagePath(path: string): { blockId: string; packageId: string } {
-  const match = path.match(/exams\/block\/([^/]+)\/([^/]+)\/(bank|meta)\.json$/);
-  return match ? { blockId: match[1], packageId: match[2] } : { blockId: path, packageId: path };
 }
 
 // Slide decks get exported to PDF with ordinal prefixes and a stray ".pptx" left in the
@@ -166,30 +150,6 @@ export const flashcardDecks: ReadonlyMap<string, Flashcard[]> = keyedBy(flashcar
 
 /** Quiz banks, keyed by "{blockId}/{subjectId}". */
 export const quizBanks: ReadonlyMap<string, QuizQuestion[]> = keyedBy(quizModules);
-
-export interface ExamPackage {
-  id: string;
-  name: string;
-  /** From meta.json (a content test checks it against the bank). */
-  questionCount: number;
-  /** The package's questions, fetched on demand. */
-  load: () => Promise<QuizQuestion[]>;
-}
-
-/** Dedicated exam question packages, keyed by block id — a block may offer more than one. */
-const examPackages = new Map<string, ExamPackage[]>();
-for (const [path, load] of Object.entries(examBankLoaders)) {
-  const { blockId, packageId } = examPackagePath(path);
-  const meta = examPackageMetaModules.get(path.replace(/bank\.json$/, "meta.json"));
-  pushTo(examPackages, blockId, {
-    id: packageId,
-    name: meta?.name ?? labelize(packageId),
-    questionCount: meta?.questions ?? 0,
-    load,
-  });
-}
-for (const list of examPackages.values()) list.sort((a, b) => a.name.localeCompare(b.name));
-export const examPackagesByBlock: ReadonlyMap<string, ExamPackage[]> = examPackages;
 
 /** Summaries, keyed by "{blockId}/{subjectId}" (from content/summaries/block/{blockId}/{subject}.md). */
 export const summaries: ReadonlyMap<string, string> = keyedBy(summaryModules);

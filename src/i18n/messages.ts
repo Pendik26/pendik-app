@@ -1,7 +1,10 @@
 // Every interface message, in English and Indonesian. English is the reference: `id` must have
-// exactly the same keys (i18n.test.ts checks), and the same {placeholders}.
+// exactly the same keys (i18n.test.ts checks), and the same {placeholders}. Larger areas keep
+// theirs in sections/ and are merged here.
 
-export const en = {
+import { examEn, examId } from "./sections/exam";
+
+const coreEn = {
   // Shared
   "common.loading": "Loading…",
   "common.retry": "Try again",
@@ -93,9 +96,7 @@ export const en = {
   "nav.admin": "Admin",
 } as const;
 
-export type Messages = { [K in keyof typeof en]: string };
-
-export const id: Messages = {
+const coreId: { [K in keyof typeof coreEn]: string } = {
   "common.loading": "Memuat…",
   "common.retry": "Coba lagi",
   "common.save": "Simpan",
@@ -180,3 +181,9 @@ export const id: Messages = {
   "nav.drive": "Drive Kelas",
   "nav.admin": "Admin",
 };
+
+export const en = { ...coreEn, ...examEn };
+
+export type Messages = { [K in keyof typeof en]: string };
+
+export const id: Messages = { ...coreId, ...examId };

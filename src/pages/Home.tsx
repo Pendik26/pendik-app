@@ -4,7 +4,6 @@ import { TodayHero } from "../components/plan/Today";
 import {
   ebookMeta,
   ebookSubjects,
-  examPackagesByBlock,
   flashcardDecks,
   flashcardSubjects,
   keyOf,
@@ -27,6 +26,7 @@ import { ActivityHeatmap } from "../components/ActivityHeatmap";
 import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { AtomIcon, BodyIcon, CalendarIcon, FlaskIcon, LinkIcon, MapIcon, PlayCircleIcon, SearchIcon, TimerIcon } from "../components/icons";
 import type { CardStateMap, ExamAttempt, QuizAttempt, ReadingPosition } from "../types/content";
+import { packagesForBlock } from "../lib/exams";
 
 interface ContinueItem {
   to: string;
@@ -156,16 +156,9 @@ export function Home() {
   const foldedGroups = mine.length > 0 ? others : [];
 
   const blockSection = ({ block, subjects: blockSubjects, upcoming }: (typeof groups)[number]) => {
-    const packages = examPackagesByBlock.get(block.id) ?? [];
-    const examPool =
-      packages.length > 0
-        ? Math.max(...packages.map((p) => p.questionCount))
-        : quizQuestionsInBlock(block.id).length;
-    // With more than one package, "last score" isn't a single number — the exam link
-    // just sends the user to the picker instead of surfacing one package's history.
-    // (Matches ExamPlay's own key convention: a lone package keeps the plain block key.)
-    const examHistory =
-      packages.length > 1 ? [] : readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(block.id), []);
+    const papers = packagesForBlock(block.id).length;
+    const examPool = quizQuestionsInBlock(block.id).length;
+    const examHistory = readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(block.id), []);
     const lastExam = examHistory.at(-1);
     return (
       <div key={block.id} className="dashboard-section block-section">
@@ -175,7 +168,12 @@ export function Home() {
             {block.label}
             {block.id === currentBlock && <span className="your-block-pill">Your block</span>}
           </h2>
-          {examPool > 0 && (
+          {papers > 0 ? (
+            <Link to="/exam" className="block-exam-link">
+              <TimerIcon />
+              {papers === 1 ? "1 past paper" : `${papers} past papers`}
+            </Link>
+          ) : examPool > 0 && (
             <Link to={`/exam/${block.id}`} className="block-exam-link">
               <TimerIcon />
               {lastExam ? `Exam · last ${lastExam.score}/${lastExam.total}` : "Take the exam"}

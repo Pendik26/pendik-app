@@ -41,6 +41,9 @@ const ExamBlocks = lazy(() =>
   import("./pages/ExamBlocks").then((m) => ({ default: m.ExamBlocks })),
 );
 const ExamPlay = lazy(() => import("./pages/ExamPlay").then((m) => ({ default: m.ExamPlay })));
+const ExamPackage = lazy(() => import("./pages/ExamPackage").then((m) => ({ default: m.ExamPackage })));
+const ExamAttempt = lazy(() => import("./pages/ExamAttempt").then((m) => ({ default: m.ExamAttempt })));
+const ExamResult = lazy(() => import("./pages/ExamResult").then((m) => ({ default: m.ExamResult })));
 const Modules = lazy(() => import("./pages/Modules").then((m) => ({ default: m.Modules })));
 const ClassDrive = lazy(() => import("./pages/ClassDrive").then((m) => ({ default: m.ClassDrive })));
 const ModuleViewer = lazy(() =>
@@ -108,8 +111,10 @@ function AppRoutes() {
           <Route path="/quizzes" element={<QuizSubjects />} />
           <Route path="/quizzes/:blockId/:subjectId" element={<QuizPlay />} />
           <Route path="/exam" element={<ExamBlocks />} />
+          <Route path="/exam/papers/:packageId" element={<ExamPackage />} />
+          <Route path="/exam/attempt/:attemptId" element={<ExamAttempt />} />
+          <Route path="/exam/result/:attemptId" element={<ExamResult />} />
           <Route path="/exam/:blockId" element={<ExamPlay />} />
-          <Route path="/exam/:blockId/:packageId" element={<ExamPlay />} />
           <Route path="/modules" element={<Modules />} />
           <Route path="/modules/:blockId/:subjectId" element={<ModuleViewer />} />
           <Route path="/drive" element={<ClassDrive />} />

@@ -25,6 +25,7 @@ create table public.questions (
   type            text not null check (type in ('single_choice', 'short_answer')),
   stem            text not null,
   stem_image      text,
+  stem_image_alt  text,
   -- single_choice: [{ "text": "...", "image": "path" | null }, ...], 2 to 8 options.
   options         jsonb,
   correct_index   int,
@@ -64,9 +65,9 @@ as $$
 begin
   if tg_op = 'INSERT' then
     new.revision := 1;
-  elsif (new.stem, new.stem_image, new.options, new.correct_index, new.accepted_answers, new.explanation)
+  elsif (new.stem, new.stem_image, new.stem_image_alt, new.options, new.correct_index, new.accepted_answers, new.explanation)
         is distinct from
-        (old.stem, old.stem_image, old.options, old.correct_index, old.accepted_answers, old.explanation) then
+        (old.stem, old.stem_image, old.stem_image_alt, old.options, old.correct_index, old.accepted_answers, old.explanation) then
     new.revision := old.revision + 1;
   else
     new.revision := old.revision;

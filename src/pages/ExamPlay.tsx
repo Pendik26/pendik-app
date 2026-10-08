@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
-import { examPackagesByBlock, quizQuestionsInBlock } from "../lib/content";
+import { quizQuestionsInBlock } from "../lib/content";
 import { blockById } from "../lib/blocks";
 import { useExamHistory } from "../hooks/useExamHistory";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -10,7 +10,7 @@ import { ConfettiBurst } from "../components/ConfettiBurst";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { FlagIcon, TimerIcon } from "../components/icons";
 import { subjectHueStyle } from "../lib/subjectStyle";
-import { readJSON, STORAGE_KEYS } from "../lib/storage";
+import { STORAGE_KEYS } from "../lib/storage";
 import type { Answers, ExamAttempt, QuizQuestion } from "../types/content";
 import { NextUp } from "../components/plan/Today";
 
@@ -40,45 +40,13 @@ function scoreMessage(score: number, total: number): string {
 }
 
 export function ExamPlay() {
-  const { blockId = "", packageId } = useParams();
+  const { blockId = "" } = useParams();
   const block = blockById(blockId);
-  const packages = examPackagesByBlock.get(blockId) ?? [];
-  // A block with one package plays it directly (transparent to the user); with several, the
-  // caller must pick one via /exam/:blockId/:packageId — this component itself is used both
-  // as the picker (no packageId) and the player (packageId set).
-  const chosenPackage =
-    packages.length === 0
-      ? undefined
-      : packages.length === 1
-        ? packages[0]
-        : packages.find((p) => p.id === packageId);
-  const showPackagePicker = packages.length > 1 && !chosenPackage;
-  // A package's questions arrive on demand; the pooled fallback is already in memory.
-  const [loadedPackage, setLoadedPackage] = useState<{ id: string; questions: QuizQuestion[] } | null>(null);
-  useEffect(() => {
-    if (!chosenPackage || loadedPackage?.id === chosenPackage.id) return;
-    let live = true;
-    chosenPackage.load().then((questions) => {
-      if (live) setLoadedPackage({ id: chosenPackage.id, questions });
-    });
-    return () => {
-      live = false;
-    };
-  }, [chosenPackage, loadedPackage]);
-  const pool = useMemo(
-    () =>
-      chosenPackage
-        ? loadedPackage?.id === chosenPackage.id
-          ? loadedPackage.questions
-          : EMPTY_BANK
-        : block
-          ? quizQuestionsInBlock(block.id)
-          : EMPTY_BANK,
-    [block, chosenPackage, loadedPackage],
-  );
-  const poolLoading = Boolean(chosenPackage) && pool.length === 0;
-  const format = useMemo(() => buildExamFormat(chosenPackage ? chosenPackage.questionCount : pool.length), [chosenPackage, pool]);
-  const historyKey = chosenPackage && packages.length > 1 ? `${blockId}/${chosenPackage.id}` : blockId;
+  // The block's pooled exam, drawn from its quiz questions. Past papers have their own pages
+  // (ExamPackage / ExamAttempt), run by the server.
+  const pool = useMemo(() => (block ? quizQuestionsInBlock(block.id) : EMPTY_BANK), [block]);
+  const format = useMemo(() => buildExamFormat(pool.length), [pool]);
+  const historyKey = blockId;
   const { lastAttempt, recordAttempt } = useExamHistory(historyKey);
   const [mode, setMode] = useLocalStorage<ExamMode>(STORAGE_KEYS.examMode, "real");
 
@@ -227,44 +195,6 @@ export function ExamPlay() {
     );
   }
 
-  if (showPackagePicker) {
-    return (
-      <section className="page subject-tinted" style={subjectHueStyle(blockId) as CSSProperties}>
-        <Link to="/exam" className="back-link">
-          ← All exams
-        </Link>
-        <div className="quiz-start">
-          <div className="quiz-start-badge">
-            <SubjectBadge id={block.id} label={block.label} />
-          </div>
-          <h1>{block.label}</h1>
-          <p className="subtitle">This block has more than one exam package — pick which one to take.</p>
-        </div>
-        <div className="card-grid">
-          {packages.map((pkg) => {
-            const pkgFormat = buildExamFormat(pkg.questionCount);
-            const pkgHistory = readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(`${blockId}/${pkg.id}`), []);
-            const pkgLast = pkgHistory.at(-1);
-            return (
-              <Link key={pkg.id} to={`/exam/${blockId}/${pkg.id}`} className="nav-card exam-package-card">
-                <h2>{pkg.name}</h2>
-                <p>
-                  {pkgFormat.questionCount} questions · {Math.round(pkgFormat.timeLimitSec / 60)} min
-                  {pkgLast && (
-                    <>
-                      {" "}
-                      · last score <strong>{pkgLast.score}/{pkgLast.total}</strong>
-                    </>
-                  )}
-                </p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-    );
-  }
-
   if (format.questionCount === 0) {
     return (
       <section className="page subject-tinted" style={subjectHueStyle(blockId) as CSSProperties}>
@@ -300,9 +230,7 @@ export function ExamPlay() {
           </p>
           <p className="exam-format-note">
             {format.questionCount} questions · {Math.round(format.timeLimitSec / 60)} minutes ·{" "}
-            {chosenPackage
-              ? `from the "${chosenPackage.name}" question bank`
-              : "pooled from every subject in this block"}
+            pooled from every subject in this block
           </p>
 
           {lastAttempt && (
@@ -336,8 +264,8 @@ export function ExamPlay() {
           </div>
 
           <div className="quiz-start-actions">
-            <button className="btn quiz-start-btn" onClick={startExam} disabled={poolLoading}>
-              {poolLoading ? "Loading questions…" : "Start exam"}
+            <button className="btn quiz-start-btn" onClick={startExam}>
+              Start exam
             </button>
           </div>
         </div>

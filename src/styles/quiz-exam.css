@@ -741,3 +741,115 @@
 .quiz-review-explanation.incorrect {
   color: var(--red);
 }
+
+/* Past papers (server-run exams and practice) */
+.exam-stem {
+  white-space: pre-wrap;
+}
+
+.exam-rules {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: left;
+  max-width: 34rem;
+}
+
+.exam-running-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.exam-running-banner span:last-child {
+  margin-left: auto;
+}
+
+.exam-mode-tag {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.exam-mode-tag-exam {
+  color: var(--accent);
+}
+
+.exam-package-card h3 {
+  margin: 0.2rem 0;
+  font-size: 1.05rem;
+}
+
+.exam-save {
+  color: var(--text-muted);
+}
+
+.exam-save-error,
+.exam-tab-leaves {
+  color: var(--red);
+}
+
+.exam-tab-leaves {
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+}
+
+.exam-short-answer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.exam-short-answer .form-input {
+  flex: 1 1 16rem;
+}
+
+.exam-self-mark {
+  flex-basis: 100%;
+}
+
+.exam-attempt-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.exam-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.exam-history a {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  align-items: baseline;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.exam-history small,
+.exam-typed {
+  color: var(--text-muted);
+}
