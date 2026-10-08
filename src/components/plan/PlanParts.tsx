@@ -11,19 +11,22 @@ import type { PlanItem, TodayPlan } from "../../lib/todayPlan";
 import type { WeakSpots } from "../../lib/weakSpots";
 import { AlfondIcon, CheckIcon } from "../icons";
 import { SubjectBadge } from "../SubjectBadge";
+import { useI18n } from "../../i18n/useI18n";
+import type { Translate } from "../../i18n/i18n";
 
 const pct = (n: number) => `${Math.round(n)}%`;
-const fmtDay = (d: Date) => d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+const fmtDay = (d: Date, t: Translate) => d.toLocaleDateString(t("drive.dateLocale"), { weekday: "short", day: "numeric", month: "short" });
 
 /** The big readiness ring with its number inside. */
 export function ReadinessRing({ value, size = 112, label }: { value: number; size?: number; label: string }) {
+  const { t } = useI18n();
   const stroke = size / 11;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const clamped = Math.max(0, Math.min(100, value));
   return (
     <div className="readiness-ring" style={{ width: size, height: size }}>
-      <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} role="img" aria-label={`${label}: ${pct(clamped)} ready`}>
+      <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} role="img" aria-label={`${label}: ${t("today.ready", { percent: Math.round(clamped) })}`}>
         <circle cx={size / 2} cy={size / 2} r={r} className="readiness-ring-track" strokeWidth={stroke} fill="none" />
         <circle
           cx={size / 2}
@@ -60,26 +63,27 @@ export function ReadinessSummary({
   phase: Phase;
   children?: ReactNode;
 }) {
+  const { t } = useI18n();
   return (
     <div className="readiness-summary">
       <ReadinessRing value={br.readiness} label={blockLabel} />
       <div className="readiness-summary-body">
         <span className="readiness-summary-block">{blockLabel}</span>
         <p className="readiness-summary-line">
-          <strong>{pct(br.readiness)} ready</strong>
+          <strong>{t("today.ready", { percent: Math.round(br.readiness) })}</strong>
           <span aria-hidden="true"> · </span>
-          <span>{countdownText(daysLeft)}</span>
+          <span>{countdownText(daysLeft, t)}</span>
           {br.weakest && (
             <>
               <span aria-hidden="true"> · </span>
               <span>
-                weakest: <Link to={`/subjects/${br.weakest.key}`}>{br.weakest.label}</Link>
+                {t("xplan.weakest")} <Link to={`/subjects/${br.weakest.key}`}>{br.weakest.label}</Link>
               </span>
             </>
           )}
         </p>
         <p className="readiness-summary-phase">
-          <span className={`phase-chip phase-${phase}`}>{entry(PHASE_INFO, phase).name}</span> {entry(PHASE_INFO, phase).focus}
+          <span className={`phase-chip phase-${phase}`}>{t(entry(PHASE_INFO, phase).name)}</span> {t(entry(PHASE_INFO, phase).focus)}
         </p>
         {children && <div className="readiness-summary-actions">{children}</div>}
       </div>
@@ -112,6 +116,7 @@ function Meter({ label, value, detail, to }: { label: string; value: number; det
 
 /** One subject: its readiness and a meter per kind of study, each linking to it. */
 export function SubjectProgressRow({ s }: { s: SubjectReadiness }) {
+  const { t } = useI18n();
   const [, id] = s.key.split("/");
   return (
     <li className="subject-progress">
@@ -123,34 +128,34 @@ export function SubjectProgressRow({ s }: { s: SubjectReadiness }) {
       <div className="subject-progress-meters">
         {s.cards && (
           <Meter
-            label="Cards"
+            label={t("xplan.cards")}
             value={(s.cards.mastered / s.cards.total) * 100}
-            detail={`${s.cards.mastered}/${s.cards.total} mastered${s.cards.due ? ` · ${s.cards.due} due` : ""}`}
+            detail={`${t("xplan.mastered", { done: s.cards.mastered, total: s.cards.total })}${s.cards.due ? ` · ${t("xplan.due", { count: s.cards.due })}` : ""}`}
             to={`/flashcards/${s.key}`}
           />
         )}
         {s.labels && (
           <Meter
-            label="Labels"
+            label={t("xplan.labels")}
             value={(s.labels.mastered / s.labels.total) * 100}
-            detail={`${s.labels.mastered}/${s.labels.total} mastered${s.labels.due ? ` · ${s.labels.due} due` : ""}`}
+            detail={`${t("xplan.mastered", { done: s.labels.mastered, total: s.labels.total })}${s.labels.due ? ` · ${t("xplan.due", { count: s.labels.due })}` : ""}`}
             to={`/occlusion/${s.key}`}
           />
         )}
         {s.quiz && (
           <Meter
-            label="Quiz"
+            label={t("xplan.quiz")}
             value={(s.quiz.accuracy ?? 0) * 100}
             detail={
               s.quiz.accuracy === null
-                ? "Not tried yet"
-                : `${pct(s.quiz.accuracy * 100)} right · ${pct(s.quiz.coverage * 100)} of the bank${s.quiz.retry ? ` · ${s.quiz.retry} to retry` : ""}`
+                ? t("xplan.notTried")
+                : `${t("xplan.right", { percent: pct(s.quiz.accuracy * 100) })} · ${t("xplan.ofBank", { percent: pct(s.quiz.coverage * 100) })}${s.quiz.retry ? ` · ${t("xplan.toRetry", { count: s.quiz.retry })}` : ""}`
             }
             to={`/quizzes/${s.key}`}
           />
         )}
         {s.reading && (
-          <Meter label="Reading" value={(s.reading.done / s.reading.chapters) * 100} detail={`${s.reading.done}/${s.reading.chapters} chapters`} to={`/ebooks/${s.key}`} />
+          <Meter label={t("xplan.reading")} value={(s.reading.done / s.reading.chapters) * 100} detail={t("xplan.chapters", { done: s.reading.done, total: s.reading.chapters })} to={`/ebooks/${s.key}`} />
         )}
       </div>
     </li>
@@ -159,14 +164,15 @@ export function SubjectProgressRow({ s }: { s: SubjectReadiness }) {
 
 /** Mock exams for a block, as a meter row under its subjects. */
 export function MockSummary({ br }: { br: BlockReadiness }) {
+  const { t } = useI18n();
   const best = br.mocks.reduce((m, a) => Math.max(m, a.percent), 0);
   const latest = br.mocks.at(-1);
   return (
     <div className="mock-summary">
       <Meter
-        label="Mock exams"
+        label={t("phase.mock")}
         value={latest?.percent ?? 0}
-        detail={latest ? `latest ${pct(latest.percent)} · best ${pct(best)} · ${br.mocks.length} taken` : "None taken yet"}
+        detail={latest ? t("xplan.mockDetail", { latest: pct(latest.percent), best: pct(best), count: br.mocks.length }) : t("xplan.noneTaken")}
         to={`/exam/${br.blockId}`}
       />
     </div>
@@ -174,6 +180,7 @@ export function MockSummary({ br }: { br: BlockReadiness }) {
 }
 
 function PlanRow({ item, done }: { item: PlanItem; done: number }) {
+  const { t } = useI18n();
   const complete = done >= item.target;
   const partial = !complete && done > 0;
   return (
@@ -185,47 +192,48 @@ function PlanRow({ item, done }: { item: PlanItem; done: number }) {
         <span className="plan-item-title">{item.title}</span>
         <span className="plan-item-detail">
           {item.detail}
-          {partial && ` · ${done}/${item.target} done`}
+          {partial && ` · ${t("xplan.partDone", { done, total: item.target })}`}
         </span>
       </Link>
-      <span className="plan-item-time">{complete ? "Done" : `~${item.minutes} min`}</span>
-      <span className="sr-only">{complete ? "Done." : partial ? `${done} of ${item.target} done.` : "Not started."}</span>
+      <span className="plan-item-time">{complete ? t("xplan.done") : t("xplan.aboutMin", { minutes: item.minutes })}</span>
+      <span className="sr-only">{complete ? `${t("xplan.done")}.` : partial ? t("xplan.partDoneLong", { done, total: item.target }) : t("xplan.notStarted")}</span>
     </li>
   );
 }
 
 /** Today's plan as a checklist that ticks itself off. */
 export function TodayPlanList({ plan, progress, limit, onRebuild }: { plan: TodayPlan; progress: Record<string, number>; limit?: number; onRebuild?: () => void }) {
+  const { t } = useI18n();
   const items = limit ? plan.items.slice(0, limit) : plan.items;
   const doneCount = plan.items.filter((i) => (progress[i.id] ?? 0) >= i.target).length;
   const minutes = plan.items.reduce((m, i) => m + i.minutes, 0);
   if (plan.items.length === 0) {
-    return <p className="plan-empty">{plan.phase === "past" ? "This exam is over. Pick the next block's exam to plan for it." : "Nothing left for today. Well done."}</p>;
+    return <p className="plan-empty">{plan.phase === "past" ? t("xplan.over") : t("xplan.nothingLeft")}</p>;
   }
   return (
     <div className="today-plan">
       <p className="today-plan-meta">
         {doneCount === plan.items.length ? (
-          <strong>All done for today.</strong>
+          <strong>{t("xplan.allDone")}</strong>
         ) : (
           <>
             <strong>
               {doneCount}/{plan.items.length}
             </strong>{" "}
-            done · about {minutes} min of your {plan.budget}
+            {t("xplan.doneMeta", { minutes, budget: plan.budget })}
           </>
         )}
-        {plan.overflow > 0 && ` · ${plan.overflow} more reviews due than fit`}
+        {plan.overflow > 0 && ` · ${t("xplan.overflow", { count: plan.overflow })}`}
       </p>
       <ul className="plan-list">
         {items.map((item) => (
           <PlanRow key={item.id} item={item} done={progress[item.id] ?? 0} />
         ))}
       </ul>
-      {limit && plan.items.length > limit && <p className="plan-more">+{plan.items.length - limit} more in the full plan</p>}
+      {limit && plan.items.length > limit && <p className="plan-more">{t("xplan.more", { count: plan.items.length - limit })}</p>}
       {onRebuild && (
         <button type="button" className="link-btn" onClick={onRebuild}>
-          Redo today's plan
+          {t("xplan.redo")}
         </button>
       )}
     </div>
@@ -234,22 +242,23 @@ export function TodayPlanList({ plan, progress, limit, onRebuild }: { plan: Toda
 
 /** The phases as a strip, with today marked. */
 export function PhaseTimeline({ examDate, phase }: { examDate: string; phase: Phase }) {
+  const { t } = useI18n();
   const steps = phaseTimeline(examDate);
   return (
     <ol className="phase-timeline">
       {steps.map((s) => (
         <li key={s.phase} className={`phase-step${s.phase === phase ? " current" : ""}`}>
-          <span className="phase-step-name">{PHASE_INFO[s.phase].name}</span>
+          <span className="phase-step-name">{t(PHASE_INFO[s.phase].name)}</span>
           <span className="phase-step-dates">
-            {s.from ? `${fmtDay(s.from)}` : "Until"}
-            {s.from && s.from.getTime() !== s.to.getTime() ? ` – ${fmtDay(s.to)}` : s.from ? "" : ` ${fmtDay(s.to)}`}
+            {s.from ? fmtDay(s.from, t) : t("xplan.until")}
+            {s.from && s.from.getTime() !== s.to.getTime() ? ` – ${fmtDay(s.to, t)}` : s.from ? "" : ` ${fmtDay(s.to, t)}`}
           </span>
-          {s.phase === phase && <span className="sr-only">(you are here)</span>}
+          {s.phase === phase && <span className="sr-only">({t("xplan.youAreHere")})</span>}
         </li>
       ))}
       <li className={`phase-step phase-step-exam${phase === "exam-day" ? " current" : ""}`}>
-        <span className="phase-step-name">Exam</span>
-        <span className="phase-step-dates">{fmtDay(parseDay(examDate))}</span>
+        <span className="phase-step-name">{t("exam.modeExam")}</span>
+        <span className="phase-step-dates">{fmtDay(parseDay(examDate), t)}</span>
       </li>
     </ol>
   );
@@ -257,24 +266,25 @@ export function PhaseTimeline({ examDate, phase }: { examDate: string; phase: Ph
 
 /** Named weak spots, each with a drill. */
 export function WeakSpotsPanel({ spots, labelNames, subjectLabel }: { spots: WeakSpots; labelNames: Record<string, string>; subjectLabel: (key: string) => string }) {
+  const { t } = useI18n();
   const empty = spots.topics.length === 0 && spots.questions.length === 0 && spots.labels.length === 0;
-  if (empty) return <p className="plan-empty">No weak spots yet. They show up as you review cards and take quizzes.</p>;
+  if (empty) return <p className="plan-empty">{t("xplan.noWeak")}</p>;
   return (
     <div className="weak-spots">
       {spots.topics.length > 0 && (
         <section>
-          <h3>Topics you keep forgetting</h3>
+          <h3>{t("xplan.weakTopics")}</h3>
           <ul className="weak-list">
-            {spots.topics.map((t) => (
-              <li key={`${t.subject}:${t.tag}`}>
+            {spots.topics.map((topic) => (
+              <li key={`${topic.subject}:${topic.tag}`}>
                 <span className="weak-name">
-                  {t.tag} <small>{subjectLabel(t.subject)}</small>
+                  {topic.tag} <small>{subjectLabel(topic.subject)}</small>
                 </span>
                 <span className="weak-stat">
-                  {t.weak}/{t.total} cards
+                  {t("xplan.weakCards", { weak: topic.weak, total: topic.total })}
                 </span>
-                <Link to={t.to} className="weak-drill">
-                  Drill
+                <Link to={topic.to} className="weak-drill">
+                  {t("xplan.drill")}
                 </Link>
               </li>
             ))}
@@ -283,7 +293,7 @@ export function WeakSpotsPanel({ spots, labelNames, subjectLabel }: { spots: Wea
       )}
       {spots.questions.length > 0 && (
         <section>
-          <h3>Questions you miss most</h3>
+          <h3>{t("xplan.weakQuestions")}</h3>
           <ul className="weak-list">
             {spots.questions.map((q) => (
               <li key={`${q.subject}:${q.id}`}>
@@ -291,7 +301,7 @@ export function WeakSpotsPanel({ spots, labelNames, subjectLabel }: { spots: Wea
                   {q.question} <small>{subjectLabel(q.subject)}</small>
                 </span>
                 <span className="weak-stat">
-                  missed {q.misses}×
+                  {t("xplan.missedTimes", { count: q.misses })}
                 </span>
               </li>
             ))}
@@ -299,7 +309,7 @@ export function WeakSpotsPanel({ spots, labelNames, subjectLabel }: { spots: Wea
           <div className="weak-actions">
             {spots.questionDrills.map((d) => (
               <Link key={d.subject} to={d.to} className="btn btn-secondary">
-                Drill {d.count} {subjectLabel(d.subject)} questions
+                {t("xplan.drillQuestions", { count: d.count, subject: subjectLabel(d.subject) })}
               </Link>
             ))}
           </div>
@@ -307,11 +317,11 @@ export function WeakSpotsPanel({ spots, labelNames, subjectLabel }: { spots: Wea
       )}
       {spots.labels.length > 0 && (
         <section>
-          <h3>Labels that keep slipping</h3>
+          <h3>{t("xplan.weakLabels")}</h3>
           <ul className="weak-chips">
             {spots.labels.map((l) => (
               <li key={`${l.subject}:${l.id}`}>
-                <Link to={`/occlusion/${l.subject}`}>{labelNames[l.id] ?? "A label"}</Link>
+                <Link to={`/occlusion/${l.subject}`}>{labelNames[l.id] ?? t("xplan.aLabel")}</Link>
                 <small>{l.lapses}×</small>
               </li>
             ))}
@@ -323,12 +333,13 @@ export function WeakSpotsPanel({ spots, labelNames, subjectLabel }: { spots: Wea
 }
 
 export function MilestoneList({ list, next }: { list: Milestone[]; next: Milestone | null }) {
+  const { t } = useI18n();
   const earned = list.filter((m) => m.earned);
   return (
     <div className="milestones">
       {next?.progress && (
         <div className="milestone-next">
-          <span className="milestone-next-label">Next up</span>
+          <span className="milestone-next-label">{t("xplan.nextUp")}</span>
           <strong>{next.title}</strong>
           <span className="meter-track" aria-hidden="true">
             <span className="meter-fill" style={{ width: `${(next.progress.have / next.progress.need) * 100}%` }} />
@@ -345,12 +356,12 @@ export function MilestoneList({ list, next }: { list: Milestone[]; next: Milesto
               {m.earned ? <CheckIcon /> : null}
             </span>
             <span>{m.title}</span>
-            <span className="sr-only">{m.earned ? "(earned)" : "(not yet)"}</span>
+            <span className="sr-only">{m.earned ? `(${t("xplan.earned")})` : `(${t("xplan.notYet")})`}</span>
           </li>
         ))}
       </ul>
       <p className="milestone-count">
-        {earned.length} of {list.length} earned
+        {t("xplan.earnedCount", { count: earned.length, total: list.length })}
       </p>
     </div>
   );
@@ -358,6 +369,7 @@ export function MilestoneList({ list, next }: { list: Milestone[]; next: Milesto
 
 /** You against your class, for signed-in students; quiet until there's an average to show. */
 export function ClassCompare({ blockId, readiness }: { blockId: string; readiness: number }) {
+  const { t } = useI18n();
   const { status } = useAccount();
   const [data, setData] = useState<ClassReadiness | null>(null);
   useEffect(() => {
@@ -373,19 +385,19 @@ export function ClassCompare({ blockId, readiness }: { blockId: string; readines
   if (status !== "signed-in") {
     return (
       <p className="plan-empty">
-        <Link to="/account">Sign in</Link> to see how your readiness compares with your class (only the class average is shown, never anyone's own number).
+        <Link to="/account">{t("auth.signIn")}</Link> {t("xplan.signInCompare")}
       </p>
     );
   }
-  if (!data) return <p className="plan-empty">Checking your class…</p>;
+  if (!data) return <p className="plan-empty">{t("xplan.checkingClass")}</p>;
   if (data.average === null) {
     return (
       <p className="plan-empty">
-        The class average shows once a few classmates{data.cohort ? ` in cohort ${data.cohort}` : ""} have a readiness for this block.
+        {data.cohort ? t("xplan.averageLaterCohort", { cohort: data.cohort }) : t("xplan.averageLater")}
         {!data.cohort && (
           <>
             {" "}
-            Set your cohort in <Link to="/account">Account</Link> to compare with your own class.
+            {t("xplan.setCohort")} <Link to="/account">{t("account.title")}</Link>.
           </>
         )}
       </p>
@@ -401,8 +413,8 @@ export function ClassCompare({ blockId, readiness }: { blockId: string; readines
         <span className="class-compare-marker" style={{ left: `${Math.min(100, data.average)}%` }} />
       </div>
       <p>
-        You <strong>{pct(readiness)}</strong> · {data.cohort ? `cohort ${data.cohort}` : "everyone"} averages <strong>{pct(data.average)}</strong>{" "}
-        ({diff === 0 ? "level" : diff > 0 ? `${diff} points ahead` : `${-diff} points behind`}, {data.count} students)
+        {t("board.you")} <strong>{pct(readiness)}</strong> · {data.cohort ? t("board.cohort", { cohort: data.cohort }) : t("board.everyone")} {t("xplan.averages")} <strong>{pct(data.average)}</strong>{" "}
+        ({diff === 0 ? t("xplan.level") : diff > 0 ? t("xplan.ahead", { count: diff }) : t("xplan.behind", { count: -diff })}, {t("xplan.students", { count: data.count })})
       </p>
     </div>
   );

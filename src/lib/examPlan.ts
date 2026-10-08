@@ -1,7 +1,7 @@
 import { blockById, studyBlocks } from "./blocks";
 import { ebookSubjects, flashcardSubjects, keyOf, quizSubjects } from "./content";
 import { readJSON, STORAGE_KEYS, writeJSON } from "./storage";
-import { englishT, type Translate } from "../i18n/i18n";
+import { englishT, type MessageKey, type Translate } from "../i18n/i18n";
 
 // A block's exam plan: when the exam is, how long the student studies a day, and what score
 // they're aiming for. The date comes from the block's official date unless the student sets
@@ -90,14 +90,14 @@ export function phaseFor(daysLeft: number | null): Phase {
   return "learn";
 }
 
-export const PHASE_INFO: Record<Phase, { name: string; focus: string }> = {
-  "no-date": { name: "No exam date", focus: "Set the exam date to get a plan that changes as it gets closer." },
-  learn: { name: "Learn", focus: "Cover new material: new cards, unread chapters, first passes through each quiz." },
-  strengthen: { name: "Strengthen", focus: "Go after weak spots: missed questions, cards you keep forgetting, your weakest subject." },
-  mock: { name: "Mock exams", focus: "Sit timed past papers, then review what you missed. Keep up with due reviews." },
-  final: { name: "Final review", focus: "Light review only: due cards and your summaries. Sleep well; nothing new." },
-  "exam-day": { name: "Exam day", focus: "Good luck. A quick look at your summaries at most." },
-  past: { name: "Exam over", focus: "This exam has passed. Set the next block's date to keep planning." },
+export const PHASE_INFO: Record<Phase, { name: MessageKey; focus: MessageKey }> = {
+  "no-date": { name: "phase.noDate", focus: "phase.noDateFocus" },
+  learn: { name: "phase.learn", focus: "phase.learnFocus" },
+  strengthen: { name: "phase.strengthen", focus: "phase.strengthenFocus" },
+  mock: { name: "phase.mock", focus: "phase.mockFocus" },
+  final: { name: "phase.final", focus: "phase.finalFocus" },
+  "exam-day": { name: "phase.examDay", focus: "phase.examDayFocus" },
+  past: { name: "phase.past", focus: "phase.pastFocus" },
 };
 
 /** The phases in order with their date ranges, for the timeline. */

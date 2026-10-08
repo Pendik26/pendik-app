@@ -1,3 +1,4 @@
+import { englishT, type Translate } from "../i18n/i18n";
 import { getActivityDays, getLongestStreak } from "./activity";
 import { ebookMeta, flashcardDecks, quizBanks } from "./content";
 import { examRecords } from "./exams";
@@ -78,21 +79,23 @@ export function gatherMilestoneInput(): MilestoneInput {
 
 const count = (id: string, title: string, detail: string, have: number, need: number): Milestone => ({ id, title, detail, earned: have >= need, progress: { have: Math.min(have, need), need } });
 
-export function milestones(m: MilestoneInput): Milestone[] {
+export function milestones(m: MilestoneInput, t: Translate = englishT): Milestone[] {
+  const reviews = t("milestone.reviewsDetail");
+  const interval = t("milestone.masteredDetail", { days: MASTERED_DAYS });
   return [
-    count("first-day", "First study day", "You started", m.studyDays, 1),
-    count("streak-7", "7-day streak", "Seven days in a row", m.longestStreak, 7),
-    count("streak-30", "30-day streak", "A month without a gap", m.longestStreak, 30),
-    count("reviews-100", "100 reviews", "Flashcard reviews", m.reviews, 100),
-    count("reviews-1000", "1,000 reviews", "Flashcard reviews", m.reviews, 1000),
-    count("mastered-100", "100 cards mastered", `Cards on a ${MASTERED_DAYS}-day interval`, m.mastered, 100),
-    count("mastered-500", "500 cards mastered", `Cards on a ${MASTERED_DAYS}-day interval`, m.mastered, 500),
-    count("quizzes-10", "10 quizzes", "Quiz attempts", m.quizzes, 10),
-    { id: "perfect", title: "Perfect quiz", detail: "Every question right (10 or more)", earned: m.perfectQuiz },
-    count("first-mock", "First mock exam", "A timed exam, start to finish", m.mocks, 1),
-    count("mock-70", "Mock score 70%+", "On a timed exam", Math.round(m.bestMock), 70),
-    count("book", "Finished an ebook", "Every chapter marked done", m.booksFinished, 1),
-    count("deck", "Mastered a deck", "Every card in a deck mastered", m.decksMastered, 1),
+    count("first-day", t("milestone.firstDay"), t("milestone.firstDayDetail"), m.studyDays, 1),
+    count("streak-7", t("milestone.streak", { days: 7 }), t("milestone.streak7Detail"), m.longestStreak, 7),
+    count("streak-30", t("milestone.streak", { days: 30 }), t("milestone.streak30Detail"), m.longestStreak, 30),
+    count("reviews-100", t("milestone.reviews100"), reviews, m.reviews, 100),
+    count("reviews-1000", t("milestone.reviews1000"), reviews, m.reviews, 1000),
+    count("mastered-100", t("milestone.mastered", { count: 100 }), interval, m.mastered, 100),
+    count("mastered-500", t("milestone.mastered", { count: 500 }), interval, m.mastered, 500),
+    count("quizzes-10", t("milestone.quizzes", { count: 10 }), t("milestone.quizzesDetail"), m.quizzes, 10),
+    { id: "perfect", title: t("milestone.perfect"), detail: t("milestone.perfectDetail"), earned: m.perfectQuiz },
+    count("first-mock", t("milestone.firstMock"), t("milestone.firstMockDetail"), m.mocks, 1),
+    count("mock-70", t("milestone.mock70"), t("milestone.mock70Detail"), Math.round(m.bestMock), 70),
+    count("book", t("milestone.book"), t("milestone.bookDetail"), m.booksFinished, 1),
+    count("deck", t("milestone.deck"), t("milestone.deckDetail"), m.decksMastered, 1),
   ];
 }
 

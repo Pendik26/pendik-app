@@ -81,7 +81,7 @@ export function Progress() {
       .map((b) => blockReadiness(b.id, occlusion.ids))
       .sort((a, b) => (a.blockId === focus ? -1 : b.blockId === focus ? 1 : a.blockId.localeCompare(b.blockId)));
     const allKeys = blocks.flatMap((b) => b.subjects.map((s) => s.key));
-    const list = milestones(gatherMilestoneInput());
+    const list = milestones(gatherMilestoneInput(), t);
     return {
       activityDays,
       log,
@@ -100,7 +100,7 @@ export function Progress() {
     };
     // version: re-read when the account's progress is loaded again.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [occlusion.ids, version]);
+  }, [occlusion.ids, version, t]);
 
   const streakCount = useCountUp(getCurrentStreak(data.activityDays));
   const longestCount = useCountUp(getLongestStreak(data.activityDays));
