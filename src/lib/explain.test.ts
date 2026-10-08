@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { askAi, findNotes } from "./explain";
 
+// A signed-in student, so the AI request goes out with their token.
+vi.mock("./supabase", () => ({
+  supabase: { auth: { getSession: async () => ({ data: { session: { access_token: "token" } } }) } },
+}));
+
 describe("findNotes", () => {
   it("finds the notes passages that share a question's key terms", async () => {
     const notes = await findNotes("1.2/anatomy", "Which bone is a sesamoid bone? Patella");

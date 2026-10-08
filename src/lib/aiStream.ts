@@ -1,19 +1,26 @@
-// The browser's side of the server's AI answers ("Explain this" and Alfond): posts a request
-// and reads the answer as it streams in as plain text.
+// The browser's side of the AI answers ("Explain this" and Alfond, the `ai` Edge Function):
+// posts a request with the student's session and reads the answer as it streams in as plain text.
+
+import { supabase } from "./supabase";
 
 export type AiResult = { ok: true; remaining: number | null } | { ok: false; status: number; message: string; partial?: string };
 
 /** The server ends an answer that broke off partway with a NUL character. */
 const CUT_OFF = "\u0000";
 
-/** Posts `body` to an AI route, calling onText with the whole answer so far as it arrives. */
-export async function streamAi(path: string, body: unknown, onText: (text: string) => void, signal?: AbortSignal): Promise<AiResult> {
+/** Posts `body` to the AI function, calling onText with the whole answer so far as it arrives. */
+export async function streamAi(kind: "explain" | "chat", body: unknown, onText: (text: string) => void, signal?: AbortSignal): Promise<AiResult> {
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) return { ok: false, status: 401, message: "Sign in to use the AI." };
   let res: Response;
   try {
-    res = await fetch(path, {
+    res = await fetch(`${import.meta.env.VITE_SUPABASE_URL as string}/functions/v1/ai/${kind}`, {
       method: "POST",
-      credentials: "same-origin",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${data.session.access_token}`,
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string,
+      },
       body: JSON.stringify(body),
       signal,
     });

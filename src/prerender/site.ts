@@ -313,9 +313,8 @@ export async function renderSite(template: string, origin: string): Promise<Rend
     [
       "User-agent: *",
       "Allow: /",
-      "# The API, and course material that belongs to its authors: lecture PDFs, slide figures",
-      "# and past exam paper images.",
-      "Disallow: /api/",
+      "# Course material that belongs to its authors: lecture PDFs, slide figures and past exam",
+      "# paper images.",
       "Disallow: /*.pdf$",
       "Disallow: /ebook-figures/",
       "Disallow: /exams/",

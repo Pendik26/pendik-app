@@ -62,7 +62,7 @@ describe("renderSite", () => {
     for (const path of PRIVATE_PATHS) expect(sitemap).not.toContain(`<loc>${ORIGIN}${path}</loc>`);
     const robots = site.files.get("robots.txt")!;
     expect(robots).toContain(`Sitemap: ${ORIGIN}/sitemap.xml`);
-    expect(robots).toContain("Disallow: /api/");
+    expect(robots).toContain("Disallow: /exams/");
   });
 
   it("never publishes past-paper exam questions", async () => {

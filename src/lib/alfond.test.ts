@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { alfondState, clearAlfond, retryAlfond, sendToAlfond } from "./alfond";
 
+// A signed-in student, so the AI request goes out with their token.
+vi.mock("./supabase", () => ({
+  supabase: { auth: { getSession: async () => ({ data: { session: { access_token: "token" } } }) } },
+}));
+
 let snapshot: ReturnType<typeof alfondState>;
 const read = () => (snapshot = alfondState());
 

@@ -29,3 +29,7 @@ secret = "env(GOOGLE_CLIENT_SECRET)"
 [functions.drive-sync]
 # Called by GitHub Actions with a shared secret, not a user token; the function checks it.
 verify_jwt = false
+
+[functions.ai]
+# Needs a signed-in student's token; the function also checks they're on the roster.
+verify_jwt = true

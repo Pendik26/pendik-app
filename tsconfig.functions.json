@@ -1,0 +1,24 @@
+{
+  // The Edge Functions' shared code, which has no imports and runs in Deno and in the tests.
+  // The functions' entry points (index.ts) use Deno APIs and are checked by `supabase functions`.
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.functions.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": [],
+    "skipLibCheck": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["supabase/functions/_shared/**/*.ts"],
+  "exclude": ["supabase/functions/_shared/**/*.test.ts"]
+}

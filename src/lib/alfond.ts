@@ -91,7 +91,7 @@ export async function sendToAlfond(text: string, page: PageContext | null): Prom
   const ctrl = new AbortController();
   controller = ctrl;
   const result = await streamAi(
-    "/api/ai/chat",
+    "chat",
     {
       messages: history.filter((m) => m.content.trim()).map(({ role, content }) => ({ role, content })),
       page: page ?? undefined,

@@ -99,5 +99,5 @@ export type ExplainResult = AiResult;
 
 /** Asks the server's AI to explain, calling onText with the answer as it streams in. */
 export function askAi(input: ExplainInput, onText: (text: string) => void, signal?: AbortSignal): Promise<ExplainResult> {
-  return streamAi("/api/ai/explain", { ...input, notes: input.notes.map(({ title, text }) => ({ title, text })) }, onText, signal);
+  return streamAi("explain", { ...input, notes: input.notes.map(({ title, text }) => ({ title, text })) }, onText, signal);
 }
