@@ -256,21 +256,6 @@ export function ClassDrive() {
       <section className="page drive-page">
         {head}
         {drive.status === "loading" && <RowSkeleton />}
-        {drive.status === "signed-out" && (
-          <EmptyState title="Sign in to open the class Drive">
-            <p>The class's slides, recordings and exams are for signed-in students.</p>
-            <Link to="/account" className="btn btn-primary">
-              Sign in
-            </Link>
-          </EmptyState>
-        )}
-        {drive.status === "off" && (
-          <EmptyState title="The class Drive isn't connected">
-            <p>
-              This site doesn't have a Google Drive folder set up. The <Link to="/modules">modules</Link> are still here.
-            </p>
-          </EmptyState>
-        )}
         {drive.status === "error" && (
           <EmptyState title="Couldn't load the class Drive">
             <p>{drive.message}</p>

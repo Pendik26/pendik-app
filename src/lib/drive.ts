@@ -1,77 +1,67 @@
 import type { DriveFile, DriveFileKind, DriveFolder, DriveTree } from "./driveTypes";
-import { storageKey } from "./storageSchema";
 
-// The class Google Drive (see server/drive.ts): fetching the listing for a signed-in student, and
-// finding a block's or subject's folder in it by name ("BLOCK 1.2 …" / "ANATOMY").
+// The class Google Drive, as the `drive-sync` Edge Function copies it into the `drive_files`
+// table: building the folder tree from it, and finding a block's or subject's folder in it by name
+// ("BLOCK 1.2 …" / "ANATOMY").
 
-export type DriveResult =
-  | { ok: true; tree: DriveTree; etag: string | null }
-  /** The server's listing is the one this device already has. */
-  | { ok: true; notModified: true }
-  | { ok: false; status: number; message: string };
+/** A row of the `drive_files` table, as the app reads it. */
+export interface DriveFileRow {
+  drive_file_id: string;
+  title: string;
+  kind: string;
+  folder_path: string[] | null;
+  size_bytes: number | null;
+  drive_modified_at: string | null;
+  created_at: string;
+  synced_at: string;
+}
 
-export async function fetchDrive({ refresh = false, etag, key }: { refresh?: boolean; etag?: string | null; key?: string } = {}): Promise<DriveResult> {
-  const params = new URLSearchParams();
-  if (key) params.set("key", key);
-  if (refresh) params.set("refresh", "1");
-  const qs = params.toString();
-  try {
-    const res = await fetch(`/api/drive${key ? "/folder" : ""}${qs ? `?${qs}` : ""}`, {
-      credentials: "same-origin",
-      // The device keeps its own copy (see useDrive), so the browser's cache would only double it.
-      cache: "no-store",
-      headers: etag ? { "if-none-match": etag } : undefined,
+const KINDS: Record<string, DriveFileKind> = {
+  slide: "slides",
+  pdf: "pdf",
+  video: "video",
+  youtube: "video",
+  audio: "audio",
+  doc: "document",
+  sheet: "sheet",
+  image: "image",
+};
+
+/** The folder tree the Class Drive pages show, built from the synced file rows' folder paths. */
+export function treeFromRows(rows: readonly DriveFileRow[]): DriveTree {
+  const root: DriveFolder = { name: "", folders: [], files: [] };
+  let updatedAt = 0;
+  for (const row of rows) {
+    let folder = root;
+    for (const name of row.folder_path ?? []) {
+      let next = folder.folders.find((f) => f.name === name);
+      if (!next) {
+        next = { name, folders: [], files: [] };
+        folder.folders.push(next);
+      }
+      folder = next;
+    }
+    folder.files.push({
+      id: row.drive_file_id,
+      name: row.title,
+      kind: KINDS[row.kind] ?? "other",
+      size: row.size_bytes,
+      modifiedTime: row.drive_modified_at ?? row.created_at,
+      createdTime: row.created_at,
     });
-    if (res.status === 304) return { ok: true, notModified: true };
-    const body = (await res.json().catch(() => null)) as (DriveTree & { error?: string }) | null;
-    if (!res.ok || !body?.root) return { ok: false, status: res.status, message: body?.error ?? "Couldn't load the class Drive." };
-    return { ok: true, tree: body, etag: res.headers.get("etag") };
-  } catch {
-    return { ok: false, status: 0, message: "You're offline, or the server can't be reached." };
+    updatedAt = Math.max(updatedAt, Date.parse(row.synced_at) || 0);
   }
-}
-
-// The listing as last loaded, per account, so the Drive opens instantly and offline. It lists
-// the class's exam papers, so it's removed when the student signs out.
-const CACHE_KEY = storageKey("drivecache");
-
-export interface DriveCache {
-  userId: string;
-  etag: string | null;
-  tree: DriveTree;
-  /** Archive folders opened lately, by key, with when they were last opened. */
-  folders?: Record<string, { etag: string | null; tree: DriveTree; openedAt: number }>;
-}
-
-/** Archive folders kept on the device: the most recently opened. */
-export const CACHED_FOLDERS = 4;
-
-/** The cache with an archive folder added, keeping only the most recently opened few. */
-export function withFolder(cache: DriveCache, key: string, entry: { etag: string | null; tree: DriveTree; openedAt: number }): DriveCache {
-  const folders = Object.entries({ ...cache.folders, [key]: entry })
-    .sort(([, a], [, b]) => b.openedAt - a.openedAt)
-    .slice(0, CACHED_FOLDERS);
-  return { ...cache, folders: Object.fromEntries(folders) };
-}
-
-/** The tree with the loaded archive folders' contents put in their places. */
-export function graftFolders(root: DriveFolder, loaded: Readonly<Record<string, { tree: DriveTree }>>): DriveFolder {
-  const graft = (folder: DriveFolder): DriveFolder => {
-    const content = folder.deferred ? loaded[folder.deferred]?.tree.root : undefined;
-    if (content) return { ...content, name: folder.name, deferred: folder.deferred, loaded: true };
-    if (folder.folders.length === 0) return folder;
-    const folders = folder.folders.map(graft);
-    return folders.every((f, i) => f === folder.folders[i]) ? folder : { ...folder, folders };
+  const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, undefined, { numeric: true });
+  const sort = (f: DriveFolder) => {
+    f.folders.sort(byName);
+    f.files.sort(byName);
+    f.folders.forEach(sort);
   };
-  return Object.keys(loaded).length > 0 ? graft(root) : root;
+  sort(root);
+  return { root, updatedAt, complete: true };
 }
 
-/** Archive folders not opened yet: their files aren't in the listing (or search) until they are. */
-export function waitingFolders(root: DriveFolder): { folder: DriveFolder; path: string[] }[] {
-  return allFolders(root).filter(({ folder }) => folder.deferred && !folder.loaded);
-}
-
-/** Along a path, the first archive folder that hasn't been loaded (whose contents the path needs). */
+/** Along a path, the first folder whose contents haven't been loaded. The synced listing has none. */
 export function waitingOnPath(root: DriveFolder, path: readonly string[]): { key: string; depth: number } | null {
   let folder: DriveFolder | undefined = root;
   for (const [i, name] of path.entries()) {
@@ -82,30 +72,9 @@ export function waitingOnPath(root: DriveFolder, path: readonly string[]): { key
   return null;
 }
 
-export function readDriveCache(userId: string): DriveCache | null {
-  try {
-    const raw = window.localStorage.getItem(CACHE_KEY);
-    const cache = raw ? (JSON.parse(raw) as Partial<DriveCache>) : null;
-    return cache?.userId === userId && cache.tree?.root ? (cache as DriveCache) : null;
-  } catch {
-    return null;
-  }
-}
-
-export function writeDriveCache(cache: DriveCache): void {
-  try {
-    window.localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-  } catch {
-    // Storage full: the listing still works for this visit.
-  }
-}
-
-export function forgetDriveCache(): void {
-  try {
-    window.localStorage.removeItem(CACHE_KEY);
-  } catch {
-    // Nothing to forget.
-  }
+/** Every folder under a folder that hasn't been loaded yet. The synced listing has none. */
+export function waitingFolders(root: DriveFolder): { folder: DriveFolder; path: string[] }[] {
+  return allFolders(root).filter(({ folder }) => folder.deferred && !folder.loaded);
 }
 
 /** The folder at a path of folder names from the top, or null. */

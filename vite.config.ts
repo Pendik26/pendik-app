@@ -5,49 +5,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { SITE_ORIGIN } from './src/lib/site.ts'
 import { buildInfo } from './scripts/build-info.mjs'
 
-// Serves the real API (server/app.ts) from the Vite dev server when MEDICINE_API=memory or
-// MONGODB_URI is set (`npm run dev:api`). Plain `npm run dev` stays a static, guest-only app.
-function devApi(): Plugin {
-  return {
-    name: 'medicine-dev-api',
-    apply: 'serve',
-    configureServer(server) {
-      if (process.env.MEDICINE_API !== 'memory' && !process.env.MONGODB_URI) return
-      server.middlewares.use(async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
-        if (!req.url?.startsWith('/api/')) return next()
-        try {
-          const { getDevApp } = await server.ssrLoadModule('/server/devApi.ts')
-          const chunks: Buffer[] = []
-          for await (const chunk of req) chunks.push(chunk as Buffer)
-          const headers = new Headers()
-          for (const [k, v] of Object.entries(req.headers)) {
-            if (Array.isArray(v)) v.forEach((x) => headers.append(k, x))
-            else if (v !== undefined) headers.set(k, v)
-          }
-          const hasBody = req.method !== 'GET' && req.method !== 'HEAD'
-          const request = new Request(`http://${req.headers.host}${req.url}`, {
-            method: req.method,
-            headers,
-            body: hasBody ? Buffer.concat(chunks) : undefined,
-          })
-          const response: Response = await (await getDevApp())(request)
-          res.statusCode = response.status
-          response.headers.forEach((value, key) => {
-            if (key !== 'set-cookie') res.setHeader(key, value)
-          })
-          const cookies = response.headers.getSetCookie()
-          if (cookies.length) res.setHeader('set-cookie', cookies)
-          res.end(Buffer.from(await response.arrayBuffer()))
-        } catch (err) {
-          console.error(err)
-          res.statusCode = 500
-          res.end('Dev API error')
-        }
-      })
-    },
-  }
-}
-
 // /privacy and /terms are the legal pages in public/legal/ (vercel.json rewrites them the same
 // way in production), for `vite` and `vite preview`.
 function legalPages(): Plugin {
@@ -122,7 +79,6 @@ export default defineConfig(async (): Promise<UserConfig> => ({
   define: { __BUILD_INFO__: JSON.stringify(await buildInfo()) },
   plugins: [
     react(),
-    devApi(),
     legalPages(),
     knowledgeGraphDev(),
     siteUrl(),
@@ -165,10 +121,9 @@ export default defineConfig(async (): Promise<UserConfig> => ({
         // static file under /assets/ — e.g. opening a module PDF was silently served
         // index.html instead. Scoped to /assets/ specifically (not a general ".ext$" pattern)
         // since a route param can itself contain a dot, e.g. /exam/1.1.
-        // /api/ must reach the network too: the Google sign-in callback is a full navigation.
         // So must the sitemap and robots.txt: opened in a browser, they'd otherwise show the app.
         // The privacy policy and terms are plain pages outside the app (served from legal/).
-        navigateFallbackDenylist: [/\/assets\//, /^\/api\//, /\.(xml|txt)$/, /^\/(privacy|terms)(\.html)?\/?$/],
+        navigateFallbackDenylist: [/\/assets\//, /\.(xml|txt)$/, /^\/(privacy|terms)(\.html)?\/?$/],
         runtimeCaching: [
           {
             // The knowledge map's data: fetched when the map is opened, then kept for offline.

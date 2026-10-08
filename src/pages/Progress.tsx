@@ -1,8 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { exportAllProgress, importAllProgress, writeJSON, STORAGE_KEYS } from "../lib/storage";
-import { migrateLegacyProgressKeys } from "../lib/progressMigration";
-import { useAccount } from "../hooks/useAccount";
+import { STORAGE_KEYS } from "../lib/storage";
 import { useOcclusionIds } from "../hooks/useOcclusionIds";
 import { getActivityDays, getCurrentStreak, getLongestStreak, getStudyLog, type StudyKind } from "../lib/activity";
 import { blockById, studyBlocks } from "../lib/blocks";
@@ -13,9 +11,8 @@ import { bestStudyTime, dailySeries, dayDetail, dayIntensity, weekComparison, ty
 import { weakSpots } from "../lib/weakSpots";
 import { gatherMilestoneInput, milestones, nextMilestone } from "../lib/milestones";
 import { allSubjects } from "../lib/routeMeta";
-import { STORAGE_UPDATED_EVENT } from "../lib/sync";
+import { STORAGE_UPDATED_EVENT } from "../lib/storage";
 import { ActivityHeatmap } from "../components/ActivityHeatmap";
-import { BackupNudge } from "../components/BackupNudge";
 import { ScoreSparkline } from "../components/ScoreSparkline";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { DailyBars, ScoreTrend } from "../components/plan/charts";
@@ -23,7 +20,6 @@ import { AskAlfondButton, MilestoneList, MockSummary, ReadinessSummary, SubjectP
 import { useCountUp } from "../hooks/useCountUp";
 import type { QuizAttempt } from "../types/content";
 import { readJSON } from "../lib/storage";
-import { shouldNudgeBackup } from "../lib/backupReminder";
 import { entry } from "../lib/records";
 
 const KIND_NAMES: Record<StudyKind, [string, string]> = {
@@ -62,10 +58,7 @@ function WeekStrip({ thisWeek, lastWeek }: { thisWeek: WeekSummary; lastWeek: We
 }
 
 export function Progress() {
-  const fileInput = useRef<HTMLInputElement>(null);
-  const { status } = useAccount();
   const occlusion = useOcclusionIds();
-  const [message, setMessage] = useState("");
   const [version, setVersion] = useState(0);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
@@ -100,41 +93,14 @@ export function Progress() {
         .map((key) => ({ key, attempts: readJSON<QuizAttempt[]>(STORAGE_KEYS.quizProgress(key), []) }))
         .filter((q) => q.attempts.length > 0),
     };
-    // version: re-read after a sync or an import.
+    // version: re-read when the account's progress is loaded again.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [occlusion.ids, version]);
-
-  const handleExport = () => {
-    const blob = new Blob([JSON.stringify(exportAllProgress(), null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `medicine-progress-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    writeJSON(STORAGE_KEYS.lastExport, new Date().toISOString());
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      importAllProgress(JSON.parse(await file.text()));
-      migrateLegacyProgressKeys();
-      setVersion((v) => v + 1);
-      setMessage("Progress imported.");
-    } catch {
-      setMessage("Could not read that file — is it a valid export?");
-    } finally {
-      e.target.value = "";
-    }
-  };
 
   const streakCount = useCountUp(getCurrentStreak(data.activityDays));
   const longestCount = useCountUp(getLongestStreak(data.activityDays));
   const studyDaysCount = useCountUp(data.activityDays.length);
 
-  const backupDue = status !== "signed-in" && shouldNudgeBackup(readJSON<string | null>(STORAGE_KEYS.lastExport, null), data.activityDays.length > 0);
   const focus = data.blocks.at(0);
   const focusExam = focus ? examDateFor(focus.blockId).date : null;
   const focusDays = focusExam ? daysUntil(focusExam) : null;
@@ -145,9 +111,7 @@ export function Progress() {
     <section className="page progress-page">
       <h1>Progress</h1>
       <p className="subtitle">
-        {status === "signed-in"
-          ? "Everything you've studied, synced to your account."
-          : "Everything you've studied on this device. Sign in from Account to sync it across devices."}
+        Everything you've studied, saved in your account.
       </p>
 
       {focus && (
@@ -301,25 +265,6 @@ export function Progress() {
         <MilestoneList list={data.milestones} next={data.next} />
       </div>
 
-      <details className="progress-data" id="your-data" open={backupDue}>
-        <summary>Your data: backup and restore</summary>
-        <BackupNudge showLink={false} />
-        <p>
-          {status === "signed-in"
-            ? "Your progress syncs to your account; a backup file is an extra copy."
-            : "As a guest, everything lives in this browser. Clearing site data or switching devices loses it unless you've exported it (or signed in)."}
-        </p>
-        <div className="progress-actions">
-          <button className="btn" onClick={handleExport}>
-            Export progress (JSON)
-          </button>
-          <button className="btn btn-secondary" onClick={() => fileInput.current?.click()}>
-            Import progress
-          </button>
-          <input ref={fileInput} type="file" accept="application/json" hidden onChange={handleFileChange} />
-        </div>
-        {message && <p className="progress-message">{message}</p>}
-      </details>
     </section>
   );
 }

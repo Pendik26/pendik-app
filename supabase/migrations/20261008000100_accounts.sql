@@ -36,7 +36,6 @@ create table public.profiles (
   must_change_password boolean not null default true,
   -- Settings the student edits from the Account page.
   display_name         text check (length(display_name) between 1 and 40),
-  current_block        text check (current_block ~ '^[0-9]+\.[0-9]+$'),
   leaderboard_joined   boolean not null default false,
   created_at           timestamptz not null default now(),
   updated_at           timestamptz not null default now()
@@ -74,7 +73,6 @@ grant select, insert, update on public.roster, public.profiles to service_role;
 -- The student's own settings. Name, student id, class and role are not theirs to change.
 create or replace function public.update_my_settings(
   p_display_name text default null,
-  p_current_block text default null,
   p_leaderboard_joined boolean default null
 )
 returns void
@@ -86,7 +84,6 @@ begin
   if auth.uid() is null then raise exception 'not_signed_in'; end if;
   update public.profiles set
     display_name = coalesce(nullif(btrim(p_display_name), ''), display_name),
-    current_block = coalesce(p_current_block, current_block),
     leaderboard_joined = coalesce(p_leaderboard_joined, leaderboard_joined)
   where id = auth.uid();
 end;
@@ -102,7 +99,7 @@ as $$
   update public.profiles set must_change_password = false where id = auth.uid();
 $$;
 
-revoke execute on function public.is_admin(), public.update_my_settings(text, text, boolean), public.password_changed()
+revoke execute on function public.is_admin(), public.update_my_settings(text, boolean), public.password_changed()
   from public, anon;
-grant execute on function public.is_admin(), public.update_my_settings(text, text, boolean), public.password_changed()
+grant execute on function public.is_admin(), public.update_my_settings(text, boolean), public.password_changed()
   to authenticated;

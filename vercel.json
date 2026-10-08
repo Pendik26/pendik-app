@@ -20,10 +20,6 @@
   ],
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api"
-    },
-    {
       "source": "/privacy",
       "destination": "/legal/privacy.html"
     },
@@ -40,7 +36,7 @@
       "destination": "/:section/:rest+/index.html"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],

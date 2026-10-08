@@ -123,7 +123,7 @@ select pg_temp.check((get_attempt(:'att2') ->> 'status') = 'finished', 'expired 
 insert into progress (user_id, key, value) values
   ('00000000-0000-0000-0000-000000000001', 'activity', to_jsonb(array[(now() at time zone 'utc')::date - 1, (now() at time zone 'utc')::date]::text[])),
   ('00000000-0000-0000-0000-000000000001', 'flashcards:1.1/histology', '{"c1":{"reps":2},"c2":{"reps":0}}');
-select update_my_settings(null, '1.1', true);
+select update_my_settings(null, true);
 select leaderboard('all') as lb \gset
 -- 2 correct answers (exam 1 + practice 1) + 1 card * 2 + 2 days * 5 = 14
 select pg_temp.check((:'lb'::jsonb -> 'me' ->> 'points')::int = 14, 'all-time points: ' || (:'lb'::jsonb -> 'me' ->> 'points'));

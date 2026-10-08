@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 import { streamAi } from "./aiStream";
 import { SITE_NAME } from "./site";
 import { readJSON, STORAGE_KEYS, writeJSON } from "./storage";
-import { STORAGE_UPDATED_EVENT } from "./sync";
+import { STORAGE_UPDATED_EVENT } from "./storage";
 
 // Alfond, the study assistant: one conversation, shared by the floating overlay and the
 // /alfond page, kept on this device. Each question carries the text of the page the student

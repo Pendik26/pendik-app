@@ -24,7 +24,6 @@ import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import { RadialGauge } from "../components/RadialGauge";
 import { ActivityHeatmap } from "../components/ActivityHeatmap";
-import { BackupNudge } from "../components/BackupNudge";
 import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { AtomIcon, BodyIcon, CalendarIcon, FlaskIcon, LinkIcon, MapIcon, PlayCircleIcon, SearchIcon, TimerIcon } from "../components/icons";
 import type { CardStateMap, ExamAttempt, QuizAttempt, ReadingPosition } from "../types/content";
@@ -255,7 +254,6 @@ export function Home() {
     <section className="page dashboard">
       <TodayHero streak={streak} firstVisit={!hasActivity} current={currentBlock} onPickBlock={setCurrentBlock} />
 
-      <BackupNudge />
 
       <div className="dashboard-layout">
         <div className="dashboard-main">

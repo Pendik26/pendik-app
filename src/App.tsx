@@ -12,7 +12,8 @@ import { UpdateNudge } from "./components/UpdateNudge";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useCardSpotlight } from "./hooks/useCardSpotlight";
 import { AccountProvider } from "./context/AccountContext";
-import { useAccount } from "./hooks/useAccount";
+import { AuthGate } from "./components/AuthGate";
+import { I18nProvider } from "./i18n/I18nProvider";
 import { usePageMeta } from "./hooks/usePageMeta";
 
 // Each page ships as its own chunk, fetched only when its route is visited, so the initial
@@ -88,15 +89,12 @@ function RouteFallback() {
 // instead of requiring a full reload to escape it.
 function AppRoutes() {
   const { pathname } = useLocation();
-  // Signing in merges the account's progress into this device; remount the pages so they
-  // re-read it instead of showing the guest numbers until the next navigation.
-  const { dataVersion } = useAccount();
   usePageMeta(pathname);
   // Remembered for the command palette's "recent".
   useEffect(() => { rememberPage(pathname); }, [pathname]);
 
   return (
-    <ErrorBoundary key={`${pathname}#${dataVersion}`}>
+    <ErrorBoundary key={pathname}>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -145,7 +143,9 @@ export default function App() {
 
   return (
     <ErrorBoundary>
+      <I18nProvider>
       <AccountProvider>
+        <AuthGate>
         <BrowserRouter>
           <a href="#main-content" className="skip-link">
             Skip to content
@@ -166,7 +166,9 @@ export default function App() {
             <AlfondOverlay />
           </div>
         </BrowserRouter>
+        </AuthGate>
       </AccountProvider>
+      </I18nProvider>
     </ErrorBoundary>
   );
 }

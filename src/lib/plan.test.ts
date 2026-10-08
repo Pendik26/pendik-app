@@ -5,7 +5,6 @@ import { milestones, nextMilestone, type MilestoneInput } from "./milestones";
 import { deckStats, projectScore, quizStats, scoreBlock, scoreSubject, type BlockReadiness, type SubjectReadiness } from "./readiness";
 import { bestStudyTime, dailySeries, weekComparison } from "./studyStats";
 import { buildTodayPlan, planProgress, planStatus } from "./todayPlan";
-import { mergeEntry } from "./syncMerge";
 import type { StudyLog } from "./activity";
 
 const day = (offset: number, base = new Date(2026, 9, 4)) => new Date(base.getFullYear(), base.getMonth(), base.getDate() + offset);
@@ -145,14 +144,6 @@ describe("study stats", () => {
   it("names the best two-hour study window once there's enough data", () => {
     expect(bestStudyTime(log)).toBe("8–10 pm");
     expect(bestStudyTime({ days: {}, hours: { "9": 3 } })).toBeNull();
-  });
-
-  it("merges two devices' logs by keeping the larger count", () => {
-    const merged = mergeEntry(
-      { key: "medicine:studylog", value: { days: { d: { s: { cards: 5, labels: 2 } } }, hours: { "9": 4 } }, updatedAt: 1 },
-      { key: "medicine:studylog", value: { days: { d: { s: { cards: 3 }, t: { questions: 9 } } }, hours: { "9": 6 } }, updatedAt: 2 },
-    );
-    expect(merged.value).toEqual({ days: { d: { s: { cards: 5, labels: 2 }, t: { questions: 9 } } }, hours: { "9": 6 } });
   });
 });
 

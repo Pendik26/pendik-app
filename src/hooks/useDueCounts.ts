@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { totalCardsDue, totalQuizDue } from "../lib/dueCounts";
-import { STORAGE_UPDATED_EVENT } from "../lib/sync";
+import { STORAGE_UPDATED_EVENT } from "../lib/storage";
 
 /**
  * Reviews due now (flashcards studied before, quiz questions missed), re-counted on every page

@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { addedWhen, blockFolderPath, blockIdOf, CACHED_FOLDERS, graftFolders, waitingFolders, waitingOnPath, withFolder, type DriveCache, changedAt, countFiles, driveHref, fileGroups, filesUnder, fileTitle, folderAt, forgetDriveCache, formatSize, isNew, placeLabel, isSubjectFolder, niceName, readDriveCache, searchDrive, sortFiles, subjectFolderPath, updatedAgo, writeDriveCache } from "./drive";
-import type { DriveFile, DriveFolder, DriveTree } from "./driveTypes";
+import { describe, expect, it } from "vitest";
+import { addedWhen, blockIdOf, changedAt, countFiles, driveHref, fileGroups, filesUnder, fileTitle, folderAt, formatSize, isNew, placeLabel, isSubjectFolder, niceName, searchDrive, sortFiles, subjectFolderPath, treeFromRows, updatedAgo } from "./drive";
+import type { DriveFile, DriveFolder } from "./driveTypes";
 
 const file = (id: string, name: string): DriveFile => ({ id, name, kind: "slides", size: 1000, modifiedTime: "" });
 const folder = (name: string, folders: DriveFolder[] = [], files: DriveFile[] = []): DriveFolder => ({ name, folders, files });
@@ -142,78 +142,22 @@ describe("finding files", () => {
   });
 });
 
-describe("the listing kept on the device", () => {
-  beforeEach(() => {
-    const data = new Map<string, string>();
-    vi.stubGlobal("window", {
-      localStorage: {
-        getItem: (k: string) => data.get(k) ?? null,
-        setItem: (k: string, v: string) => { data.set(k, v); },
-        removeItem: (k: string) => { data.delete(k); },
-      },
+describe("the synced listing", () => {
+  it("builds the folder tree from each file's folder path", () => {
+    const row = (id: string, title: string, path: string[], kind = "pdf") => ({
+      drive_file_id: id, title, kind, folder_path: path, size_bytes: 10,
+      drive_modified_at: "2026-10-01T00:00:00Z", created_at: "2026-10-02T00:00:00Z", synced_at: "2026-10-08T00:00:00Z",
     });
-  });
-  afterEach(() => { vi.unstubAllGlobals(); });
-
-  it("belongs to one account and goes on sign-out", () => {
-    const tree = { root, updatedAt: 1, complete: true };
-    writeDriveCache({ userId: "u1", etag: '"drive-1-1"', tree });
-    expect(readDriveCache("u1")?.etag).toBe('"drive-1-1"');
-    expect(readDriveCache("u2")).toBeNull();
-    forgetDriveCache();
-    expect(readDriveCache("u1")).toBeNull();
-  });
-});
-
-describe("archive folders", () => {
-  const archiveTree = (): DriveFolder => ({
-    name: "",
-    files: [],
-    folders: [
-      {
-        name: "PENDPRODUKTIF",
-        archive: true,
-        files: [],
-        folders: [
-          { name: "2019", folders: [], files: [], deferred: "key2019aaaaaaaaa" },
-          { name: "2020", folders: [], files: [], deferred: "key2020aaaaaaaaa" },
-        ],
-      },
-      { name: "SEMESTER 1", files: [], folders: [{ name: "BLOCK 1.2 INTEGUMEN", files: [], folders: [] }] },
-    ],
-  });
-  const cohort: DriveTree = {
-    root: { name: "", files: [], folders: [{ name: "BLOCK 1.1", folders: [], files: [{ id: "old1", name: "UB.pdf", kind: "pdf", size: 1, modifiedTime: "" }] }] },
-    updatedAt: 1,
-    complete: true,
-  };
-
-  it("fills opened cohorts in, leaving everything else as it was", () => {
-    const root = archiveTree();
-    const grafted = graftFolders(root, { key2019aaaaaaaaa: { tree: cohort } });
-    const opened = grafted.folders[0].folders[0];
-    expect(opened).toMatchObject({ name: "2019", deferred: "key2019aaaaaaaaa", loaded: true });
-    expect(opened.folders[0].files[0].name).toBe("UB.pdf");
-    expect(grafted.folders[1]).toBe(root.folders[1]);
-    expect(graftFolders(root, {})).toBe(root);
-  });
-
-  it("knows which cohorts are still waiting, and which one a path needs", () => {
-    const grafted = graftFolders(archiveTree(), { key2019aaaaaaaaa: { tree: cohort } });
-    expect(waitingFolders(grafted).map((w) => w.folder.name)).toEqual(["2020"]);
-    expect(waitingOnPath(grafted, ["PENDPRODUKTIF", "2020", "BLOCK 1.1"])).toEqual({ key: "key2020aaaaaaaaa", depth: 2 });
-    expect(waitingOnPath(grafted, ["PENDPRODUKTIF", "2019", "BLOCK 1.1"])).toBeNull();
-  });
-
-  it("never takes this year's block folder from an archive", () => {
-    const root = archiveTree();
-    root.folders[0].folders.push({ name: "BLOCK 1.2 OLD", folders: [], files: [] });
-    expect(blockFolderPath(root, "1.2")).toEqual(["SEMESTER 1", "BLOCK 1.2 INTEGUMEN"]);
-  });
-
-  it("keeps only the most recently opened cohorts on the device", () => {
-    let cache: DriveCache = { userId: "u", etag: null, tree: { root: archiveTree(), updatedAt: 0, complete: true } };
-    for (let i = 0; i < CACHED_FOLDERS + 2; i++) cache = withFolder(cache, `k${i}`, { etag: null, tree: cohort, openedAt: i });
-    expect(Object.keys(cache.folders ?? {}).sort()).toEqual(["k2", "k3", "k4", "k5"]);
+    const tree = treeFromRows([
+      row("b", "B.pdf", ["SEMESTER 1", "BLOCK 1.2 INTEGUMEN", "ANATOMY"]),
+      row("a", "A.pptx", ["SEMESTER 1", "BLOCK 1.2 INTEGUMEN", "ANATOMY"], "slide"),
+      row("c", "Video", ["SEMESTER 1", "BLOCK 1.1 CELL"], "youtube"),
+    ]);
+    expect(tree.root.folders.map((f) => f.name)).toEqual(["SEMESTER 1"]);
+    expect(tree.root.folders[0].folders.map((f) => f.name)).toEqual(["BLOCK 1.1 CELL", "BLOCK 1.2 INTEGUMEN"]);
+    const anatomy = folderAt(tree.root, ["SEMESTER 1", "BLOCK 1.2 INTEGUMEN", "ANATOMY"]);
+    expect(anatomy?.files.map((f) => [f.name, f.kind])).toEqual([["A.pptx", "slides"], ["B.pdf", "pdf"]]);
+    expect(subjectFolderPath(tree.root, "1.2", "anatomy")).toEqual(["SEMESTER 1", "BLOCK 1.2 INTEGUMEN", "ANATOMY"]);
+    expect(tree.updatedAt).toBe(Date.parse("2026-10-08T00:00:00Z"));
   });
 });

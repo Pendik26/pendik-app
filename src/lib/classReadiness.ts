@@ -1,5 +1,7 @@
-// The student's readiness against their class (see /api/readiness on the server). Only for
-// signed-in students; a guest's numbers never leave the device.
+import { supabase } from "./supabase";
+
+// The student's exam readiness against their class: each student's number per block is saved
+// (`block_readiness`), and the class average comes back once at least 3 classmates have one.
 
 export interface ClassReadiness {
   cohort: string | null;
@@ -11,29 +13,22 @@ export interface ClassReadiness {
 
 const reported = new Map<string, number>();
 
-/** Sends this student's readiness for a block, when it has moved by a point or more. */
+/** Saves this student's readiness for a block, when it has moved by a point or more. */
 export async function reportReadiness(blockId: string, value: number): Promise<void> {
   const rounded = Math.round(value);
   if (reported.get(blockId) === rounded) return;
   reported.set(blockId, rounded);
-  try {
-    await fetch("/api/readiness", {
-      method: "PUT",
-      credentials: "same-origin",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ block: blockId, value }),
-    });
-  } catch {
-    reported.delete(blockId);
-  }
+  const { data } = await supabase.auth.getSession();
+  const userId = data.session?.user.id;
+  if (!userId) return;
+  const { error } = await supabase.from("block_readiness").upsert(
+    { user_id: userId, block: blockId, value: Math.round(Math.min(100, Math.max(0, value)) * 10) / 10, updated_at: new Date().toISOString() },
+    { onConflict: "user_id,block" },
+  );
+  if (error) reported.delete(blockId);
 }
 
 export async function fetchClassReadiness(blockId: string): Promise<ClassReadiness | null> {
-  try {
-    const res = await fetch(`/api/readiness?block=${encodeURIComponent(blockId)}`, { credentials: "same-origin" });
-    if (!res.ok) return null;
-    return (await res.json()) as ClassReadiness;
-  } catch {
-    return null;
-  }
+  const { data, error } = await supabase.rpc("class_readiness", { p_block: blockId });
+  return error ? null : (data as ClassReadiness);
 }

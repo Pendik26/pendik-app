@@ -1,13 +1,13 @@
 {
-  "name": "medicine",
+  "name": "pendik-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "A study app for flashcards, quizzes, ebooks and summaries: works offline as a guest, with optional accounts that sync progress across devices.",
+  "description": "The Pendik 2026 class study app: modules, flashcards, quizzes, exams and the class Drive, for students on the class roster.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/neccrr/medicine"
+    "url": "https://github.com/Pendik26/pendik-app"
   },
   "scripts": {
     "dev": "vite",
@@ -17,16 +17,14 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "dev:api": "MEDICINE_API=memory vite",
     "graph:relations": "node scripts/graph-relations.mjs",
     "docs:wiki": "node scripts/wiki.mjs"
   },
   "dependencies": {
-    "better-auth": "^1.7.6",
+    "@supabase/supabase-js": "^2.117.3",
     "d3-force": "^3.0.0",
     "fuse.js": "^7.5.0",
     "marked": "^18.0.13",
-    "mongodb": "^7.6.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4",

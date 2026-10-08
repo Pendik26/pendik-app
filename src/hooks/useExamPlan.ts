@@ -3,7 +3,7 @@ import { getStudyLog } from "../lib/activity";
 import { blockById } from "../lib/blocks";
 import { DEFAULT_MINUTES, daysUntil, examDateFor, phaseFor, readExamPlan, writeExamPlan, type ExamPlanSettings } from "../lib/examPlan";
 import { blockReadiness } from "../lib/readiness";
-import { STORAGE_UPDATED_EVENT } from "../lib/sync";
+import { STORAGE_UPDATED_EVENT } from "../lib/storage";
 import { planProgress, todayPlanFor } from "../lib/todayPlan";
 import { useOcclusionIds } from "./useOcclusionIds";
 

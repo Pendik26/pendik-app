@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { readJSON, writeJSON } from "../lib/storage";
-import { STORAGE_UPDATED_EVENT } from "../lib/sync";
+import { STORAGE_UPDATED_EVENT } from "../lib/storage";
 
 /**
  * localStorage-backed state, safe to use with a key that changes across

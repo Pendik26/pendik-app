@@ -1,6 +1,6 @@
-// The class Google Drive as the API sends it (see server/drive.ts): folders by name, files with
-// the id Drive's viewer needs. Import-free, so the server can load it too. Folder ids are never
-// sent: the shared folder lets anyone with a link edit it.
+// The class Google Drive as the app builds it from the drive_files table (see treeFromRows):
+// folders by name, files with the id Drive's viewer needs. Folder ids are never stored: the
+// shared folder lets anyone with a link edit it.
 
 export type DriveFileKind = "slides" | "pdf" | "video" | "audio" | "document" | "sheet" | "image" | "other";
 

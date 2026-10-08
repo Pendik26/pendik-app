@@ -125,18 +125,12 @@ export function ModuleViewer() {
     </ol>
   );
 
-  const driveSection =
-    drive.status === "off" ? null : (
+  const driveSection = (
       <div className="ebook-toc-section drive-toc">
         <p className="ebook-toc-group">
           Class Drive <span className="drive-live-tag">live</span>
         </p>
         {drive.status === "loading" && <p className="ebook-toc-empty">Loading…</p>}
-        {drive.status === "signed-out" && (
-          <p className="ebook-toc-empty">
-            <Link to="/account">Sign in</Link> to see this subject's slides and recordings from the class Drive.
-          </p>
-        )}
         {drive.status === "error" && <p className="ebook-toc-empty">{drive.message}</p>}
         {drive.status === "ready" &&
           (driveGroups.length === 0 ? (

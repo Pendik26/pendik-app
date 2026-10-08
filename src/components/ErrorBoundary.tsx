@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   handleClearAndReload = () => {
-    const prefix = "medicine:";
+    const prefix = "pendik:";
     for (let i = window.localStorage.length - 1; i >= 0; i--) {
       const key = window.localStorage.key(i);
       if (key?.startsWith(prefix)) window.localStorage.removeItem(key);
@@ -45,20 +45,19 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="error-boundary-card">
           <h1>Something went wrong</h1>
           <p>
-            The app hit an unexpected error and couldn't continue. This can happen when saved
-            progress from an older version doesn't match what the app now expects.
+            The app hit an unexpected error and couldn't continue. Reloading usually fixes it.
           </p>
           <div className="error-boundary-actions">
             <button type="button" className="btn" onClick={this.handleReload}>
               Reload
             </button>
             <button type="button" className="btn btn-secondary" onClick={this.handleClearAndReload}>
-              Clear local data and reload
+              Reset this device's settings and reload
             </button>
           </div>
           <p className="error-boundary-hint">
-            Clearing local data resets flashcard/quiz progress and reading positions on this
-            device. Export a backup from Progress first if you can.
+            Resetting clears this browser's settings (theme, sidebar, recent pages). Your progress
+            is saved in your account and isn't affected.
           </p>
         </div>
       </div>

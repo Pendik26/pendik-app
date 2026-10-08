@@ -34,7 +34,7 @@ import { decodeGraph } from "../lib/knowledgeGraph/wire";
 import { GRAPH_URL, type GraphNode, type KnowledgeGraph, type SectionRef } from "../lib/knowledgeGraph/types";
 import { allSubjects } from "../lib/routeMeta";
 import { STORAGE_KEYS } from "../lib/storage";
-import { STORAGE_UPDATED_EVENT } from "../lib/sync";
+import { STORAGE_UPDATED_EVENT } from "../lib/storage";
 
 // The knowledge map as an Obsidian-style vault: a ribbon of tools, a concept explorer (blocks
 // and subjects as folders), the graph view, and the open concept as a note with its

@@ -12,7 +12,6 @@ import { countFiles, filesUnder, folderAt, isNew, subjectFolderPath, updatedAgo 
 function DriveCard() {
   const drive = useDrive();
   const { opened } = useDriveOpened();
-  if (drive.status === "off") return null;
   const total = drive.status === "ready" ? countFiles(drive.tree.root) : null;
   const fresh = drive.status === "ready" ? filesUnder(drive.tree.root).filter((f) => isNew(f, opened)).length : 0;
   return (
@@ -21,9 +20,7 @@ function DriveCard() {
       <span>
         <strong>Class Drive</strong>
         <small>
-          {drive.status === "signed-out"
-            ? "Sign in to open every slide, recording, tutorial and exam from the class's Google Drive."
-            : total !== null && drive.status === "ready"
+          {total !== null && drive.status === "ready"
               ? `${total} files: slides, recordings, tutorials and exams, live from Google Drive (updated ${updatedAgo(drive.tree.updatedAt)}).${fresh > 0 ? ` ${fresh} new this week.` : ""}`
               : "Slides, recordings, tutorials and exams, live from the class's Google Drive."}
         </small>

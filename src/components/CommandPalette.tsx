@@ -6,7 +6,7 @@ import { buildNavigationDocs, type SearchDoc } from "../lib/searchIndex";
 import { unfinishedToday } from "../lib/todayPlan";
 import { HighlightText } from "./HighlightText";
 
-export const OPEN_COMMAND_PALETTE_EVENT = "medicine:open-command-palette";
+export const OPEN_COMMAND_PALETTE_EVENT = "pendik:open-command-palette";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);

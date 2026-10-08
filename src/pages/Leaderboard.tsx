@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { FlameIcon, TrophyIcon } from "../components/icons";
-import { useAccount } from "../hooks/useAccount";
 import { fetchBoard, updateMembership, type Board, type BoardRow, type Period, type Scope } from "../lib/leaderboard";
 
 const PERIODS: { id: Period; label: string }[] = [
@@ -100,8 +98,8 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
       <h2>{board.me.joined ? "Change your display name" : "Join the leaderboard"}</h2>
       {!board.me.joined && (
         <p className="account-note">
-          Only your display name, cohort and scores are shown to other signed-in students. Your
-          email and answers stay private, and you can leave at any time.
+          Only your display name, cohort and scores are shown to other students. Your real name and
+          answers stay private, and you can leave at any time.
         </p>
       )}
       <label className="account-field">
@@ -133,25 +131,13 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
 }
 
 function SignedInBoard() {
-  const { syncNow } = useAccount();
   const [period, setPeriod] = useState<Period>("week");
   const [scope, setScope] = useState<Scope>("everyone");
   const [board, setBoard] = useState<Board | null>(null);
   const [error, setError] = useState("");
-  const [synced, setSynced] = useState(false);
   const [reload, setReload] = useState(0);
 
-  // Upload anything unsynced first, so your own score on the board is current. Once per visit:
-  // the sync itself updates account state, and must never trigger another one.
-  const syncedOnce = useRef(false);
   useEffect(() => {
-    if (syncedOnce.current) return;
-    syncedOnce.current = true;
-    void syncNow().finally(() => { setSynced(true); });
-  }, [syncNow]);
-
-  useEffect(() => {
-    if (!synced) return;
     let cancelled = false;
     fetchBoard(period, scope).then(
       (b) => {
@@ -166,7 +152,7 @@ function SignedInBoard() {
     return () => {
       cancelled = true;
     };
-  }, [period, scope, synced, reload]);
+  }, [period, scope, reload]);
 
   const refresh = useCallback(() => { setReload((n) => n + 1); }, []);
 
@@ -240,11 +226,7 @@ function SignedInBoard() {
               Cohort {board.cohort}
             </button>
           </div>
-        ) : (
-          <p className="account-note">
-            Add your cohort on the <Link to="/account">Account</Link> page to compare with your class.
-          </p>
-        )}
+        ) : null}
       </div>
 
       {error && <p className="account-error">{error}</p>}
@@ -292,9 +274,9 @@ function SignedInBoard() {
           </li>
         </ul>
         <p className="account-note">
-          <strong>This week</strong> counts points gained in the last 7 days, from when you first
-          synced. <strong>Streak</strong> is consecutive study days, still alive if you studied today
-          or yesterday. Scores update each time your progress syncs.
+          <strong>This week</strong> counts points gained in the last 7 days.{" "}
+          <strong>Streak</strong> is consecutive study days, still alive if you studied today or
+          yesterday. Scores update as your progress is saved.
         </p>
       </details>
     </>
@@ -302,14 +284,6 @@ function SignedInBoard() {
 }
 
 export function Leaderboard() {
-  const { status, config, checkSession } = useAccount();
-
-  useEffect(() => {
-    if (status === "guest" && config?.accounts) void checkSession();
-    // Only on mount, like the Account page: a returning device may have a session.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <section className="page leaderboard-page">
       <h1>
@@ -318,45 +292,8 @@ export function Leaderboard() {
         </span>
         Leaderboard
       </h1>
-      {status === "checking" && <p className="subtitle">Checking…</p>}
-
-      {status === "unavailable" && (
-        <>
-          <p className="subtitle">See how your studying compares with other students.</p>
-          <div className="account-card">
-            <p>
-              Signed-in students can join a weekly and an all-time board, scored from correct answers, learned cards, finished
-              chapters and study days, under a display name they choose. Accounts aren't switched on for this copy of the site, so
-              there's no board to show yet.
-            </p>
-            <p>
-              Your own numbers are on <Link to="/progress">Progress</Link>.
-            </p>
-          </div>
-        </>
-      )}
-
-      {status === "guest" && (
-        <>
-          <p className="subtitle">See how your studying compares with other students.</p>
-          <div className="account-card lb-guest">
-            <p>
-              The leaderboard is for signed-in students: scores come from your synced progress, and
-              only students who choose to join are listed.
-            </p>
-            <Link to="/account" className="btn">
-              Sign in or create an account
-            </Link>
-          </div>
-        </>
-      )}
-
-      {status === "signed-in" && (
-        <>
-          <p className="subtitle">Points from quizzes, flashcards, reading and study days.</p>
-          <SignedInBoard />
-        </>
-      )}
+      <p className="subtitle">Points from quizzes, exams, flashcards, reading and study days.</p>
+      <SignedInBoard />
     </section>
   );
 }
