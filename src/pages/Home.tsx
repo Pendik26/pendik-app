@@ -27,6 +27,7 @@ import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { AtomIcon, BodyIcon, CalendarIcon, FlaskIcon, LinkIcon, MapIcon, PlayCircleIcon, SearchIcon, TimerIcon } from "../components/icons";
 import type { CardStateMap, ExamAttempt, QuizAttempt, ReadingPosition } from "../types/content";
 import { packagesForBlock } from "../lib/exams";
+import { RecentDriveFiles } from "../components/drive/RecentDriveFiles";
 import { useI18n } from "../i18n/useI18n";
 import type { Translate } from "../i18n/i18n";
 
@@ -251,6 +252,10 @@ export function Home() {
     );
   };
 
+  // The Class Drive is only read for "Recently opened" once something has been opened.
+  const opened = readJSON<unknown>(STORAGE_KEYS.driveSeen, []);
+  const hasOpenedFiles = Array.isArray(opened) && opened.length > 0;
+
   return (
     <section className="page dashboard">
       <TodayHero streak={streak} firstVisit={!hasActivity} current={currentBlock} onPickBlock={setCurrentBlock} />
@@ -287,6 +292,8 @@ export function Home() {
               </div>
             </div>
           )}
+
+          {hasOpenedFiles && <RecentDriveFiles />}
 
           {shownGroups.map(blockSection)}
 

@@ -228,6 +228,8 @@ export function blockHasExam(blockId: string): boolean {
 
 /** Past-paper pages: packages, attempts and results, all behind sign-in. */
 const EXAM_ACCOUNT_PAGES = new Set(["papers", "attempt", "result"]);
+/** Exam pages of the student's own (signed-in, not for search). */
+const EXAM_OWN_PAGES: Record<string, string> = { practice: "Practice from the Bank", bookmarks: "Bookmarked Questions" };
 
 const NOT_FOUND: PageMeta = { title: titled("Page not found"), description: HOME_DESCRIPTION, indexable: false };
 
@@ -248,6 +250,9 @@ export function pageMeta(pathname: string): PageMeta {
   if (section === "exam") {
     if (EXAM_ACCOUNT_PAGES.has(blockId) && parts.length === 3) {
       return { title: titled("Exam"), description: HOME_DESCRIPTION, indexable: false };
+    }
+    if (parts.length === 2 && EXAM_OWN_PAGES[blockId]) {
+      return { title: titled(EXAM_OWN_PAGES[blockId]), description: HOME_DESCRIPTION, indexable: false };
     }
     if (!blockHasExam(blockId) || parts.length > 2) return NOT_FOUND;
     return {

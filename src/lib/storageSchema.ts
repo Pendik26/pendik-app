@@ -41,7 +41,8 @@ export const KEY_TYPES = {
   atlas: { id: null, saved: "server", about: "3D anatomy: recently opened structures, whether the view turns around the selection, perspective or orthographic, and the floor grid" },
   alfond: { id: null, saved: "server", about: "Alfond settings: whether its floating button shows on every page" },
   alfondchat: { id: null, saved: "device", about: "Alfond's recent conversation (device-only)" },
-    driveseen: { id: null, saved: "server", about: "Class Drive file ids the student has opened" },
+    driveseen: { id: null, saved: "server", about: "Class Drive file ids the student has opened, the most recently opened last" },
+    driveboth: { id: null, saved: "server", about: "Class Drive shows the other class's (IUP or Reguler) folders too" },
     language: { id: null, saved: "device", about: "Interface language: id or en" },
 } as const satisfies Record<string, KeyType>;
 

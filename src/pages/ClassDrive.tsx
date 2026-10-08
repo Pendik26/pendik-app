@@ -4,7 +4,7 @@ import { EmptyState } from "../components/EmptyState";
 import { HighlightText } from "../components/HighlightText";
 import { DriveFileView, DriveKind, NewPill, OpenedMark } from "../components/drive/DriveParts";
 import { RefreshIcon, SearchIcon } from "../components/icons";
-import { useDrive, useDriveOpened } from "../hooks/useDrive";
+import { useDrive, useDriveBothTracks, useDriveOpened } from "../hooks/useDrive";
 import { useI18n } from "../i18n/useI18n";
 import {
   allFiles,
@@ -32,6 +32,8 @@ type Hit = { kind: "folder"; folder: DriveFolder; path: string[] } | { kind: "fi
 
 /** Files shown under "New this week" at the top. */
 const NEW_SHOWN = 6;
+/** Files shown under "Recently opened". */
+const RECENT_SHOWN = 6;
 
 /** The time now, ticking each minute (for "updated 3 min ago"). */
 function useMinuteClock(): number {
@@ -61,7 +63,8 @@ function RowSkeleton() {
 export function ClassDrive() {
   const { t } = useI18n();
   const drive = useDrive();
-  const { opened, markOpened } = useDriveOpened();
+  const { opened, recent, markOpened } = useDriveOpened();
+  const tracks = useDriveBothTracks();
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const now = useMinuteClock();
@@ -158,6 +161,10 @@ export function ClassDrive() {
   const selected = fileId && index ? index.byId.get(fileId) : undefined;
   const searching = deferredQuery.trim().length >= 2;
   const results = useMemo(() => (index && searching ? searchDrive(index.searchable, deferredQuery) : null), [index, searching, deferredQuery]);
+  const recentFiles = useMemo(
+    () => (index ? recent.flatMap((id) => index.byId.get(id) ?? []).slice(0, RECENT_SHOWN) : []),
+    [index, recent],
+  );
   const newFiles = useMemo(
     () => (index ? index.files.filter(({ file }) => isNew(file, opened, now)).sort((a, b) => changedAt(b.file) - changedAt(a.file)) : []),
     [index, opened, now],
@@ -373,6 +380,12 @@ export function ClassDrive() {
               </kbd>
             )}
           </label>
+          {tracks.available && (
+            <label className="bank-check drive-both">
+              <input type="checkbox" checked={tracks.both} onChange={(e) => { tracks.setBoth(e.target.checked); }} />
+              <span>{t("drive.showOtherClass")}</span>
+            </label>
+          )}
           <div className="drive-sort" role="group" aria-label={t("drive.order")}>
             {(["name", "newest"] as const).map((s) => (
               <Link key={s} to={hrefWith({ sort: s })} replace className={sort === s ? "active" : undefined} aria-pressed={sort === s}>
@@ -410,6 +423,23 @@ export function ClassDrive() {
               {showAllNew ? t("drive.showFewer") : t("drive.showAll", { count: newFiles.length })}
             </button>
           )}
+        </section>
+      )}
+
+      {!results && atHome && recentFiles.length > 0 && (
+        <section className="drive-fresh" aria-labelledby="drive-recent-title">
+          <h2 id="drive-recent-title">{t("drive.recentlyOpened")}</h2>
+          <ul>
+            {recentFiles.map(({ file, path: p }) => (
+              <li key={file.id}>
+                <Link to={hrefWith({ path: p, file: file.id })} className="drive-fresh-card">
+                  <DriveKind kind={file.kind} />
+                  <strong>{fileTitle(file.name)}</strong>
+                  <small>{placeLabel(p, t)}</small>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

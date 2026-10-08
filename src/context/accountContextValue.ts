@@ -1,6 +1,9 @@
 import { createContext } from "react";
 import type { SaveState } from "../lib/progressSync";
 
+/** The two Pendik 26 classes. */
+export type Track = "IUP" | "REGULER";
+
 /**
  * - checking: reading the saved session
  * - signed-out: no session; the app shows the sign-in page
@@ -16,6 +19,8 @@ export interface Profile {
   fullName: string;
   classGroup: string | null;
   cohort: string | null;
+  /** IUP or Reguler class; null sees both. */
+  track: Track | null;
   role: "student" | "admin";
   mustChangePassword: boolean;
   displayName: string | null;

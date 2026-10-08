@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FlagIcon, TimerIcon } from "../components/icons";
+import { BookmarkButton } from "../components/exam/BookmarkButton";
 import { QuestionImage } from "../components/exam/QuestionImage";
 import { formatClock } from "../lib/examFormat";
 import { useI18n } from "../i18n/useI18n";
 import {
   abandonAttempt,
+  attemptHome,
   AttemptError,
   ATTEMPT_ERRORS,
   getAttempt,
@@ -272,7 +274,7 @@ function RunningExam({
     if (!window.confirm(t("exam.quitConfirm"))) return;
     finished.current = true;
     abandonAttempt(attempt.id).then(
-      () => { navigate(`/exam/papers/${attempt.packageId}`, { replace: true }); },
+      () => { navigate(attemptHome(attempt.packageId), { replace: true }); },
       (e: unknown) => { finished.current = false; setProblem(errorText(e)); },
     );
   };
@@ -370,6 +372,7 @@ function RunningExam({
             <FlagIcon />
             {flagged.has(question.id) ? t("exam.flagged") : t("exam.flag")}
           </button>
+          {attempt.mode === "practice" && <BookmarkButton questionId={question.id} />}
         </div>
 
         {question.stemImage && <QuestionImage path={question.stemImage} alt={question.stemImageAlt} />}

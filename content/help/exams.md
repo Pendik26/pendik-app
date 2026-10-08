@@ -41,6 +41,17 @@ An exam isn't saved part-way, so sit it in one go.
   plan](/docs/exam-plan), where they count towards readiness and the projected
   exam score.
 
+## Practice from the bank
+
+**Exam → Practice from the bank** makes your own set from the past-paper
+practice questions: pick the block, papers, years and subjects (or none, for
+all of them), how many questions, and a timer if you want one. Each start
+draws a fresh random set, with the answer after each question.
+
+Press **Bookmark** on a question while practising or in a result to save it.
+**Exam → Bookmarked questions** lists them with their answers, and **Practise
+these** turns them into a set.
+
 ## About the past papers
 
 Past-paper questions are only for practice inside the app. They aren't

@@ -164,7 +164,7 @@ export function blockMocks(blockId: string): MockAttempt[] {
   }
   const papers = new Map(packagesForBlock(blockId).filter((p) => p.mode === "exam").map((p) => [p.id, p]));
   for (const a of examRecords().attempts) {
-    const paper = papers.get(a.packageId);
+    const paper = a.packageId ? papers.get(a.packageId) : undefined;
     if (!paper || a.status !== "finished" || a.score === null || !a.finishedAt) continue;
     const total = (a.correctCount ?? 0) + (a.wrongCount ?? 0) + (a.blankCount ?? 0);
     const limitSec = (a.timeLimitMinutes ?? 0) * 60;

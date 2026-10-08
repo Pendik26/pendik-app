@@ -72,6 +72,7 @@ export const examEn = {
   "exam.errTimeUp": "Time is up.",
   "exam.errElsewhere": "This exam is open in another tab.",
   "exam.errCannotAbandon": "Exams can only be submitted, not quit.",
+  "exam.errNoMatch": "No questions match those choices.",
 };
 
 export const examId: { [K in keyof typeof examEn]: string } = {
@@ -146,4 +147,5 @@ export const examId: { [K in keyof typeof examEn]: string } = {
   "exam.errTimeUp": "Waktu habis.",
   "exam.errElsewhere": "Ujian ini sedang terbuka di tab lain.",
   "exam.errCannotAbandon": "Ujian hanya bisa dikumpulkan, tidak bisa ditinggalkan.",
+  "exam.errNoMatch": "Tidak ada soal yang cocok dengan pilihan itu.",
 };

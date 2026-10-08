@@ -189,7 +189,11 @@ Sign in to the app with that NIM and password; it asks for a new password
 first. **Admin** now shows in the sidebar. From there:
 
 1. **Admin → Students → Add students**: paste the roster, one student per
-   line as `NIM, full name, class, cohort`. Select them and **Activate**:
+   line as `NIM, full name, class, cohort`. A cell that says `IUP` or
+   `Reguler` anywhere after the name puts that student in that class; the
+   **Class for lines that don't say** menu sets it for everyone else in the
+   paste, and the Class column changes it later. Select them and
+   **Activate**:
    each gets the first password `pendik26` + NIM, and must change it on
    first sign-in. Make other admins with **Make admin**.
 2. **Admin → Import**: import the past papers, one Markdown file at a time
@@ -200,8 +204,11 @@ first. **Admin** now shows in the sidebar. From there:
    the repo so the answer keys don't sit in it; their images are already in
    `public/question-images/1.1/`. Each import makes an exam package and a
    practice package as drafts.
-3. **Admin → Packages**: check the questions, then **Publish**. Students only
-   see published packages.
+3. **Admin → Packages**: check the questions, set the package's class (both
+   by default, or IUP or Reguler only), then **Publish**. Students only see
+   published packages, and the questions in published practice packages
+   make up the bank for **Practice from the bank**. **Admin → Questions**
+   searches every question across packages.
 
 Question images live in the repo under `public/question-images/` and are
 referenced from the Markdown by path (`![figure](/question-images/1.1/x.svg)`).

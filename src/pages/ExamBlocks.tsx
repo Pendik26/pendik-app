@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { quizQuestionsInBlock } from "../lib/content";
 import { studyBlocks } from "../lib/blocks";
 import { buildExamFormat } from "../lib/examFormat";
-import { bestScore, finishedAttempts, packagesForBlock, runningAttempt, useExamRecords } from "../lib/exams";
+import { attemptTitle, bestScore, finishedAttempts, packagesForBlock, runningAttempt, useExamRecords } from "../lib/exams";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { useI18n } from "../i18n/useI18n";
@@ -13,7 +13,6 @@ export function ExamBlocks() {
   const { t } = useI18n();
   const records = useExamRecords();
   const running = runningAttempt(records);
-  const runningPackage = running ? records.packages.find((p) => p.id === running.packageId) : undefined;
 
   return (
     <section className="page">
@@ -23,9 +22,24 @@ export function ExamBlocks() {
       {running && (
         <Link to={`/exam/attempt/${running.id}`} className="exam-running-banner">
           <strong>{t("exam.inProgress")}</strong>
-          <span>{runningPackage?.title ?? ""}</span>
+          <span>{attemptTitle(running, records)}</span>
           <span aria-hidden="true">→</span>
         </Link>
+      )}
+
+      {records.packages.some((p) => p.mode === "practice") && (
+        <div className="card-grid dashboard-section">
+          <Link to="/exam/practice" className="nav-card exam-package-card">
+            <span className="exam-mode-tag exam-mode-tag-practice">{t("exam.modePractice")}</span>
+            <h3>{t("bank.title")}</h3>
+            <p>{t("bank.cardHint")}</p>
+          </Link>
+          <Link to="/exam/bookmarks" className="nav-card exam-package-card">
+            <span className="exam-mode-tag">{t("bookmarks.tag")}</span>
+            <h3>{t("bookmarks.title")}</h3>
+            <p>{t("bookmarks.cardHint")}</p>
+          </Link>
+        </div>
       )}
 
       {studyBlocks.map((block) => {

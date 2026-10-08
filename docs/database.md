@@ -36,7 +36,7 @@ nothing. In short:
 
 | Table | One row per | Notes |
 | --- | --- | --- |
-| `roster` | student on the class list: NIM, full name, class, cohort | admin only |
+| `roster` | student on the class list: NIM, full name, class group, cohort, IUP or Reguler | admin only |
 | `profiles` | activated account, keyed by the Auth user id | role, `must_change_password`, leaderboard name and whether they joined |
 
 A student signs in as `<nim>@pendik26.internal` (lower case) with a
@@ -125,9 +125,44 @@ How the app loads and saves progress is in
 locking, unlocking and resetting accounts needs the service role, so it's the
 `admin-accounts` Edge Function instead ([api.md](api.md)).
 
+## Classes: IUP and Reguler (`…0700_tracks.sql`)
+
+The year has two classes that used to have their own apps (IUP had the
+medicine app, Reguler had penpro). `track` (`'IUP'`, `'REGULER'` or null)
+is on `roster`, `profiles` and `packages`:
+
+- A profile takes its track from the roster when the account is activated,
+  and follows it when an admin changes the roster (two triggers).
+- A package with a track is only for that class; null means both.
+  `track_visible()` applies it to `packages`, `package_summaries` and
+  `start_attempt()`. A student with no track, and every admin, sees all.
+- `drive_files.track` (set by the sync from the folder) isn't enforced:
+  the app shows a student their class's folders and can show the other's
+  too.
+
+## Practice from the bank (`…0800_bank_practice.sql`)
+
+The bank is every live question in a published practice package the
+student's class can see, so exam-only questions and their keys never reach
+it.
+
+| Function | Does |
+| --- | --- |
+| `bank_options()` | question counts per block, source, year and subject, and how many of them are bookmarked |
+| `start_bank_practice(block, sources, years, subjects, bookmarked_only, count, time_limit, title, holder)` | draws up to 200 questions at random into a practice attempt with no package (`attempts.package_id` is null and `attempts.title` names it); empty filters mean any |
+| `my_bookmarks()` | the student's bookmarked bank questions with their keys and explanations |
+
+A bank attempt is then taken, saved and graded like any other.
+
+## Drive file order (`…0900_drive_order.sql`)
+
+`drive_files.sort_order` (0–9999, or null): admins set it in Admin → Drive.
+Files with an order come first in their folder, then the rest by name.
+
 ## Testing
 
-`supabase/tests/` holds SQL tests for the exam rules and the Drive functions.
+`supabase/tests/` holds SQL tests for the exam rules, the Drive functions,
+and classes, bank practice and bookmarks.
 They run against a plain Postgres (a stub stands in for Supabase's `auth`
 schema):
 

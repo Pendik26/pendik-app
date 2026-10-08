@@ -5,9 +5,10 @@ import { isFirstPassword, studentEmail, supabase } from "../lib/supabase";
 import { clearProgress, loadProgress, pendingSaves, queueSave, refreshProgress, saveNow, subscribeSaveState, type SaveState } from "../lib/progressSync";
 import { clearDeviceSettings, PROGRESS_CHANGED_EVENT } from "../lib/storage";
 import { clearExamRecords, loadExamRecords } from "../lib/exams";
+import { clearBookmarkCache } from "../hooks/useBookmarks";
 
 const PROFILE_COLUMNS =
-  "id, student_id, full_name, class_group, cohort, role, must_change_password, display_name, leaderboard_joined";
+  "id, student_id, full_name, class_group, cohort, track, role, must_change_password, display_name, leaderboard_joined";
 
 interface ProfileRow {
   id: string;
@@ -15,6 +16,7 @@ interface ProfileRow {
   full_name: string;
   class_group: string | null;
   cohort: string | null;
+  track: Profile["track"];
   role: "student" | "admin";
   must_change_password: boolean;
   display_name: string | null;
@@ -27,6 +29,7 @@ const toProfile = (r: ProfileRow): Profile => ({
   fullName: r.full_name,
   classGroup: r.class_group,
   cohort: r.cohort,
+  track: r.track,
   role: r.role,
   mustChangePassword: r.must_change_password,
   displayName: r.display_name,
@@ -189,6 +192,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         await supabase.auth.signOut();
         clearProgress();
         clearExamRecords();
+        clearBookmarkCache();
         if (clearDevice) clearDeviceSettings();
       },
       saveNow,

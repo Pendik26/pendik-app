@@ -14,6 +14,7 @@ export function Admin() {
       <nav className="admin-tabs" aria-label={t("admin.title")}>
         <NavLink to="/admin/students" className={tab}>{t("admin.students")}</NavLink>
         <NavLink to="/admin/packages" className={tab}>{t("admin.packages")}</NavLink>
+        <NavLink to="/admin/questions" className={tab}>{t("admin.questionBank")}</NavLink>
         <NavLink to="/admin/import" className={tab}>{t("admin.import")}</NavLink>
         <NavLink to="/admin/drive" className={tab}>{t("admin.drive")}</NavLink>
       </nav>

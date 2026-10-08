@@ -1,3 +1,4 @@
+import type { Track } from "../context/accountContextValue";
 import { PACKAGE_COLUMNS, toPackage, type PackageSummary } from "./exams";
 import type { ImportQuestion } from "./questionMarkdown";
 import { supabase } from "./supabase";
@@ -30,6 +31,7 @@ export interface RosterEntry {
   fullName: string;
   classGroup: string | null;
   cohort: string;
+  track: Track | null;
   userId: string | null;
   role: "student" | "admin" | null;
   account: "none" | "active" | "locked";
@@ -44,6 +46,7 @@ export async function listRoster(): Promise<RosterEntry[]> {
     fullName: String(r.full_name),
     classGroup: (r.class_group as string | null) ?? null,
     cohort: String(r.cohort),
+    track: (r.track as Track | null) ?? null,
     userId: (r.user_id as string | null) ?? null,
     role: (r.role as RosterEntry["role"]) ?? null,
     account: r.account as RosterEntry["account"],
@@ -57,32 +60,48 @@ export interface NewRosterRow {
   full_name: string;
   class_group: string | null;
   cohort: string;
+  track: Track | null;
+}
+
+/** "IUP", "Reguler" or "Regular" (any case) as a track, else null. */
+export function trackOf(cell: string): Track | null {
+  if (/^iup$/i.test(cell)) return "IUP";
+  if (/^regul[ae]r$/i.test(cell)) return "REGULER";
+  return null;
 }
 
 /**
  * Reads pasted roster lines: "student id, full name[, class[, cohort]]", separated by commas,
- * tabs or semicolons (a spreadsheet copy works). A header line is skipped.
+ * tabs or semicolons (a spreadsheet copy works). A header line is skipped. A cell after the name
+ * that says IUP or Reguler sets that student's track; otherwise they get `defaultTrack`.
  */
-export function parseRosterLines(text: string, defaultCohort: string): { rows: NewRosterRow[]; problems: string[] } {
+export function parseRosterLines(text: string, defaultCohort: string, defaultTrack: Track | null = null): { rows: NewRosterRow[]; problems: string[] } {
   const rows: NewRosterRow[] = [];
   const problems: string[] = [];
   const seen = new Set<string>();
   text.split(/\r?\n/).forEach((line, i) => {
     if (!line.trim()) return;
     const cells = line.split(/\t|;|,/).map((c) => c.trim());
-    const [id = "", name = "", group = "", cohort = ""] = cells;
+    const [id = "", name = "", ...rest] = cells;
+    const trackCell = rest.find((c) => trackOf(c));
+    const [group = "", cohort = ""] = rest.filter((c) => c !== trackCell);
     if (i === 0 && /^(nim|student|id)/i.test(id) && !/[0-9]/.test(id)) return;
     if (!/^[0-9A-Za-z]{3,30}$/.test(id)) { problems.push(`Line ${i + 1}: "${id}" isn't a student id.`); return; }
     if (!name) { problems.push(`Line ${i + 1}: no name.`); return; }
     if (seen.has(id)) { problems.push(`Line ${i + 1}: ${id} is listed twice.`); return; }
     seen.add(id);
-    rows.push({ student_id: id, full_name: name.slice(0, 120), class_group: group || null, cohort: (cohort || defaultCohort).slice(0, 10) });
+    rows.push({ student_id: id, full_name: name.slice(0, 120), class_group: group || null, cohort: (cohort || defaultCohort).slice(0, 10), track: trackCell ? trackOf(trackCell) : defaultTrack });
   });
   return { rows, problems };
 }
 
 export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
   await must(supabase.from("roster").upsert(rows, { onConflict: "student_id" }));
+}
+
+/** Moves a student to the other class (their profile follows, by a database trigger). */
+export async function setTrack(studentId: string, track: Track | null): Promise<void> {
+  await must(supabase.from("roster").update({ track }).eq("student_id", studentId));
 }
 
 export async function removeFromRoster(studentId: string): Promise<void> {
@@ -112,7 +131,7 @@ export async function setPackageStatus(packageId: string, status: "draft" | "pub
   await must(supabase.rpc("admin_set_package_status", { p_package_id: packageId, p_status: status }));
 }
 
-export async function updatePackage(packageId: string, patch: { title?: string; time_limit_minutes?: number | null; track_best?: boolean }): Promise<void> {
+export async function updatePackage(packageId: string, patch: { title?: string; time_limit_minutes?: number | null; track_best?: boolean; track?: Track | null }): Promise<void> {
   await must(supabase.from("packages").update(patch).eq("id", packageId));
 }
 
@@ -146,6 +165,58 @@ export async function packageQuestions(packageId: string): Promise<AdminQuestion
       .order("position"),
   );
   return (rows as unknown as { position: number; questions: Omit<AdminQuestion, "position"> }[]).map((r) => ({ ...r.questions, position: r.position }));
+}
+
+/** A question in the bank, with what it is and which packages use it. */
+export interface BankQuestion extends AdminQuestion {
+  block: string;
+  source: string | null;
+  year: number | null;
+  packages: string[];
+}
+
+export interface BankFilter {
+  block?: string;
+  source?: string;
+  year?: number;
+  subject?: string;
+  text?: string;
+}
+
+const BANK_COLUMNS =
+  "id, block, source, year, type, subject, stem, stem_image, stem_image_alt, options, correct_index, accepted_answers, explanation, revision, status, package_questions(packages(title, deleted_at))";
+
+/** Most questions one search shows. */
+export const BANK_PAGE = 100;
+
+/** Questions in the bank matching every filter given, newest import first (at most BANK_PAGE). */
+export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[]> {
+  let q = supabase.from("questions").select(BANK_COLUMNS).is("deleted_at", null);
+  if (filter.block) q = q.eq("block", filter.block);
+  if (filter.source) q = q.eq("source", filter.source);
+  if (filter.year) q = q.eq("year", filter.year);
+  if (filter.subject) q = q.eq("subject", filter.subject);
+  if (filter.text?.trim()) q = q.ilike("stem", `%${filter.text.trim().replace(/[%_\\]/g, "\\$&")}%`);
+  const rows = await must(q.order("created_at", { ascending: false }).order("import_position").limit(BANK_PAGE));
+  type Row = Omit<BankQuestion, "position" | "packages"> & { package_questions: { packages: { title: string; deleted_at: string | null } | null }[] };
+  return (rows as unknown as Row[]).map(({ package_questions, ...r }, i) => ({
+    ...r,
+    position: i + 1,
+    packages: package_questions.flatMap((pq) => (pq.packages && !pq.packages.deleted_at ? [pq.packages.title] : [])),
+  }));
+}
+
+/** The blocks, sources, years and subjects in the bank, for the filters. */
+export async function questionFacets(): Promise<{ blocks: string[]; sources: string[]; years: number[]; subjects: string[] }> {
+  const rows = (await must(supabase.from("questions").select("block, source, year, subject").is("deleted_at", null).limit(10000))) as
+    { block: string; source: string | null; year: number | null; subject: string | null }[];
+  const sorted = <T,>(xs: (T | null)[]) => [...new Set(xs.filter((x): x is T => x !== null))].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
+  return {
+    blocks: sorted(rows.map((r) => r.block)),
+    sources: sorted(rows.map((r) => r.source)),
+    years: sorted(rows.map((r) => r.year)).reverse(),
+    subjects: sorted(rows.map((r) => r.subject)),
+  };
 }
 
 export type QuestionPatch = Partial<Pick<AdminQuestion, "subject" | "stem" | "stem_image" | "stem_image_alt" | "options" | "correct_index" | "accepted_answers" | "explanation">>;
@@ -237,13 +308,19 @@ export interface AdminDriveFile {
   folder_path: string[];
   hidden_at: string | null;
   missing_since: string | null;
+  sort_order: number | null;
 }
 
 export async function searchDriveFiles(query: string, onlyHidden: boolean): Promise<AdminDriveFile[]> {
-  let q = supabase.from("drive_files").select("id, title, kind, block, category, folder_path, hidden_at, missing_since").order("title").limit(100);
+  let q = supabase.from("drive_files").select("id, title, kind, block, category, folder_path, hidden_at, missing_since, sort_order").order("title").limit(100);
   if (query.trim()) q = q.ilike("title", `%${query.trim().replace(/[%_]/g, "\\$&")}%`);
   if (onlyHidden) q = q.not("hidden_at", "is", null);
   return (await must(q)) as AdminDriveFile[];
+}
+
+/** Puts a file in an admin's order within its folder (lower first), or back to by-name (null). */
+export async function setFileOrder(id: string, order: number | null): Promise<void> {
+  await must(supabase.from("drive_files").update({ sort_order: order }).eq("id", id));
 }
 
 export async function setFileHidden(id: string, hidden: boolean): Promise<void> {

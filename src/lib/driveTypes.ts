@@ -14,6 +14,8 @@ export interface DriveFile {
   modifiedTime: string;
   /** ISO time it was put in the Drive; missing from listings saved before it was kept. */
   createdTime?: string;
+  /** An admin's order within the folder: ordered files come first, lower first. */
+  order?: number;
 }
 
 export interface DriveFolder {

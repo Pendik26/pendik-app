@@ -8,6 +8,7 @@ import {
   ATTEMPT_ERRORS,
   bestScore,
   finishedAttempts,
+  attemptTitle,
   runningAttempt,
   startAttempt,
   useExamRecords,
@@ -34,7 +35,7 @@ export function ExamPackage() {
 
   const running = runningAttempt(records);
   const runningHere = running?.packageId === pkg.id ? running : null;
-  const runningOther = running && !runningHere ? records.packages.find((p) => p.id === running.packageId) : undefined;
+  const runningOther = running && !runningHere ? running : null;
   const past = finishedAttempts(pkg.id, records);
   const best = pkg.trackBest ? bestScore(pkg.id, records) : null;
   const block = pkg.block ? blockById(pkg.block) : undefined;
@@ -87,7 +88,7 @@ export function ExamPackage() {
         <div className="quiz-start-actions">
           {runningOther ? (
             <>
-              <p className="account-note">{t("exam.finishOtherFirst", { title: runningOther.title })}</p>
+              <p className="account-note">{t("exam.finishOtherFirst", { title: attemptTitle(runningOther, records) })}</p>
               <Link to={`/exam/attempt/${running?.id ?? ""}`} className="btn quiz-start-btn">{t("exam.continue")}</Link>
             </>
           ) : runningHere ? (

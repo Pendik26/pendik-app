@@ -25,6 +25,10 @@ needs an account: [sign in](/account) to see it.
 - Press <kbd>/</kbd> (or use **Find a file**) to search every file and folder
   name. <kbd>Esc</kbd> clears the search.
 - Sort a folder **A–Z** or by **Newest**.
+- **Recently opened** (on the Drive's first page and on Home) lists the files
+  you opened last.
+- You see your own class's folders (IUP or Reguler) and the shared ones.
+  Tick **Show the other class's folders** to see theirs too.
 
 ### Opening files
 

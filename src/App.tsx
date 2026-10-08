@@ -48,6 +48,9 @@ const AdminStudents = lazy(() => import("./pages/admin/AdminStudents").then((m) 
 const AdminPackages = lazy(() => import("./pages/admin/AdminPackages").then((m) => ({ default: m.AdminPackages })));
 const AdminImport = lazy(() => import("./pages/admin/AdminImport").then((m) => ({ default: m.AdminImport })));
 const AdminDrive = lazy(() => import("./pages/admin/AdminDrive").then((m) => ({ default: m.AdminDrive })));
+const AdminQuestions = lazy(() => import("./pages/admin/AdminQuestions").then((m) => ({ default: m.AdminQuestions })));
+const BankPractice = lazy(() => import("./pages/BankPractice").then((m) => ({ default: m.BankPractice })));
+const Bookmarks = lazy(() => import("./pages/Bookmarks").then((m) => ({ default: m.Bookmarks })));
 const ExamResult = lazy(() => import("./pages/ExamResult").then((m) => ({ default: m.ExamResult })));
 const Modules = lazy(() => import("./pages/Modules").then((m) => ({ default: m.Modules })));
 const ClassDrive = lazy(() => import("./pages/ClassDrive").then((m) => ({ default: m.ClassDrive })));
@@ -119,11 +122,14 @@ function AppRoutes() {
           <Route path="/exam/papers/:packageId" element={<ExamPackage />} />
           <Route path="/exam/attempt/:attemptId" element={<ExamAttempt />} />
           <Route path="/exam/result/:attemptId" element={<ExamResult />} />
+          <Route path="/exam/practice" element={<BankPractice />} />
+          <Route path="/exam/bookmarks" element={<Bookmarks />} />
           <Route path="/exam/:blockId" element={<ExamPlay />} />
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Navigate to="/admin/students" replace />} />
             <Route path="students" element={<AdminStudents />} />
             <Route path="packages" element={<AdminPackages />} />
+            <Route path="questions" element={<AdminQuestions />} />
             <Route path="import" element={<AdminImport />} />
             <Route path="drive" element={<AdminDrive />} />
           </Route>

@@ -97,6 +97,8 @@ Every page is its own lazily loaded chunk (`src/App.tsx`). The pages:
 | `/quizzes` → `/quizzes/:blockId/:subjectId` | Subject list with last score and due counts → quiz (with section picker for large banks) |
 | `/exam` | Past papers and practice sets for the student's block, their best scores and a running attempt; the pooled block exam |
 | `/exam/papers/:packageId` → `/exam/attempt/:attemptId` → `/exam/result/:attemptId` | A package's details and past attempts → taking it (server timer, saved as you go, one tab at a time) → the graded result and review |
+| `/exam/practice` | Practice from the bank: pick block, papers, years, subjects, count and timer, and get a random set |
+| `/exam/bookmarks` | Bookmarked questions with their answers; practise them as a set |
 | `/exam/:blockId` | The pooled block exam, drawn from the block's quiz banks |
 | `/modules` → `/modules/:blockId/:subjectId` | Subjects with PDFs → sectioned PDF viewer |
 | `/ebooks` → `/ebooks/:blockId/:subjectId/:chapterId` | Book list with resume position → chapter reader |
@@ -106,13 +108,13 @@ Every page is its own lazily loaded chunk (`src/App.tsx`). The pages:
 | `/progress` | Readiness, subject meters, trends, heatmap, weak spots, milestones |
 | `/atlas` | 3D anatomy: the whole body by system, with search, descriptions, landmarks and muscle attachments (see [3D anatomy atlas](atlas-3d.md)) |
 | `/map` | Knowledge map of every concept across all blocks |
-| `/drive` | Class Drive: the class's Google Drive folder, as copied by the daily sync |
+| `/drive` | Class Drive: the class's Google Drive folder, as copied by the daily sync; the student's class's folders (the other's on request) and recently opened files |
 | `/alfond` | Alfond, the study assistant's own page |
 | `/docs` → `/docs/:pageId` | Help: the index of help pages → one page, with contents and previous/next |
 | `/plan`, `/plan/:block` | Exam plan: today's plan, phases, readiness, mock trend, weak spots, class average |
 | `/leaderboard` | Weekly, all-time and streak rankings, filtered to your cohort; join or leave, and pick a display name |
 | `/account` | Profile, language and theme, current block, password, linking Google, save status, sign out |
-| `/admin/students`, `/packages`, `/import`, `/drive` | Admins only: the roster and accounts, exam packages and their questions, importing a Markdown file of questions, the Drive sync and hidden files |
+| `/admin/students`, `/packages`, `/questions`, `/import`, `/drive` | Admins only: the roster, accounts and classes; exam packages, their class and questions; searching every question; importing a Markdown file of questions; the Drive sync, hidden files and file order |
 
 Signed out, every address shows the sign-in page (NIM and password, or
 Google). A student still on their first password sees the change-password

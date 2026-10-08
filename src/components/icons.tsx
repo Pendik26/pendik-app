@@ -490,3 +490,17 @@ export function ShieldIcon() {
     </svg>
   );
 }
+
+export function BookmarkIcon({ filled = false }: { filled?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+      <path
+        d="M6.5 3.5h11v17l-5.5-4-5.5 4z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

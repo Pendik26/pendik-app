@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "../../i18n/useI18n";
-import { applyHeldSync, listSyncRuns, searchDriveFiles, setFileHidden, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
+import { applyHeldSync, listSyncRuns, searchDriveFiles, setFileHidden, setFileOrder, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
 
 /** The class Drive sync: run it now, look at past runs, let a held run go ahead, hide files. */
 export function AdminDrive() {
@@ -136,6 +136,15 @@ function HiddenFiles() {
               <strong>{f.title}</strong>
               <small>{f.folder_path.join(" / ")}{f.missing_since ? ` · ${t("admin.missing")}` : ""}</small>
             </span>
+            <input className="form-input admin-order" type="number" min={0} max={9999} inputMode="numeric"
+              aria-label={t("admin.orderOf", { title: f.title })} placeholder={t("admin.orderPlaceholder")}
+              defaultValue={f.sort_order ?? ""}
+              onBlur={(e) => {
+                const raw = e.target.value.trim();
+                const order = raw === "" ? null : Math.max(0, Math.min(9999, Math.round(Number(raw))));
+                if (order === f.sort_order || (order !== null && Number.isNaN(order))) return;
+                setFileOrder(f.id, order).then(search, (err: Error) => { setProblem(err.message); });
+              }} />
             <button type="button" className="btn btn-link"
               onClick={() => { setFileHidden(f.id, !f.hidden_at).then(search, (e: Error) => { setProblem(e.message); }); }}>
               {f.hidden_at ? t("admin.show") : t("admin.hide")}

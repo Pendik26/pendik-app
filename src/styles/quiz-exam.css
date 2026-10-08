@@ -853,3 +853,93 @@
 .exam-typed {
   color: var(--text-muted);
 }
+
+/* Practice from the bank */
+.bank-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.bank-field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.bank-field legend {
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.bank-field .tag-filter-row {
+  margin-bottom: 0;
+}
+
+.bank-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.bank-numbers .form-input {
+  width: 7rem;
+}
+
+.bank-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+/* Bookmark toggle on a question */
+.bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.bookmark-btn:hover {
+  color: var(--text);
+}
+
+.bookmark-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.bookmark-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.bookmark-list .account-card {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bookmark-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}

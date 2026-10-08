@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "../../i18n/useI18n";
+import { QuestionList } from "../../components/admin/QuestionList";
 import {
   deletePackage,
-  deleteQuestion,
   listAllPackages,
   packageQuestions,
   setPackageStatus,
   updatePackage,
-  updateQuestion,
   type AdminQuestion,
 } from "../../lib/admin";
 import { loadExamRecords, type PackageSummary } from "../../lib/exams";
-import { parseQuestionMarkdown, questionMarkdown } from "../../lib/questionMarkdown";
 
 /** Every package, drafts included: publish, rename, time limit, and its questions. */
 export function AdminPackages() {
@@ -80,6 +78,12 @@ export function AdminPackages() {
                   {t("admin.setTime")}
                 </button>
               )}
+              <select className="form-input admin-select" aria-label={t("admin.packageTrack", { title: p.title })} value={p.track ?? ""}
+                onChange={(e) => { const v = e.target.value; void act(() => updatePackage(p.id, { track: v === "IUP" || v === "REGULER" ? v : null })); }}>
+                <option value="">{t("track.both")}</option>
+                <option value="IUP">{t("track.iupOnly")}</option>
+                <option value="REGULER">{t("track.regulerOnly")}</option>
+              </select>
               <button type="button" className="btn btn-link" onClick={() => { setOpen((o) => (o === p.id ? null : p.id)); }} aria-expanded={open === p.id}>
                 {t("admin.questions")}
               </button>
@@ -96,16 +100,9 @@ export function AdminPackages() {
   );
 }
 
-/** One question as editable Markdown (the import format, without the file header). */
-function asMarkdown(q: AdminQuestion): string {
-  const text = questionMarkdown({ title: "-", block: "1.1", source: null, year: null, subject: null }, [q]);
-  return text.slice(text.indexOf("## 1")).replace(/^## 1\n/, "");
-}
-
 function PackageQuestions({ pkg, onChanged }: { pkg: PackageSummary; onChanged: () => void }) {
   const { t } = useI18n();
   const [questions, setQuestions] = useState<AdminQuestion[] | null>(null);
-  const [editing, setEditing] = useState<{ id: string; text: string } | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
 
   const reload = useCallback(() => {
@@ -113,74 +110,6 @@ function PackageQuestions({ pkg, onChanged }: { pkg: PackageSummary; onChanged: 
   }, [pkg.id]);
   useEffect(reload, [reload]);
 
-  const save = async () => {
-    if (!editing) return;
-    const parsed = parseQuestionMarkdown(`---\ntitle: -\nblock: ${pkg.block ?? "1.1"}\n---\n## 1\n${editing.text}`);
-    const q = parsed.questions[0];
-    if (!q || parsed.problems.length) {
-      setProblem(parsed.problems.map((p) => p.message).join(" ") || t("admin.notAQuestion"));
-      return;
-    }
-    setProblem(null);
-    try {
-      await updateQuestion(editing.id, {
-        subject: q.subject,
-        stem: q.stem,
-        stem_image: q.stem_image,
-        stem_image_alt: q.stem_image_alt,
-        options: q.options,
-        correct_index: q.correct_index,
-        accepted_answers: q.accepted_answers,
-        explanation: q.explanation,
-      });
-      setEditing(null);
-      reload();
-    } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
-    }
-  };
-
   if (!questions) return <p className="subtitle">{problem ?? t("common.loading")}</p>;
-  return (
-    <div className="admin-questions">
-      {problem && <p className="account-error" role="alert">{problem}</p>}
-      <p className="account-note">{t("admin.editHint")}</p>
-      <ol>
-        {questions.map((q) => (
-          <li key={q.id}>
-            {editing?.id === q.id ? (
-              <div className="admin-form">
-                <textarea className="form-input admin-textarea admin-mono" rows={10} value={editing.text} spellCheck={false}
-                  onChange={(e) => { setEditing({ id: q.id, text: e.target.value }); }} />
-                <div className="account-row">
-                  <button type="button" className="btn btn-small" onClick={() => void save()}>{t("common.save")}</button>
-                  <button type="button" className="btn btn-link" onClick={() => { setEditing(null); setProblem(null); }}>{t("common.cancel")}</button>
-                </div>
-              </div>
-            ) : (
-              <div className="admin-question">
-                <p className="exam-stem">{q.stem}</p>
-                {q.options ? (
-                  <ul>{q.options.map((o, oi) => <li key={oi} className={oi === q.correct_index ? "admin-correct" : undefined}>{o.text}</li>)}</ul>
-                ) : (
-                  <p className="admin-correct">{q.accepted_answers?.join(" · ")}</p>
-                )}
-                <div className="admin-actions">
-                  <small>{t("admin.revisionN", { n: q.revision })}</small>
-                  <button type="button" className="btn btn-link" onClick={() => { setEditing({ id: q.id, text: asMarkdown(q) }); }}>{t("admin.edit")}</button>
-                  <button type="button" className="btn btn-link account-danger"
-                    onClick={() => {
-                      if (!window.confirm(t("admin.deleteQuestionConfirm"))) return;
-                      deleteQuestion(q.id).then(() => { reload(); onChanged(); }, (e: Error) => { setProblem(e.message); });
-                    }}>
-                    {t("admin.delete")}
-                  </button>
-                </div>
-              </div>
-            )}
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
+  return <QuestionList questions={questions} onChanged={() => { reload(); onChanged(); }} />;
 }

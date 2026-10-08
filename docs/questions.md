@@ -107,3 +107,10 @@ taken with.
 Grading happens in the database. An exam attempt never sends the correct
 answers or explanations to the browser before it's submitted; a practice
 attempt sends them with the questions, for instant feedback.
+
+Once a practice package is published, its questions are also in the bank:
+students can draw their own random set by block, source, year and subject
+(**Exam → Practice from the bank**) and bookmark questions to practise
+later. The header's `source`, `year` and each question's subject are what
+those filters use, so fill them in. **Admin → Questions** searches every
+question, whichever package it's in.

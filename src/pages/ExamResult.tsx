@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ConfettiBurst } from "../components/ConfettiBurst";
+import { BookmarkButton } from "../components/exam/BookmarkButton";
 import { QuestionImage } from "../components/exam/QuestionImage";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
-import { AttemptError, ATTEMPT_ERRORS, getAttemptResult, type AttemptResult } from "../lib/exams";
+import { attemptHome, AttemptError, ATTEMPT_ERRORS, getAttemptResult, type AttemptResult } from "../lib/exams";
 import { formatClock } from "../lib/examFormat";
 
 const OPTION_LETTERS = "ABCDEFGH";
@@ -47,7 +48,7 @@ export function ExamResult() {
 
   return (
     <section className="page">
-      <Link to={`/exam/papers/${r.packageId}`} className="back-link">← {r.title}</Link>
+      <Link to={attemptHome(r.packageId)} className="back-link">← {r.title}</Link>
       <div className="quiz-results">
         <div className={`quiz-score-hero${perfect ? " perfect" : ""}`}>
           {perfect && <ConfettiBurst />}
@@ -61,7 +62,7 @@ export function ExamResult() {
         </div>
 
         <div className="quiz-retry-row">
-          <Link to={`/exam/papers/${r.packageId}`} className="btn">{t("exam.tryAgain")}</Link>
+          <Link to={attemptHome(r.packageId)} className="btn">{t("exam.tryAgain")}</Link>
           <Link to="/exam" className="btn btn-secondary">{t("exam.allExams")}</Link>
         </div>
 
@@ -115,6 +116,7 @@ export function ExamResult() {
                 <p className={`quiz-feedback-explanation quiz-review-explanation ${item.isCorrect ? "correct" : "incorrect"}`}>
                   <strong>{verdict}</strong> {q.explanation}
                 </p>
+                <div><BookmarkButton questionId={q.id} /></div>
               </li>
             );
           })}

@@ -6,9 +6,18 @@ describe("pasted roster lines", () => {
     const { rows, problems } = parseRosterLines("NIM\tName\tClass\n2601001\tAda Lovelace\tA\n2601002, Bo Chen\n2601003; Cy Dee; B; 2025\n", "2026");
     expect(problems).toEqual([]);
     expect(rows).toEqual([
-      { student_id: "2601001", full_name: "Ada Lovelace", class_group: "A", cohort: "2026" },
-      { student_id: "2601002", full_name: "Bo Chen", class_group: null, cohort: "2026" },
-      { student_id: "2601003", full_name: "Cy Dee", class_group: "B", cohort: "2025" },
+      { student_id: "2601001", full_name: "Ada Lovelace", class_group: "A", cohort: "2026", track: null },
+      { student_id: "2601002", full_name: "Bo Chen", class_group: null, cohort: "2026", track: null },
+      { student_id: "2601003", full_name: "Cy Dee", class_group: "B", cohort: "2025", track: null },
+    ]);
+  });
+
+  it("reads a track cell anywhere after the name, else uses the default", () => {
+    const { rows } = parseRosterLines("2601001, Ada, IUP, A\n2601002, Bo, B, 2025, reguler\n2601003, Cy, C", "2026", "REGULER");
+    expect(rows.map((r) => [r.track, r.class_group, r.cohort])).toEqual([
+      ["IUP", "A", "2026"],
+      ["REGULER", "B", "2025"],
+      ["REGULER", "C", "2026"],
     ]);
   });
 

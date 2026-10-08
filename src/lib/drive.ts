@@ -15,6 +15,16 @@ export interface DriveFileRow {
   drive_modified_at: string | null;
   created_at: string;
   synced_at: string;
+  /** IUP or REGULER when the file sits in that class's folder. */
+  track?: string | null;
+  /** An admin's order within the folder (lower first). */
+  sort_order?: number | null;
+}
+
+/** The rows a student of `track` sees: shared files, their own class's, and the other class's when `both`. */
+export function rowsForTrack<T extends Pick<DriveFileRow, "track">>(rows: readonly T[], track: string | null, both: boolean): T[] {
+  if (!track || both) return [...rows];
+  return rows.filter((r) => !r.track || r.track === track);
 }
 
 const KINDS: Record<string, DriveFileKind> = {
@@ -49,13 +59,17 @@ export function treeFromRows(rows: readonly DriveFileRow[]): DriveTree {
       size: row.size_bytes,
       modifiedTime: row.drive_modified_at ?? row.created_at,
       createdTime: row.created_at,
+      ...(row.sort_order != null ? { order: row.sort_order } : {}),
     });
     updatedAt = Math.max(updatedAt, Date.parse(row.synced_at) || 0);
   }
   const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, undefined, { numeric: true });
+  // Files an admin put in order first (lower first), then the rest by name.
+  const byOrder = (a: DriveFile, b: DriveFile) =>
+    (a.order ?? Infinity) - (b.order ?? Infinity) || byName(a, b);
   const sort = (f: DriveFolder) => {
     f.folders.sort(byName);
-    f.files.sort(byName);
+    f.files.sort(byOrder);
     f.folders.forEach(sort);
   };
   sort(root);

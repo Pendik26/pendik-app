@@ -162,3 +162,26 @@
   padding: 0.4rem 0;
   border-bottom: 1px solid var(--border);
 }
+
+/* Small dropdowns: class (track), filters. */
+.admin-select,
+.admin-toolbar .admin-select {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 7rem;
+  padding-block: 0.3rem;
+}
+
+.admin-inline-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-order {
+  width: 4.5rem;
+  padding-block: 0.3rem;
+}

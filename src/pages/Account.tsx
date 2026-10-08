@@ -65,7 +65,7 @@ function ProfileCard() {
         <div>
           <p className="account-name">{user.fullName}</p>
           <p className="account-email">
-            {[user.studentId, user.classGroup && `${t("account.class")} ${user.classGroup}`, user.cohort]
+            {[user.studentId, user.track && t(user.track === "IUP" ? "track.iup" : "track.reguler"), user.classGroup && `${t("account.class")} ${user.classGroup}`, user.cohort]
               .filter(Boolean)
               .join(" · ")}
             {user.role === "admin" && ` · ${t("account.roleAdmin")}`}

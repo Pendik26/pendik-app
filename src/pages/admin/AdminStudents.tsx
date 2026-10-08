@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Track } from "../../context/accountContextValue";
 import { useAccount } from "../../hooks/useAccount";
 import { useI18n } from "../../i18n/useI18n";
 import {
@@ -9,10 +10,13 @@ import {
   parseRosterLines,
   removeFromRoster,
   setRole,
+  setTrack,
   type RosterEntry,
 } from "../../lib/admin";
 
 const stateKey = { none: "admin.stateNone", active: "admin.stateActive", locked: "admin.stateLocked" } as const;
+
+const trackFrom = (value: string): Track | null => (value === "IUP" || value === "REGULER" ? value : null);
 
 /** The class roster and each student's account: add students, activate, lock, reset, roles. */
 export function AdminStudents() {
@@ -26,6 +30,8 @@ export function AdminStudents() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [paste, setPaste] = useState("");
   const [showAdd, setShowAdd] = useState(false);
+  const [pasteTrack, setPasteTrack] = useState<Track | null>(null);
+  const [trackFilter, setTrackFilter] = useState<"all" | Track | "none">("all");
 
   const reload = useCallback(() => {
     listRoster().then(setRoster, (e: Error) => { setProblem(e.message); });
@@ -47,10 +53,12 @@ export function AdminStudents() {
 
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return (roster ?? []).filter((r) => !q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q));
-  }, [roster, query]);
+    return (roster ?? []).filter((r) =>
+      (trackFilter === "all" || (trackFilter === "none" ? r.track === null : r.track === trackFilter)) &&
+      (!q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q)));
+  }, [roster, query, trackFilter]);
   const inactiveSelected = [...selected].filter((id) => roster?.find((r) => r.studentId === id)?.account === "none");
-  const parsed = parseRosterLines(paste, String(new Date().getFullYear()));
+  const parsed = parseRosterLines(paste, String(new Date().getFullYear()), pasteTrack);
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -68,6 +76,13 @@ export function AdminStudents() {
 
       <div className="admin-toolbar">
         <input className="form-input" type="search" placeholder={t("admin.searchStudents")} value={query} onChange={(e) => { setQuery(e.target.value); }} />
+        <select className="form-input admin-select" aria-label={t("track.label")} value={trackFilter}
+          onChange={(e) => { setTrackFilter(e.target.value as typeof trackFilter); }}>
+          <option value="all">{t("track.all")}</option>
+          <option value="IUP">{t("track.iup")}</option>
+          <option value="REGULER">{t("track.reguler")}</option>
+          <option value="none">{t("track.none")}</option>
+        </select>
         <button type="button" className="btn btn-small" disabled={busy || inactiveSelected.length === 0}
           onClick={() => void run(async () => {
             const { results } = await activateAccounts(inactiveSelected);
@@ -85,6 +100,14 @@ export function AdminStudents() {
       {showAdd && (
         <div className="account-card admin-add">
           <p className="account-note">{t("admin.addHint")}</p>
+          <label className="admin-inline-field">
+            <span>{t("admin.pasteTrack")}</span>
+            <select className="form-input admin-select" value={pasteTrack ?? ""} onChange={(e) => { setPasteTrack(trackFrom(e.target.value)); }}>
+              <option value="">{t("track.none")}</option>
+              <option value="IUP">{t("track.iup")}</option>
+              <option value="REGULER">{t("track.reguler")}</option>
+            </select>
+          </label>
           <textarea className="form-input admin-textarea" rows={6} value={paste} onChange={(e) => { setPaste(e.target.value); }} placeholder={"2601001, Nama Lengkap, A, 2026"} />
           {parsed.problems.length > 0 && <ul className="admin-problems">{parsed.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
           <button type="button" className="btn btn-small" disabled={busy || parsed.rows.length === 0}
@@ -108,6 +131,7 @@ export function AdminStudents() {
                 <th><span className="sr-only">{t("admin.select")}</span></th>
                 <th>{t("admin.studentId")}</th>
                 <th>{t("admin.name")}</th>
+                <th>{t("track.label")}</th>
                 <th>{t("admin.class")}</th>
                 <th>{t("admin.account")}</th>
                 <th>{t("admin.actions")}</th>
@@ -121,6 +145,14 @@ export function AdminStudents() {
                   </td>
                   <td className="admin-mono">{r.studentId}</td>
                   <td>{r.fullName}{r.role === "admin" && <span className="admin-pill">{t("account.roleAdmin")}</span>}</td>
+                  <td>
+                    <select className="form-input admin-select" aria-label={t("admin.trackOf", { name: r.fullName })} value={r.track ?? ""} disabled={busy}
+                      onChange={(e) => { const next = trackFrom(e.target.value); void run(async () => { await setTrack(r.studentId, next); return null; }); }}>
+                      <option value="">{t("track.none")}</option>
+                      <option value="IUP">{t("track.iup")}</option>
+                      <option value="REGULER">{t("track.reguler")}</option>
+                    </select>
+                  </td>
                   <td>{[r.classGroup, r.cohort].filter(Boolean).join(" · ")}</td>
                   <td>
                     <span className={`admin-state admin-state-${r.account}`}>{t(stateKey[r.account])}</span>

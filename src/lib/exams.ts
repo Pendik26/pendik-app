@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import type { Track } from "../context/accountContextValue";
 import { errorCode, supabase } from "./supabase";
 
 // Exam and practice packages, run by the database (see supabase/migrations/…_attempts.sql): the
@@ -20,11 +21,16 @@ export interface PackageSummary {
   trackBest: boolean;
   status: "draft" | "published";
   questionCount: number;
+  /** Only for this class; null for both. */
+  track: Track | null;
 }
 
 export interface AttemptSummary {
   id: string;
-  packageId: string;
+  /** Null for practice drawn from the question bank. */
+  packageId: string | null;
+  /** A bank practice's own title (packages use theirs). */
+  title: string | null;
   mode: PackageMode;
   status: "in_progress" | "finished" | "abandoned";
   score: number | null;
@@ -54,11 +60,13 @@ interface PackageRow {
   track_best: boolean;
   status: "draft" | "published";
   question_count: number;
+  track: Track | null;
 }
 
 interface AttemptRow {
   id: string;
-  package_id: string;
+  package_id: string | null;
+  title: string | null;
   mode: PackageMode;
   status: AttemptSummary["status"];
   score: number | string | null;
@@ -81,11 +89,13 @@ export const toPackage = (r: PackageRow): PackageSummary => ({
   trackBest: r.track_best,
   status: r.status,
   questionCount: r.question_count,
+  track: r.track ?? null,
 });
 
 const toAttempt = (r: AttemptRow): AttemptSummary => ({
   id: r.id,
   packageId: r.package_id,
+  title: r.title,
   mode: r.mode,
   status: r.status,
   // numeric comes back as a string.
@@ -107,9 +117,9 @@ function setRecords(next: ExamRecords) {
   for (const l of listeners) l();
 }
 
-export const PACKAGE_COLUMNS = "id, title, block, source, year, mode, time_limit_minutes, track_best, status, question_count";
+export const PACKAGE_COLUMNS = "id, title, block, source, year, mode, time_limit_minutes, track_best, status, question_count, track";
 const ATTEMPT_COLUMNS =
-  "id, package_id, mode, status, score, correct_count, wrong_count, blank_count, time_limit_minutes, started_at, finished_at";
+  "id, package_id, title, mode, status, score, correct_count, wrong_count, blank_count, time_limit_minutes, started_at, finished_at";
 
 /** Reads the published packages and the student's attempts (at sign-in and after a submit). */
 export async function loadExamRecords(): Promise<void> {
@@ -157,6 +167,14 @@ export function bestScore(packageId: string, from: ExamRecords = records): numbe
   const scores = finishedAttempts(packageId, from).map((a) => a.score).filter((s): s is number => s !== null);
   return scores.length ? Math.max(...scores) : null;
 }
+
+/** What an attempt is called: a bank practice's own title, else its package's. */
+export function attemptTitle(a: AttemptSummary, from: ExamRecords = records): string {
+  return a.title ?? from.packages.find((p) => p.id === a.packageId)?.title ?? "";
+}
+
+/** Where to go back to from an attempt: its package's page, or the practice setup. */
+export const attemptHome = (packageId: string | null): string => (packageId ? `/exam/papers/${packageId}` : "/exam/practice");
 
 /** The attempt the student has running, if any (there is at most one). */
 export function runningAttempt(from: ExamRecords = records): AttemptSummary | null {
@@ -208,7 +226,7 @@ export interface RunningAttempt {
   id: string;
   status: "in_progress";
   mode: PackageMode;
-  packageId: string;
+  packageId: string | null;
   title: string;
   holder: "you" | "other" | "free";
   secondsLeft: number | null;
@@ -255,6 +273,7 @@ export const ATTEMPT_ERRORS: Record<string, string> = {
   time_up: "exam.errTimeUp",
   held_elsewhere: "exam.errElsewhere",
   cannot_abandon: "exam.errCannotAbandon",
+  no_questions_match: "exam.errNoMatch",
 };
 
 export class AttemptError extends Error {
@@ -274,6 +293,113 @@ async function call<T>(fn: string, args: Record<string, unknown>): Promise<T> {
   return data as T;
 }
 
+// ---------------------------------------------------------------------------------------------
+// Practice from the question bank, and bookmarks.
+
+/** One group of bank questions: a block, source, year and subject, with how many are bookmarked. */
+export interface BankGroup {
+  block: string;
+  source: string | null;
+  year: number | null;
+  subject: string | null;
+  questions: number;
+  bookmarked: number;
+}
+
+/** What the student can practise from the bank (questions in published practice packages of their class). */
+export async function bankOptions(): Promise<BankGroup[]> {
+  return call<BankGroup[]>("bank_options", {});
+}
+
+export interface BankChoice {
+  block: string | null;
+  sources: string[];
+  years: number[];
+  subjects: string[];
+  bookmarkedOnly: boolean;
+  count: number;
+  timeLimitMinutes: number | null;
+  title: string;
+}
+
+/** Questions in the bank that match a choice (empty lists mean any). */
+export function bankMatches(groups: readonly BankGroup[], c: Pick<BankChoice, "block" | "sources" | "years" | "subjects" | "bookmarkedOnly">): number {
+  return groups
+    .filter((g) => (c.block === null || g.block === c.block)
+      && (c.sources.length === 0 || (g.source !== null && c.sources.includes(g.source)))
+      && (c.years.length === 0 || (g.year !== null && c.years.includes(g.year)))
+      && (c.subjects.length === 0 || (g.subject !== null && c.subjects.includes(g.subject))))
+    .reduce((n, g) => n + (c.bookmarkedOnly ? g.bookmarked : g.questions), 0);
+}
+
+/** Starts a practice drawn at random from the bank, or returns the attempt already running. */
+export function startBankPractice(c: BankChoice): Promise<{ attempt_id: string; resumed: boolean }> {
+  return call("start_bank_practice", {
+    p_block: c.block,
+    p_sources: c.sources,
+    p_years: c.years,
+    p_subjects: c.subjects,
+    p_bookmarked_only: c.bookmarkedOnly,
+    p_count: c.count,
+    p_time_limit_minutes: c.timeLimitMinutes,
+    p_title: c.title,
+    p_holder: tabHolderId(),
+  });
+}
+
+/** The ids of the questions the student has bookmarked. */
+export async function bookmarkedIds(): Promise<Set<string>> {
+  const { data, error } = await supabase.from("bookmarks").select("question_id");
+  if (error) throw new Error(error.message);
+  return new Set((data as { question_id: string }[]).map((r) => r.question_id));
+}
+
+export async function setBookmark(questionId: string, on: boolean, userId: string): Promise<void> {
+  const { error } = on
+    ? await supabase.from("bookmarks").upsert({ user_id: userId, question_id: questionId }, { onConflict: "user_id,question_id", ignoreDuplicates: true })
+    : await supabase.from("bookmarks").delete().eq("question_id", questionId);
+  if (error) throw new Error(error.message);
+}
+
+export interface BookmarkedQuestion {
+  id: string;
+  block: string;
+  source: string | null;
+  year: number | null;
+  subject: string | null;
+  type: AttemptQuestion["type"];
+  stem: string;
+  stemImage: string | null;
+  stemImageAlt: string | null;
+  options: AttemptOption[] | null;
+  /** The correct option's index in `options`. */
+  correct: number | null;
+  acceptedAnswers: string[] | null;
+  explanation: string | null;
+  bookmarkedAt: string;
+}
+
+/** The student's bookmarked questions with their answers, newest first. */
+export async function myBookmarks(): Promise<BookmarkedQuestion[]> {
+  const rows = await call<Record<string, unknown>[]>("my_bookmarks", {});
+  return rows.map((r) => ({
+    id: String(r.id),
+    block: String(r.block),
+    source: (r.source as string | null) ?? null,
+    year: (r.year as number | null) ?? null,
+    subject: (r.subject as string | null) ?? null,
+    type: r.type as AttemptQuestion["type"],
+    stem: String(r.stem),
+    stemImage: (r.stem_image as string | null) ?? null,
+    stemImageAlt: (r.stem_image_alt as string | null) ?? null,
+    options: (r.options as AttemptOption[] | null) ?? null,
+    correct: (r.correct as number | null) ?? null,
+    acceptedAnswers: (r.accepted_answers as string[] | null) ?? null,
+    explanation: (r.explanation as string | null) ?? null,
+    bookmarkedAt: String(r.bookmarked_at),
+  }));
+}
+
 /** Starts a package, or returns the attempt already running (which may be another package's). */
 export function startAttempt(packageId: string): Promise<{ attempt_id: string; resumed: boolean }> {
   return call("start_attempt", { p_package_id: packageId, p_holder: tabHolderId() });
@@ -286,7 +412,7 @@ export async function getAttempt(attemptId: string): Promise<AttemptState> {
     id: String(raw.id),
     status: "in_progress",
     mode: raw.mode as PackageMode,
-    packageId: String(raw.package_id),
+    packageId: (raw.package_id as string | null) ?? null,
     title: String(raw.title),
     holder: raw.holder_state as RunningAttempt["holder"],
     secondsLeft: raw.seconds_left as number | null,
@@ -338,7 +464,7 @@ export interface ResultItem {
 export interface AttemptResult {
   id: string;
   mode: PackageMode;
-  packageId: string;
+  packageId: string | null;
   title: string;
   score: number | null;
   correctCount: number;
@@ -368,7 +494,7 @@ export async function getAttemptResult(attemptId: string): Promise<AttemptResult
   return {
     id: String(raw.id),
     mode: raw.mode as PackageMode,
-    packageId: String(raw.package_id),
+    packageId: (raw.package_id as string | null) ?? null,
     title: String(raw.title),
     score: raw.score === null ? null : Number(raw.score),
     correctCount: Number(raw.correct_count ?? 0),
