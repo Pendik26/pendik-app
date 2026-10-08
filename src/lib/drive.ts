@@ -1,3 +1,4 @@
+import { englishT, type Translate } from "../i18n/i18n";
 import type { DriveFile, DriveFileKind, DriveFolder, DriveTree } from "./driveTypes";
 
 // The class Google Drive, as the `drive-sync` Edge Function copies it into the `drive_files`
@@ -257,14 +258,14 @@ export function niceName(name: string): string {
  * SEMESTER 1/BLOCK 1.2 INTEGUMEN…/ANATOMY/LECTURE/PPTs. The semester and "PPTs" folders say
  * nothing a student needs, and a block folder's long name becomes its number.
  */
-export function placeLabel(path: readonly string[]): string {
+export function placeLabel(path: readonly string[], t: Translate = englishT): string {
   const parts = path
     .filter((name) => !/^(semester|smt)\b/i.test(name.trim()) && !/^ppts?$/i.test(name.trim()))
     .map((name) => {
       const block = blockIdOf(name);
-      return block ? `Block ${block}` : niceName(name);
+      return block ? t("drive.block", { block }) : niceName(name);
     });
-  return parts.join(" › ") || "Class Drive";
+  return parts.join(" › ") || t("drive.title");
 }
 
 /** The file name without its extension, for lists. */
@@ -308,14 +309,14 @@ export function driveDownloadUrl(id: string): string | null {
 }
 
 /** "today", "yesterday", "3 days ago", or the date. */
-export function addedWhen(at: number, now: number = Date.now()): string {
+export function addedWhen(at: number, now: number = Date.now(), t: Translate = englishT): string {
   if (!at) return "";
   const day = (t: number) => Math.floor((t - new Date(t).getTimezoneOffset() * 60_000) / 86_400_000);
   const days = day(now) - day(at);
-  if (days <= 0) return "today";
-  if (days === 1) return "yesterday";
-  if (days < 7) return `${days} days ago`;
-  return new Date(at).toLocaleDateString(undefined, { day: "numeric", month: "short", year: days > 300 ? "numeric" : undefined });
+  if (days <= 0) return t("drive.today");
+  if (days === 1) return t("drive.yesterday");
+  if (days < 7) return t("drive.daysAgo", { count: days });
+  return new Date(at).toLocaleDateString(t("drive.dateLocale"), { day: "numeric", month: "short", year: days > 300 ? "numeric" : undefined });
 }
 
 export function formatSize(bytes: number | null): string {
@@ -325,30 +326,30 @@ export function formatSize(bytes: number | null): string {
 }
 
 /** "just now", "4 min ago", "2 h ago". */
-export function updatedAgo(at: number, now: number = Date.now()): string {
+export function updatedAgo(at: number, now: number = Date.now(), t: Translate = englishT): string {
   const minutes = Math.floor((now - at) / 60_000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes} min ago`;
+  if (minutes < 1) return t("drive.justNow");
+  if (minutes < 60) return t("drive.minAgo", { count: minutes });
   const hours = Math.floor(minutes / 60);
-  return hours < 24 ? `${hours} h ago` : `${Math.floor(hours / 24)} d ago`;
+  return hours < 24 ? t("drive.hoursAgo", { count: hours }) : t("drive.daysAgoShort", { count: Math.floor(hours / 24) });
 }
 
-const KIND_LABELS = new Map<DriveFileKind | "folder", string>([
-  ["folder", "Folder"],
-  ["slides", "PPT"],
-  ["pdf", "PDF"],
-  ["video", "Video"],
-  ["audio", "Audio"],
-  ["document", "Doc"],
-  ["sheet", "Sheet"],
-  ["image", "Image"],
-  ["other", "File"],
-]);
+const KIND_LABELS = {
+  folder: "drive.kindFolder",
+  slides: "drive.kindSlides",
+  pdf: "drive.kindPdf",
+  video: "drive.kindVideo",
+  audio: "drive.kindAudio",
+  document: "drive.kindDocument",
+  sheet: "drive.kindSheet",
+  image: "drive.kindImage",
+  other: "drive.kindOther",
+} as const satisfies Record<DriveFileKind | "folder", string>;
 
-export const kindLabel = (kind: DriveFileKind | "folder"): string => KIND_LABELS.get(kind) ?? "File";
+export const kindLabel = (kind: DriveFileKind | "folder", t: Translate = englishT): string => t(KIND_LABELS[kind]);
 
 /** "PPT · 26 MB · added 3 days ago". */
-export function fileFacts(file: DriveFile, now?: number): string {
-  const when = addedWhen(changedAt(file), now);
-  return [kindLabel(file.kind), formatSize(file.size), when && `added ${when}`].filter(Boolean).join(" · ");
+export function fileFacts(file: DriveFile, now?: number, t: Translate = englishT): string {
+  const when = addedWhen(changedAt(file), now, t);
+  return [kindLabel(file.kind, t), formatSize(file.size), when && t("drive.added", { when })].filter(Boolean).join(" · ");
 }

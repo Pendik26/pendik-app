@@ -3,6 +3,7 @@
 // theirs in sections/ and are merged here.
 
 import { adminEn, adminId } from "./sections/admin";
+import { driveEn, driveId } from "./sections/drive";
 import { examEn, examId } from "./sections/exam";
 import { homeEn, homeId } from "./sections/home";
 import { planEn, planId } from "./sections/plan";
@@ -179,8 +180,8 @@ const coreId: { [K in keyof typeof coreEn]: string } = {
 
 };
 
-export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn };
+export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn, ...driveEn };
 
 export type Messages = { [K in keyof typeof en]: string };
 
-export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId };
+export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId, ...driveId };

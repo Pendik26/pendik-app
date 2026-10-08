@@ -5,6 +5,7 @@ import { HighlightText } from "../components/HighlightText";
 import { DriveFileView, DriveKind, NewPill, OpenedMark } from "../components/drive/DriveParts";
 import { RefreshIcon, SearchIcon } from "../components/icons";
 import { useDrive, useDriveOpened } from "../hooks/useDrive";
+import { useI18n } from "../i18n/useI18n";
 import {
   allFiles,
   allFolders,
@@ -58,6 +59,7 @@ function RowSkeleton() {
 
 /** Everything in the class's Google Drive, folder by folder, for signed-in students. */
 export function ClassDrive() {
+  const { t } = useI18n();
   const drive = useDrive();
   const { opened, markOpened } = useDriveOpened();
   const [params, setParams] = useSearchParams();
@@ -208,30 +210,30 @@ export function ClassDrive() {
   const setQuery = (q: string) => { setQueryText(q); };
   useEffect(() => {
     if (query === urlQuery) return;
-    const t = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setSyncedQuery(query);
       setParams(new URLSearchParams(hrefWith({ q: query }).split("?")[1] ?? ""), { replace: true });
     }, 250);
-    return () => { window.clearTimeout(t); };
+    return () => { window.clearTimeout(timer); };
   }, [query, urlQuery, hrefWith, setParams]);
 
   const total = tree ? countFiles(tree.root) : 0;
   const head = (
     <header className="drive-head">
       <div>
-        <h1>Class Drive</h1>
+        <h1>{t("drive.title")}</h1>
         <p className="subtitle">
           {tree
-            ? `${total} file${total === 1 ? "" : "s"} from the class's Google Drive: slides, recordings, tutorials and exams.`
-            : "Slides, recordings, tutorials and exams from the class's Google Drive."}
-          {newFiles.length > 0 && ` ${newFiles.length} new this week.`}
+            ? t("drive.introCount", { count: total })
+            : t("drive.intro")}
+          {newFiles.length > 0 && ` ${t("drive.newThisWeekCount", { count: newFiles.length })}`}
         </p>
       </div>
       {drive.status === "ready" && (
         <div className="drive-status">
           <span className={drive.problem ? "drive-live off" : "drive-live"}>
             <span className="drive-live-dot" aria-hidden="true" />
-            {drive.refreshing ? "Checking Drive…" : `Updated ${updatedAgo(drive.tree.updatedAt, now)}`}
+            {drive.refreshing ? t("drive.checking") : t("drive.updated", { when: updatedAgo(drive.tree.updatedAt, now, t) })}
           </span>
           <button
             type="button"
@@ -241,8 +243,8 @@ export function ClassDrive() {
               if (archiveAt.key) drive.loadFolder(archiveAt.key, true);
             }}
             disabled={drive.refreshing || cohortState?.loading}
-            aria-label="Check the Drive for new files"
-            title="Check for new files"
+            aria-label={t("drive.refreshLabel")}
+            title={t("drive.refreshTitle")}
           >
             <RefreshIcon />
           </button>
@@ -257,10 +259,10 @@ export function ClassDrive() {
         {head}
         {drive.status === "loading" && <RowSkeleton />}
         {drive.status === "error" && (
-          <EmptyState title="Couldn't load the class Drive">
+          <EmptyState title={t("drive.loadFailed")}>
             <p>{drive.message}</p>
             <button type="button" className="btn btn-secondary" onClick={drive.refresh}>
-              Try again
+              {t("drive.tryAgain")}
             </button>
           </EmptyState>
         )}
@@ -289,7 +291,7 @@ export function ClassDrive() {
             <span className="drive-row-name">
               <HighlightText text={fileTitle(file.name)} ranges={ranges} />
             </span>
-            <span className="drive-row-sub">{results ? placeLabel(filePath) : fileFacts(file, now)}</span>
+            <span className="drive-row-sub">{results ? placeLabel(filePath, t) : fileFacts(file, now, t)}</span>
           </span>
           {fresh ? <NewPill /> : opened.has(file.id) && <OpenedMark />}
         </Link>
@@ -309,14 +311,14 @@ export function ClassDrive() {
               <HighlightText text={f.name === f.name.toUpperCase() ? niceName(f.name) : f.name} ranges={showPath ? undefined : ranges} />
             </span>
             <span className="drive-row-sub">
-              {showPath && `${placeLabel(folderPath.slice(0, -1))} · `}
+              {showPath && `${placeLabel(folderPath.slice(0, -1), t)} · `}
               {f.deferred && !f.loaded
-                ? "Loads when opened"
+                ? t("drive.loadsWhenOpened")
                 : f.archive
-                  ? `Linked folder · ${f.folders.length} folder${f.folders.length === 1 ? "" : "s"}${f.files.length ? `, ${f.files.length} file${f.files.length === 1 ? "" : "s"}` : ""}`
+                  ? t("drive.linkedFolder", { folders: f.folders.length, files: f.files.length })
                   : files.length === 0
-                    ? "Empty"
-                    : `${files.length} file${files.length === 1 ? "" : "s"}`}
+                    ? t("drive.empty")
+                    : t("drive.fileCount", { count: files.length })}
             </span>
           </span>
           {fresh > 0 && <NewPill count={fresh} />}
@@ -329,7 +331,7 @@ export function ClassDrive() {
   };
 
   const parent = path.slice(0, -1);
-  const folderName = atHome ? "Class Drive" : niceName(path.at(-1) ?? "");
+  const folderName = atHome ? t("drive.title") : niceName(path.at(-1) ?? "");
   // The trail starts below the home folder; its names would only repeat "Class Drive".
   const trail = path.map((name, i) => ({ name, i })).filter(({ i }) => i >= home.length || !path.slice(0, home.length).every((n, j) => n === home.at(j)));
 
@@ -338,14 +340,14 @@ export function ClassDrive() {
       {head}
 
       <div className="drive-toolbar">
-        <nav className="drive-crumbs" aria-label="Folder">
+        <nav className="drive-crumbs" aria-label={t("drive.folderNav")}>
           {!atHome && (
-            <Link to={hrefWith({ path: parent, file: null })} className="drive-up" aria-label={`Up to ${parent.length > home.length ? niceName(parent.at(-1) ?? "") : "Class Drive"}`}>
+            <Link to={hrefWith({ path: parent, file: null })} className="drive-up" aria-label={t("drive.upTo", { name: parent.length > home.length ? niceName(parent.at(-1) ?? "") : t("drive.title") })}>
               ‹
             </Link>
           )}
           <ol>
-            <li>{atHome ? <span aria-current="page">Class Drive</span> : <Link to={hrefWith({ path: [], file: null })}>Class Drive</Link>}</li>
+            <li>{atHome ? <span aria-current="page">{t("drive.title")}</span> : <Link to={hrefWith({ path: [], file: null })}>{t("drive.title")}</Link>}</li>
             {trail.map(({ name, i }) => (
               <li key={`${i}-${name}`}>
                 {i === path.length - 1 ? <span aria-current="page">{niceName(name)}</span> : <Link to={hrefWith({ path: path.slice(0, i + 1), file: null })}>{niceName(name)}</Link>}
@@ -356,11 +358,11 @@ export function ClassDrive() {
         <div className="drive-tools">
           <label className="drive-search">
             <SearchIcon />
-            <span className="sr-only">Find a file or folder in the class Drive</span>
+            <span className="sr-only">{t("drive.searchLabel")}</span>
             <input
               ref={searchRef}
               type="search"
-              placeholder="Find a file"
+              placeholder={t("drive.searchPlaceholder")}
               value={query}
               onChange={(e) => { setQuery(e.target.value); }}
               aria-keyshortcuts="/"
@@ -371,42 +373,41 @@ export function ClassDrive() {
               </kbd>
             )}
           </label>
-          <div className="drive-sort" role="group" aria-label="Order">
+          <div className="drive-sort" role="group" aria-label={t("drive.order")}>
             {(["name", "newest"] as const).map((s) => (
               <Link key={s} to={hrefWith({ sort: s })} replace className={sort === s ? "active" : undefined} aria-pressed={sort === s}>
-                {s === "name" ? "A–Z" : "Newest"}
+                {s === "name" ? t("drive.sortName") : t("drive.sortNewest")}
               </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {drive.problem && <p className="drive-note">Showing the files as of {updatedAgo(drive.tree.updatedAt, now)}: {drive.problem}</p>}
-      {!drive.tree.complete && <p className="drive-note">Part of the Drive couldn't be read this time, so a few files may be missing.</p>}
+      {drive.problem && <p className="drive-note">{t("drive.staleNote", { when: updatedAgo(drive.tree.updatedAt, now, t), problem: drive.problem })}</p>}
+      {!drive.tree.complete && <p className="drive-note">{t("drive.incomplete")}</p>}
       {!results && archiveAt.archive && (
         <p className="drive-note drive-note-info">
-          <strong>{niceName(archiveAt.archive)}</strong> is linked from elsewhere in Google Drive. Each folder in it is read when you open it, so it never
-          has to load all at once and nothing in it gets cut off. Search covers the folders you've opened.
+          <strong>{niceName(archiveAt.archive)}</strong> {t("drive.linkedNote")}
         </p>
       )}
 
       {!results && atHome && newFiles.length > 0 && (
         <section className="drive-fresh" aria-labelledby="drive-fresh-title">
-          <h2 id="drive-fresh-title">New this week</h2>
+          <h2 id="drive-fresh-title">{t("drive.newThisWeek")}</h2>
           <ul>
             {(showAllNew ? newFiles : newFiles.slice(0, NEW_SHOWN)).map(({ file, path: p }) => (
               <li key={file.id}>
                 <Link to={hrefWith({ path: p, file: file.id })} className="drive-fresh-card">
                   <DriveKind kind={file.kind} />
                   <strong>{fileTitle(file.name)}</strong>
-                  <small>{placeLabel(p)}</small>
+                  <small>{placeLabel(p, t)}</small>
                 </Link>
               </li>
             ))}
           </ul>
           {newFiles.length > NEW_SHOWN && (
             <button type="button" className="btn-link drive-fresh-more" onClick={() => { setShowAllNew((v) => !v); }} aria-expanded={showAllNew}>
-              {showAllNew ? "Show fewer" : `Show all ${newFiles.length}`}
+              {showAllNew ? t("drive.showFewer") : t("drive.showAll", { count: newFiles.length })}
             </button>
           )}
         </section>
@@ -418,16 +419,18 @@ export function ClassDrive() {
             <>
               {unopened > 0 && (
                 <p className="drive-note drive-note-info">
-                  {unopened} linked folder{unopened === 1 ? " isn't" : "s aren't"} searched until you open {unopened === 1 ? "it" : "them"}.
+                  {t("drive.unsearched", { count: unopened })}
                 </p>
               )}
               <p className="drive-count" aria-live="polite">
                 {results.total === 0
-                  ? `Nothing in the Drive matches “${deferredQuery.trim()}”.`
-                  : `${results.total} match${results.total === 1 ? "" : "es"}${results.total > results.matches.length ? `, showing the first ${results.matches.length}` : ""}`}
+                  ? t("drive.noMatches", { query: deferredQuery.trim() })
+                  : results.total > results.matches.length
+                    ? t("drive.matchesShowing", { count: results.total, shown: results.matches.length })
+                    : t("drive.matches", { count: results.total })}
               </p>
               {results.matches.length > 0 && (
-                <ul aria-label="Matches">
+                <ul aria-label={t("drive.matchesLabel")}>
                   {results.matches.map((m) =>
                     m.item.kind === "folder" ? folderRow(m.item.folder, m.item.path, m.ranges, true) : fileRow(m.item.file, m.item.path, m.ranges),
                   )}
@@ -437,25 +440,25 @@ export function ClassDrive() {
           ) : waiting ? (
             cohortState?.problem && !cohortState.loading ? (
               <div className="drive-empty">
-                <p>Couldn't open this folder: {cohortState.problem}</p>
+                <p>{t("drive.folderFailed", { problem: cohortState.problem })}</p>
                 <button type="button" className="btn btn-secondary btn-small" onClick={() => { drive.loadFolder(waiting.key, true); }}>
-                  Try again
+                  {t("drive.tryAgain")}
                 </button>
               </div>
             ) : (
               <div aria-busy="true">
                 <p className="drive-count" role="status">
-                  Reading this folder from Google Drive…
+                  {t("drive.readingFolder")}
                 </p>
                 <RowSkeleton />
               </div>
             )
           ) : !folder ? (
             <p className="drive-empty">
-              That folder isn't in the Drive any more. <Link to="/drive">Back to the top</Link>
+              {t("drive.folderGone")} <Link to="/drive">{t("drive.backToTop")}</Link>
             </p>
           ) : folder.folders.length === 0 && folder.files.length === 0 ? (
-            <p className="drive-empty">Nothing here yet. Files put in this folder in Google Drive show up here within a few minutes.</p>
+            <p className="drive-empty">{t("drive.nothingHere")}</p>
           ) : (
             <ul aria-label={folderName}>
               {folder.folders.map((f) => folderRow(f, [...path, f.name]))}
@@ -468,7 +471,7 @@ export function ClassDrive() {
           <DriveFileView
             key={selected.file.id}
             file={selected.file}
-            position={at >= 0 && shownFiles.length > 1 ? `${at + 1} of ${shownFiles.length}` : undefined}
+            position={at >= 0 && shownFiles.length > 1 ? t("drive.position", { at: at + 1, count: shownFiles.length }) : undefined}
             onPrev={prev && (() => { open(prev); })}
             onNext={next && (() => { open(next); })}
             onClose={close}
@@ -477,9 +480,9 @@ export function ClassDrive() {
         ) : (
           fileId && (
             <div className="drive-viewer-missing" id="drive-viewer">
-              <p>That file isn't in the class Drive any more.</p>
+              <p>{t("drive.fileGone")}</p>
               <button type="button" className="btn btn-secondary btn-small" onClick={close}>
-                Close
+                {t("drive.close")}
               </button>
             </div>
           )

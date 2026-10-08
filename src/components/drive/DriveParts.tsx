@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useI18n } from "../../i18n/useI18n";
 import { driveDownloadUrl, drivePreviewUrl, driveViewUrl, fileFacts, fileTitle, kindLabel, youtubeVideoId } from "../../lib/drive";
 import type { DriveFile, DriveFileKind } from "../../lib/driveTypes";
 
 /** A small tag for what a row is: a folder, slides, a PDF, a recording… */
 export function DriveKind({ kind }: { kind: DriveFileKind | "folder" }) {
+  const { t } = useI18n();
   return (
     <span className={`drive-kind drive-kind-${kind}`} aria-hidden="true">
       {kind === "folder" ? (
@@ -15,23 +17,25 @@ export function DriveKind({ kind }: { kind: DriveFileKind | "folder" }) {
           <path d="M8 6.5v11l9-5.5z" fill="currentColor" />
         </svg>
       ) : (
-        kindLabel(kind)
+        kindLabel(kind, t)
       )}
     </span>
   );
 }
 
 export function NewPill({ count }: { count?: number }) {
-  return <span className="drive-new-pill">{count === undefined ? "New" : `${count} new`}</span>;
+  const { t } = useI18n();
+  return <span className="drive-new-pill">{count === undefined ? t("drive.new") : t("drive.newCount", { count })}</span>;
 }
 
 export function OpenedMark() {
+  const { t } = useI18n();
   return (
-    <span className="drive-opened" title="Opened">
+    <span className="drive-opened" title={t("drive.opened")}>
       <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
         <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <span className="sr-only">Opened</span>
+      <span className="sr-only">{t("drive.opened")}</span>
     </span>
   );
 }
@@ -65,6 +69,7 @@ export function DriveFileView({
   /** Called once the file is on screen (to mark it opened). */
   onShown?: (file: DriveFile) => void;
 }) {
+  const { t } = useI18n();
   const [loaded, setLoaded] = useState(false);
   const title = fileTitle(file.name);
   const download = driveDownloadUrl(file.id);
@@ -76,38 +81,38 @@ export function DriveFileView({
   }, []);
 
   return (
-    <section className="pdf-viewer drive-viewer" id="drive-viewer" aria-label={`Viewing ${title}`}>
+    <section className="pdf-viewer drive-viewer" id="drive-viewer" aria-label={t("drive.viewing", { title })}>
       <div className="drive-viewer-bar">
         <div className="drive-viewer-title">
           <DriveKind kind={file.kind} />
           <p>
             <strong>{title}</strong>
-            <small>{fileFacts(file)}</small>
+            <small>{fileFacts(file, undefined, t)}</small>
           </p>
         </div>
         <div className="drive-viewer-actions">
           {(onPrev || onNext) && (
             <span className="drive-viewer-step">
-              <button type="button" className="icon-btn" onClick={onPrev} disabled={!onPrev} aria-label="Previous file" title="Previous file (←)">
+              <button type="button" className="icon-btn" onClick={onPrev} disabled={!onPrev} aria-label={t("drive.previous")} title={t("drive.previousTitle")}>
                 <Icon d="M14.5 6l-6 6 6 6" />
               </button>
               {position && <span className="drive-viewer-pos">{position}</span>}
-              <button type="button" className="icon-btn" onClick={onNext} disabled={!onNext} aria-label="Next file" title="Next file (→)">
+              <button type="button" className="icon-btn" onClick={onNext} disabled={!onNext} aria-label={t("drive.next")} title={t("drive.nextTitle")}>
                 <Icon d="M9.5 6l6 6-6 6" />
               </button>
             </span>
           )}
           {download && (
-            <a href={download} className="icon-btn" aria-label="Download" title="Download" rel="noopener noreferrer">
+            <a href={download} className="icon-btn" aria-label={t("drive.download")} title={t("drive.download")} rel="noopener noreferrer">
               <Icon d="M12 4.5v10M7.5 10l4.5 4.5 4.5-4.5M5 19.5h14" />
             </a>
           )}
           <a href={driveViewUrl(file.id)} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-small">
-            {youtubeVideoId(file.id) ? "Open on YouTube" : "Open in Drive"}
+            {youtubeVideoId(file.id) ? t("drive.openYoutube") : t("drive.openDrive")}
             <Icon d="M7 17 17 7M9 7h8v8" />
           </a>
           {onClose && (
-            <button type="button" className="icon-btn" onClick={onClose} aria-label="Close the viewer" title="Close (Esc)">
+            <button type="button" className="icon-btn" onClick={onClose} aria-label={t("drive.closeViewer")} title={t("drive.closeTitle")}>
               <Icon d="M6 6l12 12M18 6L6 18" />
             </button>
           )}
@@ -117,7 +122,7 @@ export function DriveFileView({
         {!loaded && (
           <p className="drive-frame-loading" role="status">
             <span className="drive-spinner" aria-hidden="true" />
-            Opening {title}…
+            {t("drive.opening", { title })}
           </p>
         )}
         <iframe

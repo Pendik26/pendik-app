@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useI18n } from "../i18n/useI18n";
 import { moduleSubjects, modulesByBlockSubject } from "../lib/content";
 import { groupByBlock } from "../lib/blocks";
 import { SubjectBadge } from "../components/SubjectBadge";
@@ -10,6 +11,7 @@ import { countFiles, filesUnder, folderAt, isNew, subjectFolderPath, updatedAgo 
 
 /** The class Google Drive, for signed-in students: a way in, and how much is there. */
 function DriveCard() {
+  const { t } = useI18n();
   const drive = useDrive();
   const { opened } = useDriveOpened();
   const total = drive.status === "ready" ? countFiles(drive.tree.root) : null;
@@ -18,11 +20,11 @@ function DriveCard() {
     <Link to="/drive" className="drive-card">
       <DriveKind kind="folder" />
       <span>
-        <strong>Class Drive</strong>
+        <strong>{t("drive.title")}</strong>
         <small>
           {total !== null && drive.status === "ready"
-              ? `${total} files: slides, recordings, tutorials and exams, live from Google Drive (updated ${updatedAgo(drive.tree.updatedAt)}).${fresh > 0 ? ` ${fresh} new this week.` : ""}`
-              : "Slides, recordings, tutorials and exams, live from the class's Google Drive."}
+              ? `${t("drive.cardLive", { count: total, when: updatedAgo(drive.tree.updatedAt, undefined, t) })}${fresh > 0 ? ` ${t("drive.newThisWeekCount", { count: fresh })}` : ""}`
+              : t("drive.cardIntro")}
         </small>
       </span>
       <span aria-hidden="true">→</span>
@@ -42,22 +44,23 @@ function useDriveCount(): (blockId: string, subjectId: string) => number | null 
 }
 
 export function Modules() {
+  const { t } = useI18n();
   const groups = groupByBlock(moduleSubjects);
   const driveCount = useDriveCount();
 
   if (groups.length === 0) {
     return (
       <section className="page">
-        <h1>Modules</h1>
-        <p className="subtitle">No lecture slides yet — drop a PDF into a subject's module folder.</p>
+        <h1>{t("modules.title")}</h1>
+        <p className="subtitle">{t("modules.none")}</p>
       </section>
     );
   }
 
   return (
     <section className="page">
-      <h1>Modules</h1>
-      <p className="subtitle">Original lecture slides, as PDFs — organized by block and subject.</p>
+      <h1>{t("modules.title")}</h1>
+      <p className="subtitle">{t("modules.intro")}</p>
       <DriveCard />
       {groups.map(({ block, subjects, upcoming }) => (
         <div key={block.id} className="block-section">
@@ -74,8 +77,8 @@ export function Modules() {
                     <h2>{subject.label}</h2>
                   </div>
                   <p>
-                    {pdfs.length} PDF{pdfs.length === 1 ? "" : "s"}
-                    {inDrive !== null && ` · ${inDrive} in the class Drive`}
+                    {t("modules.pdfCount", { count: pdfs.length })}
+                    {inDrive !== null && ` · ${t("modules.inDrive", { count: inDrive })}`}
                   </p>
                 </Link>
               );
