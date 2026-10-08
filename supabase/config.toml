@@ -1,0 +1,31 @@
+# Supabase CLI settings for local development (`supabase start`). The hosted project's settings
+# live in its dashboard; see docs/deploying.md.
+project_id = "pendik-app"
+
+[api]
+schemas = ["public"]
+max_rows = 1000
+
+[db]
+major_version = 17
+
+[auth]
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/account"]
+# Students never sign themselves up: accounts are created from the roster by an admin.
+enable_signup = false
+# Lets a signed-in student link Google to their account.
+enable_manual_linking = true
+
+[auth.email]
+enable_signup = false
+enable_confirmations = false
+
+[auth.external.google]
+enabled = false
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+
+[functions.drive-sync]
+# Called by GitHub Actions with a shared secret, not a user token; the function checks it.
+verify_jwt = false
