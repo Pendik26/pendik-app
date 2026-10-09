@@ -46,9 +46,12 @@ only their own rows. See [database.md](database.md#study-progress-leaderboard-re
    wait 1.5 s after the last change, then upsert every changed key in one
    request (200 rows a batch). A value set to `null` (a finished quiz's
    resume slot) deletes the row.
-3. **Coming back to the tab:** `refreshProgress()` reads the account again,
-   so progress made on another device shows up. It skips this while there
-   are unsaved changes, so it never overwrites them.
+3. **Coming back to the tab:** `refreshProgress()` reads only the rows
+   changed since the last read (by `updated_at`, which the database stamps
+   with its own clock, re-reading a minute back to be safe), so progress
+   made on another device shows up without downloading everything again. It
+   skips this while there are unsaved changes, so it never overwrites them.
+   Keys deleted on another device show up at the next sign-in.
 4. **Sign-out:** waits for pending saves, then forgets the progress in
    memory.
 

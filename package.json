@@ -18,7 +18,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "graph:relations": "node scripts/graph-relations.mjs",
-    "docs:wiki": "node scripts/wiki.mjs"
+    "docs:wiki": "node scripts/wiki.mjs",
+    "db:first-admin": "bash supabase/seeds/first-admin.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
