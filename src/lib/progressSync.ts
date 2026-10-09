@@ -4,8 +4,8 @@ import { progressValue, replaceProgress, setProgressFromServer, STORAGE_UPDATED_
 
 // Loading and saving the signed-in student's progress (the `progress` table). Everything is
 // loaded once at sign-in; after that each changed key is saved a moment after its last change,
-// in one upsert. When the tab comes back into view the account is read again, so progress made
-// on another device shows up.
+// in one upsert. When the tab comes back into view, the keys changed since the last read are read
+// again (by the server's clock, `updated_at`), so progress made on another device shows up.
 
 export interface SaveState {
   phase: "idle" | "saving" | "error";
@@ -17,9 +17,13 @@ export interface SaveState {
 
 const SAVE_DELAY_MS = 1500;
 const BATCH = 200;
+/** Re-reads a little before the last change seen, so a save that committed late isn't missed. */
+const OVERLAP_MS = 60_000;
 
 const pending = new Set<string>();
 let userId: string | null = null;
+/** The newest `updated_at` read so far (server time), or null before the first load. */
+let lastChange: string | null = null;
 let timer: number | undefined;
 let saving: Promise<void> | null = null;
 let state: SaveState = { phase: "idle", pending: 0 };
@@ -36,14 +40,30 @@ export function subscribeSaveState(listener: (s: SaveState) => void): () => void
   return () => { listeners.delete(listener); };
 }
 
-async function fetchAll(): Promise<[string, unknown][]> {
+/** The account's progress rows, or only those changed at or after `since`. */
+async function fetchRows(since: string | null): Promise<{ rows: [string, unknown][]; newest: string | null }> {
   const rows: [string, unknown][] = [];
+  let newest: string | null = null;
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await supabase.from("progress").select("key, value").range(from, from + 999);
+    let query = supabase.from("progress").select("key, value, updated_at");
+    if (since) query = query.gte("updated_at", since);
+    const { data, error } = await query.order("key").range(from, from + 999);
     if (error) throw new Error(error.message);
-    for (const r of data as { key: string; value: unknown }[]) rows.push([appKey(r.key), r.value]);
-    if (data.length < 1000) return rows;
+    for (const r of data as { key: string; value: unknown; updated_at: string }[]) {
+      rows.push([appKey(r.key), r.value]);
+      if (!newest || r.updated_at > newest) newest = r.updated_at;
+    }
+    if (data.length < 1000) return { rows, newest };
   }
+}
+
+function noteNewest(newest: string | null) {
+  if (newest && (!lastChange || newest > lastChange)) lastChange = newest;
+}
+
+/** Where the next refresh starts reading. */
+function refreshFrom(newest: string | null): string | null {
+  return newest ? new Date(Date.parse(newest) - OVERLAP_MS).toISOString() : null;
 }
 
 function announce(keys: string[]) {
@@ -54,7 +74,10 @@ function announce(keys: string[]) {
 export async function loadProgress(id: string): Promise<void> {
   userId = id;
   pending.clear();
-  announce(replaceProgress(await fetchAll()));
+  lastChange = null;
+  const { rows, newest } = await fetchRows(null);
+  noteNewest(newest);
+  announce(replaceProgress(rows));
   setState({ phase: "idle", message: undefined });
 }
 
@@ -62,12 +85,14 @@ export async function loadProgress(id: string): Promise<void> {
 export async function refreshProgress(): Promise<void> {
   if (!userId || pending.size > 0 || saving) return;
   let rows: [string, unknown][];
+  let newest: string | null;
   try {
-    rows = await fetchAll();
+    ({ rows, newest } = await fetchRows(refreshFrom(lastChange)));
   } catch {
     return; // offline: keep what's in memory
   }
   if (pending.size > 0) return;
+  noteNewest(newest);
   const changed: string[] = [];
   for (const [key, value] of rows) {
     const before = JSON.stringify(progressValue(key));
@@ -82,6 +107,7 @@ export async function refreshProgress(): Promise<void> {
 /** Forgets the progress in memory (sign-out). */
 export function clearProgress(): void {
   userId = null;
+  lastChange = null;
   pending.clear();
   window.clearTimeout(timer);
   announce(replaceProgress([]));
@@ -122,7 +148,6 @@ async function runSave(): Promise<void> {
         user_id: owner,
         key: serverKey(key),
         value: progressValue(key),
-        updated_at: new Date().toISOString(),
       }));
       const { error } = await supabase.from("progress").upsert(rows, { onConflict: "user_id,key" });
       if (error) throw new Error(error.message);

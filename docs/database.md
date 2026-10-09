@@ -159,10 +159,33 @@ A bank attempt is then taken, saved and graded like any other.
 `drive_files.sort_order` (0–9999, or null): admins set it in Admin → Drive.
 Files with an order come first in their folder, then the rest by name.
 
+## Storage limits and indexes (`…1000_storage.sql`)
+
+- `progress.updated_at` and `block_readiness.updated_at` are set by the
+  database, whatever the browser sends, so the app can ask for what changed
+  since it last looked.
+- Saving a progress value that didn't change is skipped: no new row
+  version and no leaderboard rescoring.
+- One account holds at most 3,000 progress keys (`progress_full`), next to
+  the 512 KB a value.
+- Indexes on the foreign keys that are looked up or cascaded through
+  (`package_questions.question_id`, `bookmarks.question_id`,
+  `attempts.package_id`) and on `leaderboard_daily.day` for the weekly
+  board.
+
+## First admin (`seeds/first-admin.sql`)
+
+Makes someone an admin (see [deploying.md](deploying.md#6-first-admin-roster-and-past-papers)):
+`npm run db:first-admin` passes who it is in as psql variables, so no
+student's details are committed. Running it again keeps what exists and only
+makes that profile an admin. `migrations/…1100_first_admin.sql` once held
+this seed with a real student's details and is now empty; it stays so the
+live database's migration history lines up.
+
 ## Testing
 
 `supabase/tests/` holds SQL tests for the exam rules, the Drive functions,
-and classes, bank practice and bookmarks.
+classes, bank practice and bookmarks, and progress storage.
 They run against a plain Postgres (a stub stands in for Supabase's `auth`
 schema):
 

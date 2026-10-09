@@ -192,8 +192,27 @@ the people who upload.
 
 ## 6. First admin, roster and past papers
 
-Admins are students with `role = 'admin'`. The first one has to be made by
-hand, once, in the SQL editor (replace the NIM and name):
+Admins are students with `role = 'admin'`. Make the first one from your
+computer, with the database's direct connection string (Project Settings →
+Database, or Vercel's `POSTGRES_URL_NON_POOLING`). Who it is comes from
+environment variables, so no student's NIM or name goes into the repo:
+
+```sh
+FIRST_ADMIN_NIM=2601001 FIRST_ADMIN_NAME='Nama Lengkap' \
+POSTGRES_URL_NON_POOLING='postgresql://…' npm run db:first-admin
+```
+
+It runs `supabase/seeds/first-admin.sql` (it needs `psql`), which puts them on
+the roster and creates their sign-in and admin profile. `FIRST_ADMIN_COHORT`
+(default `2026`) and `FIRST_ADMIN_PASSWORD` are optional. Without a password
+the first one is the usual `pendik26` + NIM, which anyone who knows the NIM
+knows too, so sign in and change it right away; the app asks for a new
+password first. Running it again keeps what exists and only makes the
+profile an admin; on a database that already has its admin there is nothing
+to do.
+
+Without `psql`, do it once by hand in the SQL editor (replace the NIM and
+name):
 
 ```sql
 insert into public.roster (student_id, full_name, class_group, cohort)

@@ -22,7 +22,7 @@ export async function reportReadiness(blockId: string, value: number): Promise<v
   const userId = data.session?.user.id;
   if (!userId) return;
   const { error } = await supabase.from("block_readiness").upsert(
-    { user_id: userId, block: blockId, value: Math.round(Math.min(100, Math.max(0, value)) * 10) / 10, updated_at: new Date().toISOString() },
+    { user_id: userId, block: blockId, value: Math.round(Math.min(100, Math.max(0, value)) * 10) / 10 },
     { onConflict: "user_id,block" },
   );
   if (error) reported.delete(blockId);
