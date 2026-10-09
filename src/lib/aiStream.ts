@@ -1,7 +1,7 @@
 // The browser's side of the AI answers ("Explain this" and Alfond, the `ai` Edge Function):
 // posts a request with the student's session and reads the answer as it streams in as plain text.
 
-import { supabase } from "./supabase";
+import { currentSession, fetchFunction } from "./db/client";
 
 export type AiResult = { ok: true; remaining: number | null } | { ok: false; status: number; message: string; partial?: string };
 
@@ -10,20 +10,11 @@ const CUT_OFF = "\u0000";
 
 /** Posts `body` to the AI function, calling onText with the whole answer so far as it arrives. */
 export async function streamAi(kind: "explain" | "chat", body: unknown, onText: (text: string) => void, signal?: AbortSignal): Promise<AiResult> {
-  const { data } = await supabase.auth.getSession();
-  if (!data.session) return { ok: false, status: 401, message: "Sign in to use the AI." };
+  const session = await currentSession();
+  if (!session) return { ok: false, status: 401, message: "Sign in to use the AI." };
   let res: Response;
   try {
-    res = await fetch(`${import.meta.env.VITE_SUPABASE_URL as string}/functions/v1/ai/${kind}`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${data.session.access_token}`,
-        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string,
-      },
-      body: JSON.stringify(body),
-      signal,
-    });
+    res = await fetchFunction(`ai/${kind}`, session, { body: JSON.stringify(body), signal });
   } catch {
     if (signal?.aborted) return { ok: false, status: 0, message: "" };
     return { ok: false, status: 0, message: "Couldn't reach the server. Check your connection." };

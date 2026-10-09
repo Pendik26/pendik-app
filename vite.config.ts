@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv, type Plugin, type UserConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { SITE_ORIGIN } from './src/lib/site.ts'
-import { supabaseEnv } from './src/lib/supabaseEnv.ts'
+import { supabaseEnv } from './src/lib/db/env.ts'
 import { buildInfo } from './scripts/build-info.mjs'
 
 // /privacy and /terms are the legal pages in public/legal/ (vercel.json rewrites them the same
@@ -77,7 +77,7 @@ function siteUrl(): Plugin {
 // https://vite.dev/config/
 export default defineConfig(async ({ mode }): Promise<UserConfig> => {
   // The Supabase URL and public key, under the app's names or the Vercel integration's
-  // (src/lib/supabaseEnv.ts). Only these two go into the page, never the secret keys.
+  // (src/lib/db/env.ts). Only these two go into the page, never the secret keys.
   const supabase = supabaseEnv({ ...loadEnv(mode, process.cwd(), ''), ...process.env })
   return {
     define: {

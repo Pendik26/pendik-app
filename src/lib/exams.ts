@@ -1,12 +1,14 @@
 import { useSyncExternalStore } from "react";
 import type { Track } from "../context/accountContextValue";
-import { errorCode, supabase } from "./supabase";
+import { db, errorCode, rpc } from "./db/client";
+import type { Json } from "./db/types";
 
-// Exam and practice packages, run by the database (see supabase/migrations/…_attempts.sql): the
+// Exam and practice packages, run by the database (see database/schema/03_attempts.sql): the
 // browser shows questions and sends answers; the server keeps time, holds the keys and grades.
 //
 // The packages and the student's own attempts are loaded at sign-in and kept here, so pages and
-// the study plan can read them without waiting; they're read again after each submit.
+// the study plan can read them without waiting; they're read again after each submit, and when
+// the tab comes back into view if they're more than a minute old.
 
 export type PackageMode = "exam" | "practice";
 
@@ -110,6 +112,9 @@ const toAttempt = (r: AttemptRow): AttemptSummary => ({
 
 const EMPTY: ExamRecords = { loaded: false, packages: [], attempts: [] };
 let records: ExamRecords = EMPTY;
+let loadedAt = 0;
+/** How old the records can be before a refresh reads them again. */
+const FRESH_MS = 60_000;
 const listeners = new Set<() => void>();
 
 function setRecords(next: ExamRecords) {
@@ -124,11 +129,12 @@ const ATTEMPT_COLUMNS =
 /** Reads the published packages and the student's attempts (at sign-in and after a submit). */
 export async function loadExamRecords(): Promise<void> {
   const [packages, attempts] = await Promise.all([
-    supabase.from("package_summaries").select(PACKAGE_COLUMNS).eq("status", "published").order("title"),
-    supabase.from("attempts").select(ATTEMPT_COLUMNS).order("started_at", { ascending: false }).limit(500),
+    db.from("package_summaries").select(PACKAGE_COLUMNS).eq("status", "published").order("title"),
+    db.from("attempts").select(ATTEMPT_COLUMNS).order("started_at", { ascending: false }).limit(500),
   ]);
   if (packages.error) throw packages.error;
   if (attempts.error) throw attempts.error;
+  loadedAt = Date.now();
   setRecords({
     loaded: true,
     packages: (packages.data as PackageRow[]).map(toPackage),
@@ -136,7 +142,13 @@ export async function loadExamRecords(): Promise<void> {
   });
 }
 
+/** Reads the records again unless they were read in the last minute (the tab coming back into view). */
+export function refreshExamRecords(): Promise<void> {
+  return Date.now() - loadedAt < FRESH_MS ? Promise.resolve() : loadExamRecords();
+}
+
 export function clearExamRecords(): void {
+  loadedAt = 0;
   setRecords(EMPTY);
 }
 
@@ -284,8 +296,9 @@ export class AttemptError extends Error {
   }
 }
 
-async function call<T>(fn: string, args: Record<string, unknown>): Promise<T> {
-  const { data, error } = await supabase.rpc(fn, args);
+/** A database function's result; its error code becomes an AttemptError. */
+async function call<T>(query: PromiseLike<{ data: unknown; error: { message: string } | null }>): Promise<T> {
+  const { data, error } = await query;
   if (error) {
     const code = errorCode(error) ?? "unknown";
     throw new AttemptError(code, error.message);
@@ -308,7 +321,7 @@ export interface BankGroup {
 
 /** What the student can practise from the bank (questions in published practice packages of their class). */
 export async function bankOptions(): Promise<BankGroup[]> {
-  return call<BankGroup[]>("bank_options", {});
+  return call<BankGroup[]>(rpc("bank_options"));
 }
 
 export interface BankChoice {
@@ -334,7 +347,7 @@ export function bankMatches(groups: readonly BankGroup[], c: Pick<BankChoice, "b
 
 /** Starts a practice drawn at random from the bank, or returns the attempt already running. */
 export function startBankPractice(c: BankChoice): Promise<{ attempt_id: string; resumed: boolean }> {
-  return call("start_bank_practice", {
+  return call(rpc("start_bank_practice", {
     p_block: c.block,
     p_sources: c.sources,
     p_years: c.years,
@@ -344,20 +357,20 @@ export function startBankPractice(c: BankChoice): Promise<{ attempt_id: string; 
     p_time_limit_minutes: c.timeLimitMinutes,
     p_title: c.title,
     p_holder: tabHolderId(),
-  });
+  }));
 }
 
 /** The ids of the questions the student has bookmarked. */
 export async function bookmarkedIds(): Promise<Set<string>> {
-  const { data, error } = await supabase.from("bookmarks").select("question_id");
+  const { data, error } = await db.from("bookmarks").select("question_id");
   if (error) throw new Error(error.message);
-  return new Set((data as { question_id: string }[]).map((r) => r.question_id));
+  return new Set(data.map((r) => r.question_id));
 }
 
 export async function setBookmark(questionId: string, on: boolean, userId: string): Promise<void> {
   const { error } = on
-    ? await supabase.from("bookmarks").upsert({ user_id: userId, question_id: questionId }, { onConflict: "user_id,question_id", ignoreDuplicates: true })
-    : await supabase.from("bookmarks").delete().eq("question_id", questionId);
+    ? await db.from("bookmarks").upsert({ user_id: userId, question_id: questionId }, { onConflict: "user_id,question_id", ignoreDuplicates: true })
+    : await db.from("bookmarks").delete().eq("user_id", userId).eq("question_id", questionId);
   if (error) throw new Error(error.message);
 }
 
@@ -381,7 +394,7 @@ export interface BookmarkedQuestion {
 
 /** The student's bookmarked questions with their answers, newest first. */
 export async function myBookmarks(): Promise<BookmarkedQuestion[]> {
-  const rows = await call<Record<string, unknown>[]>("my_bookmarks", {});
+  const rows = await call<Record<string, unknown>[]>(rpc("my_bookmarks"));
   return rows.map((r) => ({
     id: String(r.id),
     block: String(r.block),
@@ -402,11 +415,11 @@ export async function myBookmarks(): Promise<BookmarkedQuestion[]> {
 
 /** Starts a package, or returns the attempt already running (which may be another package's). */
 export function startAttempt(packageId: string): Promise<{ attempt_id: string; resumed: boolean }> {
-  return call("start_attempt", { p_package_id: packageId, p_holder: tabHolderId() });
+  return call(rpc("start_attempt", { p_package_id: packageId, p_holder: tabHolderId() }));
 }
 
 export async function getAttempt(attemptId: string): Promise<AttemptState> {
-  const raw = await call<Record<string, unknown>>("get_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId() });
+  const raw = await call<Record<string, unknown>>(rpc("get_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId() }));
   if (raw.status !== "in_progress") return { id: String(raw.id), status: raw.status as "finished" | "abandoned" };
   return {
     id: String(raw.id),
@@ -429,26 +442,26 @@ export function saveAttempt(
   flagged: string[],
   tabLeaves: number,
 ): Promise<void> {
-  return call("save_attempt", {
+  return call(rpc("save_attempt", {
     p_attempt_id: attemptId,
     p_holder: tabHolderId(),
-    p_answers: answers,
+    p_answers: answers as Json,
     p_flagged: flagged,
     p_tab_leaves: tabLeaves,
-  });
+  }));
 }
 
 export function takeOverAttempt(attemptId: string): Promise<void> {
-  return call("take_over_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId() });
+  return call(rpc("take_over_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId() }));
 }
 
 export async function submitAttempt(attemptId: string, answers: Record<string, AttemptAnswer>): Promise<void> {
-  await call("submit_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId(), p_answers: answers });
+  await call(rpc("submit_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId(), p_answers: answers as Json }));
   await loadExamRecords().catch(() => undefined);
 }
 
 export async function abandonAttempt(attemptId: string): Promise<void> {
-  await call("abandon_attempt", { p_attempt_id: attemptId });
+  await call(rpc("abandon_attempt", { p_attempt_id: attemptId }));
   await loadExamRecords().catch(() => undefined);
 }
 
@@ -480,7 +493,7 @@ export interface AttemptResult {
 }
 
 export async function getAttemptResult(attemptId: string): Promise<AttemptResult> {
-  const raw = await call<Record<string, unknown>>("get_attempt_result", { p_attempt_id: attemptId });
+  const raw = await call<Record<string, unknown>>(rpc("get_attempt_result", { p_attempt_id: attemptId }));
   const questions = (raw.questions as QuestionJson[]).map(toQuestion);
   const revisions = (raw.question_revisions ?? {}) as Record<string, number>;
   const items = ((raw.items ?? []) as Record<string, unknown>[]).map((i) => ({

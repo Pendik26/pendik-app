@@ -2,17 +2,17 @@
 
 There's no server of our own. The browser talks to Supabase:
 
-- **Tables and SQL functions** through supabase-js (`src/lib/supabase.ts`),
+- **Tables and SQL functions** through supabase-js (`src/lib/db/client.ts`),
   with the signed-in student's token. Row level security and the functions'
   own checks decide what each call may do; they're described in
   [database.md](database.md). The app's wrappers are in `src/lib/exams.ts`
   (attempts), `src/lib/admin.ts` (admin pages), `src/lib/leaderboard.ts`,
   `src/lib/classReadiness.ts` and `src/lib/progressSync.ts`.
-- **Three Edge Functions** (Deno, in `supabase/functions/`) for what needs a
+- **Three Edge Functions** (Deno, in `database/functions/`) for what needs a
   secret: the AI key, the service role, or Google's credentials. They're
   below.
 
-Shared code for the functions is in `supabase/functions/_shared/`. It has no
+Shared code for the functions is in `database/functions/_shared/`. It has no
 imports beyond its own folder, so the same files are unit-tested with Vitest
 (`*.test.ts` next to them) and typechecked with `tsconfig.functions.json`.
 
@@ -25,7 +25,7 @@ imports beyond its own folder, so the same files are unit-tested with Vitest
   headers, so their calls fail.
 - `ai` and `admin-accounts` need `Authorization: Bearer <access token>` (and
   the `apikey` header supabase-js sends); Supabase checks the token before
-  the function runs (`verify_jwt = true` in `supabase/config.toml`).
+  the function runs (`verify_jwt = true` in `database/config.toml`).
 
 ## `ai`: "Explain this" and Alfond
 
@@ -126,6 +126,6 @@ missing).
 ## Tests
 
 ```sh
-npm test                 # Vitest, including supabase/functions/_shared/*.test.ts
-bash supabase/tests/run.sh   # the SQL rules, see database.md
+npm test                 # Vitest, including database/functions/_shared/*.test.ts
+npm run db:test          # the SQL rules and the schema check, see database.md
 ```

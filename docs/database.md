@@ -6,9 +6,30 @@ Everything a student or admin saves lives in one Supabase project: sign-in
 atlas) is not in it: it ships with the built site from `content/` and
 `public/`.
 
-The schema is the SQL in [`supabase/migrations/`](../supabase/migrations/),
-applied in file order. Each file starts with a comment saying what it holds
-and the rules it enforces; this page is the map.
+Everything on the database side is in [`database/`](../database/):
+
+```text
+database/
+  schema/       the current schema, one file per domain (00_base … 10_admin)
+  migrations/   every change in the order it was applied to the live database
+  functions/    the Edge Functions (see api.md)
+  tests/        SQL tests, and schema-check.sh
+  config.toml   the Supabase CLI's settings for a local stack
+```
+
+To see what a table or function looks like now, read its file in
+[`database/schema/`](../database/schema/). Each file starts with a comment
+saying what it holds and the rules it enforces; this page is the map.
+[`database/migrations/`](../database/migrations/) is the history that got the
+live database there (a table defined in one migration may gain a column in a
+later one), and is what `db push` applies. `npm run db:test` checks that the
+two describe exactly the same schema.
+
+The app reaches all of it through one module,
+[`src/lib/db/client.ts`](../src/lib/db/client.ts): the supabase-js client typed
+with [`types.ts`](../src/lib/db/types.ts) (generated from the database with
+`npm run db:types`), `rpc()` for the SQL functions, and `invokeFunction()` for
+the Edge Functions.
 
 ```text
 browser ── supabase-js ──► Supabase Auth      (NIM or Google sign-in, sessions)
@@ -32,7 +53,7 @@ nothing. In short:
 - **The service role** (Edge Functions only, never the browser) creates and
   locks accounts and writes the Drive tables.
 
-## Accounts (`…0100_accounts.sql`)
+## Accounts (`01_accounts.sql`)
 
 | Table | One row per | Notes |
 | --- | --- | --- |
@@ -49,7 +70,7 @@ and is signed straight out.
 Students change their profile only through `update_my_settings()`; name,
 NIM, class and role aren't theirs to change.
 
-## Questions and packages (`…0200_questions.sql`)
+## Questions and packages (`02_questions.sql`)
 
 | Table | One row per | Notes |
 | --- | --- | --- |
@@ -58,13 +79,13 @@ NIM, class and role aren't theirs to change.
 | `packages` | exam or practice set | title, block, mode, time limit, draft or published, whether to keep the best score |
 | `package_questions` | question in a package, in order | |
 | `bookmarks` | question a student saved | |
-| `package_summaries` (view) | package with its live question count | students see published ones |
+| `package_summaries` (view) | package with its live question count | runs as the caller, so `packages`' own policies decide the rows; the count comes from `package_question_count()` |
 
 Question images are files under `public/question-images/`; `stem_image` and
 each option's `image` hold that path. The Markdown format is in
 [questions.md](questions.md).
 
-## Attempts (`…0300_attempts.sql`)
+## Attempts (`03_attempts.sql`)
 
 `attempts` has one row per try at a package. Students only read it; every
 change goes through these functions, which enforce the rules:
@@ -84,7 +105,7 @@ revisions when it starts. The deadline is on the server's clock; a running
 attempt past it is graded the next time its owner touches it.
 `best_scores` (view) is each student's best finished exam score per package.
 
-## Class Drive (`…0400_drive.sql`)
+## Class Drive (`05_drive.sql`)
 
 | Table | One row per | Notes |
 | --- | --- | --- |
@@ -96,7 +117,7 @@ Only `drive-sync` writes them, through `drive_touch_videos()`,
 files that are neither missing nor hidden. How a sync runs is in
 [deploying.md](deploying.md#5-class-drive-sync).
 
-## Study progress, leaderboard, readiness, AI (`…0500_study.sql`)
+## Study progress, leaderboard, readiness, AI (`06_progress.sql` to `09_ai.sql`)
 
 | Table | One row per | Notes |
 | --- | --- | --- |
@@ -117,15 +138,17 @@ classmates have one.
 How the app loads and saves progress is in
 [storage-and-sync.md](storage-and-sync.md).
 
-## Admin functions (`…0600_admin.sql`)
+## Admin functions (`10_admin.sql`)
 
 `admin_list_roster()` (the roster with each student's account state),
 `admin_set_role()`, `admin_import_questions()`,
-`admin_packages_from_import()` and `admin_set_package_status()`. Creating,
+`admin_packages_from_import()`, `admin_set_package_status()` and
+`admin_question_facets()` (the blocks, sources, years and subjects for the
+filters on Admin → Questions). Creating,
 locking, unlocking and resetting accounts needs the service role, so it's the
 `admin-accounts` Edge Function instead ([api.md](api.md)).
 
-## Classes: IUP and Reguler (`…0700_tracks.sql`)
+## Classes: IUP and Reguler (`01_accounts.sql`, `02_questions.sql`)
 
 The year has two classes that used to have their own apps (IUP had the
 medicine app, Reguler had penpro). `track` (`'IUP'`, `'REGULER'` or null)
@@ -140,7 +163,7 @@ is on `roster`, `profiles` and `packages`:
   the app shows a student their class's folders and can show the other's
   too.
 
-## Practice from the bank (`…0800_bank_practice.sql`)
+## Practice from the bank (`04_bank.sql`)
 
 The bank is every live question in a published practice package the
 student's class can see, so exam-only questions and their keys never reach
@@ -154,30 +177,67 @@ it.
 
 A bank attempt is then taken, saved and graded like any other.
 
-## Drive file order (`…0900_drive_order.sql`)
+## Drive file order (`05_drive.sql`)
 
 `drive_files.sort_order` (0–9999, or null): admins set it in Admin → Drive.
 Files with an order come first in their folder, then the rest by name.
 
+## Storage limits and indexes (`06_progress.sql` and the rest)
+
+- `progress.updated_at` and `block_readiness.updated_at` are set by the
+  database, whatever the browser sends, so the app can ask for what changed
+  since it last looked.
+- Saving a progress value that didn't change is skipped: no new row
+  version and no leaderboard rescoring.
+- One account holds at most 3,000 progress keys (`progress_full`), next to
+  the 512 KB a value.
+- Indexes on the foreign keys that are looked up or cascaded through
+  (`package_questions.question_id`, `bookmarks.question_id`,
+  `attempts.package_id`, and each `created_by`) and on
+  `leaderboard_daily.day` for the weekly board.
+- `leaderboard_parts` and `leaderboard_daily` have row level security on and
+  no policies on purpose: nobody reads them directly, only through
+  `leaderboard()`.
+
+## First admin (`seeds/first-admin.sql`)
+
+Makes someone an admin (see [deploying.md](deploying.md#6-first-admin-roster-and-past-papers)):
+`npm run db:first-admin` passes who it is in as psql variables, so no
+student's details are committed. Running it again keeps what exists and only
+makes that profile an admin. It's data, not schema, so it has no file in
+`schema/`. `migrations/…1100_first_admin.sql` once held this seed with a real
+student's details and is now empty; it stays so the live database's
+migration history lines up.
+
 ## Testing
 
-`supabase/tests/` holds SQL tests for the exam rules, the Drive functions,
-and classes, bank practice and bookmarks.
-They run against a plain Postgres (a stub stands in for Supabase's `auth`
-schema):
+`database/tests/` holds SQL tests for the exam rules, the Drive functions,
+classes, bank practice and bookmarks, progress storage and the API's
+policies. They run against a plain Postgres (a stub stands in for Supabase's
+`auth` schema):
 
 ```sh
-PGHOST=localhost PGPORT=5432 PGUSER=postgres bash supabase/tests/run.sh
+PGHOST=localhost PGPORT=5432 PGUSER=postgres npm run db:test
 ```
 
-Each run creates a scratch database, applies every migration, runs the tests
-and drops it. With the Supabase CLI, `supabase start` then `supabase db reset`
-gives a full local stack instead.
+That runs `tests/run.sh` (a scratch database, every migration, the tests,
+then drops it) and `tests/schema-check.sh`, which builds one database from
+`migrations/` and one from `schema/` and fails if their schema dumps differ.
+With the Supabase CLI, `npm run supabase -- start` then
+`npm run supabase -- db reset` gives a full local stack instead.
 
 ## Changing the schema
 
-Add a new file to `supabase/migrations/` (never edit one that's been
-applied), named with the next timestamp, and keep its header comment
-up to date. Run the SQL tests, then `supabase db push` to apply it.
+1. Add a file to `database/migrations/` named with the next timestamp, with
+   a header comment saying what it changes. Never edit one that has been
+   applied: the live database has already run it (its comments may still
+   name the old `supabase/` folder; that's fine).
+2. Make the same change in the domain's file in `database/schema/`, so it
+   keeps reading as the current schema.
+3. Run `npm run db:test`. The schema check names anything the two disagree
+   on.
+4. `npm run db:push` applies it, then `npm run db:types` updates
+   `src/lib/db/types.ts`.
+
 A new kind of student progress needs no migration: declare its key in
 `src/lib/storageSchema.ts` and it's saved in `progress`.

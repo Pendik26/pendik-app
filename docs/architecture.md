@@ -65,13 +65,17 @@ public/atlas/   the 3D anatomy models and index (CC BY-SA, see atlas-3d.md)
 public/question-images/  pictures for exam questions (see questions.md)
 scripts/        prerender.mjs (after vite build), graph-relations.mjs,
                 build-info.mjs (version and build for the footer), wiki.mjs,
+                supabase.mjs (runs the Supabase CLI on database/),
                 atlas/ (converts Z-Anatomy into public/atlas/)
-supabase/
-  migrations/   the database: tables, row level security, SQL functions
-                (see database.md)
+database/       everything on the Supabase side (see database.md)
+  schema/       the current schema, one file per domain: read this
+  migrations/   how the live database got there, in order: never edit one
+                that has run
   functions/    the Edge Functions ai, admin-accounts, drive-sync, and
                 _shared/ (their logic, tested with Vitest; see api.md)
-  tests/        SQL tests for the exam and Drive rules
+  tests/        SQL tests for the rules, and the check that schema/ matches
+                the migrations
+  config.toml   the Supabase CLI's settings for a local stack
 ```
 
 ## How content gets into the app
@@ -205,7 +209,7 @@ pure function with a `*.test.ts` beside it. The formulas are written out in
 | `routeMeta.ts` | Title, description, breadcrumbs and indexability for every route (the app and the prerendered pages), and each subject's materials for the study pages' tabs (`subjectMaterials`) |
 | `storage.ts` | Reading and writing saved values (progress in memory, device settings in `localStorage`) and the key builders |
 | `progressSync.ts` | Loading the account's progress at sign-in and saving changes |
-| `supabase.ts` | The Supabase client and the NIM sign-in address |
+| `db/` | The one Supabase client (`client.ts`: the database, functions, Edge Functions, errors, the NIM sign-in address), the database's generated types (`types.ts`) and which build settings reach the page (`env.ts`) |
 | `exams.ts` | Past-paper packages and attempts: the store loaded at sign-in, and the attempt functions |
 | `questionMarkdown.ts` | The question import format: parsing and writing it |
 | `admin.ts` | The admin pages' calls: roster, accounts, packages, imports, Drive sync |

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { firstPassword, parseAccountAction, studentEmail } from "./accounts.ts";
-import * as app from "../../../src/lib/supabase.ts";
+import * as app from "../../../src/lib/db/client.ts";
 
 describe("admin account requests", () => {
   it("accepts the four actions and nothing else", () => {

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useAccount } from "../hooks/useAccount";
 import { useI18n } from "../i18n/useI18n";
-import { supabaseConfigError } from "../lib/supabase";
+import { supabaseConfigError } from "../lib/db/client";
 import { ChangePassword } from "../pages/ChangePassword";
 import { SignIn } from "../pages/SignIn";
 import { PulseLine } from "./PulseLine";

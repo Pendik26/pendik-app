@@ -18,7 +18,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "graph:relations": "node scripts/graph-relations.mjs",
-    "docs:wiki": "node scripts/wiki.mjs"
+    "docs:wiki": "node scripts/wiki.mjs",
+    "supabase": "node scripts/supabase.mjs",
+    "db:test": "bash database/tests/run.sh && bash database/tests/schema-check.sh",
+    "db:push": "node scripts/supabase.mjs db push",
+    "db:first-admin": "bash database/seeds/first-admin.sh",
+    "db:types": "node scripts/supabase.mjs gen types typescript --linked --schema public > src/lib/db/types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
