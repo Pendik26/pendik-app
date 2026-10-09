@@ -1,8 +1,8 @@
-import { supabase } from "./supabase";
+import { rpc } from "./db/client";
 import { saveNow } from "./progressSync";
 
 // The leaderboard: worked out in the database (`leaderboard()` in
-// supabase/migrations/20261008000500_study.sql) from each student's saved progress and finished
+// database/schema/07_leaderboard.sql) from each student's saved progress and finished
 // attempts. Only students who joined are listed, under their display name.
 
 export type Period = "week" | "all" | "streak";
@@ -59,9 +59,9 @@ interface BoardJson {
 export async function fetchBoard(period: Period, scope: Scope): Promise<Board> {
   // Your own score is only current once your latest progress is saved.
   await saveNow();
-  const { data, error } = await supabase.rpc("leaderboard", { p_period: period, p_my_cohort_only: scope === "cohort" });
+  const { data, error } = await rpc("leaderboard", { p_period: period, p_my_cohort_only: scope === "cohort" });
   if (error) throw new Error(navigator.onLine ? error.message : "You're offline. The leaderboard needs a connection.");
-  const b = data as BoardJson;
+  const b = data as unknown as BoardJson;
   const s = b.me.stats;
   return {
     period: b.period,
@@ -98,7 +98,7 @@ export function cleanDisplayName(input: string): string | null {
 export async function updateMembership(input: { joined?: boolean; displayName?: string }): Promise<void> {
   const displayName = input.displayName === undefined ? null : cleanDisplayName(input.displayName);
   if (input.displayName !== undefined && !displayName) throw new Error("Use 2 to 32 characters for your display name.");
-  const { error } = await supabase.rpc("update_my_settings", {
+  const { error } = await rpc("update_my_settings", {
     p_display_name: displayName,
     p_leaderboard_joined: input.joined ?? null,
   });

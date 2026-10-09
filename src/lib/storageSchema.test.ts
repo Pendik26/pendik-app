@@ -31,7 +31,7 @@ describe("storage key registry", () => {
   });
 
   it("matches the server's key format", () => {
-    // supabase/migrations/20261008000500_study.sql: progress.key check constraint.
+    // database/schema/06_progress.sql: progress.key check constraint.
     const serverPattern = /^[a-z]+(:[A-Za-z0-9._/-]{1,120})?$/;
     for (const k of Object.values(STORAGE_KEYS)) {
       const key = typeof k === "function" ? k("1.2/anatomy") : k;

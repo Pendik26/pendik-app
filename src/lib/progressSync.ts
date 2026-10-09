@@ -1,4 +1,5 @@
-import { supabase } from "./supabase";
+import { db } from "./db/client";
+import type { Json } from "./db/types";
 import { appKey, savedOnServer, serverKey } from "./storageSchema";
 import { progressValue, replaceProgress, setProgressFromServer, STORAGE_UPDATED_EVENT } from "./storage";
 
@@ -45,11 +46,11 @@ async function fetchRows(since: string | null): Promise<{ rows: [string, unknown
   const rows: [string, unknown][] = [];
   let newest: string | null = null;
   for (let from = 0; ; from += 1000) {
-    let query = supabase.from("progress").select("key, value, updated_at");
+    let query = db.from("progress").select("key, value, updated_at");
     if (since) query = query.gte("updated_at", since);
     const { data, error } = await query.order("key").range(from, from + 999);
     if (error) throw new Error(error.message);
-    for (const r of data as { key: string; value: unknown; updated_at: string }[]) {
+    for (const r of data) {
       rows.push([appKey(r.key), r.value]);
       if (!newest || r.updated_at > newest) newest = r.updated_at;
     }
@@ -147,13 +148,13 @@ async function runSave(): Promise<void> {
       const rows = kept.slice(i, i + BATCH).map((key) => ({
         user_id: owner,
         key: serverKey(key),
-        value: progressValue(key),
+        value: progressValue(key) as Json,
       }));
-      const { error } = await supabase.from("progress").upsert(rows, { onConflict: "user_id,key" });
+      const { error } = await db.from("progress").upsert(rows, { onConflict: "user_id,key" });
       if (error) throw new Error(error.message);
     }
     if (cleared.length) {
-      const { error } = await supabase.from("progress").delete().eq("user_id", owner).in("key", cleared.map(serverKey));
+      const { error } = await db.from("progress").delete().eq("user_id", owner).in("key", cleared.map(serverKey));
       if (error) throw new Error(error.message);
     }
     setState({ phase: "idle", lastSavedAt: Date.now(), message: undefined });

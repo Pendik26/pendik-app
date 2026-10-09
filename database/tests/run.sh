@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Loads every migration into a fresh database on a local Postgres and runs the SQL tests.
-# Usage: PGHOST=... PGPORT=... PGUSER=postgres supabase/tests/run.sh
+# Usage: PGHOST=... PGPORT=... PGUSER=postgres database/tests/run.sh (or npm run db:test)
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 db="pendik_test_$$"

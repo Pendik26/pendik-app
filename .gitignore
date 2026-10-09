@@ -17,6 +17,10 @@ wiki-out
 !.env.example
 .vercel
 
+# What the Supabase CLI keeps about a linked project (scripts/supabase.mjs runs it on database/)
+database/.temp
+database/.branches
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

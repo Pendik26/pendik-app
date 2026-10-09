@@ -293,7 +293,7 @@ readiness.
 
 Points are worked out in the database from saved progress and finished
 attempts (`progress_score()` and `attempts_score()` in
-`supabase/migrations/…0500_study.sql`), never from a score the browser
+`database/schema/07_leaderboard.sql`), never from a score the browser
 reports:
 
 | Earned for | Points |
@@ -416,7 +416,7 @@ Built once at deploy time by `src/lib/knowledgeGraph/build.ts`.
 - **Saving progress:** a change is saved 1.5 s after the last one, every
   changed key in one request (200 rows a batch). Returning to the tab reads
   the account again, unless changes are waiting to be saved.
-- **Class Drive sync** (`supabase/functions/_shared/driveSync.ts`):
+- **Class Drive sync** (`database/functions/_shared/driveSync.ts`):
   - Each call walks folders for up to 40 s, 20 folders per Drive request,
     then saves where it got to; the GitHub Action calls up to 40 times.
   - A run reads at most 3,000 folders, 12 levels deep. A run left

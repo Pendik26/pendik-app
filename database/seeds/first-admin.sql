@@ -4,7 +4,7 @@
 --
 --   psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 \
 --     -v nim=<NIM> -v full_name='<Full Name>' [-v cohort=2026, the default] [-v password=<first password>] \
---     -f supabase/seeds/first-admin.sql
+--     -f database/seeds/first-admin.sql
 --
 -- The first password defaults to the usual `pendik26` + NIM; the app makes them pick a new one
 -- straight away. Safe to run again: whatever already exists is kept, and the profile is only made
@@ -48,7 +48,7 @@ begin
   update public.profiles set role = 'admin' where student_id = nim;
   if found then return; end if;
 
-  -- The test database (supabase/tests/local-stub.sql) has no real Auth tables: stop at the roster.
+  -- The test database (database/tests/local-stub.sql) has no real Auth tables: stop at the roster.
   if not exists (select 1 from information_schema.columns
                   where table_schema = 'auth' and table_name = 'users' and column_name = 'encrypted_password') then
     raise notice 'first admin: no Supabase Auth here, only the roster row was added';

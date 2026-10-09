@@ -19,7 +19,7 @@ exception when others then
 end $$;
 grant execute on all functions in schema pg_temp to anon, authenticated;
 
--- The first-admin seed (supabase/seeds/first-admin.sql), with a made-up student.
+-- The first-admin seed (database/seeds/first-admin.sql), with a made-up student.
 \set nim 'PADMIN1'
 \set full_name 'Ada Admin'
 \set cohort '2026'

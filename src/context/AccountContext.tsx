@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { AccountContext, type AccountContextValue, type AccountStatus, type AuthResult, type Profile } from "./accountContextValue";
-import { isFirstPassword, studentEmail, supabase } from "../lib/supabase";
+import { db, isFirstPassword, newClient, rpc, studentEmail } from "../lib/db/client";
 import { clearProgress, loadProgress, pendingSaves, queueSave, refreshProgress, saveNow, subscribeSaveState, type SaveState } from "../lib/progressSync";
 import { clearDeviceSettings, PROGRESS_CHANGED_EVENT } from "../lib/storage";
-import { clearExamRecords, loadExamRecords } from "../lib/exams";
+import { clearExamRecords, loadExamRecords, refreshExamRecords } from "../lib/exams";
 import { clearBookmarkCache } from "../hooks/useBookmarks";
 
 const PROFILE_COLUMNS =
@@ -58,13 +58,14 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   useEffect(() => subscribeSaveState(setSave), []);
 
   useEffect(() => {
-    void supabase.auth.getSession().then(({ data }) => { setSession(data.session); });
-    const { data } = supabase.auth.onAuthStateChange((_event, s) => { setSession(s); });
+    void db.auth.getSession().then(({ data }) => { setSession(data.session); });
+    const { data } = db.auth.onAuthStateChange((_event, s) => { setSession(s); });
     return () => { data.subscription.unsubscribe(); };
   }, []);
 
-  // Signed in: load the profile, then the progress. Only roster students have a profile; a
-  // Google account that isn't linked to one gets signed out with an explanation.
+  // Signed in: load the profile, the progress and the exam records together. Only roster students
+  // have a profile; a Google account that isn't linked to one gets signed out with an explanation
+  // (row level security gives it no progress or attempts, and what loaded is cleared).
   const uid = session?.user.id;
   useEffect(() => {
     if (session === undefined) return;
@@ -77,23 +78,22 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     setStatus("loading");
     void (async () => {
-      const { data, error } = await supabase.from("profiles").select(PROFILE_COLUMNS).eq("id", uid).maybeSingle();
+      const [profile, rest] = await Promise.all([
+        db.from("profiles").select(PROFILE_COLUMNS).eq("id", uid).maybeSingle(),
+        Promise.all([loadProgress(uid), loadExamRecords()]).then(() => null, (e: unknown) => e ?? "failed"),
+      ]);
       if (cancelled) return;
-      if (error) { setStatus("failed"); return; }
-      if (!data) {
+      if (profile.error) { setStatus("failed"); return; }
+      if (!profile.data) {
+        clearProgress();
+        clearExamRecords();
         setNotice("auth.notOnRoster");
-        await supabase.auth.signOut();
+        await db.auth.signOut();
         return;
       }
-      try {
-        await Promise.all([loadProgress(uid), loadExamRecords()]);
-      } catch {
-        if (!cancelled) setStatus("failed");
-        return;
-      }
-      if (cancelled) return;
+      if (rest !== null) { setStatus("failed"); return; }
       setNotice(null);
-      setUser(toProfile(data as ProfileRow));
+      setUser(toProfile(profile.data as ProfileRow));
       setStatus("signed-in");
     })();
     return () => { cancelled = true; };
@@ -108,7 +108,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       if (document.visibilityState === "hidden") void saveNow();
       else {
         void refreshProgress();
-        void loadExamRecords().catch(() => undefined);
+        void refreshExamRecords().catch(() => undefined);
       }
     };
     const onOnline = () => { if (pendingSaves() > 0) void saveNow(); };
@@ -130,27 +130,26 @@ export function AccountProvider({ children }: { children: ReactNode }) {
 
   const googleLinked = Boolean(session?.user.identities?.some((i) => i.provider === "google"));
 
-  const reloadProfile = useCallback(async () => {
-    if (!uid) return;
-    const { data } = await supabase.from("profiles").select(PROFILE_COLUMNS).eq("id", uid).maybeSingle();
-    if (data) setUser(toProfile(data as ProfileRow));
-  }, [uid]);
+  // What the settings functions just changed, applied here instead of reading the profile again.
+  const patchUser = useCallback((patch: Partial<Profile>) => {
+    setUser((u) => (u ? { ...u, ...patch } : u));
+  }, []);
 
   const actions = useMemo(
     () => ({
       signIn: async (studentId: string, password: string): Promise<AuthResult> => {
-        const { error } = await supabase.auth.signInWithPassword({ email: studentEmail(studentId), password });
+        const { error } = await db.auth.signInWithPassword({ email: studentEmail(studentId), password });
         return error ? { ok: false, message: authError(error) } : { ok: true };
       },
       signInWithGoogle: async (): Promise<AuthResult> => {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { error } = await db.auth.signInWithOAuth({
           provider: "google",
           options: { redirectTo: `${window.location.origin}/` },
         });
         return error ? { ok: false, message: error.message } : { ok: true };
       },
       linkGoogle: async (): Promise<AuthResult> => {
-        const { error } = await supabase.auth.linkIdentity({
+        const { error } = await db.auth.linkIdentity({
           provider: "google",
           options: { redirectTo: `${window.location.origin}/account` },
         });
@@ -162,34 +161,34 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         if (isFirstPassword(studentId, next)) return { ok: false, message: "password.notFirst" };
         if (current !== undefined) {
           // Check the current password on a separate client, so the session here isn't replaced.
-          const { createClient } = await import("@supabase/supabase-js");
-          const checker = createClient(
-            import.meta.env.VITE_SUPABASE_URL as string,
-            import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string,
-            { auth: { persistSession: false, autoRefreshToken: false, storageKey: "pendik-password-check" } },
-          );
+          const checker = newClient({ persistSession: false, autoRefreshToken: false, storageKey: "pendik-password-check" });
           const { error } = await checker.auth.signInWithPassword({ email: studentEmail(studentId), password: current });
           if (error) return { ok: false, message: "password.wrongCurrent" };
           await checker.auth.signOut({ scope: "local" });
         }
-        const { error } = await supabase.auth.updateUser({ password: next });
+        const { error } = await db.auth.updateUser({ password: next });
         if (error) return { ok: false, message: error.message };
-        await supabase.rpc("password_changed");
-        await reloadProfile();
+        const changed = await rpc("password_changed");
+        if (!changed.error) patchUser({ mustChangePassword: false });
         return { ok: true };
       },
       updateSettings: async (input: { displayName?: string; leaderboardJoined?: boolean }): Promise<AuthResult> => {
-        const { error } = await supabase.rpc("update_my_settings", {
+        const { error } = await rpc("update_my_settings", {
           p_display_name: input.displayName ?? null,
           p_leaderboard_joined: input.leaderboardJoined ?? null,
         });
         if (error) return { ok: false, message: error.message };
-        await reloadProfile();
+        // As update_my_settings() saves them: a blank name keeps the old one.
+        const name = input.displayName?.trim();
+        patchUser({
+          ...(name ? { displayName: name } : {}),
+          ...(input.leaderboardJoined !== undefined ? { leaderboardJoined: input.leaderboardJoined } : {}),
+        });
         return { ok: true };
       },
       signOut: async ({ clearDevice = false }: { clearDevice?: boolean } = {}) => {
         if (pendingSaves() > 0) await saveNow();
-        await supabase.auth.signOut();
+        await db.auth.signOut();
         clearProgress();
         clearExamRecords();
         clearBookmarkCache();
@@ -198,7 +197,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       saveNow,
       retry: () => { setAttempt((a) => a + 1); },
     }),
-    [user?.studentId, reloadProfile],
+    [user?.studentId, patchUser],
   );
 
   // Without a session nothing loaded earlier counts, whatever the state still holds.

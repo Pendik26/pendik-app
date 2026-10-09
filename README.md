@@ -337,7 +337,7 @@ npm run dev                  # http://localhost:5173
 ```
 
 Every page needs sign-in, so the app needs a Supabase project: a hosted one
-(see [deploying](docs/deploying.md)) or a local one with `supabase start`.
+(see [deploying](docs/deploying.md)) or a local one with `npm run supabase -- start`.
 Scripts, tests and conventions are in [development](docs/development.md).
 
 ## Adding content

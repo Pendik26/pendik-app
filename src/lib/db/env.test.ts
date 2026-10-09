@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isSecretKey, supabaseEnv } from "./supabaseEnv";
+import { isSecretKey, supabaseEnv } from "./env";
 
 const jwt = (role: string) => `x.${btoa(JSON.stringify({ role })).replace(/=+$/, "")}.y`;
 

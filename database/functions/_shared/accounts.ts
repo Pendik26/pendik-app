@@ -1,5 +1,5 @@
 // Student accounts: how a student id becomes a sign-in address and a first password. The app
-// has the same rules in src/lib/supabase.ts. Import-free.
+// has the same rules in src/lib/db/client.ts. Import-free.
 
 export const studentEmail = (studentId: string) => `${studentId.trim().toLowerCase()}@pendik26.internal`;
 

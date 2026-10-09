@@ -1,5 +1,5 @@
 -- A minimal stand-in for what a Supabase project provides (roles, auth schema, auth.uid()),
--- so the migrations can be loaded and tested on plain Postgres: supabase/tests/run.sh.
+-- so the migrations can be loaded and tested on plain Postgres: database/tests/run.sh.
 -- Never run this against a real Supabase project.
 do $$ begin
   -- Roles belong to the whole server, so a second test database finds them already there.
