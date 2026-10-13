@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/useI18n";
 interface Props {
   /** Resting length in mm (50–100): sets how far apart the clamps are. */
   lengthMm: number;
@@ -18,6 +19,7 @@ const LIFT_PX_PER_MM = 9;
 
 /** The muscle hanging in its holder, drawn to follow the simulation. */
 export function MuscleRig({ lengthMm, activation, stimulating, weightG = null, shorteningMm = 0 }: Props) {
+  const { t } = useI18n();
   const isotonic = weightG != null;
   const len = lengthMm * PX_PER_MM - (isotonic ? shorteningMm * LIFT_PX_PER_MM : 0);
   const bottom = TOP + len;
@@ -27,7 +29,7 @@ export function MuscleRig({ lengthMm, activation, stimulating, weightG = null, s
   const shade = Math.round(40 + activation * 18);
 
   return (
-    <svg className="lab-rig" viewBox="0 0 200 360" role="img" aria-label={`Muscle at ${lengthMm} mm${isotonic ? ` holding a ${weightG} g weight` : ""}`}>
+    <svg className="lab-rig" viewBox="0 0 200 360" role="img" aria-label={isotonic ? t("labx.rigAriaLoad", { mm: lengthMm, g: weightG }) : t("labx.rigAria", { mm: lengthMm })}>
       {/* Stand */}
       <rect x="22" y="20" width="10" height="330" rx="3" className="lab-rig-metal" />
       <rect x="14" y="340" width="70" height="10" rx="3" className="lab-rig-metal" />

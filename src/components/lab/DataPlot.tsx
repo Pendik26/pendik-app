@@ -45,7 +45,7 @@ export function DataPlot({ series, xLabel, yLabel }: Props) {
 
   return (
     <figure className="lab-plot">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${series.map((s) => s.label).join(", ")} against ${xLabel}`}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("labx.plotAria", { series: series.map((s) => s.label).join(", "), x: xLabel })}>
         {xt.map((x) => (
           <g key={`x${x}`}>
             <line x1={px(x)} x2={px(x)} y1={PAD.t} y2={PAD.t + PH} className="lab-plot-grid" />
