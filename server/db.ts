@@ -29,7 +29,6 @@ export interface AccountDoc {
   nim: string;
   role: Role;
   mustChangePassword: boolean;
-  displayName: string | null;
   leaderboardJoined: boolean;
   lockedAt: Date | null;
   createdAt: Date;

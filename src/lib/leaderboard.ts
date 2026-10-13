@@ -30,7 +30,7 @@ export interface Board {
   total: number;
   me: {
     joined: boolean;
-    displayName: string;
+    name: string;
     rank: number | null;
     value: number;
     week: number;
@@ -49,7 +49,7 @@ interface BoardJson {
   total: number;
   me: {
     joined: boolean;
-    display_name: string;
+    name: string;
     value: number;
     week: number;
     streak: number;
@@ -75,7 +75,7 @@ export async function fetchBoard(period: Period, scope: Scope): Promise<Board> {
     total: b.total,
     me: {
       joined: b.me.joined,
-      displayName: b.me.display_name,
+      name: b.me.name,
       rank: b.me.rank,
       value: b.me.value,
       week: b.me.week,
@@ -91,19 +91,7 @@ export async function fetchBoard(period: Period, scope: Scope): Promise<Board> {
   };
 }
 
-/** Trims and checks a display name; null when it isn't acceptable. */
-export function cleanDisplayName(input: string): string | null {
-  const printable = [...input].filter((ch) => ch >= " " && ch !== "\u007f").join("");
-  const name = printable.replace(/\s+/g, " ").trim();
-  return name.length >= 2 && name.length <= 32 ? name : null;
-}
-
-export async function updateMembership(input: { joined?: boolean; displayName?: string }): Promise<void> {
-  const displayName = input.displayName === undefined ? null : cleanDisplayName(input.displayName);
-  if (input.displayName !== undefined && !displayName) throw new Error("Use 2 to 32 characters for your display name.");
-  const { error } = await rpc("update_my_settings", {
-    p_display_name: displayName,
-    p_leaderboard_joined: input.joined ?? null,
-  });
+export async function updateMembership(joined: boolean): Promise<void> {
+  const { error } = await rpc("update_my_settings", { p_leaderboard_joined: joined });
   if (error) throw new Error(error.message);
 }

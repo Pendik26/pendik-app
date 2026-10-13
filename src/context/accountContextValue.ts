@@ -23,7 +23,6 @@ export interface Profile {
   track: Track | null;
   role: "student" | "admin";
   mustChangePassword: boolean;
-  displayName: string | null;
   leaderboardJoined: boolean;
 }
 
@@ -52,7 +51,7 @@ export interface AccountContextValue {
   /** Links Google to the signed-in account (redirects to Google and back to /account). */
   linkGoogle: () => Promise<AuthResult>;
   changePassword: (input: { current?: string; next: string }) => Promise<AuthResult>;
-  updateSettings: (input: { displayName?: string; leaderboardJoined?: boolean }) => Promise<AuthResult>;
+  updateSettings: (input: { leaderboardJoined?: boolean }) => Promise<AuthResult>;
   signOut: (options?: { clearDevice?: boolean }) => Promise<void>;
   saveNow: () => Promise<void>;
   /** Tries loading the profile and progress again after a failure. */

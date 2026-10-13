@@ -14,7 +14,7 @@ Stored in the app's database:
   Google sign-in;
 - your synced progress (see [Accounts and sync](/docs/account) for what
   syncs);
-- if you join the leaderboard, your display name and points.
+- if you join the leaderboard, your full name and points.
 
 Not stored in your account: the theme, a half-finished quiz, and Alfond's
 conversation, which stay on your device.
@@ -23,7 +23,7 @@ conversation, which stay on your device.
 
 - **Nobody** sees your progress except you.
 - If you join the [leaderboard](/docs/leaderboard), other signed-in students
-  see your display name, cohort and scores. Leave it any time.
+  see your full name, cohort and scores. Leave it any time.
 - The **class average** on the exam plan is an average only: no one's own
   readiness is shown.
 - Questions to **Alfond** and **AI explanations** go through the site's server

@@ -40,7 +40,8 @@ export function ScrollManager() {
 
   useLayoutEffect(() => {
     currentKey.current = location.key;
-    const samePage = lastPath.current === location.pathname;
+    // The admin tabs are one page: switching between them keeps the scroll position.
+    const samePage = lastPath.current === location.pathname || (lastPath.current.startsWith("/admin") && location.pathname.startsWith("/admin"));
     lastPath.current = location.pathname;
     if (navigation !== "POP") {
       // A new page starts at the top (or at its #anchor); a query change on the same page stays put.

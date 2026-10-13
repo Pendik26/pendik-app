@@ -284,8 +284,7 @@ files. It installs as a PWA and works offline from what's already loaded.
   just your cohort. Points are worked out in the database from saved progress
   (1 per correct answer, 2 per learned flashcard or label, 10 per finished
   chapter, 5 per study day; see
-  [Leaderboard](docs/calculations.md#leaderboard)), and you choose the
-  display name
+  [Leaderboard](docs/calculations.md#leaderboard)), shown under each student's full name
 
 ### Admin (`/admin`)
 
@@ -358,7 +357,7 @@ privacy checklist are in the [content guide](docs/content-guide.md).
 - This device keeps only its own settings (theme, language, sidebar, recent
   pages); resetting them never touches your progress.
 - Nothing is shared with classmates unless you join the leaderboard, which
-  shows your chosen display name, cohort and scores (never your NIM or
+  shows your full name, cohort and scores (never your NIM or
   answers). Leave it any time. **Account → Download my data** exports
   everything saved in your account.
 - The [Privacy Policy](public/legal/privacy.html) and

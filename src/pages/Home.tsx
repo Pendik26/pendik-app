@@ -125,12 +125,6 @@ function buildContinueItems(t: Translate): ContinueItem[] {
   return items.slice(0, 4);
 }
 
-/** Puts the student's current block (set on the Account page) first. */
-function orderByCurrentBlock<T extends { block: { id: string } }>(groups: T[], currentBlock: string): T[] {
-  if (!currentBlock) return groups;
-  return [...groups.filter((g) => g.block.id === currentBlock), ...groups.filter((g) => g.block.id !== currentBlock)];
-}
-
 function Chevron() {
   return (
     <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" className="row-chevron">
@@ -154,7 +148,7 @@ export function Home() {
   const subjects = buildSubjectOverviews(t);
   // The student's block first; the others fold away under it.
   const focus = currentBlock || focusBlockId() || "";
-  const groups = orderByCurrentBlock(groupByBlock(subjects), focus);
+  const groups = groupByBlock(subjects, focus);
   const mine = groups.filter((g) => g.block.id === focus);
   const others = groups.filter((g) => g.block.id !== focus);
   const shownGroups = mine.length > 0 ? mine : groups;

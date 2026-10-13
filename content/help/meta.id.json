@@ -108,8 +108,8 @@
     "id": "leaderboard",
     "title": "Papan peringkat",
     "group": "Akunmu",
-    "description": "Bergabung atau keluar dari papan peringkat, nama tampilanmu, dan cara poin mingguan, sepanjang masa dan runtutan didapat.",
-    "keywords": "papan peringkat poin angkatan streak nama tampilan gabung keluar"
+    "description": "Bergabung atau keluar dari papan peringkat, nama lengkapmu, dan cara poin mingguan, sepanjang masa dan runtutan didapat.",
+    "keywords": "papan peringkat poin angkatan streak nama lengkap gabung keluar"
   },
   {
     "id": "privacy",

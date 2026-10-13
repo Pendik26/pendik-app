@@ -29,6 +29,7 @@ import {
   TrophyIcon,
   UserIcon,
 } from "./icons";
+import { firstName } from "../lib/firstName";
 import { useAccount } from "../hooks/useAccount";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
@@ -265,7 +266,7 @@ function SidebarLink({ link, due, onNavigate }: { link: NavItem; due: number; on
 function Avatar({ name }: { name: string }) {
   return (
     <span className="avatar" aria-hidden="true">
-      {(name.trim()[0] ?? "?").toUpperCase()}
+      {(firstName(name)[0] ?? "?").toUpperCase()}
     </span>
   );
 }
@@ -314,7 +315,7 @@ export function Sidebar() {
     return () => { window.removeEventListener("keydown", onKeyDown); };
   }, [drawerOpen]);
 
-  const name = user?.displayName || user?.fullName || "";
+  const name = user?.fullName ?? "";
 
   return (
     <>

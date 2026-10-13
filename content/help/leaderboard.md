@@ -5,11 +5,11 @@ students, and nobody sees you on it unless you join.
 
 ## Joining
 
-Open **Leaderboard** (signed in), choose a **display name** (a nickname is
-fine) and press **Join**. You can change the name later, or **Leave
-leaderboard** at any time.
+Open **Leaderboard** (signed in) and press **Join**. You are listed under your
+full name, as it is on the class roster. You can **Leave leaderboard** at any
+time.
 
-Other signed-in students see only your display name, your cohort and your
+Other signed-in students see only your full name, your cohort and your
 scores: never your email, your answers or what you got wrong.
 
 ## The three boards

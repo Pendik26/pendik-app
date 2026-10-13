@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState, type CSSProperties, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { errorText } from "../i18n/errorText";
 import { FlameIcon, TrophyIcon } from "../components/icons";
 import { fetchBoard, updateMembership, type Board, type BoardRow, type Period, type Scope } from "../lib/leaderboard";
+import { initialsOf } from "../lib/firstName";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey, Translate } from "../i18n/i18n";
 
@@ -14,17 +15,6 @@ const PERIODS: { id: Period; label: MessageKey }[] = [
 function unit(period: Period, value: number, t: Translate): string {
   if (period === "streak") return value === 1 ? t("board.day") : t("board.days");
   return value === 1 ? t("board.pt") : t("board.pts");
-}
-
-function initials(name: string): string {
-  return (
-    name
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() ?? "")
-      .join("") || "?"
-  );
 }
 
 /** A stable hue per name, so each student keeps the same avatar colour. */
@@ -41,7 +31,7 @@ function Row({ row, period }: { row: BoardRow; period: Period }) {
     <li className={row.me ? "lb-row lb-row-me" : "lb-row"}>
       <span className={`lb-rank${medal}`}>{row.rank}</span>
       <span className="lb-avatar" style={{ "--lb-hue": hueOf(row.name) } as CSSProperties} aria-hidden="true">
-        {initials(row.name)}
+        {initialsOf(row.name)}
       </span>
       <span className="lb-name">
         {row.name}
@@ -57,17 +47,14 @@ function Row({ row, period }: { row: BoardRow; period: Period }) {
 
 function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
   const { t } = useI18n();
-  const [name, setName] = useState(board.me.displayName);
-  const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
 
-  const save = async (input: { joined?: boolean; displayName?: string }) => {
+  const save = async (joined: boolean) => {
     setBusy(true);
     setMessage("");
     try {
-      await updateMembership(input);
-      setEditing(false);
+      await updateMembership(joined);
       onChange();
     } catch (err) {
       setMessage(errorText(err));
@@ -76,21 +63,13 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
     }
   };
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    void save({ joined: true, displayName: name });
-  };
-
-  if (board.me.joined && !editing) {
+  if (board.me.joined) {
     return (
       <div className="lb-membership">
         <span>
-          {t("board.showingAs")} <strong>{board.me.displayName}</strong>
+          {t("board.showingAs")} <strong>{board.me.name}</strong>
         </span>
-        <button type="button" className="btn btn-secondary btn-small" onClick={() => { setEditing(true); }}>
-          {t("board.changeName")}
-        </button>
-        <button type="button" className="btn btn-secondary btn-small" disabled={busy} onClick={() => void save({ joined: false })}>
+        <button type="button" className="btn btn-secondary btn-small" disabled={busy} onClick={() => void save(false)}>
           {t("board.leave")}
         </button>
         {message && <p className="account-error">{message}</p>}
@@ -99,38 +78,16 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
   }
 
   return (
-    <form className="account-card lb-join" onSubmit={submit}>
-      <h2>{board.me.joined ? t("board.changeTitle") : t("board.join")}</h2>
-      {!board.me.joined && (
-        <p className="account-note">
-          {t("board.privacy")}
-        </p>
-      )}
-      <label className="account-field">
-        <span>{t("board.displayName")}</span>
-        <input
-          className="form-input"
-          value={name}
-          onChange={(e) => { setName(e.target.value); }}
-          minLength={2}
-          maxLength={32}
-          required
-          autoComplete="nickname"
-        />
-        <small>{t("board.nickname")}</small>
-      </label>
+    <div className="account-card lb-join">
+      <h2>{t("board.join")}</h2>
+      <p className="account-note">{t("board.privacy")}</p>
       {message && <p className="account-error">{message}</p>}
       <div className="account-row">
-        <button type="submit" className="btn" disabled={busy}>
-          {board.me.joined ? t("common.save") : t("board.joinShort")}
+        <button type="button" className="btn" disabled={busy} onClick={() => void save(true)}>
+          {t("board.joinShort")}
         </button>
-        {board.me.joined && (
-          <button type="button" className="btn btn-secondary" onClick={() => { setEditing(false); }}>
-            {t("common.cancel")}
-          </button>
-        )}
       </div>
-    </form>
+    </div>
   );
 }
 
@@ -193,7 +150,7 @@ function SignedInBoard() {
         )}
       </div>
 
-      <JoinCard key={`${me.joined}-${me.displayName}`} board={board} onChange={refresh} />
+      <JoinCard key={`${me.joined}-${me.name}`} board={board} onChange={refresh} />
 
       <div className="lb-controls">
         <div className="account-tabs lb-tabs" role="tablist" aria-label={t("board.ranking")}>
@@ -255,7 +212,7 @@ function SignedInBoard() {
                 <li className="lb-gap" aria-hidden="true">
                   ⋯
                 </li>
-                <Row row={{ rank: me.rank, name: me.displayName, cohort: board.cohort, value: me.value, me: true }} period={board.period} />
+                <Row row={{ rank: me.rank, name: me.name, cohort: board.cohort, value: me.value, me: true }} period={board.period} />
               </>
             )}
           </ol>
