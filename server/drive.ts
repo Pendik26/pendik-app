@@ -35,8 +35,9 @@ export async function adminDriveFiles(ctx: Ctx, args: Args) {
 
 export async function adminSetFileOrder(ctx: Ctx, args: Args): Promise<null> {
   requireAdmin(ctx);
-  const order = args.p_order;
-  if (order !== null && (typeof order !== "number" || !Number.isInteger(order) || order < 0 || order > 9999)) throw refuse("bad_order");
+  const raw = args.p_order;
+  if (raw !== null && (typeof raw !== "number" || !Number.isInteger(raw) || raw < 0 || raw > 9999)) throw refuse("bad_order");
+  const order: number | null = raw;
   await ctx.c.driveFiles.updateOne({ _id: text(args, "p_id") ?? "" }, { $set: { sort_order: order, updated_at: ctx.now.toISOString() } });
   return null;
 }
