@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Track } from "../../context/accountContextValue";
 import { useAccount } from "../../hooks/useAccount";
+import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import {
   accountAction,
@@ -34,7 +35,7 @@ export function AdminStudents() {
   const [trackFilter, setTrackFilter] = useState<"all" | Track | "none">("all");
 
   const reload = useCallback(() => {
-    listRoster().then(setRoster, (e: Error) => { setProblem(e.message); });
+    listRoster().then(setRoster, (e: Error) => { setProblem(errorText(e)); });
   }, []);
   useEffect(reload, [reload]);
 
@@ -45,7 +46,7 @@ export function AdminStudents() {
     try {
       setNote(await work());
     } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
+      setProblem(errorText(e));
     }
     setBusy(false);
     reload();
@@ -89,7 +90,7 @@ export function AdminStudents() {
             setSelected(new Set());
             const failed = results.filter((r) => !r.ok);
             return failed.length
-              ? `${t("admin.activated", { count: results.length - failed.length })} ${failed.map((f) => `${f.student_id}: ${f.message ?? ""}`).join("; ")}`
+              ? `${t("admin.activated", { count: results.length - failed.length })} ${failed.map((f) => `${f.student_id}: ${f.message ? errorText(new Error(f.message)) : ""}`).join("; ")}`
               : t("admin.activated", { count: results.length });
           })}>
           {t("admin.activateSelected", { count: inactiveSelected.length })}

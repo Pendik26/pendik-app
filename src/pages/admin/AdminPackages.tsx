@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { QuestionList } from "../../components/admin/QuestionList";
 import {
@@ -19,7 +20,7 @@ export function AdminPackages() {
   const [open, setOpen] = useState<string | null>(null);
 
   const reload = useCallback(() => {
-    listAllPackages().then(setPackages, (e: Error) => { setProblem(e.message); });
+    listAllPackages().then(setPackages, (e: Error) => { setProblem(errorText(e)); });
     void loadExamRecords().catch(() => undefined);
   }, []);
   useEffect(reload, [reload]);
@@ -29,7 +30,7 @@ export function AdminPackages() {
     try {
       await work();
     } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
+      setProblem(errorText(e));
     }
     reload();
   };
@@ -106,7 +107,7 @@ function PackageQuestions({ pkg, onChanged }: { pkg: PackageSummary; onChanged: 
   const [problem, setProblem] = useState<string | null>(null);
 
   const reload = useCallback(() => {
-    packageQuestions(pkg.id).then(setQuestions, (e: Error) => { setProblem(e.message); });
+    packageQuestions(pkg.id).then(setQuestions, (e: Error) => { setProblem(errorText(e)); });
   }, [pkg.id]);
   useEffect(reload, [reload]);
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { deleteQuestion, updateQuestion, type AdminQuestion } from "../../lib/admin";
 import { parseQuestionMarkdown, questionMarkdown } from "../../lib/questionMarkdown";
@@ -46,7 +47,7 @@ export function QuestionList({ questions, onChanged, details }: {
       setEditing(null);
       onChanged();
     } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
+      setProblem(errorText(e));
     }
   };
 
@@ -80,7 +81,7 @@ export function QuestionList({ questions, onChanged, details }: {
                   <button type="button" className="btn btn-link account-danger"
                     onClick={() => {
                       if (!window.confirm(t("admin.deleteQuestionConfirm"))) return;
-                      deleteQuestion(q.id).then(onChanged, (e: Error) => { setProblem(e.message); });
+                      deleteQuestion(q.id).then(onChanged, (e: Error) => { setProblem(errorText(e)); });
                     }}>
                     {t("admin.delete")}
                   </button>

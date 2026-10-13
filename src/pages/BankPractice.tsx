@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { errorText } from "../i18n/errorText";
 import { Link, useNavigate } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
@@ -69,7 +70,7 @@ export function BankPractice() {
         setGroups(g);
         setBlock((b) => b ?? g[0]?.block ?? null);
       },
-      (e: Error) => { setProblem(e.message); },
+      (e: Error) => { setProblem(errorText(e)); },
     );
   }, []);
 

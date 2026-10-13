@@ -88,6 +88,15 @@ function OldOcclusionRedirect() {
   return <Navigate to={`/occlusion/${blockId}/${subjectId}`} replace />;
 }
 
+function SkipLink() {
+  const { t } = useI18n();
+  return (
+    <a href="#main-content" className="skip-link">
+      {t("app.skipToContent")}
+    </a>
+  );
+}
+
 function RouteFallback() {
   const { t } = useI18n();
   return (
@@ -170,9 +179,7 @@ export default function App() {
       <AccountProvider>
         <AuthGate>
         <BrowserRouter>
-          <a href="#main-content" className="skip-link">
-            Skip to content
-          </a>
+          <SkipLink />
           <ScrollManager />
           <div className="app-shell">
             <Sidebar />

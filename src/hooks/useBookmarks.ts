@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { errorText } from "../i18n/errorText";
 import { useAccount } from "./useAccount";
 import { bookmarkedIds, setBookmark } from "../lib/exams";
 
@@ -36,7 +37,7 @@ export function useBookmarks(): { has: (id: string) => boolean; toggle: (id: str
       if (on) set.delete(id);
       else set.add(id);
       notify();
-      setProblem(e.message);
+      setProblem(errorText(e));
     });
   }, [user]);
 
