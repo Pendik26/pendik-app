@@ -3,6 +3,7 @@ import { STORAGE_KEYS } from "../lib/storage";
 import { logStudy, recordActivity } from "../lib/activity";
 import { scoreQuiz, updateDueIds } from "../lib/quizScoring";
 import { useLocalStorage } from "./useLocalStorage";
+import { quizRecords, recordQuiz } from "../lib/studyRecords";
 
 export function useQuizProgress(quizId: string) {
   const [history, setHistory] = useLocalStorage<QuizAttempt[]>(
@@ -26,6 +27,7 @@ export function useQuizProgress(quizId: string) {
     setDueIds((prev) => updateDueIds(prev, questions, scored.missedIds));
     recordActivity();
     logStudy(quizId, "questions", scored.total);
+    recordQuiz(quizRecords(questions, answers, { deck: quizId }));
     return attempt;
   };
 

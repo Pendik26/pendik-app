@@ -4,9 +4,9 @@ import type { ImportQuestion } from "./questionMarkdown";
 import type { Json } from "./db/types";
 import { db, invokeFunction as invoke, must, rpc } from "./db/client";
 
-// What the admin pages read and change. Admins reach the tables directly (row-level security lets
-// them); steps that must happen together are database functions, and account changes that need
-// the service role go through the admin-accounts Edge Function.
+// What the admin pages read and change: views and database functions in the public API (row level
+// security shows admins everything), and the admin-accounts Edge Function for account changes that
+// need the service role.
 
 // --- Students ---------------------------------------------------------------------------------
 
@@ -80,17 +80,19 @@ export function parseRosterLines(text: string, defaultCohort: string, defaultTra
   return { rows, problems };
 }
 
+/** Adds students to the roster; a student already on it is updated (the database does the upsert). */
 export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
-  await must(db.from("roster").upsert(rows, { onConflict: "student_id" }));
+  await must(db.from("students").insert(rows));
 }
 
-/** Moves a student to the other class (their profile follows, by a database trigger). */
+/** Moves a student to the other class (the track lives on the roster only). */
 export async function setTrack(studentId: string, track: Track | null): Promise<void> {
-  await must(db.from("roster").update({ track }).eq("student_id", studentId));
+  await must(db.from("students").update({ track }).eq("student_id", studentId));
 }
 
+/** Removes a student who has no account yet (the database refuses an activated one). */
 export async function removeFromRoster(studentId: string): Promise<void> {
-  await must(db.from("roster").delete().eq("student_id", studentId));
+  await must(db.from("students").delete().eq("student_id", studentId));
 }
 
 export function activateAccounts(studentIds: string[]): Promise<{ results: { student_id: string; ok: boolean; message?: string }[] }> {
@@ -117,11 +119,11 @@ export async function setPackageStatus(packageId: string, status: "draft" | "pub
 }
 
 export async function updatePackage(packageId: string, patch: { title?: string; time_limit_minutes?: number | null; track_best?: boolean; track?: Track | null }): Promise<void> {
-  await must(db.from("packages").update(patch).eq("id", packageId));
+  await must(rpc("admin_update_package", { p_package_id: packageId, p_patch: patch as Json }));
 }
 
 export async function deletePackage(packageId: string): Promise<void> {
-  await must(db.from("packages").update({ deleted_at: new Date().toISOString(), status: "draft" }).eq("id", packageId));
+  await must(rpc("admin_delete_package", { p_package_id: packageId }));
 }
 
 export interface AdminQuestion {
@@ -140,16 +142,13 @@ export interface AdminQuestion {
   status: "draft" | "published";
 }
 
+const QUESTION_COLUMNS = "id, type, subject, stem, stem_image, stem_image_alt, options, correct_index, accepted_answers, explanation, revision, status";
+
 export async function packageQuestions(packageId: string): Promise<AdminQuestion[]> {
   const rows = await must(
-    db
-      .from("package_questions")
-      .select("position, questions!inner(id, type, subject, stem, stem_image, stem_image_alt, options, correct_index, accepted_answers, explanation, revision, status, deleted_at)")
-      .eq("package_id", packageId)
-      .is("questions.deleted_at", null)
-      .order("position"),
+    db.from("admin_package_questions").select(`position, ${QUESTION_COLUMNS}`).eq("package_id", packageId).order("position"),
   );
-  return (rows as unknown as { position: number; questions: Omit<AdminQuestion, "position"> }[]).map((r) => ({ ...r.questions, position: r.position }));
+  return rows as unknown as AdminQuestion[];
 }
 
 /** A question in the bank, with what it is and which packages use it. */
@@ -168,27 +167,21 @@ export interface BankFilter {
   text?: string;
 }
 
-const BANK_COLUMNS =
-  "id, block, source, year, type, subject, stem, stem_image, stem_image_alt, options, correct_index, accepted_answers, explanation, revision, status, package_questions(packages(title, deleted_at))";
+const BANK_COLUMNS = `${QUESTION_COLUMNS}, block, source, year, packages`;
 
 /** Most questions one search shows. */
 export const BANK_PAGE = 100;
 
 /** Questions in the bank matching every filter given, newest import first (at most BANK_PAGE). */
 export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[]> {
-  let q = db.from("questions").select(BANK_COLUMNS).is("deleted_at", null);
+  let q = db.from("admin_questions").select(BANK_COLUMNS);
   if (filter.block) q = q.eq("block", filter.block);
   if (filter.source) q = q.eq("source", filter.source);
   if (filter.year) q = q.eq("year", filter.year);
   if (filter.subject) q = q.eq("subject", filter.subject);
   if (filter.text?.trim()) q = q.ilike("stem", `%${filter.text.trim().replace(/[%_\\]/g, "\\$&")}%`);
   const rows = await must(q.order("created_at", { ascending: false }).order("import_position").limit(BANK_PAGE));
-  type Row = Omit<BankQuestion, "position" | "packages"> & { package_questions: { packages: { title: string; deleted_at: string | null } | null }[] };
-  return (rows as unknown as Row[]).map(({ package_questions, ...r }, i) => ({
-    ...r,
-    position: i + 1,
-    packages: package_questions.flatMap((pq) => (pq.packages && !pq.packages.deleted_at ? [pq.packages.title] : [])),
-  }));
+  return (rows as unknown as Omit<BankQuestion, "position">[]).map((r, i) => ({ ...r, position: i + 1, packages: r.packages ?? [] }));
 }
 
 export interface QuestionFacets {
@@ -207,13 +200,14 @@ export async function questionFacets(): Promise<QuestionFacets> {
 
 export type QuestionPatch = Partial<Pick<AdminQuestion, "subject" | "stem" | "stem_image" | "stem_image_alt" | "options" | "correct_index" | "accepted_answers" | "explanation">>;
 
+/** Saves an edit; the question's revision goes up when anything a student sees changed. */
 export async function updateQuestion(questionId: string, patch: QuestionPatch): Promise<void> {
-  await must(db.from("questions").update(patch).eq("id", questionId));
+  await must(rpc("admin_update_question", { p_question_id: questionId, p_patch: patch as unknown as Json }));
 }
 
 /** Takes a question out of every package; attempts that already used it keep it. */
 export async function deleteQuestion(questionId: string): Promise<void> {
-  await must(db.from("questions").update({ deleted_at: new Date().toISOString() }).eq("id", questionId));
+  await must(rpc("admin_delete_question", { p_question_id: questionId }));
 }
 
 export async function importQuestions(title: string, sourceText: string, questions: ImportQuestion[]): Promise<string> {

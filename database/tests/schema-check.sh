@@ -20,7 +20,7 @@ load() { # database, files...
   for f in "$@"; do psql -q -o /dev/null -v ON_ERROR_STOP=1 -d "$db" -f "$f" 2>&1 | { grep -v NOTICE || true; }; done
 }
 dump() { # Schema only; grants are sorted, since only which ones exist matters, not their order.
-  pg_dump --schema-only --no-owner --schema=public "$1" | grep -v '^--' | grep -v '^$' | grep -v '^\\\(un\)\?restrict' >"$out/$1.sql"
+  pg_dump --schema-only --no-owner --schema=public --schema=app "$1" | grep -v '^--' | grep -v '^$' | grep -v '^\\\(un\)\?restrict' >"$out/$1.sql"
   grep -v '^\(GRANT\|REVOKE\)' "$out/$1.sql" >"$out/$1.objects"
   grep '^\(GRANT\|REVOKE\)' "$out/$1.sql" | sort >"$out/$1.grants"
 }

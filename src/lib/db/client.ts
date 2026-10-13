@@ -29,10 +29,12 @@ export async function currentSession(): Promise<Session | null> {
 // Database functions
 
 type Functions = Database["public"]["Functions"];
-/** A function's arguments. The generated types can't tell which ones SQL accepts as null, so any can be. */
+/** A function's arguments (none: no argument). The generated types can't tell which ones SQL accepts as null, so any can be. */
 type RpcArgs<F extends keyof Functions> = [Functions[F]["Args"]] extends [never]
   ? []
-  : [{ [K in keyof Functions[F]["Args"]]: Functions[F]["Args"][K] | null }];
+  : string extends keyof Functions[F]["Args"] // Record<PropertyKey, never>
+    ? []
+    : [{ [K in keyof Functions[F]["Args"]]: Functions[F]["Args"][K] | null }];
 
 /** Calls a database function (`rpc`) by its checked name and argument names. */
 export function rpc<F extends keyof Functions>(

@@ -1,34 +1,10 @@
--- Exams: keys stay hidden, grading, deadlines, one tab at a time, permissions.
-\set QUIET on
-create or replace function pg_temp.check(ok boolean, what text) returns void language plpgsql as $$
-begin
-  if ok is not true then raise exception 'FAILED: %', what; end if;
-end $$;
-create or replace function pg_temp.as_user(id uuid) returns void language plpgsql as $$
-begin
-  perform set_config('request.jwt.claim.sub', coalesce(id::text, ''), false);
-  execute 'set role ' || case when id is null then 'anon' else 'authenticated' end;
-end $$;
-create or replace function pg_temp.fails(sql text, expected text) returns boolean language plpgsql as $$
-begin
-  execute sql;
-  return false;
-exception when others then
-  if position(expected in sqlerrm) = 0 then raise exception 'expected "%", got "%"', expected, sqlerrm; end if;
-  return true;
-end $$;
-grant execute on all functions in schema pg_temp to anon, authenticated;
+-- Exams: keys stay hidden, grading, deadlines, one tab at a time, frozen attempts, permissions.
+\ir helpers.sql
 
--- Fixture: an admin, two students, one exam package with 3 questions.
-insert into auth.users (id, email) values
-  ('00000000-0000-0000-0000-00000000000a', 'a1@pendik26.internal'),
-  ('00000000-0000-0000-0000-000000000001', 's1@pendik26.internal'),
-  ('00000000-0000-0000-0000-000000000002', 's2@pendik26.internal');
-insert into roster (student_id, full_name, class_group) values ('ADM1', 'Ada Admin', 'A'), ('STU1', 'Sam One', 'A'), ('STU2', 'Sue Two', 'B');
-insert into profiles (id, student_id, full_name, role, must_change_password, cohort) values
-  ('00000000-0000-0000-0000-00000000000a', 'ADM1', 'Ada Admin', 'admin', false, '2026'),
-  ('00000000-0000-0000-0000-000000000001', 'STU1', 'Sam One', 'student', false, '2026'),
-  ('00000000-0000-0000-0000-000000000002', 'STU2', 'Sue Two', 'student', false, '2026');
+-- Fixture: an admin, two students, one import of 3 questions made into an exam and a practice.
+select pg_temp.account('00000000-0000-0000-0000-00000000000a', 'ADM1', 'Ada Admin', 'admin');
+select pg_temp.account('00000000-0000-0000-0000-000000000001', 'STU1', 'Sam One', class_group => 'A');
+select pg_temp.account('00000000-0000-0000-0000-000000000002', 'STU2', 'Sue Two', class_group => 'B');
 
 select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
 select admin_import_questions('Block 1.1 sample', '[source]', '[
@@ -38,21 +14,24 @@ select admin_import_questions('Block 1.1 sample', '[source]', '[
 ]'::jsonb) as import_id \gset
 select admin_packages_from_import(:'import_id', 'Exam 1.1', 'Practice 1.1', '1.1', 'sample', 2026, 10, true) as pk \gset
 select (:'pk'::jsonb ->> 'exam_id') as exam_id, (:'pk'::jsonb ->> 'practice_id') as practice_id \gset
-select pg_temp.check((select count(*) = 3 from questions where status = 'draft'), 'import creates drafts');
+select pg_temp.check((select count(*) = 3 from admin_questions where status = 'draft'), 'import creates drafts');
+select pg_temp.check((select count(*) = 1 from blocks where id = '1.1'), 'import adds its block');
 select pg_temp.check(pg_temp.fails($$select admin_set_role('00000000-0000-0000-0000-00000000000a', 'student')$$, 'not_on_yourself'), 'no self demotion');
 
--- Students can't see drafts, questions or imports.
+-- Students can't see drafts, questions, keys or the roster.
 select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
 select pg_temp.check((select count(*) = 0 from package_summaries), 'draft packages hidden');
-select pg_temp.check((select count(*) = 0 from questions), 'no direct question access');
-select pg_temp.check((select count(*) = 0 from question_imports), 'no import access');
-select pg_temp.check((select count(*) = 0 from roster), 'no roster');
+select pg_temp.check((select count(*) = 0 from admin_questions), 'no question access');
+select pg_temp.check((select count(*) = 0 from admin_package_questions), 'no package keys');
+select pg_temp.check((select count(*) = 1 from students), 'only their own roster row');
 select pg_temp.check(pg_temp.fails(format('select start_attempt(%L)', :'exam_id'), 'package_not_found'), 'cannot start a draft');
 select pg_temp.check(pg_temp.fails(format('select admin_set_package_status(%L, ''published'')', :'exam_id'), 'admins_only'), 'students cannot publish');
+select pg_temp.check(pg_temp.fails(format('select admin_update_package(%L, ''{"title":"x"}'')', :'exam_id'), 'admins_only'), 'students cannot edit packages');
 
 select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
 select admin_set_package_status(:'exam_id', 'published');
 select admin_set_package_status(:'practice_id', 'published');
+select pg_temp.check((select count(*) = 3 from admin_questions where status = 'published'), 'publishing publishes the questions');
 
 -- Exam attempt: no keys while running.
 select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
@@ -65,7 +44,7 @@ select pg_temp.check(position('correct' in :'view') = 0 and position('accepted_a
                      and position('because b' in :'view') = 0 and position('heart' in :'view') = 0, 'exam sends no keys');
 select pg_temp.check(jsonb_array_length(:'view'::jsonb -> 'questions') = 3, 'all questions sent');
 select pg_temp.check((:'view'::jsonb ->> 'seconds_left')::int between 590 and 600, 'server timer');
-select pg_temp.check(pg_temp.fails('select answers from attempts', 'permission denied'), 'answers column not readable');
+select pg_temp.check((select count(*) = 0 from app.attempt_items), 'attempt items (with keys) not readable');
 
 -- Another tab can't save; it can take over.
 select pg_temp.check((get_attempt(:'att', '22222222-2222-2222-2222-222222222222') ->> 'holder_state') = 'other', 'second tab is other');
@@ -75,20 +54,27 @@ select pg_temp.check(pg_temp.fails(format('select save_attempt(%L, ''22222222-22
 -- Another student can't touch it.
 select pg_temp.as_user('00000000-0000-0000-0000-000000000002');
 select pg_temp.check(pg_temp.fails(format('select get_attempt(%L)', :'att'), 'attempt_not_found'), 'not someone else''s');
+select pg_temp.check(pg_temp.fails(format('select get_attempt_result(%L)', :'att'), 'attempt_not_found'), 'no one else''s result');
 select pg_temp.check((select count(*) = 0 from attempts), 'attempts are private');
 
--- Answer: Q1 correct, Q2 wrong, Q3 short answer (not graded in exams).
-select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
+-- Answer: Q1 right, Q2 wrong, Q3 short answer (not graded in exams). Choices are display positions.
 reset role;
-select (select id from questions where stem = 'Q1') as q1, (select id from questions where stem = 'Q2') as q2,
-       (select id from questions where stem = 'Q3') as q3 \gset
-select (select (o.n - 1) from jsonb_array_elements_text(option_orders -> :'q1') with ordinality o(v, n) where o.v::int = 1) as q1_right,
-       (select (o.n - 1) from jsonb_array_elements_text(option_orders -> :'q2') with ordinality o(v, n) where o.v::int = 1) as q2_wrong
-  from attempts where id = :'att' \gset
+select (select id from app.questions where stem = 'Q1') as q1, (select id from app.questions where stem = 'Q2') as q2,
+       (select id from app.questions where stem = 'Q3') as q3 \gset
+select (select array_position(option_order, 1) - 1 from app.attempt_items where attempt_id = :'att' and question_id = :'q1') as q1_right,
+       (select array_position(option_order, 1) - 1 from app.attempt_items where attempt_id = :'att' and question_id = :'q2') as q2_wrong \gset
+
+-- Editing a question after the attempt started doesn't change the attempt.
+select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
+select admin_update_question(:'q1', '{"stem":"Q1 edited"}');
+select pg_temp.check((select revision = 2 from admin_questions where id = :'q1'), 'edit bumps the revision');
+select pg_temp.check((select count(*) = 1 from admin_audit_log() where action = 'question.edit'), 'edit audited');
+
 select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
 select save_attempt(:'att', '11111111-1111-1111-1111-111111111111',
   jsonb_build_object(:'q1', jsonb_build_object('choice', :'q1_right'::int), :'q2', jsonb_build_object('choice', :'q2_wrong'::int),
                      :'q3', jsonb_build_object('text', 'heart', 'self_mark', true)), '{}', 2);
+select pg_temp.check((get_attempt(:'att', '11111111-1111-1111-1111-111111111111') -> 'answers' -> :'q1' ->> 'choice')::int = :'q1_right'::int, 'answers saved');
 select take_over_attempt(:'att', '22222222-2222-2222-2222-222222222222');
 select pg_temp.check(pg_temp.fails(format('select submit_attempt(%L, ''11111111-1111-1111-1111-111111111111'')', :'att'), 'held_elsewhere'), 'old tab cannot submit');
 select submit_attempt(:'att', '22222222-2222-2222-2222-222222222222');
@@ -98,8 +84,9 @@ select pg_temp.check((:'res'::jsonb ->> 'correct_count')::int = 1 and (:'res'::j
                      'graded 1/2, short answer not graded in exam');
 select pg_temp.check((:'res'::jsonb ->> 'tab_leaves')::int = 2, 'tab leaves kept');
 select pg_temp.check(position('because b' in :'res') > 0, 'result shows explanations');
+select pg_temp.check((:'res'::jsonb -> 'question_revisions' ->> :'q1')::int = 1, 'attempt keeps the revision it started with');
 select pg_temp.check(pg_temp.fails(format('select save_attempt(%L, null, ''{}'')', :'att'), 'attempt_not_running'), 'finished is frozen');
-select pg_temp.check((select score = 50.0 from best_scores where package_id = :'exam_id'), 'best score');
+select pg_temp.check((select score = 50.0 and status = 'finished' from attempts where id = :'att'), 'attempt listed with its score');
 
 -- Practice: keys come with the questions, self-marked short answers count, can be abandoned.
 select start_attempt(:'practice_id') ->> 'attempt_id' as patt \gset
@@ -114,26 +101,35 @@ select pg_temp.check(pg_temp.fails(format('select abandon_attempt(%L)', :'att2')
 
 -- Deadline: an exam past its time is graded from saved answers when next opened.
 reset role;
-update attempts set started_at = now() - interval '11 minutes' where id = :'att2';
+update app.attempts set started_at = now() - interval '11 minutes' where id = :'att2';
 select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
 select pg_temp.check(pg_temp.fails(format('select save_attempt(%L, null, ''{}'')', :'att2'), 'time_up'), 'late save refused');
 select pg_temp.check((get_attempt(:'att2') ->> 'status') = 'finished', 'expired attempt finished on open');
 
--- Leaderboard: attempts count as correct answers; progress feeds it too.
-insert into progress (user_id, key, value) values
-  ('00000000-0000-0000-0000-000000000001', 'activity', to_jsonb(array[(now() at time zone 'utc')::date - 1, (now() at time zone 'utc')::date]::text[])),
-  ('00000000-0000-0000-0000-000000000001', 'flashcards:1.1/histology', '{"c1":{"reps":2},"c2":{"reps":0}}');
-select update_my_settings(null, true);
-select leaderboard('all') as lb \gset
--- 2 correct answers (exam 1 + practice 1) + 1 card * 2 + 2 days * 5 = 14
-select pg_temp.check((:'lb'::jsonb -> 'me' ->> 'points')::int = 14, 'all-time points: ' || (:'lb'::jsonb -> 'me' ->> 'points'));
-select pg_temp.check((:'lb'::jsonb -> 'me' ->> 'streak')::int = 2, 'streak');
-select pg_temp.check((:'lb'::jsonb -> 'me' ->> 'rank')::int = 1, 'ranked');
-select pg_temp.check(pg_temp.fails('select * from leaderboard_parts', 'permission denied'), 'parts private');
+-- Points: the exam's right single-choice answer (the self-marked short answer earns nothing), and
+-- each finished attempt makes a study day.
+reset role;
+select pg_temp.check((select sum(points) = 1 from app.points where user_id = '00000000-0000-0000-0000-000000000001' and source = 'exam'), 'one exam point');
+select pg_temp.check((select sum(points) = 5 from app.points where user_id = '00000000-0000-0000-0000-000000000001' and source = 'days'), 'one study day');
+select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
+
+-- Admin stats: how often each option was picked in finished attempts.
+select pg_temp.check((select count(*) = 0 from admin_question_stats), 'students get no question stats');
+select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
+select pg_temp.check((select answered = 1 and correct = 1 from admin_question_stats where question_id = :'q1'), 'stats count graded answers');
+select pg_temp.check((select (options -> 1 ->> 'picked')::int = 1 from admin_question_stats where question_id = :'q1'), 'stats in print order');
+
+-- Editing, then removing, a package.
+select admin_update_package(:'exam_id', '{"title":"Exam 1.1 (edited)","time_limit_minutes":20}');
+select pg_temp.check((select title = 'Exam 1.1 (edited)' and time_limit_minutes = 20 from package_summaries where id = :'exam_id'), 'package edited');
+select admin_delete_package(:'exam_id');
+select pg_temp.as_user('00000000-0000-0000-0000-000000000001');
+select pg_temp.check((select count(*) = 0 from package_summaries where id = :'exam_id'), 'removed package gone');
+select pg_temp.check((get_attempt_result(:'att') ->> 'score')::numeric = 50.0, 'its attempts keep their results');
 
 -- Signed-out callers get nothing.
 select pg_temp.as_user(null);
 select pg_temp.check(pg_temp.fails('select * from package_summaries', 'permission denied'), 'anon sees no packages');
-select pg_temp.check(pg_temp.fails(format('select start_attempt(%L)', :'exam_id'), 'permission denied'), 'anon cannot start');
+select pg_temp.check(pg_temp.fails(format('select start_attempt(%L)', :'practice_id'), 'permission denied'), 'anon cannot start');
 reset role;
 \echo exam tests passed

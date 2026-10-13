@@ -5,8 +5,23 @@
 -- at random from the bank. Only questions in a published practice package the student can see are
 -- in the bank, so drilling never reveals a key that an exam-only package keeps hidden.
 
+create table app.bookmarks (
+  user_id     uuid not null references app.accounts(id) on delete cascade,
+  question_id uuid not null references app.questions(id) on delete cascade,
+  created_at  timestamptz not null default now(),
+  primary key (user_id, question_id)
+);
+
+create index bookmarks_question on app.bookmarks (question_id);
+
+alter table app.bookmarks enable row level security;
+create policy bookmarks_own_read on app.bookmarks for select to authenticated using (user_id = (select auth.uid()));
+create policy bookmarks_own_add on app.bookmarks for insert to authenticated with check (user_id = (select auth.uid()));
+create policy bookmarks_own_remove on app.bookmarks for delete to authenticated using (user_id = (select auth.uid()));
+grant select, insert, delete on app.bookmarks to authenticated;
+
 -- Questions the caller may practise: live, in a published practice package of their track.
-create or replace function public.bank_question_ids()
+create function app.bank_question_ids()
 returns setof uuid
 language sql
 stable
@@ -14,17 +29,28 @@ security definer
 set search_path = ''
 as $$
   select distinct q.id
-    from public.questions q
-    join public.package_questions pq on pq.question_id = q.id
-    join public.packages p on p.id = pq.package_id
+    from app.questions q
+    join app.package_questions pq on pq.question_id = q.id
+    join app.packages p on p.id = pq.package_id
    where q.deleted_at is null
      and p.mode = 'practice' and p.status = 'published' and p.deleted_at is null
-     and public.track_visible(p.track);
+     and app.track_visible(p.track);
 $$;
+
+-- ---------------------------------------------------------------------------------------------
+-- API
+
+-- The caller's bookmarks (question ids). Students add and remove their own.
+create view public.bookmarks
+with (security_invoker = on) as
+select user_id, question_id, created_at from app.bookmarks;
+
+revoke all on public.bookmarks from public, anon, authenticated;
+grant select, insert, delete on public.bookmarks to authenticated;
 
 -- What the bank holds for the caller, for the practice setup page: how many questions per block,
 -- source, year and subject, and how many of them are bookmarked.
-create or replace function public.bank_options()
+create function public.bank_options()
 returns table (block text, source text, year int, subject text, questions int, bookmarked int)
 language sql
 stable
@@ -33,16 +59,16 @@ set search_path = ''
 as $$
   select q.block, q.source, q.year, q.subject, count(*)::int,
          (count(*) filter (where b.question_id is not null))::int
-    from public.questions q
-    left join public.bookmarks b on b.question_id = q.id and b.user_id = (select auth.uid())
-   where q.id in (select public.bank_question_ids())
+    from app.questions q
+    left join app.bookmarks b on b.question_id = q.id and b.user_id = (select auth.uid())
+   where q.id in (select app.bank_question_ids())
    group by q.block, q.source, q.year, q.subject
    order by q.block, q.source nulls last, q.year nulls last, q.subject nulls last;
 $$;
 
 -- Starts a practice attempt drawn from the bank, or returns the attempt already running.
 -- Empty filter arrays mean "any". Returns { attempt_id, resumed }.
-create or replace function public.start_bank_practice(
+create function public.start_bank_practice(
   p_block text,
   p_sources text[] default '{}',
   p_years int[] default '{}',
@@ -62,57 +88,37 @@ declare
   uid uuid := auth.uid();
   running uuid;
   ids uuid[];
-  orders jsonb;
-  revisions jsonb;
-  new_id uuid;
 begin
-  if uid is null then raise exception 'not_signed_in'; end if;
-  if not exists (select 1 from public.profiles where id = uid) then raise exception 'no_profile'; end if;
   if p_count is null or p_count not between 1 and 200 then raise exception 'bad_count'; end if;
   if p_time_limit_minutes is not null and p_time_limit_minutes not between 1 and 300 then raise exception 'bad_time_limit'; end if;
-  perform pg_advisory_xact_lock(hashtextextended('attempt:' || uid::text, 0));
-  perform public.finish_my_expired_attempts();
-
-  select id into running from public.attempts where user_id = uid and status = 'in_progress';
-  if running is not null then
-    return jsonb_build_object('attempt_id', running, 'resumed', true);
-  end if;
+  running := app.begin_start();
+  if running is not null then return jsonb_build_object('attempt_id', running, 'resumed', true); end if;
 
   select array_agg(id) into ids from (
     select q.id
-      from public.questions q
-     where q.id in (select public.bank_question_ids())
+      from app.questions q
+     where q.id in (select app.bank_question_ids())
        and (p_block is null or q.block = p_block)
        and (cardinality(coalesce(p_sources, '{}')) = 0 or q.source = any(p_sources))
        and (cardinality(coalesce(p_years, '{}')) = 0 or q.year = any(p_years))
        and (cardinality(coalesce(p_subjects, '{}')) = 0 or q.subject = any(p_subjects))
        and (not coalesce(p_bookmarked_only, false)
-            or exists (select 1 from public.bookmarks b where b.user_id = uid and b.question_id = q.id))
+            or exists (select 1 from app.bookmarks b where b.user_id = uid and b.question_id = q.id))
      order by random()
      limit p_count
   ) picked;
   if ids is null then raise exception 'no_questions_match'; end if;
 
-  select coalesce(jsonb_object_agg(q.id::text,
-           (select jsonb_agg(i order by random()) from generate_series(0, jsonb_array_length(q.options) - 1) i))
-           filter (where q.type = 'single_choice'), '{}'),
-         jsonb_object_agg(q.id::text, q.revision)
-    into orders, revisions
-    from public.questions q where q.id = any(ids);
-
-  insert into public.attempts (user_id, package_id, title, mode, question_ids, option_orders, question_revisions,
-                               time_limit_minutes, holder)
-  values (uid, null, left(coalesce(nullif(btrim(p_title), ''), 'Practice'), 160), 'practice', ids, orders, revisions,
-          p_time_limit_minutes, p_holder)
-  returning id into new_id;
-
-  return jsonb_build_object('attempt_id', new_id, 'resumed', false);
+  return jsonb_build_object(
+    'attempt_id', app.create_attempt(uid, null, left(coalesce(nullif(btrim(p_title), ''), 'Practice'), 160), 'practice',
+                                     p_time_limit_minutes, p_holder, ids),
+    'resumed', false);
 end;
 $$;
 
 -- The caller's bookmarks with the question, its key and explanation, newest first. Only bank
 -- questions: a bookmark on a question the student can't practise shows nothing.
-create or replace function public.my_bookmarks()
+create function public.my_bookmarks()
 returns jsonb
 language sql
 stable
@@ -125,25 +131,22 @@ as $$
     'source', q.source,
     'year', q.year,
     'subject', q.subject,
-    'type', q.type,
+    'type', q.kind,
     'stem', q.stem,
     'stem_image', q.stem_image,
     'stem_image_alt', q.stem_image_alt,
-    'options', q.options,
-    'correct', q.correct_index,
-    'accepted_answers', to_jsonb(q.accepted_answers),
+    'options', app.question_options_json(q.id),
+    'correct', app.question_correct_index(q.id),
+    'accepted_answers', to_jsonb(app.question_accepted(q.id)),
     'explanation', q.explanation,
     'bookmarked_at', b.created_at
   ) order by b.created_at desc), '[]')
-    from public.bookmarks b
-    join public.questions q on q.id = b.question_id
+    from app.bookmarks b
+    join app.questions q on q.id = b.question_id
    where b.user_id = (select auth.uid())
-     and q.id in (select public.bank_question_ids());
+     and q.id in (select app.bank_question_ids());
 $$;
 
-revoke execute on function public.bank_question_ids(), public.bank_options(),
-  public.start_bank_practice(text, text[], int[], text[], boolean, int, int, text, uuid), public.my_bookmarks()
-  from public, anon, authenticated;
 grant execute on function public.bank_options(),
   public.start_bank_practice(text, text[], int[], text[], boolean, int, int, text, uuid), public.my_bookmarks()
   to authenticated;

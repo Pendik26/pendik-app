@@ -1,6 +1,7 @@
 // POST /functions/v1/admin-accounts, for admins: create accounts for roster students, lock or
 // unlock an account, or reset its password to the first password. These need the service role,
-// so they can't be database functions the browser calls. Secret: APP_ORIGINS.
+// so they can't be database functions the browser calls; each one is written to the audit log.
+// Secret: APP_ORIGINS.
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { firstPassword, parseAccountAction, studentEmail } from "../_shared/accounts.ts";
@@ -13,9 +14,11 @@ const origins = allowedOrigins(Deno.env.get("APP_ORIGINS"));
 
 interface RosterRow {
   student_id: string;
-  full_name: string;
-  class_group: string | null;
-  cohort: string;
+}
+
+/** Writes what an admin did to an account to the audit log (Admin → Audit log). */
+async function audit(actor: string, action: string, studentId: string): Promise<void> {
+  await db.rpc("audit_account_action", { p_actor: actor, p_action: action, p_target: studentId });
 }
 
 Deno.serve(async (request) => {
@@ -26,18 +29,18 @@ Deno.serve(async (request) => {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
   const { data: caller } = await db.auth.getUser(token);
   if (!caller.user) return jsonError(401, "Sign in first.", cors);
-  const { data: me } = await db.from("profiles").select("role").eq("id", caller.user.id).maybeSingle();
+  const { data: me } = await db.from("accounts").select("role").eq("id", caller.user.id).maybeSingle();
   if ((me as { role?: string } | null)?.role !== "admin") return jsonError(403, "Admins only.", cors);
 
   const action = parseAccountAction(await request.json().catch(() => null));
   if (!action) return jsonError(400, "Unknown request.", cors);
 
   if (action.action === "activate") {
-    const { data: roster, error } = await db.from("roster").select("student_id, full_name, class_group, cohort").in("student_id", action.student_ids);
+    const { data: roster, error } = await db.from("students").select("student_id").in("student_id", action.student_ids);
     if (error) return jsonError(500, error.message, cors);
     const results: { student_id: string; ok: boolean; message?: string }[] = [];
     for (const r of roster as RosterRow[]) {
-      const { data: existing } = await db.from("profiles").select("id").eq("student_id", r.student_id).maybeSingle();
+      const { data: existing } = await db.from("accounts").select("id").eq("student_id", r.student_id).maybeSingle();
       if (existing) {
         results.push({ student_id: r.student_id, ok: true, message: "already active" });
         continue;
@@ -52,18 +55,14 @@ Deno.serve(async (request) => {
         results.push({ student_id: r.student_id, ok: false, message: created.error?.message ?? "not created" });
         continue;
       }
-      const { error: profileError } = await db.from("profiles").insert({
-        id: created.data.user.id,
-        student_id: r.student_id,
-        full_name: r.full_name,
-        class_group: r.class_group,
-        cohort: r.cohort,
-      });
-      if (profileError) {
-        // No half-made accounts: an auth user without a profile couldn't use the app.
+      // Name, class and cohort stay on the roster; the account is the sign-in and the role.
+      const { error: accountError } = await db.from("accounts").insert({ id: created.data.user.id, student_id: r.student_id });
+      if (accountError) {
+        // No half-made accounts: an auth user without an account row couldn't use the app.
         await db.auth.admin.deleteUser(created.data.user.id);
-        results.push({ student_id: r.student_id, ok: false, message: profileError.message });
+        results.push({ student_id: r.student_id, ok: false, message: accountError.message });
       } else {
+        await audit(caller.user.id, "activate", r.student_id);
         results.push({ student_id: r.student_id, ok: true });
       }
     }
@@ -76,14 +75,15 @@ Deno.serve(async (request) => {
   if (action.user_id === caller.user.id && action.action !== "unlock") {
     return jsonError(400, "Not on your own account.", cors);
   }
-  const { data: profile } = await db.from("profiles").select("student_id").eq("id", action.user_id).maybeSingle();
-  if (!profile) return jsonError(404, "No such account.", cors);
-  const studentId = (profile as { student_id: string }).student_id;
+  const { data: account } = await db.from("accounts").select("student_id").eq("id", action.user_id).maybeSingle();
+  if (!account) return jsonError(404, "No such account.", cors);
+  const studentId = (account as { student_id: string }).student_id;
 
   if (action.action === "reset") {
     const { error } = await db.auth.admin.updateUserById(action.user_id, { password: firstPassword(studentId) });
     if (error) return jsonError(500, error.message, cors);
-    await db.from("profiles").update({ must_change_password: true }).eq("id", action.user_id);
+    await db.from("accounts").update({ must_change_password: true }).eq("id", action.user_id);
+    await audit(caller.user.id, "reset", studentId);
     // Signed-in devices keep working until their session ends; the student picks a new password next time.
     return Response.json({ ok: true }, { headers: cors });
   }
@@ -91,5 +91,6 @@ Deno.serve(async (request) => {
     ban_duration: action.action === "lock" ? "876000h" : "none",
   });
   if (error) return jsonError(500, error.message, cors);
+  await audit(caller.user.id, action.action, studentId);
   return Response.json({ ok: true }, { headers: cors });
 });

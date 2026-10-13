@@ -1,5 +1,5 @@
 -- Makes someone an admin: puts them on the roster and, on a real Supabase project, creates their
--- sign-in and an admin profile. Who it is comes from psql variables, so no student's NIM or name
+-- sign-in and an admin account. Who it is comes from psql variables, so no student's NIM or name
 -- is ever committed. Run it with `npm run db:first-admin` (see docs/deploying.md, step 6), or:
 --
 --   psql "$POSTGRES_URL_NON_POOLING" -v ON_ERROR_STOP=1 \
@@ -7,7 +7,7 @@
 --     -f database/seeds/first-admin.sql
 --
 -- The first password defaults to the usual `pendik26` + NIM; the app makes them pick a new one
--- straight away. Safe to run again: whatever already exists is kept, and the profile is only made
+-- straight away. Safe to run again: whatever already exists is kept, and the account is only made
 -- an admin.
 
 \if :{?nim}
@@ -29,9 +29,10 @@
   \set password ''
 \endif
 
-insert into public.roster (student_id, full_name, cohort)
-values (:'nim', :'full_name', coalesce(nullif(:'cohort', ''), '2026')) -- the roster's default cohort
-on conflict (student_id) do nothing;
+insert into app.cohorts (id) values (coalesce(nullif(:'cohort', ''), '2026')) on conflict do nothing;
+insert into app.students (nim, full_name, cohort)
+values (:'nim', :'full_name', coalesce(nullif(:'cohort', ''), '2026'))
+on conflict (nim) do nothing;
 
 -- psql doesn't fill variables in inside $$ … $$, so hand them to the block as settings.
 select set_config('pendik.first_admin_nim', :'nim', false) as nim_setting,
@@ -39,13 +40,13 @@ select set_config('pendik.first_admin_nim', :'nim', false) as nim_setting,
 
 do $$
 declare
-  nim constant text := current_setting('pendik.first_admin_nim');
-  password constant text := coalesce(nullif(current_setting('pendik.first_admin_password'), ''), 'pendik26' || nim);
-  login constant text := lower(nim) || '@pendik26.internal';
+  v_nim constant text := current_setting('pendik.first_admin_nim');
+  password constant text := coalesce(nullif(current_setting('pendik.first_admin_password'), ''), 'pendik26' || v_nim);
+  login constant text := lower(v_nim) || '@pendik26.internal';
   uid uuid;
 begin
   -- An account already activated (from Admin → Students, or by hand): just make sure it's an admin.
-  update public.profiles set role = 'admin' where student_id = nim;
+  update app.accounts set role = 'admin' where nim = v_nim;
   if found then return; end if;
 
   -- The test database (database/tests/local-stub.sql) has no real Auth tables: stop at the roster.
@@ -66,7 +67,7 @@ begin
     ) values (
       '00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated', login,
       extensions.crypt(password, extensions.gen_salt('bf')), now(),
-      '{"provider":"email","providers":["email"]}', jsonb_build_object('student_id', nim), now(), now(),
+      '{"provider":"email","providers":["email"]}', jsonb_build_object('student_id', v_nim), now(), now(),
       '', '', '', ''
     );
     insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
@@ -74,9 +75,7 @@ begin
             jsonb_build_object('sub', uid::text, 'email', login, 'email_verified', true), now(), now(), now());
   end if;
 
-  insert into public.profiles (id, student_id, full_name, class_group, cohort, role, must_change_password)
-  select uid, r.student_id, r.full_name, r.class_group, r.cohort, 'admin', true
-    from public.roster r where r.student_id = nim;
+  insert into app.accounts (id, nim, role, must_change_password) values (uid, v_nim, 'admin', true);
 end $$;
 
 -- Don't leave the password in the session's settings.

@@ -147,8 +147,8 @@ async function isAdmin(request: Request): Promise<boolean> {
   if (!token) return false;
   const { data } = await db.auth.getUser(token);
   if (!data.user) return false;
-  const { data: profile } = await db.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
-  return (profile as { role?: string } | null)?.role === "admin";
+  const { data: caller } = await db.from("accounts").select("role").eq("id", data.user.id).maybeSingle();
+  return (caller as { role?: string } | null)?.role === "admin";
 }
 
 Deno.serve(async (request) => {

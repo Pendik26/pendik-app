@@ -6,6 +6,7 @@ import { clearProgress, loadProgress, pendingSaves, queueSave, refreshProgress, 
 import { clearDeviceSettings, PROGRESS_CHANGED_EVENT } from "../lib/storage";
 import { clearExamRecords, loadExamRecords, refreshExamRecords } from "../lib/exams";
 import { clearBookmarkCache } from "../hooks/useBookmarks";
+import { sendRecords, startRecords, stopRecords } from "../lib/studyRecords";
 
 const PROFILE_COLUMNS =
   "id, student_id, full_name, class_group, cohort, track, role, must_change_password, display_name, leaderboard_joined";
@@ -63,8 +64,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     return () => { data.subscription.unsubscribe(); };
   }, []);
 
-  // Signed in: load the profile, the progress and the exam records together. Only roster students
-  // have a profile; a Google account that isn't linked to one gets signed out with an explanation
+  // Signed in: load the account, the progress and the exam records together. Only roster students
+  // have an account; a Google account that isn't linked to one gets signed out with an explanation
   // (row level security gives it no progress or attempts, and what loaded is cleared).
   const uid = session?.user.id;
   useEffect(() => {
@@ -79,7 +80,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     setStatus("loading");
     void (async () => {
       const [profile, rest] = await Promise.all([
-        db.from("profiles").select(PROFILE_COLUMNS).eq("id", uid).maybeSingle(),
+        db.from("my_account").select(PROFILE_COLUMNS).maybeSingle(),
         Promise.all([loadProgress(uid), loadExamRecords()]).then(() => null, (e: unknown) => e ?? "failed"),
       ]);
       if (cancelled) return;
@@ -93,6 +94,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       }
       if (rest !== null) { setStatus("failed"); return; }
       setNotice(null);
+      startRecords(uid);
       setUser(toProfile(profile.data as ProfileRow));
       setStatus("signed-in");
     })();
@@ -105,13 +107,19 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     if (status !== "signed-in") return;
     const onChanged = (e: Event) => { queueSave((e as CustomEvent<{ key: string }>).detail.key); };
     const onVisibility = () => {
-      if (document.visibilityState === "hidden") void saveNow();
+      if (document.visibilityState === "hidden") {
+        void saveNow();
+        void sendRecords();
+      }
       else {
         void refreshProgress();
         void refreshExamRecords().catch(() => undefined);
       }
     };
-    const onOnline = () => { if (pendingSaves() > 0) void saveNow(); };
+    const onOnline = () => {
+      if (pendingSaves() > 0) void saveNow();
+      void sendRecords();
+    };
     // Leaving with unsaved progress: ask the browser to wait.
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       if (pendingSaves() > 0) { void saveNow(); e.preventDefault(); }
@@ -188,6 +196,8 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       },
       signOut: async ({ clearDevice = false }: { clearDevice?: boolean } = {}) => {
         if (pendingSaves() > 0) await saveNow();
+        await sendRecords();
+        stopRecords({ forget: clearDevice });
         await db.auth.signOut();
         clearProgress();
         clearExamRecords();

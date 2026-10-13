@@ -1,182 +1,171 @@
--- The leaderboard.
+-- The leaderboard. Points come only from records the server made or checked (06_study.sql and
+-- graded exam answers), never from what a student saves in user_state:
 --
--- Points: 1 per correct answer (quizzes and finished exam/practice attempts), 2 per learned
--- flashcard or image-occlusion label, 10 per finished ebook chapter, 5 per study day.
--- Each scoring source has a part per student; a change to it credits the points it gained (never
--- negative) to today, for the weekly board. Both tables have row level security on and no
--- policies: they're read through leaderboard() only.
+--   1 per question answered right (a quiz question or a single-choice bank question, once a day each)
+--   2 per card or occlusion label learned (reviewed on two different days)
+--  10 per finished ebook chapter
+--   5 per study day
+--
+-- Each record adds its points to `points` (per student, day and source) when it's made, so the
+-- board is a sum over a small table. Points never go down.
 
-create table public.leaderboard_parts (
-  user_id           uuid not null references public.profiles(id) on delete cascade,
-  source            text not null,       -- a progress key, or 'attempts'
-  correct_answers   int not null default 0,
-  cards_learned     int not null default 0,
-  chapters_finished int not null default 0,
-  study_days        int not null default 0,
-  run_end           date,
-  run_length        int not null default 0,
-  updated_at        timestamptz not null default now(),
-  primary key (user_id, source)
-);
-
-create table public.leaderboard_daily (
-  user_id uuid not null references public.profiles(id) on delete cascade,
+create table app.points (
+  user_id uuid not null references app.accounts(id) on delete cascade,
   day     date not null,
-  points  int not null default 0,
-  primary key (user_id, day)
+  source  text not null check (source in ('quiz', 'exam', 'cards', 'chapters', 'days')),
+  points  int not null default 0 check (points >= 0),
+  primary key (user_id, day, source)
 );
 
-create index leaderboard_daily_day on public.leaderboard_daily (day);
+create index points_day on app.points (day);
 
-alter table public.leaderboard_parts enable row level security;
-alter table public.leaderboard_daily enable row level security;
-revoke all on public.leaderboard_parts, public.leaderboard_daily from anon, authenticated;
+-- A bank question answered right in a finished attempt, once per student, question and day.
+create table app.exam_correct (
+  user_id     uuid not null references app.accounts(id) on delete cascade,
+  question_id uuid not null references app.questions(id) on delete cascade,
+  day         date not null default app.today(),
+  primary key (user_id, question_id, day)
+);
 
-create or replace function public.part_points(p public.leaderboard_parts)
-returns int language sql immutable set search_path = '' as $$
-  select p.correct_answers + 2 * p.cards_learned + 10 * p.chapters_finished + 5 * p.study_days;
-$$;
+alter table app.points enable row level security;
+alter table app.exam_correct enable row level security;
+-- No policies: read through leaderboard() only.
 
--- Saves one source's part and credits what it gained to today.
-create or replace function public.leaderboard_set_part(p public.leaderboard_parts)
+create function app.add_points(p_user_id uuid, p_source text, p_points int)
 returns void
-language plpgsql
-security definer
+language sql
 set search_path = ''
 as $$
-declare
-  old_points int;
-  gained int;
-begin
-  select public.part_points(lp) into old_points
-    from public.leaderboard_parts lp where lp.user_id = p.user_id and lp.source = p.source;
-  insert into public.leaderboard_parts (user_id, source, correct_answers, cards_learned, chapters_finished,
-                                        study_days, run_end, run_length, updated_at)
-  values (p.user_id, p.source, p.correct_answers, p.cards_learned, p.chapters_finished, p.study_days,
-          p.run_end, p.run_length, now())
-  on conflict (user_id, source) do update set
-    correct_answers = excluded.correct_answers, cards_learned = excluded.cards_learned,
-    chapters_finished = excluded.chapters_finished, study_days = excluded.study_days,
-    run_end = excluded.run_end, run_length = excluded.run_length, updated_at = now();
-  gained := public.part_points(p) - coalesce(old_points, 0);
-  if gained > 0 then
-    insert into public.leaderboard_daily (user_id, day, points)
-    values (p.user_id, (now() at time zone 'utc')::date, gained)
-    on conflict (user_id, day) do update set points = public.leaderboard_daily.points + excluded.points;
-  end if;
-  delete from public.leaderboard_daily
-   where user_id = p.user_id and day < (now() at time zone 'utc')::date - 13;
-end;
+  insert into app.points (user_id, day, source, points) values (p_user_id, app.today(), p_source, p_points)
+  on conflict (user_id, day, source) do update set points = app.points.points + excluded.points;
 $$;
 
--- What one progress value is worth. Caps keep a malformed value from producing an absurd score.
-create or replace function public.progress_score()
+create function app.points_for_quiz()
 returns trigger
 language plpgsql
 security definer
 set search_path = ''
 as $$
-declare
-  kind text := split_part(new.key, ':', 1);
-  has_id boolean := position(':' in new.key) > 0;
-  p public.leaderboard_parts;
-  days date[];
-  last_day date;
-  d date;
 begin
-  p.user_id := new.user_id;
-  p.source := new.key;
-  p.correct_answers := 0; p.cards_learned := 0; p.chapters_finished := 0; p.study_days := 0; p.run_length := 0;
-
-  if kind in ('flashcards', 'occlusion') and has_id and jsonb_typeof(new.value) = 'object' then
-    select count(*) into p.cards_learned
-      from (select v from jsonb_each(new.value) e(k, v) limit 5000) c
-     where jsonb_typeof(c.v -> 'reps') = 'number' and (c.v ->> 'reps')::numeric between 1 and 10000;
-  elsif kind = 'quiz' and has_id and jsonb_typeof(new.value) = 'array' then
-    select coalesce(sum((a ->> 'score')::int), 0) into p.correct_answers
-      from (select a from jsonb_array_elements(new.value) a limit 1000) x
-     where jsonb_typeof(a -> 'score') = 'number' and jsonb_typeof(a -> 'total') = 'number'
-       and (a ->> 'total')::numeric between 0 and 500
-       and (a ->> 'score')::numeric between 0 and (a ->> 'total')::numeric
-       and (a ->> 'score')::numeric = trunc((a ->> 'score')::numeric);
-  elsif kind = 'ebookdone' and has_id and jsonb_typeof(new.value) = 'array' then
-    select count(distinct v) into p.chapters_finished
-      from jsonb_array_elements_text(new.value) v where length(v) <= 60;
-  elsif kind = 'activity' and not has_id and jsonb_typeof(new.value) = 'array' then
-    select array_agg(distinct v::date order by v::date) into days
-      from jsonb_array_elements_text(new.value) v
-     where v ~ '^\d{4}-\d{2}-\d{2}$' and v::date between '2020-01-01' and (now() at time zone 'utc')::date + 1;
-    p.study_days := coalesce(cardinality(days), 0);
-    if p.study_days > 0 then
-      last_day := days[cardinality(days)];
-      p.run_end := last_day;
-      foreach d in array (select array_agg(x order by x desc) from unnest(days) x) loop
-        exit when d <> last_day - p.run_length;
-        p.run_length := p.run_length + 1;
-      end loop;
-    end if;
-  else
-    return new;
+  if new.correct and (tg_op = 'INSERT' or not old.correct) then
+    perform app.add_points(new.user_id, 'quiz', 1);
   end if;
-
-  perform public.leaderboard_set_part(p);
-  return new;
+  return null;
 end;
 $$;
 
-create trigger progress_leaderboard after insert or update of value on public.progress
-  for each row execute function public.progress_score();
+create trigger quiz_answers_points after insert or update of correct on app.quiz_answers
+  for each row execute function app.points_for_quiz();
 
--- Correct answers from finished attempts count too.
-create or replace function public.attempts_score()
+create function app.points_for_review()
 returns trigger
 language plpgsql
 security definer
 set search_path = ''
 as $$
-declare
-  p public.leaderboard_parts;
 begin
-  if new.status <> 'finished' or old.status = 'finished' then return new; end if;
-  p.user_id := new.user_id;
-  p.source := 'attempts';
-  select coalesce(sum(correct_count), 0) into p.correct_answers
-    from public.attempts where user_id = new.user_id and status = 'finished';
-  p.cards_learned := 0; p.chapters_finished := 0; p.study_days := 0; p.run_length := 0;
-  perform public.leaderboard_set_part(p);
-  return new;
+  if (select count(*) from app.card_reviews
+       where user_id = new.user_id and kind = new.kind and deck = new.deck and item_id = new.item_id) = 2 then
+    perform app.add_points(new.user_id, 'cards', 2);
+  end if;
+  return null;
 end;
 $$;
 
-create trigger attempts_leaderboard after update of status on public.attempts
-  for each row execute function public.attempts_score();
+create trigger card_reviews_points after insert on app.card_reviews
+  for each row execute function app.points_for_review();
 
--- Every student's totals: all-time points, this week's points, current study streak.
-create or replace function public.leaderboard_totals()
-returns table (user_id uuid, joined boolean, name text, cohort text, all_points int, week_points int,
-               streak int, stats jsonb)
+create function app.points_for_chapter()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform app.add_points(new.user_id, 'chapters', 10);
+  return null;
+end;
+$$;
+
+create trigger chapters_done_points after insert on app.chapters_done
+  for each row execute function app.points_for_chapter();
+
+create function app.points_for_day()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform app.add_points(new.user_id, 'days', 5);
+  return null;
+end;
+$$;
+
+create trigger study_days_points after insert on app.study_days
+  for each row execute function app.points_for_day();
+
+create function app.points_for_exam_correct()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform app.add_points(new.user_id, 'exam', 1);
+  return null;
+end;
+$$;
+
+create trigger exam_correct_points after insert on app.exam_correct
+  for each row execute function app.points_for_exam_correct();
+
+-- A finished attempt: its right single-choice answers count (a self-marked short answer doesn't),
+-- and it was a study day.
+create function app.attempt_finished()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.status <> 'finished' or old.status = 'finished' then return null; end if;
+  insert into app.exam_correct (user_id, question_id)
+  select new.user_id, i.question_id from app.attempt_items i
+   where i.attempt_id = new.id and i.is_correct and i.option_order is not null
+  on conflict do nothing;
+  perform app.mark_study_day(new.user_id);
+  return null;
+end;
+$$;
+
+create trigger attempts_finished after update of status on app.attempts
+  for each row execute function app.attempt_finished();
+
+-- A student's current run of study days, ending today or yesterday (0 when broken).
+create function app.streak(p_user_id uuid)
+returns int
 language sql
 stable
-security definer
 set search_path = ''
 as $$
-  with today as (select (now() at time zone 'utc')::date as d)
-  select pr.id, pr.leaderboard_joined, coalesce(pr.display_name, split_part(pr.full_name, ' ', 1)), pr.cohort,
-         coalesce((select sum(public.part_points(lp)) from public.leaderboard_parts lp where lp.user_id = pr.id), 0)::int,
-         coalesce((select sum(ld.points) from public.leaderboard_daily ld, today
-                    where ld.user_id = pr.id and ld.day >= today.d - 6), 0)::int,
-         coalesce((select case when lp.run_end >= today.d - 1 then lp.run_length else 0 end
-                     from public.leaderboard_parts lp, today where lp.user_id = pr.id and lp.source = 'activity'), 0),
-         (select jsonb_build_object(
-            'correct_answers', coalesce(sum(lp.correct_answers), 0), 'cards_learned', coalesce(sum(lp.cards_learned), 0),
-            'chapters_finished', coalesce(sum(lp.chapters_finished), 0), 'study_days', coalesce(sum(lp.study_days), 0))
-            from public.leaderboard_parts lp where lp.user_id = pr.id)
-    from public.profiles pr;
+  with recursive run as (
+    select d.day, 1 as n from app.study_days d
+     where d.user_id = p_user_id
+       and d.day = (select max(day) from app.study_days where user_id = p_user_id)
+       and d.day >= app.today() - 1
+    union all
+    select d.day, run.n + 1 from run join app.study_days d on d.user_id = p_user_id and d.day = run.day - 1
+  )
+  select coalesce(max(n), 0) from run;
 $$;
+
+-- ---------------------------------------------------------------------------------------------
+-- API
 
 -- The board: students who joined, ranked by this week's points, all-time points or current study
 -- streak; ties share a rank. Also the caller's own numbers, joined or not.
-create or replace function public.leaderboard(p_period text default 'week', p_my_cohort_only boolean default false)
+create function public.leaderboard(p_period text default 'week', p_my_cohort_only boolean default false)
 returns jsonb
 language plpgsql
 stable
@@ -190,16 +179,34 @@ declare
 begin
   if uid is null then raise exception 'not_signed_in'; end if;
   if p_period not in ('week', 'all', 'streak') then raise exception 'bad_period'; end if;
-  select cohort into my_cohort from public.profiles where id = uid;
+  select s.cohort into my_cohort from app.accounts a join app.students s on s.nim = a.nim where a.id = uid;
 
-  with scored as (
-    select t.*, case p_period when 'week' then t.week_points when 'all' then t.all_points else t.streak end as value
-      from public.leaderboard_totals() t
+  with totals as (
+    select a.id as user_id, a.leaderboard_joined as joined,
+           coalesce(a.display_name, split_part(s.full_name, ' ', 1)) as name, s.cohort,
+           coalesce(sum(p.points), 0)::int as all_points,
+           coalesce(sum(p.points) filter (where p.day >= app.today() - 6), 0)::int as week_points,
+           coalesce(sum(p.points) filter (where p.source in ('quiz', 'exam')), 0)::int as correct_answers,
+           (coalesce(sum(p.points) filter (where p.source = 'cards'), 0) / 2)::int as cards_learned,
+           (coalesce(sum(p.points) filter (where p.source = 'chapters'), 0) / 10)::int as chapters_finished,
+           (coalesce(sum(p.points) filter (where p.source = 'days'), 0) / 5)::int as study_days
+      from app.accounts a
+      join app.students s on s.nim = a.nim
+      left join app.points p on p.user_id = a.id
+     group by a.id, s.full_name, s.cohort
+  ),
+  scored as (
+    select t.*, app.streak(t.user_id) as streak from totals t
+     where t.joined or t.user_id = uid
+  ),
+  valued as (
+    select s.*, case p_period when 'week' then s.week_points when 'all' then s.all_points else s.streak end as value
+      from scored s
   ),
   board as (
-    select s.*, rank() over (order by s.value desc) as rnk
-      from scored s
-     where s.joined and s.value > 0 and (not p_my_cohort_only or s.cohort is not distinct from my_cohort)
+    select v.*, rank() over (order by v.value desc) as rnk
+      from valued v
+     where v.joined and v.value > 0 and (not p_my_cohort_only or v.cohort is not distinct from my_cohort)
   )
   select jsonb_build_object(
     'period', p_period,
@@ -208,17 +215,17 @@ begin
                                                           'value', b.value, 'me', b.user_id = uid) order by b.rnk, b.name)
                         from (select * from board order by rnk, name limit 100) b), '[]'),
     'total', (select count(*) from board),
-    'me', (select jsonb_build_object('joined', s.joined, 'display_name', s.name, 'value', s.value,
-                                     'week', s.week_points, 'streak', s.streak, 'points', s.all_points,
-                                     'stats', s.stats, 'rank', (select b.rnk from board b where b.user_id = uid))
-             from scored s where s.user_id = uid)
+    'me', (select jsonb_build_object('joined', v.joined, 'display_name', v.name, 'value', v.value,
+                                     'week', v.week_points, 'streak', v.streak, 'points', v.all_points,
+                                     'stats', jsonb_build_object('correct_answers', v.correct_answers,
+                                                                 'cards_learned', v.cards_learned,
+                                                                 'chapters_finished', v.chapters_finished,
+                                                                 'study_days', v.study_days),
+                                     'rank', (select b.rnk from board b where b.user_id = uid))
+             from valued v where v.user_id = uid)
   ) into result;
   return result;
 end;
 $$;
 
-revoke execute on function
-  public.part_points(public.leaderboard_parts), public.leaderboard_set_part(public.leaderboard_parts),
-  public.progress_score(), public.attempts_score(), public.leaderboard_totals(), public.leaderboard(text, boolean)
-  from public, anon, authenticated;
 grant execute on function public.leaderboard(text, boolean) to authenticated;

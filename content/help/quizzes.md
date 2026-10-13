@@ -54,4 +54,4 @@ this](/docs/alfond).
 Your score is the questions you got right out of the questions in that
 attempt; an unanswered question counts as wrong. Quiz scores feed into
 readiness on the exam plan and into the leaderboard (1 point per correct
-answer).
+answer, each question once a day).

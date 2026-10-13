@@ -1,9 +1,10 @@
 import { rpc } from "./db/client";
 import { saveNow } from "./progressSync";
+import { sendRecords } from "./studyRecords";
 
 // The leaderboard: worked out in the database (`leaderboard()` in
-// database/schema/07_leaderboard.sql) from each student's saved progress and finished
-// attempts. Only students who joined are listed, under their display name.
+// database/schema/07_leaderboard.sql) from the study records the server checked (src/lib/studyRecords.ts)
+// and finished attempts. Only students who joined are listed, under their display name.
 
 export type Period = "week" | "all" | "streak";
 export type Scope = "everyone" | "cohort";
@@ -36,7 +37,7 @@ export interface Board {
   };
 }
 
-/** Must match the SQL (`part_points`). */
+/** Must match the SQL (database/schema/07_leaderboard.sql). */
 export const POINTS = { correctAnswer: 1, cardLearned: 2, chapterFinished: 10, studyDay: 5 } as const;
 
 interface BoardJson {
@@ -57,8 +58,8 @@ interface BoardJson {
 }
 
 export async function fetchBoard(period: Period, scope: Scope): Promise<Board> {
-  // Your own score is only current once your latest progress is saved.
-  await saveNow();
+  // Your own score is only current once your latest records are in.
+  await Promise.all([saveNow(), sendRecords()]);
   const { data, error } = await rpc("leaderboard", { p_period: period, p_my_cohort_only: scope === "cohort" });
   if (error) throw new Error(navigator.onLine ? error.message : "You're offline. The leaderboard needs a connection.");
   const b = data as unknown as BoardJson;

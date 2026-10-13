@@ -76,7 +76,7 @@ with no AI configured.
 
 ## `admin-accounts`: activate, lock, unlock, reset
 
-Admins only (the function checks `profiles.role`). Uses the service role to
+Admins only (the function checks `accounts.role`). Uses the service role to
 change Supabase Auth users. Called by `accountAction()` and
 `activateAccounts()` in `src/lib/admin.ts`.
 
@@ -85,7 +85,7 @@ change Supabase Auth users. Called by `accountAction()` and
 ```
 
 Creates the Auth user (`<nim>@pendik26.internal`, password `pendik26` + NIM)
-and the profile for each roster student, up to 300 at once. Answers
+and the account for each roster student, up to 300 at once. Answers
 `{ "results": [{ "student_id": "2601001", "ok": true }, …] }`, with a
 `message` on each one that failed.
 

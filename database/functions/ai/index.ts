@@ -27,8 +27,8 @@ Deno.serve(async (request) => {
   const { data, error } = await admin.auth.getUser(token);
   if (error || !data.user) return jsonError(401, "Sign in to use the AI.", cors);
   const userId = data.user.id;
-  const { data: profile } = await admin.from("profiles").select("id").eq("id", userId).maybeSingle();
-  if (!profile) return jsonError(403, "This account isn't on the class roster.", cors);
+  const { data: account } = await admin.from("accounts").select("id").eq("id", userId).maybeSingle();
+  if (!account) return jsonError(403, "This account isn't on the class roster.", cors);
 
   const response = await answerAi(kind, await request.text(), config, {
     take: async (limit) => {

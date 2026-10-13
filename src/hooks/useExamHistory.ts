@@ -3,6 +3,7 @@ import { STORAGE_KEYS } from "../lib/storage";
 import { logStudy, recordActivity } from "../lib/activity";
 import { scoreQuiz } from "../lib/quizScoring";
 import { useLocalStorage } from "./useLocalStorage";
+import { quizRecords, recordQuiz } from "../lib/studyRecords";
 
 export function useExamHistory(subjectId: string) {
   const [history, setHistory] = useLocalStorage<ExamAttempt[]>(
@@ -28,9 +29,11 @@ export function useExamHistory(subjectId: string) {
     setHistory((prev) => [...prev, attempt]);
     recordActivity();
     // subjectId is the block id, or "{blockId}/{packageId}" for one past paper.
-    const block = `block:${subjectId.split("/")[0]}`;
+    const blockId = subjectId.split("/")[0];
+    const block = `block:${blockId}`;
     logStudy(block, "exams");
     logStudy(block, "questions", scored.total);
+    recordQuiz(quizRecords(questions, answers, { blockId }));
     return attempt;
   };
 

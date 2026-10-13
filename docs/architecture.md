@@ -69,8 +69,9 @@ scripts/        prerender.mjs (after vite build), graph-relations.mjs,
                 atlas/ (converts Z-Anatomy into public/atlas/)
 database/       everything on the Supabase side (see database.md)
   schema/       the current schema, one file per domain: read this
-  migrations/   how the live database got there, in order: never edit one
-                that has run
+  migrations/   0001_baseline.sql, then one numbered file per change: never
+                edit one that has run
+  seeds/        first-admin.sql
   functions/    the Edge Functions ai, admin-accounts, drive-sync, and
                 _shared/ (their logic, tested with Vitest; see api.md)
   tests/        SQL tests for the rules, and the check that schema/ matches
@@ -209,6 +210,7 @@ pure function with a `*.test.ts` beside it. The formulas are written out in
 | `routeMeta.ts` | Title, description, breadcrumbs and indexability for every route (the app and the prerendered pages), and each subject's materials for the study pages' tabs (`subjectMaterials`) |
 | `storage.ts` | Reading and writing saved values (progress in memory, device settings in `localStorage`) and the key builders |
 | `progressSync.ts` | Loading the account's progress at sign-in and saving changes |
+| `studyRecords.ts` | The outbox of records that earn leaderboard points: reviews, quiz answers, chapters, study days |
 | `db/` | The one Supabase client (`client.ts`: the database, functions, Edge Functions, errors, the NIM sign-in address), the database's generated types (`types.ts`) and which build settings reach the page (`env.ts`) |
 | `exams.ts` | Past-paper packages and attempts: the store loaded at sign-in, and the attempt functions |
 | `questionMarkdown.ts` | The question import format: parsing and writing it |

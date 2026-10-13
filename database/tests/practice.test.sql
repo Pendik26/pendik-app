@@ -1,35 +1,10 @@
 -- Tracks, practice from the question bank, and bookmarks.
-\set QUIET on
-create or replace function pg_temp.check(ok boolean, what text) returns void language plpgsql as $$
-begin
-  if ok is not true then raise exception 'FAILED: %', what; end if;
-end $$;
-create or replace function pg_temp.as_user(id uuid) returns void language plpgsql as $$
-begin
-  perform set_config('request.jwt.claim.sub', coalesce(id::text, ''), false);
-  execute 'set role ' || case when id is null then 'anon' else 'authenticated' end;
-end $$;
-create or replace function pg_temp.fails(sql text, expected text) returns boolean language plpgsql as $$
-begin
-  execute sql;
-  return false;
-exception when others then
-  if position(expected in sqlerrm) = 0 then raise exception 'expected "%", got "%"', expected, sqlerrm; end if;
-  return true;
-end $$;
-grant execute on all functions in schema pg_temp to anon, authenticated;
+\ir helpers.sql
 
 -- Fixture: an admin (no track), an IUP student and a Reguler student.
-insert into auth.users (id, email) values
-  ('00000000-0000-0000-0000-0000000000ba', 'b1@pendik26.internal'),
-  ('00000000-0000-0000-0000-0000000000b1', 'b2@pendik26.internal'),
-  ('00000000-0000-0000-0000-0000000000b2', 'b3@pendik26.internal');
-insert into roster (student_id, full_name, track) values ('PADM', 'Pat Admin', null), ('PIUP', 'Ivy Iup', 'IUP'), ('PREG', 'Rey Reg', 'REGULER');
-insert into profiles (id, student_id, full_name, role, must_change_password) values
-  ('00000000-0000-0000-0000-0000000000ba', 'PADM', 'Pat Admin', 'admin', false),
-  ('00000000-0000-0000-0000-0000000000b1', 'PIUP', 'Ivy Iup', 'student', false),
-  ('00000000-0000-0000-0000-0000000000b2', 'PREG', 'Rey Reg', 'student', false);
-select pg_temp.check((select track = 'IUP' from profiles where student_id = 'PIUP'), 'profile takes the roster track');
+select pg_temp.account('00000000-0000-0000-0000-0000000000ba', 'PADM', 'Pat Admin', 'admin');
+select pg_temp.account('00000000-0000-0000-0000-0000000000b1', 'PIUP', 'Ivy Iup', track => 'IUP');
+select pg_temp.account('00000000-0000-0000-0000-0000000000b2', 'PREG', 'Rey Reg', track => 'REGULER');
 
 -- Two imports: one for everyone, one for Reguler only.
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000ba');
@@ -45,27 +20,34 @@ select admin_import_questions('Reguler', '[source]', '[
 select admin_packages_from_import(:'reg_import', 'Reg exam', 'Reg practice', '2.1', 'ub', 2023, 10, true) as rp \gset
 select (:'sp'::jsonb ->> 'exam_id') as shared_exam, (:'sp'::jsonb ->> 'practice_id') as shared_practice,
        (:'rp'::jsonb ->> 'exam_id') as reg_exam, (:'rp'::jsonb ->> 'practice_id') as reg_practice \gset
-update packages set track = 'REGULER' where id in (:'reg_exam', :'reg_practice');
+select admin_update_package(:'reg_exam', '{"track":"REGULER"}');
+select admin_update_package(:'reg_practice', '{"track":"REGULER"}');
 select admin_set_package_status(:'shared_exam', 'published');
 select admin_set_package_status(:'shared_practice', 'published');
 select admin_set_package_status(:'reg_exam', 'published');
 select admin_set_package_status(:'reg_practice', 'published');
 select pg_temp.check((select count(*) = 4 from package_summaries where block = '2.1'), 'admin sees every track');
+select admin_question_facets() as facets \gset
+select pg_temp.check((:'facets'::jsonb -> 'blocks') @> '["2.1"]' and (:'facets'::jsonb -> 'sources') @> '["ub", "costraver"]'
+                     and (:'facets'::jsonb -> 'years') @> '[2023, 2024, 2025]' and (:'facets'::jsonb -> 'subjects') @> '["Anatomy", "Physiology"]'
+                     and not (:'facets'::jsonb -> 'sources') @> '[null]', 'question facets');
 
 -- Tracks: IUP doesn't see or start Reguler packages; Reguler sees both.
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');
-select pg_temp.check(my_track() = 'IUP', 'my_track');
+select pg_temp.check((select track = 'IUP' from my_account), 'my_account has the roster track');
+select pg_temp.check(pg_temp.fails('select admin_question_facets()', 'admins_only'), 'students get no facets');
 select pg_temp.check((select count(*) = 2 from package_summaries where block = '2.1'), 'IUP sees shared packages only');
-select pg_temp.check((select count(*) = 2 from packages where block = '2.1'), 'IUP reads shared packages only');
 select pg_temp.check(pg_temp.fails(format('select start_attempt(%L)', :'reg_exam'), 'package_not_found'), 'IUP cannot start a Reguler package');
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000b2');
 select pg_temp.check((select count(*) = 4 from package_summaries where block = '2.1'), 'Reguler sees shared and Reguler packages');
 
--- Moving a student on the roster moves their profile.
-reset role;
-update roster set track = 'REGULER' where student_id = 'PIUP';
-select pg_temp.check((select track = 'REGULER' from profiles where student_id = 'PIUP'), 'roster track change reaches the profile');
-update roster set track = 'IUP' where student_id = 'PIUP';
+-- Moving a student on the roster moves them: the track lives on the roster only.
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000ba');
+update students set track = 'REGULER' where student_id = 'PIUP';
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');
+select pg_temp.check((select track = 'REGULER' from my_account), 'roster track change reaches the account');
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000ba');
+update students set track = 'IUP' where student_id = 'PIUP';
 
 -- The bank: questions from published practice packages the student can see.
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');
@@ -85,35 +67,35 @@ select pg_temp.check((get_attempt_result(:'b1') ->> 'title') = 'Block 2.1 practi
 
 -- Count and timer.
 select start_bank_practice('2.1', '{}', '{}', '{}', false, 2, 15) ->> 'attempt_id' as b2 \gset
-reset role;
-select pg_temp.check((select array_length(question_ids, 1) = 2 and time_limit_minutes = 15 from attempts where id = :'b2'), 'count and timer');
-select pg_temp.as_user('00000000-0000-0000-0000-0000000000b2');
+select pg_temp.check(jsonb_array_length(get_attempt(:'b2') -> 'questions') = 2, 'count');
+select pg_temp.check((select time_limit_minutes = 15 from attempts where id = :'b2'), 'timer');
 select abandon_attempt(:'b2');
 select pg_temp.check(pg_temp.fails($$select start_bank_practice('9.9')$$, 'no_questions_match'), 'empty filter refused');
 select pg_temp.check(pg_temp.fails($$select start_bank_practice('2.1', '{}', '{}', '{}', false, 0)$$, 'bad_count'), 'count checked');
 
 -- Bookmarks: own only, practice from them, and only bank questions are listed.
 reset role;
-select (select id from questions where stem = 'S1') as s1, (select id from questions where stem = 'R1') as r1 \gset
+select (select id from app.questions where stem = 'S1') as s1, (select id from app.questions where stem = 'R1') as r1 \gset
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000b2');
 insert into bookmarks (user_id, question_id) values ('00000000-0000-0000-0000-0000000000b2', :'s1');
 select pg_temp.check(pg_temp.fails(format('insert into bookmarks (user_id, question_id) values (%L, %L)', '00000000-0000-0000-0000-0000000000b1', :'s1'), 'row-level security'), 'cannot bookmark for someone else');
 select pg_temp.check(jsonb_array_length(my_bookmarks()) = 1 and (my_bookmarks() -> 0 ->> 'stem') = 'S1', 'bookmark listed with its question');
 select pg_temp.check((my_bookmarks() -> 0 ->> 'correct')::int = 0, 'bookmark shows the key');
 select start_bank_practice(null, '{}', '{}', '{}', true, 20) ->> 'attempt_id' as b3 \gset
-reset role;
-select pg_temp.check((select question_ids = array[:'s1'::uuid] from attempts where id = :'b3'), 'practise bookmarks only');
-select pg_temp.as_user('00000000-0000-0000-0000-0000000000b2');
+select pg_temp.check((get_attempt(:'b3') -> 'questions') @> jsonb_build_array(jsonb_build_object('id', :'s1'))
+                     and jsonb_array_length(get_attempt(:'b3') -> 'questions') = 1, 'practise bookmarks only');
 select abandon_attempt(:'b3');
+delete from bookmarks where question_id = :'s1';
+select pg_temp.check(jsonb_array_length(my_bookmarks()) = 0, 'bookmark removed');
 
 -- An IUP student bookmarking a Reguler-only question sees nothing of it.
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');
 insert into bookmarks (user_id, question_id) values ('00000000-0000-0000-0000-0000000000b1', :'r1');
 select pg_temp.check(jsonb_array_length(my_bookmarks()) = 0, 'bookmark outside the bank shows nothing');
-select pg_temp.check((select count(*) = 0 from bookmarks where user_id = '00000000-0000-0000-0000-0000000000b2'), 'others'' bookmarks private');
+select pg_temp.as_user('00000000-0000-0000-0000-0000000000b2');
+select pg_temp.check((select count(*) = 0 from bookmarks where user_id = '00000000-0000-0000-0000-0000000000b1'), 'others'' bookmarks private');
 
 -- Exam-only questions never reach the bank.
-reset role;
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000ba');
 select admin_set_package_status(:'shared_practice', 'draft');
 select pg_temp.as_user('00000000-0000-0000-0000-0000000000b1');

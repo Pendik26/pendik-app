@@ -3,7 +3,7 @@ import type { Track } from "../context/accountContextValue";
 import { db, errorCode, rpc } from "./db/client";
 import type { Json } from "./db/types";
 
-// Exam and practice packages, run by the database (see database/schema/03_attempts.sql): the
+// Exam and practice packages, run by the database (see database/schema/04_exams.sql): the
 // browser shows questions and sends answers; the server keeps time, holds the keys and grades.
 //
 // The packages and the student's own attempts are loaded at sign-in and kept here, so pages and
@@ -364,7 +364,8 @@ export function startBankPractice(c: BankChoice): Promise<{ attempt_id: string; 
 export async function bookmarkedIds(): Promise<Set<string>> {
   const { data, error } = await db.from("bookmarks").select("question_id");
   if (error) throw new Error(error.message);
-  return new Set(data.map((r) => r.question_id));
+  // View columns come back typed as nullable; these never are.
+  return new Set(data.flatMap((r) => (r.question_id ? [r.question_id] : [])));
 }
 
 export async function setBookmark(questionId: string, on: boolean, userId: string): Promise<void> {

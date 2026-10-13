@@ -6,6 +6,7 @@ import { logStudy, recordActivity } from "../lib/activity";
 import { rankHardestCards } from "../lib/hardestCards";
 import { useLocalStorage } from "./useLocalStorage";
 import { deleteOwn, own, setOwn } from "../lib/records";
+import { recordReview } from "../lib/studyRecords";
 
 /** `storageKey` defaults to the flashcard deck's key; image occlusion keeps its own. */
 export function useSpacedRepetition(deckId: string, cards: Flashcard[], storageKey = STORAGE_KEYS.cardState(deckId)) {
@@ -27,7 +28,9 @@ export function useSpacedRepetition(deckId: string, cards: Flashcard[], storageK
       return next;
     });
     recordActivity();
-    logStudy(deckId, storageKey === STORAGE_KEYS.occlusionState(deckId) ? "labels" : "cards");
+    const occlusion = storageKey === STORAGE_KEYS.occlusionState(deckId);
+    logStudy(deckId, occlusion ? "labels" : "cards");
+    recordReview(occlusion ? "occlusion" : "flashcard", deckId, cardId);
   };
 
   /** Puts a card back to an earlier state (undo); undefined makes it new again. */
