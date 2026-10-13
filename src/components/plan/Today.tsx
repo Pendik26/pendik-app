@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useExamPlan } from "../../hooks/useExamPlan";
 import { studyBlocks } from "../../lib/blocks";
 import { countdownText, focusBlockId, plannableBlocks } from "../../lib/examPlan";
-import { planStatus } from "../../lib/todayPlan";
+import { planStatus, planText } from "../../lib/todayPlan";
 import { CalendarIcon, FlameIcon, TimerIcon } from "../icons";
 import { useAccount } from "../../hooks/useAccount";
 import { TodayPlanList } from "./PlanParts";
@@ -112,8 +112,8 @@ function TodayCard({ blockId }: { blockId: string }) {
               {t("today.upNext", { minutes: Math.max(1, next.minutes) })}
               {status && status.total > 1 && ` · ${t("today.doneToday", { done: status.done, total: status.total })}`}
             </span>
-            <h2 className="today-next-title">{next.title}</h2>
-            <p className="today-next-detail">{next.detail}</p>
+            <h2 className="today-next-title">{planText(next, t).title}</h2>
+            <p className="today-next-detail">{planText(next, t).detail}</p>
           </div>
           <Link to={next.to} className="btn today-start">
             {t("exam.start")}
@@ -175,8 +175,8 @@ function NextUpFor({ blockId }: { blockId: string }) {
             <span className="today-kicker">
               {t("today.nextOnPlan", { done: status.done, total: status.total })}
             </span>
-            <strong>{status.next.title}</strong>
-            <span>{status.next.detail}</span>
+            <strong>{planText(status.next, t).title}</strong>
+            <span>{planText(status.next, t).detail}</span>
           </div>
           <Link to={status.next.to} className="btn next-up-go">
             {t("exam.continue")}

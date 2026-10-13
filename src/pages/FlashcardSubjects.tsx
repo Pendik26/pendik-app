@@ -7,14 +7,16 @@ import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import { UpcomingSubjectCard } from "../components/UpcomingSubjectCard";
 import type { CardStateMap } from "../types/content";
+import { useI18n } from "../i18n/useI18n";
 
 export function FlashcardSubjects() {
   const groups = groupByBlock(flashcardSubjects);
+  const { t } = useI18n();
 
   return (
     <section className="page">
-      <h1>Flashcards</h1>
-      <p className="subtitle">Pick a subject to start a spaced-repetition review session.</p>
+      <h1>{t("lib.flashcardsTitle")}</h1>
+      <p className="subtitle">{t("lib.flashcardsIntro")}</p>
       {groups.map(({ block, subjects, upcoming }) => (
         <div key={block.id} className="block-section">
           <h2 className="block-section-heading">{block.label}</h2>
@@ -32,7 +34,7 @@ export function FlashcardSubjects() {
                     <h2>{subject.label}</h2>
                   </div>
                   <p>
-                    {deck.length} cards · <strong>{due} due</strong>
+                    <strong>{t("lib.cardsDue", { count: deck.length, due })}</strong>
                   </p>
                 </Link>
               );

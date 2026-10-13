@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { streamAi } from "./aiStream";
 import { SITE_NAME } from "./site";
+import { currentT } from "../i18n/i18n";
 import { readJSON, STORAGE_KEYS, writeJSON } from "./storage";
 import { STORAGE_UPDATED_EVENT } from "./storage";
 
@@ -109,7 +110,7 @@ export async function sendToAlfond(text: string, page: PageContext | null): Prom
       if (current.content.trim()) patchMessage(reply.id, { error: "Stopped." });
       else update({ messages: state.messages.filter((m) => m.id !== reply.id) });
     } else {
-      patchMessage(reply.id, { content: result.partial ?? current.content, error: result.message || "Something went wrong." });
+      patchMessage(reply.id, { content: result.partial ?? current.content, error: result.message || currentT("ai.wrong") });
     }
   }
   update({ busy: false });

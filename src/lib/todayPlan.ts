@@ -7,6 +7,7 @@ import { readJSON, STORAGE_KEYS, writeJSON } from "./storage";
 import { drillLink, missedQuestions, weakTopics } from "./weakSpots";
 import { EXAM_QUESTION_TARGET, SECONDS_PER_QUESTION } from "./examFormat";
 import { entry } from "./records";
+import { englishT, type MessageKey, type Translate } from "../i18n/i18n";
 
 // Today's plan: a short list of what to study today, sized to the minutes the student has,
 // built from what's due, what's left to learn and the days left before the exam. It's drawn up
@@ -16,6 +17,28 @@ import { entry } from "./records";
 
 export type PlanKind = StudyKind | "summary";
 
+type Vars = Record<string, string | number>;
+
+export interface PlanSay {
+  title: MessageKey;
+  detail: MessageKey;
+  vars: Vars;
+}
+
+/** An item's title and detail in English (stored, and used for the calendar file). */
+const words = (title: MessageKey, detail: MessageKey, vars: Vars, n: number) => ({
+  title: englishT(title, { ...vars, n }),
+  detail: englishT(detail, { ...vars, n }),
+  say: { title, detail, vars },
+});
+
+/** An item's title and detail in the reader's language (older saved plans only have English). */
+export function planText(item: Pick<PlanItem, "title" | "detail" | "say" | "target">, t: Translate): { title: string; detail: string } {
+  if (!item.say) return { title: item.title, detail: item.detail };
+  const vars = { ...item.say.vars, n: item.target };
+  return { title: t(item.say.title, vars), detail: t(item.say.detail, vars) };
+}
+
 export interface PlanItem {
   id: string;
   kind: PlanKind;
@@ -23,6 +46,8 @@ export interface PlanItem {
   subject: string;
   title: string;
   detail: string;
+  /** The title and detail as messages, so they show in the reader's language ({n} is the target). */
+  say?: PlanSay;
   /** How many to do (cards, questions, chapters…). */
   target: number;
   minutes: number;
@@ -83,20 +108,20 @@ function candidates(br: BlockReadiness, phase: Phase, daysLeft: number | null): 
 
   if (phase === "exam-day" || phase === "past") {
     for (const s of subjects) {
-      if (summaries.has(s.key)) out.push({ id: `summary:${s.key}`, kind: "summary", subject: s.key, title: `Skim the ${short(s)} summary`, detail: "Calm, quick look", target: 1, to: `/summaries/${s.key}`, priority: 1 });
+      if (summaries.has(s.key)) out.push({ id: `summary:${s.key}`, kind: "summary", subject: s.key, ...words("tp.skim", "tp.skimDetail", { subject: short(s) }, 1), target: 1, to: `/summaries/${s.key}`, priority: 1 });
     }
     return phase === "exam-day" ? out.slice(0, 2) : [];
   }
 
   // Due reviews come first in every phase.
   for (const s of subjects) {
-    if (s.cards?.due) out.push({ id: `due-cards:${s.key}`, kind: "cards", subject: s.key, title: `Review ${s.cards.due} ${short(s)} cards`, detail: "Due today", target: s.cards.due, to: `/flashcards/${s.key}`, priority: 0, review: true, min: 5 });
-    if (s.labels?.due) out.push({ id: `due-labels:${s.key}`, kind: "labels", subject: s.key, title: `Review ${s.labels.due} ${short(s)} labels`, detail: "Image occlusion, due today", target: s.labels.due, to: `/occlusion/${s.key}`, priority: 0, review: true, min: 5 });
-    if (s.quiz?.retry) out.push({ id: `retry:${s.key}`, kind: "questions", subject: s.key, title: `Retry ${s.quiz.retry} missed ${short(s)} questions`, detail: "Missed last time", target: s.quiz.retry, to: `/quizzes/${s.key}?practice=due`, priority: 1, review: true, min: 5 });
+    if (s.cards?.due) out.push({ id: `due-cards:${s.key}`, kind: "cards", subject: s.key, ...words("tp.reviewCards", "tp.dueToday", { subject: short(s) }, s.cards.due), target: s.cards.due, to: `/flashcards/${s.key}`, priority: 0, review: true, min: 5 });
+    if (s.labels?.due) out.push({ id: `due-labels:${s.key}`, kind: "labels", subject: s.key, ...words("tp.reviewLabels", "tp.ioDue", { subject: short(s) }, s.labels.due), target: s.labels.due, to: `/occlusion/${s.key}`, priority: 0, review: true, min: 5 });
+    if (s.quiz?.retry) out.push({ id: `retry:${s.key}`, kind: "questions", subject: s.key, ...words("tp.retry", "tp.missedLast", { subject: short(s) }, s.quiz.retry), target: s.quiz.retry, to: `/quizzes/${s.key}?practice=due`, priority: 1, review: true, min: 5 });
   }
 
   if (phase === "final") {
-    if (weakest && summaries.has(weakest.key)) out.push({ id: `summary:${weakest.key}`, kind: "summary", subject: weakest.key, title: `Read the ${short(weakest)} summary`, detail: "Weakest subject; light review", target: 1, to: `/summaries/${weakest.key}`, priority: 2 });
+    if (weakest && summaries.has(weakest.key)) out.push({ id: `summary:${weakest.key}`, kind: "summary", subject: weakest.key, ...words("tp.readSummary", "tp.weakestLight", { subject: short(weakest) }, 1), target: 1, to: `/summaries/${weakest.key}`, priority: 2 });
     return out;
   }
 
@@ -108,8 +133,7 @@ function candidates(br: BlockReadiness, phase: Phase, daysLeft: number | null): 
       id: `mock:${br.blockId}`,
       kind: "exams",
       subject: `block:${br.blockId}`,
-      title: next ? `Sit a timed mock: ${next.title}` : "Sit a timed mock exam",
-      detail: "Then review every miss",
+      ...(next ? words("tp.mockOf", "tp.reviewMisses", { paper: next.title }, 1) : words("tp.mock", "tp.reviewMisses", {}, 1)),
       target: 1,
       to: next ? `/exam/papers/${next.id}` : `/exam/${br.blockId}`,
       priority: 0.5,
@@ -123,11 +147,11 @@ function candidates(br: BlockReadiness, phase: Phase, daysLeft: number | null): 
     const topic = subjects.flatMap((s) => weakTopics(s.key).slice(0, 1)).sort((a, b) => b.weak - a.weak).at(0);
     if (topic) {
       const label = br.subjects.find((s) => s.key === topic.subject)?.label ?? "";
-      out.push({ id: `topic:${topic.subject}:${topic.tag}`, kind: "cards", subject: topic.subject, title: `Drill "${topic.tag}" (${label})`, detail: `${topic.weak} cards you keep forgetting`, target: topic.total, to: topic.to, priority: 2, min: 5 });
+      out.push({ id: `topic:${topic.subject}:${topic.tag}`, kind: "cards", subject: topic.subject, ...words("tp.drillTopic", "tp.forgetting", { tag: topic.tag, subject: label, weak: topic.weak }, topic.total), target: topic.total, to: topic.to, priority: 2, min: 5 });
     }
     for (const s of subjects.slice(0, 2)) {
       const missed = missedQuestions(s.key).slice(0, 15);
-      if (missed.length >= 3) out.push({ id: `drill:${s.key}`, kind: "questions", subject: s.key, title: `Drill ${missed.length} most-missed ${short(s)} questions`, detail: "Your most-missed questions", target: missed.length, to: drillLink(s.key, missed.map((q) => q.id)), priority: 2.5, min: 5 });
+      if (missed.length >= 3) out.push({ id: `drill:${s.key}`, kind: "questions", subject: s.key, ...words("tp.drillMissed", "tp.mostMissed", { subject: short(s) }, missed.length), target: missed.length, to: drillLink(s.key, missed.map((q) => q.id)), priority: 2.5, min: 5 });
     }
   }
 
@@ -135,20 +159,20 @@ function candidates(br: BlockReadiness, phase: Phase, daysLeft: number | null): 
   if (phase === "learn" || phase === "strengthen" || phase === "no-date") {
     for (const s of subjects) {
       const cardsNew = s.cards ? newQuota(s.cards.total - s.cards.seen, daysLeft, phase, NO_DATE_NEW_CARDS, NEW_CARDS_CAP) : 0;
-      if (cardsNew && s.cards) out.push({ id: `new-cards:${s.key}`, kind: "cards", subject: s.key, title: `Learn ${cardsNew} new ${short(s)} cards`, detail: `${s.cards.total - s.cards.seen} not seen yet`, target: cardsNew, to: `/flashcards/${s.key}`, priority: phase === "learn" ? 2 : 3, min: 5 });
+      if (cardsNew && s.cards) out.push({ id: `new-cards:${s.key}`, kind: "cards", subject: s.key, ...words("tp.learnCards", "tp.notSeen", { subject: short(s), unseen: s.cards.total - s.cards.seen }, cardsNew), target: cardsNew, to: `/flashcards/${s.key}`, priority: phase === "learn" ? 2 : 3, min: 5 });
       const labelsNew = s.labels ? newQuota(s.labels.total - s.labels.seen, daysLeft, phase, NO_DATE_NEW_LABELS, NEW_LABELS_CAP) : 0;
-      if (labelsNew) out.push({ id: `new-labels:${s.key}`, kind: "labels", subject: s.key, title: `Learn ${labelsNew} new ${short(s)} labels`, detail: "Image occlusion", target: labelsNew, to: `/occlusion/${s.key}`, priority: phase === "learn" ? 2.2 : 3.2, min: 5 });
+      if (labelsNew) out.push({ id: `new-labels:${s.key}`, kind: "labels", subject: s.key, ...words("tp.learnLabels", "tp.io", { subject: short(s) }, labelsNew), target: labelsNew, to: `/occlusion/${s.key}`, priority: phase === "learn" ? 2.2 : 3.2, min: 5 });
     }
     // One unread chapter, from the subject with the least read.
     const reader = subjects.filter((s) => s.reading && s.reading.done < s.reading.chapters).sort((a, b) => (a.reading?.done ?? 0) / (a.reading?.chapters || 1) - (b.reading?.done ?? 0) / (b.reading?.chapters || 1)).at(0);
     if (reader && phase !== "strengthen") {
       const done = new Set(readJSON<string[]>(STORAGE_KEYS.ebookCompleted(reader.key), []));
       const chapter = ebookMeta.get(reader.key)?.chapters.find((c) => !done.has(c.id));
-      if (chapter) out.push({ id: `chapter:${reader.key}:${chapter.id}`, kind: "chapters", subject: reader.key, title: `Read "${chapter.title}"`, detail: `${short(reader)} ebook; mark it finished at the end`, target: 1, to: `/ebooks/${reader.key}/${chapter.id}`, priority: 2.5 });
+      if (chapter) out.push({ id: `chapter:${reader.key}:${chapter.id}`, kind: "chapters", subject: reader.key, ...words("tp.readChapter", "tp.ebookFinish", { chapter: chapter.title, subject: short(reader) }, 1), target: 1, to: `/ebooks/${reader.key}/${chapter.id}`, priority: 2.5 });
     }
     // A quiz sitting in the subject whose quiz is least covered (or weakest).
     const quizzer = subjects.filter((s) => s.quiz).sort((a, b) => (phase === "learn" ? (a.quiz?.coverage ?? 0) - (b.quiz?.coverage ?? 0) : (a.parts.quiz ?? 0) - (b.parts.quiz ?? 0))).at(0);
-    if (quizzer?.quiz) out.push({ id: `quiz:${quizzer.key}`, kind: "questions", subject: quizzer.key, title: `Quiz: ${Math.min(QUIZ_SITTING, quizzer.quiz.bank)} ${short(quizzer)} questions`, detail: phase === "learn" ? "A first pass through the bank" : "Weakest quiz subject", target: Math.min(QUIZ_SITTING, quizzer.quiz.bank), to: `/quizzes/${quizzer.key}`, priority: 3, min: 10 });
+    if (quizzer?.quiz) out.push({ id: `quiz:${quizzer.key}`, kind: "questions", subject: quizzer.key, ...words("tp.quiz", phase === "learn" ? "tp.firstPass" : "tp.weakestQuiz", { subject: short(quizzer) }, Math.min(QUIZ_SITTING, quizzer.quiz.bank)), target: Math.min(QUIZ_SITTING, quizzer.quiz.bank), to: `/quizzes/${quizzer.key}`, priority: 3, min: 10 });
   }
   return out;
 }
@@ -177,16 +201,11 @@ export function buildTodayPlan(br: BlockReadiness, phase: Phase, daysLeft: numbe
     }
     const { priority: _p, review: _r, min: _m, ...item } = c;
     const minutes = minutesFor(c.kind, target);
-    items.push({ ...item, target, minutes, title: target === c.target ? c.title : retitle(c.title, c.target, target) });
+    items.push({ ...item, target, minutes, ...(item.say && target !== c.target ? words(item.say.title, item.say.detail, item.say.vars, target) : {}) });
     left -= minutes;
     if (left <= 0) break;
   }
   return { date: localDateKey(today), blockId: br.blockId, phase, budget, items, overflow };
-}
-
-/** "Review 40 anatomy cards" trimmed to 25 → "Review 25 anatomy cards". */
-function retitle(title: string, from: number, to: number): string {
-  return title.replace(String(from), String(to));
 }
 
 /**

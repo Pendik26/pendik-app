@@ -1,4 +1,5 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useI18n } from "../../i18n/useI18n";
 import { labelAlpha, type GraphSettings } from "../../lib/knowledgeGraph/graphSettings";
 import { basis, frameSphere, lerpCamera, NEAR, orbit, pan, project, unproject, type Camera } from "../../lib/knowledgeGraph/camera3d";
 import { createLayout3D, settle3D, tick3D, type Layout3D } from "../../lib/knowledgeGraph/layout3d";
@@ -29,12 +30,15 @@ const MAX_RADIUS_PX = 26;
 // One 3D layout per graph, kept while the page is open, so switching views doesn't re-run it.
 const layouts = new WeakMap<KnowledgeGraph, Layout3D>();
 
+const VIEW_KEYS = { front: "g3.front", right: "g3.right", top: "g3.top" } as const;
+
 const START: Camera = { tx: 0, ty: 0, tz: 0, yaw: 0.65, pitch: 0.38, dist: 1500, fov: (52 * Math.PI) / 180, ortho: false };
 
 export const Graph3D = forwardRef<GraphCanvasHandle, Props>(function Graph3D(
   { graph, visible, styles, selected, settings, onSelect, paintKey, onSettings },
   ref,
 ) {
+  const { t } = useI18n();
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const gizmo = useRef<HTMLCanvasElement>(null);
@@ -625,7 +629,7 @@ export const Graph3D = forwardRef<GraphCanvasHandle, Props>(function Graph3D(
     dragging.current = null;
   };
 
-  const viewName = settings.projection === "orthographic" ? "Orthographic" : "Perspective";
+  const viewName = settings.projection === "orthographic" ? t("g3.ortho") : t("g3.persp");
 
   return (
     <div className="map-canvas-wrap is-3d" ref={wrap}>
@@ -634,7 +638,7 @@ export const Graph3D = forwardRef<GraphCanvasHandle, Props>(function Graph3D(
         className="map-canvas"
         tabIndex={0}
         role="img"
-        aria-label="Knowledge map in 3D. Drag to orbit, right-drag or Shift-drag to pan, scroll to zoom, W A S D Q E to fly. Use the concept list or search to explore with a keyboard or screen reader."
+        aria-label={t("g3.aria")}
         onContextMenu={(e) => { e.preventDefault(); }}
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -765,7 +769,7 @@ export const Graph3D = forwardRef<GraphCanvasHandle, Props>(function Graph3D(
           className="map-gizmo"
           style={{ width: GIZMO, height: GIZMO }}
           role="img"
-          aria-label="Axis gizmo: click an axis to look along it"
+          aria-label={t("g3.gizmo")}
           onPointerDown={(e) => {
             const box = e.currentTarget.getBoundingClientRect();
             const px = e.clientX - box.left;
@@ -786,52 +790,52 @@ export const Graph3D = forwardRef<GraphCanvasHandle, Props>(function Graph3D(
             if (best) snap(best);
           }}
         />
-        <div className="map-3d-buttons" role="group" aria-label="3D view">
-          <button type="button" className="obs-chip" onClick={() => { onSettings({ projection: settings.projection === "orthographic" ? "perspective" : "orthographic" }); }} title="Perspective or orthographic (5)">
+        <div className="map-3d-buttons" role="group" aria-label={t("g3.view")}>
+          <button type="button" className="obs-chip" onClick={() => { onSettings({ projection: settings.projection === "orthographic" ? "perspective" : "orthographic" }); }} title={t("g3.projTitle")}>
             {viewName}
           </button>
-          <button type="button" className={settings.autoRotate ? "obs-chip is-on" : "obs-chip"} aria-pressed={settings.autoRotate} onClick={() => { onSettings({ autoRotate: !settings.autoRotate }); }} title="Turn slowly around the graph (R)">
-            Auto-rotate
+          <button type="button" className={settings.autoRotate ? "obs-chip is-on" : "obs-chip"} aria-pressed={settings.autoRotate} onClick={() => { onSettings({ autoRotate: !settings.autoRotate }); }} title={t("g3.rotateTitle")}>
+            {t("g3.rotate")}
           </button>
           <div className="map-3d-views">
             {(["front", "right", "top"] as const).map((v) => (
-              <button key={v} type="button" className="obs-chip" onClick={() => { snap(v); }} title={`${v[0].toUpperCase()}${v.slice(1)} view (${v === "front" ? 1 : v === "right" ? 3 : 7})`}>
-                {v[0].toUpperCase() + v.slice(1)}
+              <button key={v} type="button" className="obs-chip" onClick={() => { snap(v); }} title={t("g3.viewTitle", { view: t(VIEW_KEYS[v]), key: v === "front" ? 1 : v === "right" ? 3 : 7 })}>
+                {t(VIEW_KEYS[v])}
               </button>
             ))}
           </div>
-          <button type="button" className="obs-chip" onClick={() => { const s = sphereOf(); flyTo(frameSphere(cam.current, s.x, s.y, s.z, s.r)); }} title="Frame everything (H)">
+          <button type="button" className="obs-chip" onClick={() => { const s = sphereOf(); flyTo(frameSphere(cam.current, s.x, s.y, s.z, s.r)); }} title={t("g3.frameTitle")}>
             <FitIcon />
-            Frame all
+            {t("g3.frame")}
           </button>
           <button type="button" className={help ? "obs-chip is-on" : "obs-chip"} aria-expanded={help} onClick={() => { setHelp((v) => !v); }}>
-            Controls
+            {t("g3.controls")}
           </button>
         </div>
         {help && (
           <dl className="map-3d-help">
-            <dt>Drag</dt>
-            <dd>Orbit around the target</dd>
-            <dt>Right- or Shift-drag</dt>
-            <dd>Pan (two fingers on a touch screen)</dd>
-            <dt>Scroll, pinch</dt>
-            <dd>Zoom in and out</dd>
+            <dt>{t("g3.kDrag")}</dt>
+            <dd>{t("g3.kOrbitTarget")}</dd>
+            <dt>{t("g3.kRight")}</dt>
+            <dd>{t("g3.kPan")}</dd>
+            <dt>{t("g3.kScroll")}</dt>
+            <dd>{t("g3.kZoom")}</dd>
             <dt>W A S D</dt>
-            <dd>Fly forward, left, back, right</dd>
+            <dd>{t("g3.kFly")}</dd>
             <dt>Q E</dt>
-            <dd>Fly down, up (hold Shift to go faster)</dd>
-            <dt>Arrow keys</dt>
-            <dd>Orbit</dd>
-            <dt>Drag a dot</dt>
-            <dd>Move that concept in space</dd>
-            <dt>Click</dt>
-            <dd>Open a concept (double-click flies to it)</dd>
+            <dd>{t("g3.kFlyUp")}</dd>
+            <dt>{t("g3.kArrows")}</dt>
+            <dd>{t("g3.kOrbit")}</dd>
+            <dt>{t("g3.kDragDot")}</dt>
+            <dd>{t("g3.kMove")}</dd>
+            <dt>{t("g3.kClick")}</dt>
+            <dd>{t("g3.kOpen")}</dd>
             <dt>F, H</dt>
-            <dd>Frame the open concept, frame everything</dd>
+            <dd>{t("g3.kFrame")}</dd>
             <dt>1 3 7</dt>
-            <dd>Front, right, top view (Ctrl: the opposite side)</dd>
+            <dd>{t("g3.kViews")}</dd>
             <dt>5, R</dt>
-            <dd>Perspective or orthographic, auto-rotate</dd>
+            <dd>{t("g3.kProj")}</dd>
           </dl>
         )}
       </div>

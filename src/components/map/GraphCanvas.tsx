@@ -3,6 +3,7 @@ import { forceSimulation, type Simulation } from "d3-force";
 import { labelAlpha, type GraphSettings } from "../../lib/knowledgeGraph/graphSettings";
 import { anchors, applyForces, layoutLinks, type LayoutLink, type LayoutNode } from "../../lib/knowledgeGraph/layout";
 import type { KnowledgeGraph } from "../../lib/knowledgeGraph/types";
+import { useI18n } from "../../i18n/useI18n";
 import { LabelGrid, pixelRatio, placeHoverCard, readPalette, reducedMotion, SphereSprites, type Palette } from "./render";
 
 // The knowledge map's 2D graph view, drawn on a canvas. The layout is live: it starts from the
@@ -51,6 +52,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphViewProps>(functio
   { graph, visible, styles, selected, settings, onSelect, paintKey },
   ref,
 ) {
+  const { t } = useI18n();
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const card = useRef<HTMLDivElement>(null);
@@ -484,7 +486,7 @@ export const GraphCanvas = forwardRef<GraphCanvasHandle, GraphViewProps>(functio
         ref={canvas}
         className="map-canvas"
         role="img"
-        aria-label="Knowledge map graph. Use the concept list or search to explore it with a keyboard or screen reader."
+        aria-label={t("g2.aria")}
         onPointerDown={(e) => {
           e.currentTarget.setPointerCapture(e.pointerId);
           const p = local(e);

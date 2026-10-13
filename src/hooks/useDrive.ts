@@ -5,6 +5,7 @@ import { STORAGE_KEYS } from "../lib/storage";
 import { db } from "../lib/db/client";
 import { useAccount } from "./useAccount";
 import { useLocalStorage } from "./useLocalStorage";
+import { currentT } from "../i18n/i18n";
 
 export type DriveState =
   | { status: "loading" }
@@ -50,7 +51,7 @@ function load(): Promise<void> {
       checkedAt = Date.now();
     })
     .catch((e: Error) => {
-      problem = navigator.onLine ? e.message : "You're offline.";
+      problem = navigator.onLine ? e.message : currentT("drive.offline");
     })
     .finally(() => {
       pending = null;

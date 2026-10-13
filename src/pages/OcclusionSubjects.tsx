@@ -8,6 +8,7 @@ import { occlusionCards } from "../lib/occlusion";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import type { CardStateMap, OcclusionNote } from "../types/content";
+import { useI18n } from "../i18n/useI18n";
 
 const subjects = flashcardSubjects.filter((s) => occlusionKeys.includes(keyOf(s)));
 
@@ -24,6 +25,7 @@ function counts(notes: OcclusionNote[] | undefined, key: string) {
 }
 
 export function OcclusionSubjects() {
+  const { t } = useI18n();
   const [notesByKey, setNotesByKey] = useState<Record<string, OcclusionNote[] | undefined>>({});
   useEffect(() => {
     let live = true;
@@ -37,8 +39,8 @@ export function OcclusionSubjects() {
 
   return (
     <section className="page">
-      <h1>Image Occlusion</h1>
-      <p className="subtitle">Atlas figures with their labels covered. Name each one, reveal it, grade yourself, Anki-style.</p>
+      <h1>{t("io.title")}</h1>
+      <p className="subtitle">{t("io.intro")}</p>
 
       {groupByBlock(subjects)
         .filter((g) => g.subjects.length > 0)
@@ -58,11 +60,11 @@ export function OcclusionSubjects() {
                     <p>
                       {c ? (
                         <>
-                          {c.figures} figures · {c.labels} labels · <strong>{c.due} due</strong>
-                          {c.mastered > 0 && ` · ${c.mastered} mastered`}
+                          {t("io.counts", { figures: c.figures, labels: c.labels })} · <strong>{t("lib.due", { count: c.due })}</strong>
+                          {c.mastered > 0 && ` · ${t("io.mastered", { count: c.mastered })}`}
                         </>
                       ) : (
-                        "Loading…"
+                        t("common.loading")
                       )}
                     </p>
                   </Link>
@@ -73,35 +75,33 @@ export function OcclusionSubjects() {
         ))}
 
       <div className="io-howto">
-        <h2>How it works</h2>
+        <h2>{t("io.howTitle")}</h2>
         <ul>
           <li>
-            <strong>Review</strong> asks the labels that are due, one at a time. Each label has its own spaced-repetition schedule, so the
-            ones you know come back less often.
+            <strong>{t("io.howReview")}</strong> {t("io.howReviewText")}
           </li>
           <li>
-            <strong>Browse all</strong> walks through every figure in order: step label by label or figure by figure, tap any box to ask that
-            label, or show all the labels to study the figure whole.
+            <strong>{t("io.howBrowse")}</strong> {t("io.howBrowseText")}
           </li>
           <li>
-            <strong>All figures</strong> opens a gallery of every figure with its progress; pick one to jump straight to it.
+            <strong>{t("io.howGallery")}</strong> {t("io.howGalleryText")}
           </li>
         </ul>
         <dl className="io-keys">
           <dt>Space</dt>
-          <dd>reveal / cover</dd>
+          <dd>{t("io.keyReveal")}</dd>
           <dt>1–5</dt>
-          <dd>grade (Blackout → Easy)</dd>
+          <dd>{t("io.keyGrade")}</dd>
           <dt>← →</dt>
-          <dd>previous / next label (or swipe)</dd>
-          <dt>Shift+← → or [ ]</dt>
-          <dd>previous / next figure</dd>
+          <dd>{t("io.keyLabel")}</dd>
+          <dt>Shift+← → {t("io.or")} [ ]</dt>
+          <dd>{t("io.keyFigure")}</dd>
           <dt>H · Z · A</dt>
-          <dd>hide all / one · zoom · show every label</dd>
+          <dd>{t("io.keyHide")}</dd>
           <dt>G</dt>
-          <dd>figure gallery</dd>
-          <dt>U or Ctrl+Z</dt>
-          <dd>undo the last grade</dd>
+          <dd>{t("io.keyGallery")}</dd>
+          <dt>U {t("io.or")} Ctrl+Z</dt>
+          <dd>{t("io.keyUndo")}</dd>
         </dl>
       </div>
     </section>

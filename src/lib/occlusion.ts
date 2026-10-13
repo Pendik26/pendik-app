@@ -1,5 +1,6 @@
 import type { CardState, Flashcard, OcclusionMask, OcclusionNote } from "../types/content";
 import { isDue } from "./sm2";
+import type { MessageKey } from "../i18n/i18n";
 
 /** One card per hidden label: "{noteId}:{maskId}". */
 export function occlusionCardId(note: OcclusionNote, mask: OcclusionMask): string {
@@ -95,12 +96,12 @@ export function zoomBox(note: Pick<OcclusionNote, "width" | "height">, mask: Occ
 }
 
 /** Human names for the region tags. */
-export const REGION_LABELS: Record<string, string> = {
-  basic: "Basic anatomy",
-  embryology: "Embryology",
-  trunk: "Trunk",
-  cranium: "Cranium",
-  "face-neck": "Face & neck",
-  "upper-limb": "Upper limb",
-  "lower-limb": "Lower limb",
+export const REGION_LABELS: Record<string, MessageKey> = {
+  basic: "region.basic",
+  embryology: "region.embryology",
+  trunk: "region.trunk",
+  cranium: "region.cranium",
+  "face-neck": "region.faceNeck",
+  "upper-limb": "region.upperLimb",
+  "lower-limb": "region.lowerLimb",
 };

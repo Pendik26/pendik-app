@@ -12,6 +12,8 @@ import { studyEn, studyId } from "./sections/study";
 import { miscEn, miscId } from "./sections/misc";
 import { practiceEn, practiceId } from "./sections/practice";
 import { navEn, navId } from "./sections/nav";
+import { exploreEn, exploreId } from "./sections/explore";
+import { libraryEn, libraryId } from "./sections/library";
 
 const coreEn = {
   // Shared
@@ -184,8 +186,8 @@ const coreId: { [K in keyof typeof coreEn]: string } = {
 
 };
 
-export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn, ...driveEn, ...studyEn, ...progressEn, ...practiceEn, ...miscEn };
+export const en = { ...coreEn, ...navEn, ...homeEn, ...planEn, ...examEn, ...adminEn, ...driveEn, ...studyEn, ...progressEn, ...practiceEn, ...miscEn, ...libraryEn, ...exploreEn };
 
 export type Messages = { [K in keyof typeof en]: string };
 
-export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId, ...driveId, ...studyId, ...progressId, ...practiceId, ...miscId };
+export const id: Messages = { ...coreId, ...navId, ...homeId, ...planId, ...examId, ...adminId, ...driveId, ...studyId, ...progressId, ...practiceId, ...miscId, ...libraryId, ...exploreId };

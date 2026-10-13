@@ -27,6 +27,9 @@ export type Translate = I18nValue["t"];
 /** For code that runs outside the app's language (tests, the prerendered pages). */
 export const englishT: Translate = (key, vars) => translate("en", key, vars);
 
+/** In the language picked on this device, for code outside React (errors, the 3D viewer). */
+export const currentT: Translate = (key, vars) => translate(storedLanguage(), key, vars);
+
 /** This browser's chosen language (Indonesian unless English was picked). */
 export function storedLanguage(): Language {
   try {

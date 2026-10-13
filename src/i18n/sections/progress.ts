@@ -84,6 +84,10 @@ export const progressEn = {
   "board.perDay": "per day you study",
   "board.weekHow": "counts points gained in the last 7 days.",
   "board.streakHow": "is consecutive study days, still alive if you studied today or yesterday. Scores update as your progress is saved.",
+  "spark.aria": "Score trend over the last {count} attempts, most recent {pct} percent",
+  "heat.actions": "{count} study actions",
+  "heat.studied": "studied",
+  "heat.none": "no study",
 };
 
 export const progressId: { [K in keyof typeof progressEn]: string } = {
@@ -170,4 +174,8 @@ export const progressId: { [K in keyof typeof progressEn]: string } = {
   "board.perDay": "per hari kamu belajar",
   "board.weekHow": "menghitung poin dari 7 hari terakhir.",
   "board.streakHow": "adalah hari belajar berturut-turut, masih berjalan jika kamu belajar hari ini atau kemarin. Skor diperbarui saat progresmu tersimpan.",
+  "spark.aria": "Tren nilai dari {count} percobaan terakhir, terbaru {pct} persen",
+  "heat.actions": "{count} aktivitas belajar",
+  "heat.studied": "belajar",
+  "heat.none": "tidak belajar",
 };

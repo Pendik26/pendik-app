@@ -4,14 +4,16 @@ import { groupByBlock } from "../lib/blocks";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import { UpcomingSubjectCard } from "../components/UpcomingSubjectCard";
+import { useI18n } from "../i18n/useI18n";
 
 export function Summaries() {
   const groups = groupByBlock(summarySubjects);
+  const { t } = useI18n();
 
   return (
     <section className="page">
-      <h1>Summaries</h1>
-      <p className="subtitle">High-yield written summaries by subject.</p>
+      <h1>{t("lib.summariesTitle")}</h1>
+      <p className="subtitle">{t("lib.summariesIntro")}</p>
       {groups.map(({ block, subjects, upcoming }) => (
         <div key={block.id} className="block-section">
           <h2 className="block-section-heading">{block.label}</h2>

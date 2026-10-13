@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { helpFileIds, helpGroups, helpPages, loadHelpPage } from "./help";
+import { helpFileIds, helpFileIdsId, helpGroups, helpPages, helpPagesIn, loadHelpPage } from "./help";
 import { headingSlugger } from "./markdownHtml";
 import { pageMeta } from "./routeMeta";
 
@@ -60,6 +60,47 @@ describe("help pages", () => {
   it("returns nothing for an unknown or inherited id", async () => {
     await expect(loadHelpPage("nope")).resolves.toBeUndefined();
     await expect(loadHelpPage("__proto__")).resolves.toBeUndefined();
+  });
+});
+
+describe("Indonesian help pages", () => {
+  const pages = helpPagesIn("id");
+
+  it("translates every page, title and group", () => {
+    expect([...helpFileIdsId].sort()).toEqual([...helpFileIds].sort());
+    for (const [i, p] of pages.entries()) {
+      expect(p.description, p.id).not.toBe(helpPages[i].description);
+      expect(p.group, p.id).not.toBe(helpPages[i].group);
+      expect(p.description.length, p.id).toBeGreaterThan(40);
+      expect(p.description.length, p.id).toBeLessThanOrEqual(158);
+    }
+    expect(new Set(pages.map((p) => p.group)).size).toBe(new Set(helpPages.map((p) => p.group)).size);
+  });
+
+  it("starts each page with its Indonesian title", async () => {
+    for (const p of pages) {
+      const markdown = (await loadHelpPage(p.id, "id")) ?? "";
+      expect(markdown.split("\n")[0], p.id).toBe(`# ${p.title}`);
+      expect(markdown.match(/^# /gm), p.id).toHaveLength(1);
+    }
+  });
+
+  it("only links to Indonesian sections that exist", async () => {
+    const markdownById = new Map<string, string>();
+    for (const p of pages) markdownById.set(p.id, (await loadHelpPage(p.id, "id")) ?? "");
+    for (const [id, markdown] of markdownById) {
+      for (const [, href] of markdown.matchAll(/\]\((\/[^)\s]*)\)/g)) {
+        const [path, hash] = href.split("#");
+        const target = path.startsWith("/docs/") ? markdownById.get(path.slice(6)) : undefined;
+        if (path.startsWith("/docs/")) expect(target, `${id} → ${href}`).toBeDefined();
+        if (hash) expect(headingIds(target ?? markdown).has(hash), `${id} → ${href}`).toBe(true);
+      }
+    }
+  });
+
+  it("falls back to English for an untranslated language", async () => {
+    expect(await loadHelpPage("flashcards", "en")).toMatch(/^# Flashcards/);
+    expect(await loadHelpPage("flashcards", "id")).toMatch(/^# Flashcard\n/);
   });
 });
 

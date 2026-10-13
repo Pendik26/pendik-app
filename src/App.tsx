@@ -14,6 +14,7 @@ import { AccountProvider } from "./context/AccountContext";
 import { AuthGate } from "./components/AuthGate";
 import { I18nProvider } from "./i18n/I18nProvider";
 import { usePageMeta } from "./hooks/usePageMeta";
+import { useI18n } from "./i18n/useI18n";
 
 // Each page ships as its own chunk, fetched only when its route is visited, so the initial
 // load doesn't pay for e.g. the ebook reader or quiz engine before the user ever opens them.
@@ -88,8 +89,9 @@ function OldOcclusionRedirect() {
 }
 
 function RouteFallback() {
+  const { t } = useI18n();
   return (
-    <div className="route-loading" role="status" aria-label="Loading page">
+    <div className="route-loading" role="status" aria-label={t("app.loadingPage")}>
       <PulseLine />
     </div>
   );

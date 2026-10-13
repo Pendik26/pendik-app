@@ -4,6 +4,7 @@ import { GLTFLoader, type GLTF } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { ATLAS_BASE, defaultOpacity, tissueColor } from "../../lib/atlas/model";
 import { isTyping } from "../../lib/keys";
+import { currentT } from "../../i18n/i18n";
 
 // The 3D anatomy atlas's viewer: three.js, navigated like the knowledge map's 3D view and a 3D
 // editor's viewport (orbit, pan, dolly, fly with W A S D Q E, an axis gizmo named in anatomical
@@ -226,7 +227,7 @@ export class AtlasViewer {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.domElement.className = "atlas-canvas";
     this.renderer.domElement.tabIndex = 0;
-    this.renderer.domElement.setAttribute("aria-label", "3D model of the body. Drag to turn it, scroll to zoom, click a part to name it.");
+    this.renderer.domElement.setAttribute("aria-label", currentT("atlas.canvas"));
     host.appendChild(this.renderer.domElement);
     this.labels = document.createElement("div");
     this.labels.className = "atlas-labels";
@@ -994,7 +995,7 @@ export class AtlasViewer {
     const v = this.gizmoAt(e);
     const canvas = e.currentTarget as HTMLCanvasElement;
     canvas.style.cursor = v ? "pointer" : "default";
-    canvas.title = v ? `Look from ${GIZMO_ENDS.find((g) => g.view === v)?.label.toLowerCase() ?? v}` : "";
+    canvas.title = v ? currentT("atlas.lookFrom", { side: GIZMO_ENDS.find((g) => g.view === v)?.label.toLowerCase() ?? v }) : "";
     if (v !== this.gizmoHover) {
       this.gizmoHover = v;
       this.drawGizmo();

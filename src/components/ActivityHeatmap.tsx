@@ -1,4 +1,5 @@
 import { localDateKey } from "../lib/activity";
+import { useI18n } from "../i18n/useI18n";
 
 const DAYS = 7;
 
@@ -25,6 +26,7 @@ export function ActivityHeatmap({
   selected?: string | null;
   onSelect?: (date: string) => void;
 }) {
+  const { t, language } = useI18n();
   const studied = new Set(days);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -47,8 +49,8 @@ export function ActivityHeatmap({
 
   const describe = (cell: (typeof cells)[number]) => {
     const amount = intensity?.get(cell.key) ?? 0;
-    const what = amount > 0 ? `${amount} study actions` : studied.has(cell.key) ? "studied" : "no study";
-    return `${cell.date.toDateString()}: ${what}`;
+    const what = amount > 0 ? t("heat.actions", { count: amount }) : studied.has(cell.key) ? t("heat.studied") : t("heat.none");
+    return `${cell.date.toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}: ${what}`;
   };
 
   return (

@@ -1,5 +1,5 @@
 import { allSubjects } from "./routeMeta";
-import { helpPages } from "./help";
+import { helpPagesIn, type HelpLanguage } from "./help";
 import { labExercises } from "./labActivities";
 import {
   ebookMeta,
@@ -18,6 +18,7 @@ import {
 } from "./content";
 import { studyBlocks } from "./blocks";
 import { markdownToPlainText, splitMarkdownSections, truncate } from "./textExtract";
+import { englishT, type MessageKey, type Translate } from "../i18n/i18n";
 
 const EXCERPT_LENGTH = 200;
 
@@ -32,60 +33,76 @@ export interface SearchDoc {
   keywords?: string;
 }
 
-const staticPages: SearchDoc[] = [
-  { type: "page", id: "home", title: "Home", detail: "Tip of the day, quick links", to: "/" },
-  { type: "page", id: "flashcards", title: "Flashcards", detail: "Spaced-repetition review", to: "/flashcards" },
-  { type: "page", id: "quizzes", title: "Quizzes", detail: "Multiple-choice question banks", to: "/quizzes" },
-  { type: "page", id: "exam", title: "Exam", detail: "Timed block exams, scored at the end", to: "/exam" },
-  { type: "page", id: "modules", title: "Modules", detail: "Original lecture slide PDFs", to: "/modules" },
-  { type: "page", id: "drive", title: "Class Drive", detail: "Slides, recordings and exams from the class Google Drive", to: "/drive", keywords: "google drive ppt slides recordings ub exams tutorial" },
-  { type: "page", id: "ebooks", title: "Ebooks", detail: "Chapter readers", to: "/ebooks" },
-  { type: "page", id: "summaries", title: "Summaries", detail: "Written subject summaries", to: "/summaries" },
-  { type: "page", id: "subjects", title: "Subjects", detail: "Everything for each subject in one place", to: "/subjects", keywords: "subject overview hub" },
-  { type: "page", id: "occlusion", title: "Image Occlusion", detail: "Anki-style labelled atlas figures", to: "/occlusion", keywords: "anki image occlusion anatomy labels figures atlas" },
-  { type: "page", id: "lab", title: "Virtual Lab", detail: "PhysioEx-style skeletal muscle simulator", to: "/lab", keywords: "physioex dry lab praktikum simulation muscle" },
-  ...labExercises.flatMap((e) =>
-    e.activities.map((a) => ({
-      type: "page" as const,
-      id: `lab-${e.id}-${a.slug}`,
-      title: `Lab ${a.number}: ${a.title}`,
-      detail: a.summary,
-      to: `/lab/${e.id}/${a.slug}`,
-      keywords: `physioex virtual lab ${e.title} activity ${a.number}`,
-    })),
-  ),
-  { type: "page", id: "search", title: "Search", detail: "Search everything", to: "/search" },
-  { type: "page", id: "atlas", title: "3D anatomy", detail: "The whole body in 3D: bones, muscles, vessels, nerves and organs", to: "/atlas" },
-  { type: "page", id: "map", title: "Knowledge map", detail: "How every concept connects across blocks and subjects", to: "/map" },
-  { type: "page", id: "plan", title: "Exam plan", detail: "Today's plan, readiness and countdown", to: "/plan" },
-  { type: "page", id: "alfond", title: "Alfond", detail: "Ask the study assistant anything", to: "/alfond" },
-  { type: "page", id: "leaderboard", title: "Leaderboard", detail: "Weekly, all-time and streak rankings", to: "/leaderboard" },
-  { type: "page", id: "progress", title: "Progress", detail: "Streaks, export & import", to: "/progress" },
-  { type: "page", id: "docs", title: "Help", detail: "How every part of the app works", to: "/docs", keywords: "help docs guide how to faq documentation" },
-  ...helpPages.map((p) => ({
-    type: "page" as const,
-    id: `docs-${p.id}`,
-    title: `Help: ${p.title}`,
-    detail: p.description,
-    to: `/docs/${p.id}`,
-    keywords: `help how to ${p.keywords ?? ""}`,
-  })),
+/** The top-level pages: [id, title, what it is, route, extra search words]. */
+const PAGES: [string, MessageKey, MessageKey, string, string?][] = [
+  ["home", "nav.home", "sx.home", "/"],
+  ["flashcards", "nav.flashcards", "sx.flashcards", "/flashcards"],
+  ["quizzes", "nav.quizzes", "sx.quizzes", "/quizzes"],
+  ["exam", "nav.exams", "sx.exam", "/exam"],
+  ["modules", "nav.modules", "sx.modules", "/modules"],
+  ["drive", "nav.drive", "sx.drive", "/drive", "google drive ppt slides recordings ub exams tutorial"],
+  ["ebooks", "nav.ebooks", "sx.ebooks", "/ebooks"],
+  ["summaries", "nav.summaries", "sx.summaries", "/summaries"],
+  ["subjects", "nav.subjects", "sx.subjects", "/subjects", "subject overview hub"],
+  ["occlusion", "nav.occlusion", "sx.occlusion", "/occlusion", "anki image occlusion anatomy labels figures atlas"],
+  ["lab", "nav.lab", "sx.lab", "/lab", "physioex dry lab praktikum simulation muscle"],
+];
+const PAGES_AFTER_LAB: [string, MessageKey, MessageKey, string, string?][] = [
+  ["search", "nav.search", "sx.search", "/search"],
+  ["atlas", "nav.atlas", "sx.atlas", "/atlas"],
+  ["map", "nav.map", "sx.map", "/map"],
+  ["plan", "nav.plan", "sx.plan", "/plan"],
+  ["alfond", "nav.alfond", "sx.alfond", "/alfond"],
+  ["leaderboard", "nav.leaderboard", "sx.leaderboard", "/leaderboard"],
+  ["progress", "nav.progress", "sx.progress", "/progress"],
+  ["docs", "nav.help", "sx.docs", "/docs", "help docs guide how to faq documentation"],
 ];
 
-function subjectDocs(): SearchDoc[] {
+/** A page in the reader's language, still found by its English words. */
+function pageDoc([id, title, detail, to, keywords]: [string, MessageKey, MessageKey, string, string?], t: Translate): SearchDoc {
+  const english = t === englishT ? "" : `${englishT(title)} ${englishT(detail)} `;
+  return { type: "page", id, title: t(title), detail: t(detail), to, keywords: `${english}${keywords ?? ""}`.trim() || undefined };
+}
+
+function staticPages(t: Translate, language: HelpLanguage): SearchDoc[] {
+  return [
+    ...PAGES.map((p) => pageDoc(p, t)),
+    ...labExercises.flatMap((e) =>
+      e.activities.map((a) => ({
+        type: "page" as const,
+        id: `lab-${e.id}-${a.slug}`,
+        title: `Lab ${a.number}: ${a.title}`,
+        detail: a.summary,
+        to: `/lab/${e.id}/${a.slug}`,
+        keywords: `physioex virtual lab ${e.title} activity ${a.number}`,
+      })),
+    ),
+    ...PAGES_AFTER_LAB.map((p) => pageDoc(p, t)),
+    ...helpPagesIn(language).map((p) => ({
+      type: "page" as const,
+      id: `docs-${p.id}`,
+      title: `${t("nav.help")}: ${p.title}`,
+      detail: p.description,
+      to: `/docs/${p.id}`,
+      keywords: `help how to ${p.keywords ?? ""}`,
+    })),
+  ];
+}
+
+function subjectDocs(t: Translate): SearchDoc[] {
   return [
     ...flashcardSubjects.map((s) => ({
       type: "flashcard" as const,
       id: `fs-${keyOf(s)}`,
-      title: `${s.label} flashcards`,
-      detail: `Block ${s.blockId} deck`,
+      title: t("sx.subjectCards", { subject: s.label }),
+      detail: t("sx.blockDeck", { block: s.blockId }),
       to: `/flashcards/${s.blockId}/${s.id}`,
     })),
     ...allSubjects().map((s) => ({
       type: "page" as const,
       id: `subject-${s.key}`,
-      title: `${s.label} (Block ${s.blockId})`,
-      detail: "Everything for this subject",
+      title: t("sx.subjectBlock", { subject: s.label, block: s.blockId }),
+      detail: t("sx.everything"),
       to: `/subjects/${s.key}`,
       keywords: "subject overview all material",
     })),
@@ -94,16 +111,16 @@ function subjectDocs(): SearchDoc[] {
       .map((s) => ({
         type: "page" as const,
         id: `io-${keyOf(s)}`,
-        title: `${s.label} image occlusion`,
-        detail: `Block ${s.blockId} atlas figures with hidden labels`,
+        title: t("sx.subjectIo", { subject: s.label }),
+        detail: t("sx.blockIo", { block: s.blockId }),
         to: `/occlusion/${s.blockId}/${s.id}`,
         keywords: "anki image occlusion labels atlas figures diagram",
       })),
     ...quizSubjects.map((s) => ({
       type: "quiz" as const,
       id: `qs-${keyOf(s)}`,
-      title: `${s.label} quiz`,
-      detail: `Block ${s.blockId} question bank`,
+      title: t("sx.subjectQuiz", { subject: s.label }),
+      detail: t("sx.blockBank", { block: s.blockId }),
       to: `/quizzes/${s.blockId}/${s.id}`,
     })),
     ...studyBlocks
@@ -111,8 +128,8 @@ function subjectDocs(): SearchDoc[] {
       .map((b) => ({
         type: "exam" as const,
         id: `xb-${b.id}`,
-        title: `${b.label} exam`,
-        detail: "Timed block exam",
+        title: t("sx.blockExam", { block: b.label }),
+        detail: t("sx.timedExam"),
         to: `/exam/${b.id}`,
       })),
     ...[...modulesByBlockSubject.keys()].map((key) => {
@@ -122,8 +139,8 @@ function subjectDocs(): SearchDoc[] {
       return {
         type: "module" as const,
         id: `md-${key}`,
-        title: `${label} modules`,
-        detail: `Block ${blockId} · ${count} PDF${count === 1 ? "" : "s"}`,
+        title: t("sx.subjectModules", { subject: label }),
+        detail: t("sx.blockPdfs", { block: blockId, count }),
         to: `/modules/${blockId}/${subjectId}`,
       };
     }),
@@ -131,14 +148,14 @@ function subjectDocs(): SearchDoc[] {
       type: "ebook" as const,
       id: `es-${keyOf(s)}`,
       title: s.label,
-      detail: `Block ${s.blockId} ebook`,
+      detail: t("sx.blockEbook", { block: s.blockId }),
       to: `/ebooks/${s.blockId}/${s.id}`,
     })),
     ...summarySubjects.map((s) => ({
       type: "summary" as const,
       id: `ss-${keyOf(s)}`,
-      title: `${s.label} summary`,
-      detail: `Block ${s.blockId} summary`,
+      title: t("sx.subjectSummary", { subject: s.label }),
+      detail: t("sx.blockSummary", { block: s.blockId }),
       to: `/summaries/${s.blockId}/${s.id}`,
     })),
   ];
@@ -253,6 +270,6 @@ export async function loadContentDocs(): Promise<SearchDoc[]> {
 }
 
 /** Lighter index (pages + subjects only), used by the command palette for fast navigation. */
-export function buildNavigationDocs(): SearchDoc[] {
-  return [...staticPages, ...subjectDocs()];
+export function buildNavigationDocs(t: Translate = englishT, language: HelpLanguage = "en"): SearchDoc[] {
+  return [...staticPages(t, language), ...subjectDocs(t)];
 }

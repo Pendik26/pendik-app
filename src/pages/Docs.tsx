@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useHashScroll } from "../hooks/useHashScroll";
 import { itemAt } from "../lib/arrays";
-import { helpGroups, helpPage, helpPages, loadHelpPage, type HelpPage } from "../lib/help";
+import { helpGroups, helpPagesIn, loadHelpPage, type HelpPage } from "../lib/help";
 import { renderMarkdown } from "../lib/markdownHtml";
+import { useI18n } from "../i18n/useI18n";
 
 /** Links inside a help page that point into the app open in place, not as a full reload. */
 function useInAppLinks() {
@@ -38,31 +39,32 @@ function matches(page: HelpPage, query: string): boolean {
 }
 
 function DocsIndex() {
+  const { t, language } = useI18n();
   const [query, setQuery] = useState("");
-  const groups = helpGroups()
+  const groups = helpGroups(language)
     .map((g) => ({ ...g, pages: g.pages.filter((p) => matches(p, query)) }))
     .filter((g) => g.pages.length > 0);
 
   return (
     <section className="page docs-page">
-      <h1>Help</h1>
+      <h1>{t("docs.title")}</h1>
       <p className="subtitle">
-        How each part of the app works, what the numbers mean, and what to do when something goes wrong. Start with{" "}
-        <Link to="/docs/getting-started">Getting started</Link> if you're new.
+        {t("docs.intro")}{" "}
+        <Link to="/docs/getting-started">{t("docs.gettingStarted")}</Link> {t("docs.introEnd")}
       </p>
 
       <input
         type="search"
         className="docs-filter"
-        placeholder="Find a help page…"
-        aria-label="Find a help page"
+        placeholder={t("docs.findPh")}
+        aria-label={t("docs.find")}
         value={query}
         onChange={(e) => { setQuery(e.target.value); }}
       />
 
       {groups.length === 0 && (
         <p className="docs-empty">
-          No help page matches “{query}”. Try fewer words, or <Link to={`/search?q=${encodeURIComponent(query)}`}>search everything</Link>.
+          {t("docs.noMatch", { query })} <Link to={`/search?q=${encodeURIComponent(query)}`}>{t("docs.searchAll")}</Link>.
         </p>
       )}
 
@@ -83,9 +85,9 @@ function DocsIndex() {
       ))}
 
       <p className="docs-footnote">
-        Building or editing the app? The developer and content guides are on the{" "}
+        {t("docs.devNote")}{" "}
         <a href="https://github.com/Pendik26/pendik-app/tree/major/docs" target="_blank" rel="noopener noreferrer">
-          docs folder
+          {t("docs.folder")}
         </a>
         .
       </p>
@@ -94,25 +96,27 @@ function DocsIndex() {
 }
 
 function DocsPage({ pageId }: { pageId: string }) {
-  const page = helpPage(pageId);
+  const { t, language } = useI18n();
+  const helpPages = helpPagesIn(language);
+  const page = helpPages.find((p) => p.id === pageId);
   const onClick = useInAppLinks();
   const [loaded, setLoaded] = useState<{ id: string; markdown?: string; failed?: boolean } | null>(null);
   useEffect(() => {
-    if (!helpPage(pageId)) return;
     let cancelled = false;
-    loadHelpPage(pageId).then(
+    const key = `${language}:${pageId}`;
+    loadHelpPage(pageId, language).then(
       (markdown) => {
-        if (!cancelled) setLoaded({ id: pageId, markdown });
+        if (!cancelled && markdown !== undefined) setLoaded({ id: key, markdown });
       },
       () => {
-        if (!cancelled) setLoaded({ id: pageId, failed: true });
+        if (!cancelled) setLoaded({ id: key, failed: true });
       },
     );
     return () => {
       cancelled = true;
     };
-  }, [pageId]);
-  const current = loaded?.id === pageId ? loaded : null;
+  }, [pageId, language]);
+  const current = loaded?.id === `${language}:${pageId}` ? loaded : null;
   const markdown = current?.markdown;
   const html = useMemo(() => (markdown ? renderMarkdown(markdown) : ""), [markdown]);
   useHashScroll(html);
@@ -123,8 +127,8 @@ function DocsPage({ pageId }: { pageId: string }) {
   if (!page) {
     return (
       <section className="page">
-        <p>There's no help page called “{pageId}”.</p>
-        <Link to="/docs">All help pages</Link>
+        <p>{t("docs.unknown", { id: pageId })}</p>
+        <Link to="/docs">{t("docs.allPages")}</Link>
       </section>
     );
   }
@@ -137,18 +141,18 @@ function DocsPage({ pageId }: { pageId: string }) {
   return (
     <section className="page ebook-page docs-page">
       <Link to="/docs" className="back-link">
-        ← All help
+        ← {t("docs.allHelp")}
       </Link>
       <div className="ebook-layout docs-layout">
-        <nav className={tocOpen ? "ebook-toc ebook-toc-collapsible is-open" : "ebook-toc ebook-toc-collapsible"} aria-label="Help pages">
+        <nav className={tocOpen ? "ebook-toc ebook-toc-collapsible is-open" : "ebook-toc ebook-toc-collapsible"} aria-label={t("docs.pages")}>
           <button type="button" className="ebook-toc-toggle" onClick={() => { setTocOpen((o) => !o); }} aria-expanded={tocOpen}>
             <span>{page.title}</span>
             <span className="ebook-toc-toggle-hint">
-              All help <span aria-hidden="true">{tocOpen ? "▴" : "▾"}</span>
+              {t("docs.allHelp")} <span aria-hidden="true">{tocOpen ? "▴" : "▾"}</span>
             </span>
           </button>
-          <h2 className="ebook-toc-title">Help</h2>
-          {helpGroups().map((group) => (
+          <h2 className="ebook-toc-title">{t("docs.title")}</h2>
+          {helpGroups(language).map((group) => (
             <div key={group.label} className="docs-toc-group">
               <p className="ebook-toc-subhead">{group.label}</p>
               <ol>
@@ -172,8 +176,8 @@ function DocsPage({ pageId }: { pageId: string }) {
           {html ? (
             <>
               {sections.length > 2 && (
-                <nav className="docs-onpage" aria-label="On this page">
-                  <p className="ebook-toc-subhead">On this page</p>
+                <nav className="docs-onpage" aria-label={t("docs.onPage")}>
+                  <p className="ebook-toc-subhead">{t("docs.onPage")}</p>
                   <ul>
                     {sections.map((s) => (
                       <li key={s.id}>
@@ -199,16 +203,16 @@ function DocsPage({ pageId }: { pageId: string }) {
                   </Link>
                 ) : (
                   <Link to="/docs" className="btn btn-secondary">
-                    All help
+                    {t("docs.allHelp")}
                   </Link>
                 )}
               </div>
             </>
           ) : current?.failed ? (
-            <p className="ebook-status">Couldn't load this page. Check your connection and try again.</p>
+            <p className="ebook-status">{t("docs.failed")}</p>
           ) : (
             <p className="ebook-status" role="status">
-              Loading…
+              {t("rd.loading")}
             </p>
           )}
         </div>

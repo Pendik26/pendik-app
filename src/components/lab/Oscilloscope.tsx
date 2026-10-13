@@ -1,5 +1,6 @@
 import { memo, useMemo, useRef, useState, type PointerEvent } from "react";
 import { TRACE_COLORS, valueAt, type Tracing } from "../../lib/labTraces";
+import { useI18n } from "../../i18n/useI18n";
 
 interface Props {
   xMax: number;
@@ -115,6 +116,7 @@ const ScopeGrid = memo(function ScopeGrid({ xMax, xTicks, xLabel, yMax, yLabel }
 
 /** The force display: a dark screen with every tracing in its own colour, and a legend. */
 export function Oscilloscope({ xMax, xLabel, xTicks, yMax, yLabel, yUnit, tracings, live, measureX, onMeasure }: Props) {
+  const { t } = useI18n();
   const svgRef = useRef<SVGSVGElement>(null);
   const dragging = useRef(false);
   const [hoverX, setHoverX] = useState<number | null>(null);
@@ -193,7 +195,7 @@ export function Oscilloscope({ xMax, xLabel, xTicks, yMax, yLabel, yUnit, tracin
         )}
       </svg>
       {all.length > 0 && (
-        <ul className="lab-scope-legend" aria-label="Tracings">
+        <ul className="lab-scope-legend" aria-label={t("lab.tracings")}>
           {readX != null && (
             <li className="lab-scope-legend-x">
               {xLabel.replace(/ \(.*/, "")} {fmtX(readX)}

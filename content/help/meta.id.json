@@ -1,0 +1,128 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Memulai",
+    "group": "Mulai di sini",
+    "description": "Apa itu aplikasi ini, cara materinya disusun per blok dan mata kuliah, belajar sebagai tamu, dan memasangnya agar bisa offline.",
+    "keywords": "mulai baru pasang instal offline layar utama tamu blok mata kuliah tema gelap terang"
+  },
+  {
+    "id": "search-and-shortcuts",
+    "title": "Pencarian dan pintasan",
+    "group": "Mulai di sini",
+    "description": "Mencari kartu, soal atau bab apa pun, palet perintah, dan semua pintasan keyboard dalam satu tabel.",
+    "keywords": "cari pencarian palet perintah pintasan keyboard tombol"
+  },
+  {
+    "id": "flashcards",
+    "title": "Flashcard",
+    "group": "Belajar",
+    "description": "Cara sesi pengulangan berjalan, pengaruh tiap tombol nilai pada jadwal kartu berikutnya, saringan tag dan kartu tersulitmu.",
+    "keywords": "kartu pengulangan berjarak nilai jatuh tempo ulang tag tersulit"
+  },
+  {
+    "id": "image-occlusion",
+    "title": "Oklusi gambar",
+    "group": "Belajar",
+    "description": "Belajar gambar anatomi label demi label: mode ulangi dan lihat semua, galeri, zoom dan tombol yang membantu.",
+    "keywords": "image occlusion gambar label anatomi kotak merah galeri perbesar"
+  },
+  {
+    "id": "quizzes",
+    "title": "Kuis",
+    "group": "Belajar",
+    "description": "Mengerjakan kuis, bagian dari bank soal besar, mengulang soal yang salah, dan kenapa urutannya selalu berubah.",
+    "keywords": "kuis soal pilihan ganda bagian salah ulangi latihan acak nilai penjelasan"
+  },
+  {
+    "id": "exams",
+    "title": "Ujian berwaktu",
+    "group": "Belajar",
+    "description": "Latihan ujian blok dari soal tahun lalu: mode ujian asli atau umpan balik langsung, bendera, timer dan ulasan sesudahnya.",
+    "keywords": "ujian berwaktu try out soal tahun lalu paket bendera timer umpan balik"
+  },
+  {
+    "id": "virtual-lab",
+    "title": "Lab Virtual",
+    "group": "Belajar",
+    "description": "Simulator otot rangka PhysioEx: memberi rangsang, mengukur, mencatat data, membuat grafik dan memeriksa jawabanmu.",
+    "keywords": "lab virtual praktikum otot rangsang catat grafik"
+  },
+  {
+    "id": "reading",
+    "title": "Ebook dan ringkasan",
+    "group": "Membaca",
+    "description": "Membaca bab dan ringkasan, menandai bab selesai, ukuran teks dan font yang mudah dibaca, serta mencetak.",
+    "keywords": "ebook bab ringkasan baca ukuran font cetak selesai lanjutkan"
+  },
+  {
+    "id": "modules-and-drive",
+    "title": "Modul dan Drive Kelas",
+    "group": "Membaca",
+    "description": "PDF kuliah dan praktikum, serta Google Drive kelas yang selalu terbaru: slide, rekaman, tutorial dan file ujian.",
+    "keywords": "modul pdf slide kuliah praktikum drive kelas rekaman tutorial baru minggu ini"
+  },
+  {
+    "id": "anatomy-3d",
+    "title": "Anatomi 3D",
+    "group": "Membaca",
+    "description": "Tubuh 3D: memutarnya, mengganti sistem tubuh, menamai struktur apa pun, penanda dan tempat perlekatan tiap otot.",
+    "keywords": "anatomi 3d atlas tubuh tulang otot saraf pembuluh organ origo insersio perlekatan penanda"
+  },
+  {
+    "id": "knowledge-map",
+    "title": "Peta konsep",
+    "group": "Membaca",
+    "description": "Satu peta untuk semua konsep di kuliah: apa terhubung dengan apa, tempat membacanya, dan seberapa kamu menguasainya.",
+    "keywords": "peta konsep grafik tautan penguasaan hubungan mata kuliah"
+  },
+  {
+    "id": "exam-plan",
+    "title": "Rencana ujian dan rencana hari ini",
+    "group": "Rencana dan kemajuan",
+    "description": "Mengatur tanggal ujian, skor kesiapan, fase menjelang ujian, dan cara daftar tugas hari ini dipilih.",
+    "keywords": "rencana ujian hari ini kesiapan hitung mundur fase target kalender"
+  },
+  {
+    "id": "progress",
+    "title": "Kemajuan, runtutan dan cadangan",
+    "group": "Rencana dan kemajuan",
+    "description": "Isi halaman Kemajuan, cara runtutan dan peta aktivitas dihitung, titik lemah, pencapaian dan mencadangkan data sebagai tamu.",
+    "keywords": "kemajuan streak peta aktivitas titik lemah pencapaian cadangan ekspor impor"
+  },
+  {
+    "id": "alfond",
+    "title": "Alfond dan Jelaskan ini",
+    "group": "Rencana dan kemajuan",
+    "description": "Asisten belajar dan panel Jelaskan ini: apa yang bisa mereka lihat, jatah AI harian, dan cara mematikannya.",
+    "keywords": "alfond ai asisten obrolan jelaskan penjelasan jatah batas"
+  },
+  {
+    "id": "account",
+    "title": "Akun dan sinkronisasi",
+    "group": "Akunmu",
+    "description": "Membuat akun, masuk dengan Google, cara kemajuan disinkronkan antar perangkat, dan keluar dengan aman.",
+    "keywords": "akun masuk daftar google kata sandi sinkron perangkat angkatan blok keluar hapus"
+  },
+  {
+    "id": "leaderboard",
+    "title": "Papan peringkat",
+    "group": "Akunmu",
+    "description": "Bergabung atau keluar dari papan peringkat, nama tampilanmu, dan cara poin mingguan, sepanjang masa dan runtutan didapat.",
+    "keywords": "papan peringkat poin angkatan streak nama tampilan gabung keluar"
+  },
+  {
+    "id": "privacy",
+    "title": "Data dan privasimu",
+    "group": "Akunmu",
+    "description": "Apa yang disimpan di perangkatmu dan di akunmu, siapa bisa melihat apa, dan cara mengunduh atau menghapus semuanya.",
+    "keywords": "privasi data simpan hapus unduh ekspor tamu akun terlihat"
+  },
+  {
+    "id": "troubleshooting",
+    "title": "Pemecahan masalah dan FAQ",
+    "group": "Bantuan",
+    "description": "Solusi masalah umum: kemajuan hilang, gagal masuk, aplikasi tidak memperbarui diri, PDF tidak terbuka dan lainnya.",
+    "keywords": "masalah faq perbaiki bantuan rusak galat pembaruan masuk kemajuan hilang offline"
+  }
+]

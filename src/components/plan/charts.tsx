@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type PointerEvent, type RefObject } from "react";
+import { useI18n } from "../../i18n/useI18n";
 
 // Two small single-series charts for the Progress and Exam plan pages. One series each, so no
 // legend (the heading names it); thin marks in the accent; hairline grid; a tooltip on hover
@@ -53,6 +54,7 @@ export interface BarDatum {
 
 /** Columns over time, e.g. cards reviewed per day. */
 export function DailyBars({ data, unit, caption }: { data: BarDatum[]; unit: string; caption: string }) {
+  const { t } = useI18n();
   const [tip, setTip] = useState<Tip | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const W = useWidth(wrap);
@@ -120,7 +122,7 @@ export function DailyBars({ data, unit, caption }: { data: BarDatum[]; unit: str
       <table className="sr-only">
         <thead>
           <tr>
-            <th>Day</th>
+            <th>{t("chart.day")}</th>
             <th>{unit}</th>
           </tr>
         </thead>
@@ -149,6 +151,7 @@ export interface TrendPoint {
  * there's a projection, a dashed run from the last score to the exam date.
  */
 export function ScoreTrend({ points, target, projection, caption }: { points: TrendPoint[]; target?: number; projection?: { date: Date; value: number } | null; caption: string }) {
+  const { t } = useI18n();
   const [tip, setTip] = useState<Tip | null>(null);
   const [active, setActive] = useState<number | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
@@ -236,8 +239,8 @@ export function ScoreTrend({ points, target, projection, caption }: { points: Tr
       <table className="sr-only">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Score</th>
+            <th>{t("chart.date")}</th>
+            <th>{t("chart.score")}</th>
           </tr>
         </thead>
         <tbody>
@@ -249,7 +252,7 @@ export function ScoreTrend({ points, target, projection, caption }: { points: Tr
           ))}
           {projection && (
             <tr>
-              <td>Projected on exam day</td>
+              <td>{t("chart.projected")}</td>
               <td>{Math.round(projection.value)}%</td>
             </tr>
           )}
