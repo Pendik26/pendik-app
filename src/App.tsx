@@ -98,7 +98,8 @@ function RouteFallback() {
 }
 
 // Keyed by pathname so a crash on one page resets the moment the user navigates away,
-// instead of requiring a full reload to escape it.
+// instead of requiring a full reload to escape it. The admin area is one key: its tabs share a
+// shell (see Admin) that must stay mounted while the tab underneath changes.
 function AppRoutes() {
   const { pathname } = useLocation();
   usePageMeta(pathname);
@@ -106,7 +107,7 @@ function AppRoutes() {
   useEffect(() => { rememberPage(pathname); }, [pathname]);
 
   return (
-    <ErrorBoundary key={pathname}>
+    <ErrorBoundary key={pathname.startsWith("/admin") ? "/admin" : pathname}>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
