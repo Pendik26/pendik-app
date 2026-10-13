@@ -12,6 +12,7 @@ import type { DriveFile } from "../lib/driveTypes";
 import { groupModules } from "../lib/moduleSections";
 import { subjectHueStyle } from "../lib/subjectStyle";
 import { SubjectTrail } from "../components/SubjectTrail";
+import { useI18n } from "../i18n/useI18n";
 
 function ExternalIcon() {
   return (
@@ -36,6 +37,7 @@ function revealViewer(id: string) {
 }
 
 export function ModuleViewer() {
+  const { t } = useI18n();
   const { blockId = "", subjectId = "" } = useParams();
   const block = blockById(blockId);
   const subject = moduleSubjects.find((s) => s.id === subjectId && s.blockId === blockId);
@@ -65,8 +67,8 @@ export function ModuleViewer() {
   if (!block || !label) {
     return (
       <section className="page">
-        <p>{block && drive.status === "loading" ? "Loading…" : "Unknown module subject."}</p>
-        <Link to="/modules">Back to modules</Link>
+        <p>{block && drive.status === "loading" ? t("rd.loading") : t("rd.unknownModule")}</p>
+        <Link to="/modules">{t("rd.backModules")}</Link>
       </section>
     );
   }
@@ -128,13 +130,13 @@ export function ModuleViewer() {
   const driveSection = (
       <div className="ebook-toc-section drive-toc">
         <p className="ebook-toc-group">
-          Class Drive <span className="drive-live-tag">live</span>
+          {t("drive.title")} <span className="drive-live-tag">{t("rd.live")}</span>
         </p>
-        {drive.status === "loading" && <p className="ebook-toc-empty">Loading…</p>}
+        {drive.status === "loading" && <p className="ebook-toc-empty">{t("rd.loading")}</p>}
         {drive.status === "error" && <p className="ebook-toc-empty">{drive.message}</p>}
         {drive.status === "ready" &&
           (driveGroups.length === 0 ? (
-            <p className="ebook-toc-empty">Nothing for this subject in the class Drive yet.</p>
+            <p className="ebook-toc-empty">{t("rd.driveEmpty")}</p>
           ) : (
             driveGroups.map((g) => (
               <div key={g.path.join("/")} className="ebook-toc-part">
@@ -145,7 +147,7 @@ export function ModuleViewer() {
           ))}
         {drive.status === "ready" && (
           <Link to={driveHref(drivePath ?? [])} className="drive-toc-browse">
-            Browse the class Drive →
+            {t("rd.browseDrive")} →
           </Link>
         )}
       </div>
@@ -156,14 +158,14 @@ export function ModuleViewer() {
       <SubjectTrail blockId={blockId} subjectId={subjectId} current="modules" />
 
       {pdfs.length === 0 && !driveSection ? (
-        <p>No PDFs yet for this subject — drop one into its module folder.</p>
+        <p>{t("rd.noPdfs")}</p>
       ) : (
         <div className="ebook-layout">
-          <nav className="ebook-toc" aria-label="Module list">
+          <nav className="ebook-toc" aria-label={t("rd.moduleList")}>
             <h2 className="ebook-toc-title">{label}</h2>
             <p className="ebook-toc-subhead">{block.label}</p>
             {driveSection}
-            {pdfs.length > 0 && driveSection && <p className="ebook-toc-group drive-toc-offline">Cleaned PDFs (work offline)</p>}
+            {pdfs.length > 0 && driveSection && <p className="ebook-toc-group drive-toc-offline">{t("rd.offline")}</p>}
             {groups
               ? groups.map((group) => (
                   <div key={group.id} className="ebook-toc-section">
@@ -174,7 +176,7 @@ export function ModuleViewer() {
                         {section.pdfs.length > 0 ? (
                           pdfList(section.pdfs)
                         ) : (
-                          <p className="ebook-toc-empty">To be added</p>
+                          <p className="ebook-toc-empty">{t("rd.toBeAdded")}</p>
                         )}
                       </div>
                     ))}
@@ -188,7 +190,7 @@ export function ModuleViewer() {
               <DriveFileView
                 key={shownDrive.id}
                 file={shownDrive}
-                position={driveFiles.length > 1 ? `${driveFiles.indexOf(shownDrive) + 1} of ${driveFiles.length}` : undefined}
+                position={driveFiles.length > 1 ? t("drive.position", { at: driveFiles.indexOf(shownDrive) + 1, count: driveFiles.length }) : undefined}
                 onPrev={stepDrive(-1)}
                 onNext={stepDrive(1)}
                 onShown={(f) => { markOpened(f.id); }}
@@ -198,14 +200,14 @@ export function ModuleViewer() {
                 <div className="pdf-viewer-bar">
                   <p>{shownPdf.name}</p>
                   <a href={shownPdf.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-                    Open in new tab
+                    {t("rd.newTab")}
                     <ExternalIcon />
                   </a>
                 </div>
                 <iframe src={shownPdf.url} title={shownPdf.name} className="pdf-frame" />
               </div>
             ) : (
-              <p className="drive-empty">Pick a file from the list.</p>
+              <p className="drive-empty">{t("rd.pick")}</p>
             )}
           </div>
         </div>

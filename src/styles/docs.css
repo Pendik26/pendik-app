@@ -23,11 +23,9 @@
 }
 
 .docs-group-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: var(--text-muted);
   margin: 0 0 0.6rem;
 }

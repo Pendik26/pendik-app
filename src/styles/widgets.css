@@ -27,7 +27,7 @@
 
 .search-result-count {
   margin: -0.75rem 0 1rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.78rem;
   color: var(--text-muted);
 }
@@ -67,10 +67,8 @@
 }
 
 .search-result-type {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: var(--accent);
 }
 

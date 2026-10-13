@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Fuse from "fuse.js";
 import { recentPages } from "../lib/recentPages";
 import { buildNavigationDocs, type SearchDoc } from "../lib/searchIndex";
-import { unfinishedToday } from "../lib/todayPlan";
+import { planText, unfinishedToday } from "../lib/todayPlan";
 import { HighlightText } from "./HighlightText";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
@@ -23,14 +23,14 @@ const TYPE_LABELS: Partial<Record<string, MessageKey>> = {
 };
 
 export function CommandPalette() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const docs = useMemo(() => buildNavigationDocs(), []);
+  const docs = useMemo(() => buildNavigationDocs(t, language), [t, language]);
   const fuse = useMemo(
     () =>
       new Fuse(docs, {
@@ -56,7 +56,7 @@ export function CommandPalette() {
   // With nothing typed: what's next on today's plan, the pages opened last, then the main pages.
   const suggestions = useMemo((): RankedDoc[] => {
     if (!open) return [];
-    const next = unfinishedToday(3).map((i) => ({ doc: { id: `next-${i.id}`, title: i.title, to: i.to }, label: "next" }));
+    const next = unfinishedToday(3).map((i) => ({ doc: { id: `next-${i.id}`, title: planText(i, t).title, to: i.to }, label: "next" }));
     const recent = recentPages()
       .slice(0, 5)
       .map((p) => ({ doc: { id: `recent-${p.path}`, title: p.title, to: p.path }, label: "recent" }));
@@ -66,7 +66,7 @@ export function CommandPalette() {
       .slice(0, Math.max(3, 10 - next.length - recent.length))
       .map((doc) => ({ doc, label: doc.type }));
     return [...next, ...recent, ...pages];
-  }, [open, docs]);
+  }, [open, docs, t]);
 
   const results: RankedDoc[] = query.trim()
     ? fuse

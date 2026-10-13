@@ -34,15 +34,17 @@ An account is optional. It adds:
   Flashcards_, and tabs for that subject's other material (flashcards, image
   occlusion, quiz, ebook, summary, modules). Click the subject's name for its
   own page, with everything it has and what's due next.
-- The **sidebar** groups the rest: _Study_ (flashcards and quizzes, with how
-  many reviews are due, image occlusion, mock exams, the exam plan), _Library_
-  (ebooks, summaries, modules, Class Drive), _Explore_ (3D anatomy, the
-  knowledge map, Virtual Lab) and _You_ (progress, leaderboard, account, this
-  help). On a phone the same groups are in the tab bar at the bottom; a dot on
-  _Study_ means reviews are due.
+- The **sidebar** keeps the everyday places in view: Home, Subjects, Exams,
+  Class Drive and Alfond. Everything else is under **More**: _Study_
+  (flashcards and quizzes, with how many reviews are due, image occlusion, the
+  exam plan), _Library_ (ebooks, summaries, modules), _Explore_ (3D anatomy,
+  the knowledge map, Virtual Lab) and _You_ (the search page, progress,
+  leaderboard, this help). Your name at the bottom opens your account. On a phone the tab bar at
+  the bottom has the same everyday places, and **More** opens the rest; a dot
+  on it means reviews are due.
 - Press <kbd>Ctrl</kbd> + <kbd>K</kbd> (<kbd>⌘</kbd> + <kbd>K</kbd> on a Mac)
-  anywhere. With nothing typed it offers today's next steps and the pages you
-  opened last; type to find any page, subject, card or question.
+  anywhere, or click **Search** at the top of the sidebar. With nothing typed
+  it offers today's next steps and the pages you opened last; type to find any page, subject, card or question.
 - Press <kbd>?</kbd> for the keyboard shortcuts of the page you're on.
 
 ## Put your block first
@@ -79,8 +81,8 @@ problem.
 
 ## Light or dark
 
-The app follows your device's light or dark setting. Use the sun/moon button in
-the sidebar to switch.
+The app follows your device's light or dark setting. Use the sun/moon button
+beside your name at the bottom of the sidebar, or the Account page, to switch.
 
 ## Where to next
 

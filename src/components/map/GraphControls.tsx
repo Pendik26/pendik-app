@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { DEFAULT_SETTINGS, RANGES, type ColorBy, type GraphSettings } from "../../lib/knowledgeGraph/graphSettings";
 import type { ForceScale } from "../../lib/knowledgeGraph/layout";
 import { ChevronIcon, CloseIcon, ResetIcon, SettingsIcon } from "./ObsIcons";
+import { useI18n } from "../../i18n/useI18n";
 
 // The graph's settings panel, laid out like Obsidian's: collapsible Filters, Groups, Display and
 // Forces sections over the top-right corner of the graph.
@@ -57,6 +58,7 @@ function Slider({ label, value, range, onChange }: { label: string; value: numbe
 }
 
 export function GraphControls({ settings, onSettings, filters, onFilters, blocks, subjects, orphanCount }: Props) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [sections, setSections] = useState<Set<string>>(() => new Set(["Filters", "Groups"]));
   const toggleSection = (name: string) => {
@@ -72,20 +74,20 @@ export function GraphControls({ settings, onSettings, filters, onFilters, blocks
 
   if (!open) {
     return (
-      <button type="button" className="obs-controls-toggle" onClick={() => { setOpen(true); }} aria-label="Graph settings" title="Graph settings">
+      <button type="button" className="obs-controls-toggle" onClick={() => { setOpen(true); }} aria-label={t("gc.settings")} title={t("gc.settings")}>
         <SettingsIcon />
       </button>
     );
   }
 
   const colorChoices: [ColorBy, string][] = [
-    ["subject", "Subject"],
-    ["mastery", "Mastery"],
-    ["none", "None"],
+    ["subject", t("gc.subject")],
+    ["mastery", t("gc.mastery")],
+    ["none", t("gc.none")],
   ];
 
   return (
-    <div className="obs-controls" role="region" aria-label="Graph settings">
+    <div className="obs-controls" role="region" aria-label={t("gc.settings")}>
       <div className="obs-controls-top">
         <button
           type="button"
@@ -94,28 +96,28 @@ export function GraphControls({ settings, onSettings, filters, onFilters, blocks
             onSettings(DEFAULT_SETTINGS);
             onFilters({ text: "", block: null, subject: null });
           }}
-          aria-label="Restore default settings"
-          title="Restore default settings"
+          aria-label={t("gc.restore")}
+          title={t("gc.restore")}
         >
           <ResetIcon />
         </button>
-        <button type="button" className="obs-icon-btn" onClick={() => { setOpen(false); }} aria-label="Close graph settings" title="Close">
+        <button type="button" className="obs-icon-btn" onClick={() => { setOpen(false); }} aria-label={t("gc.close")} title={t("drive.close")}>
           <CloseIcon />
         </button>
       </div>
 
-      <Section title="Filters" open={sections.has("Filters")} onToggle={() => { toggleSection("Filters"); }}>
+      <Section title={t("gc.filters")} open={sections.has("Filters")} onToggle={() => { toggleSection("Filters"); }}>
         <input
           type="search"
           className="obs-input"
-          placeholder="Search concepts…"
-          aria-label="Show only concepts matching"
+          placeholder={t("map.searchPh")}
+          aria-label={t("gc.matching")}
           value={filters.text}
           onChange={(e) => { onFilters({ ...filters, text: e.target.value }); }}
         />
-        <div className="obs-chip-row" role="group" aria-label="Block">
+        <div className="obs-chip-row" role="group" aria-label={t("gc.block")}>
           <button type="button" className={filters.block === null ? "obs-chip is-on" : "obs-chip"} aria-pressed={filters.block === null} onClick={() => { onFilters({ ...filters, block: null }); }}>
-            All blocks
+            {t("gc.allBlocks")}
           </button>
           {blocks.map((b) => (
             <button key={b} type="button" className={filters.block === b ? "obs-chip is-on" : "obs-chip"} aria-pressed={filters.block === b} onClick={() => { onFilters({ ...filters, block: filters.block === b ? null : b }); }}>
@@ -123,7 +125,7 @@ export function GraphControls({ settings, onSettings, filters, onFilters, blocks
             </button>
           ))}
         </div>
-        <div className="obs-chip-row" role="group" aria-label="Subject">
+        <div className="obs-chip-row" role="group" aria-label={t("gc.subject")}>
           {subjects.map((s) => (
             <button key={s.id} type="button" className={filters.subject === s.id ? "obs-chip is-on" : "obs-chip"} aria-pressed={filters.subject === s.id} onClick={() => { onFilters({ ...filters, subject: filters.subject === s.id ? null : s.id }); }}>
               <span className="obs-dot" style={{ background: `var(--map-${s.slot})` }} aria-hidden="true" />
@@ -131,12 +133,12 @@ export function GraphControls({ settings, onSettings, filters, onFilters, blocks
             </button>
           ))}
         </div>
-        <Toggle label="Bridges only" hint="Concepts in more than one subject" on={settings.bridgesOnly} onChange={(v) => { set({ bridgesOnly: v }); }} />
-        <Toggle label="Orphans" hint={`${orphanCount} with no links`} on={settings.orphans} onChange={(v) => { set({ orphans: v }); }} />
+        <Toggle label={t("gc.bridges")} hint={t("gc.bridgesHint")} on={settings.bridgesOnly} onChange={(v) => { set({ bridgesOnly: v }); }} />
+        <Toggle label={t("gc.orphans")} hint={t("gc.orphansHint", { count: orphanCount })} on={settings.orphans} onChange={(v) => { set({ orphans: v }); }} />
       </Section>
 
-      <Section title="Groups" open={sections.has("Groups")} onToggle={() => { toggleSection("Groups"); }}>
-        <div className="obs-segmented" role="radiogroup" aria-label="Color concepts by">
+      <Section title={t("gc.groups")} open={sections.has("Groups")} onToggle={() => { toggleSection("Groups"); }}>
+        <div className="obs-segmented" role="radiogroup" aria-label={t("gc.colorBy")}>
           {colorChoices.map(([value, label]) => (
             <button key={value} type="button" role="radio" aria-checked={settings.colorBy === value} className={settings.colorBy === value ? "is-on" : undefined} onClick={() => { set({ colorBy: value }); }}>
               {label}
@@ -157,32 +159,32 @@ export function GraphControls({ settings, onSettings, filters, onFilters, blocks
           <ul className="obs-groups">
             <li>
               <span className="obs-ramp" aria-hidden="true" />
-              Weaker → stronger
+              {t("map.weakerStronger")}
             </li>
             <li>
               <span className="obs-dot obs-dot-weak" aria-hidden="true" />
-              Needs work (under 50%)
+              {t("gc.needsWork")}
             </li>
             <li>
               <span className="obs-dot" style={{ background: "var(--map-unstudied)" }} aria-hidden="true" />
-              Not studied yet
+              {t("map.notStudied")}
             </li>
           </ul>
         )}
       </Section>
 
-      <Section title="Display" open={sections.has("Display")} onToggle={() => { toggleSection("Display"); }}>
-        <Toggle label="3D effect" hint="Lit spheres with depth; off is lighter" on={settings.depthEffect} onChange={(v) => { set({ depthEffect: v }); }} />
-        <Slider label="Text fade threshold" value={settings.textFade} range={RANGES.textFade} onChange={(v) => { set({ textFade: v }); }} />
-        <Slider label="Node size" value={settings.nodeSize} range={RANGES.nodeSize} onChange={(v) => { set({ nodeSize: v }); }} />
-        <Slider label="Link thickness" value={settings.linkThickness} range={RANGES.linkThickness} onChange={(v) => { set({ linkThickness: v }); }} />
+      <Section title={t("gc.display")} open={sections.has("Display")} onToggle={() => { toggleSection("Display"); }}>
+        <Toggle label={t("gc.depth")} hint={t("gc.depthHint")} on={settings.depthEffect} onChange={(v) => { set({ depthEffect: v }); }} />
+        <Slider label={t("gc.textFade")} value={settings.textFade} range={RANGES.textFade} onChange={(v) => { set({ textFade: v }); }} />
+        <Slider label={t("gc.nodeSize")} value={settings.nodeSize} range={RANGES.nodeSize} onChange={(v) => { set({ nodeSize: v }); }} />
+        <Slider label={t("gc.linkThickness")} value={settings.linkThickness} range={RANGES.linkThickness} onChange={(v) => { set({ linkThickness: v }); }} />
       </Section>
 
-      <Section title="Forces" open={sections.has("Forces")} onToggle={() => { toggleSection("Forces"); }}>
-        <Slider label="Center force" value={settings.forces.center} range={RANGES.center} onChange={(v) => { setForce("center", v); }} />
-        <Slider label="Repel force" value={settings.forces.repel} range={RANGES.repel} onChange={(v) => { setForce("repel", v); }} />
-        <Slider label="Link force" value={settings.forces.link} range={RANGES.link} onChange={(v) => { setForce("link", v); }} />
-        <Slider label="Link distance" value={settings.forces.distance} range={RANGES.distance} onChange={(v) => { setForce("distance", v); }} />
+      <Section title={t("gc.forces")} open={sections.has("Forces")} onToggle={() => { toggleSection("Forces"); }}>
+        <Slider label={t("gc.center")} value={settings.forces.center} range={RANGES.center} onChange={(v) => { setForce("center", v); }} />
+        <Slider label={t("gc.repel")} value={settings.forces.repel} range={RANGES.repel} onChange={(v) => { setForce("repel", v); }} />
+        <Slider label={t("gc.link")} value={settings.forces.link} range={RANGES.link} onChange={(v) => { setForce("link", v); }} />
+        <Slider label={t("gc.distance")} value={settings.forces.distance} range={RANGES.distance} onChange={(v) => { setForce("distance", v); }} />
       </Section>
     </div>
   );

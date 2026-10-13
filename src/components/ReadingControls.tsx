@@ -1,5 +1,6 @@
 import { READING_FONT_SCALES, type ReadingPrefs } from "../hooks/useReadingPrefs";
 import { PrinterIcon } from "./icons";
+import { useI18n } from "../i18n/useI18n";
 
 interface ReadingControlsProps {
   prefs: ReadingPrefs;
@@ -7,6 +8,7 @@ interface ReadingControlsProps {
 }
 
 export function ReadingControls({ prefs, onChange }: ReadingControlsProps) {
+  const { t } = useI18n();
   const idx = READING_FONT_SCALES.indexOf(prefs.fontScale);
   const safeIdx = idx === -1 ? 1 : idx;
 
@@ -16,14 +18,14 @@ export function ReadingControls({ prefs, onChange }: ReadingControlsProps) {
   };
 
   return (
-    <div className="reading-controls" role="group" aria-label="Reading display settings">
+    <div className="reading-controls" role="group" aria-label={t("read.settings")}>
       <button
         type="button"
         className="reading-control-btn"
         onClick={() => { stepScale(-1); }}
         disabled={safeIdx === 0}
-        aria-label="Decrease text size"
-        title="Decrease text size"
+        aria-label={t("read.smaller")}
+        title={t("read.smaller")}
       >
         A−
       </button>
@@ -33,8 +35,8 @@ export function ReadingControls({ prefs, onChange }: ReadingControlsProps) {
         className="reading-control-btn"
         onClick={() => { stepScale(1); }}
         disabled={safeIdx === READING_FONT_SCALES.length - 1}
-        aria-label="Increase text size"
-        title="Increase text size"
+        aria-label={t("read.larger")}
+        title={t("read.larger")}
       >
         A+
       </button>
@@ -43,7 +45,7 @@ export function ReadingControls({ prefs, onChange }: ReadingControlsProps) {
         className={prefs.accessibleFont ? "reading-control-btn active" : "reading-control-btn"}
         onClick={() => { onChange({ ...prefs, accessibleFont: !prefs.accessibleFont }); }}
         aria-pressed={prefs.accessibleFont}
-        title="Toggle accessible font (Atkinson Hyperlegible)"
+        title={t("read.font")}
       >
         Aa
       </button>
@@ -51,8 +53,8 @@ export function ReadingControls({ prefs, onChange }: ReadingControlsProps) {
         type="button"
         className="reading-control-btn"
         onClick={() => { window.print(); }}
-        aria-label="Print or save as PDF"
-        title="Print or save as PDF"
+        aria-label={t("read.print")}
+        title={t("read.print")}
       >
         <PrinterIcon />
       </button>

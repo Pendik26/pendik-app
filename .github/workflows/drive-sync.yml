@@ -1,6 +1,7 @@
-# Copies the class Google Drive into the app every morning (and on demand), by calling the
-# drive-sync Edge Function until it says the sync is finished.
-# Repository secrets: SUPABASE_URL, DRIVE_SYNC_SECRET (the same value as the function's secret).
+# Copies the class Google Drive into the app every morning (and on demand), by calling
+# /api/drive-sync until it says the sync is finished.
+# Repository secrets: APP_URL (the site's address, e.g. https://pendik-app.vercel.app) and
+# DRIVE_SYNC_SECRET (the same value as the site's DRIVE_SYNC_SECRET setting).
 name: Drive sync
 
 on:
@@ -21,17 +22,17 @@ jobs:
     steps:
       - name: Sync
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          APP_URL: ${{ secrets.APP_URL }}
           DRIVE_SYNC_SECRET: ${{ secrets.DRIVE_SYNC_SECRET }}
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$DRIVE_SYNC_SECRET" ]; then
-            echo "::notice::Drive sync isn't set up (SUPABASE_URL / DRIVE_SYNC_SECRET secrets)."
+          if [ -z "$APP_URL" ] || [ -z "$DRIVE_SYNC_SECRET" ]; then
+            echo "::notice::Drive sync isn't set up (APP_URL / DRIVE_SYNC_SECRET secrets)."
             exit 0
           fi
           for call in $(seq 1 40); do
             result=$(curl -sS --fail-with-body --max-time 120 -X POST \
               -H "x-sync-secret: $DRIVE_SYNC_SECRET" -H "content-type: application/json" \
-              -d '{}' "$SUPABASE_URL/functions/v1/drive-sync")
+              -d '{}' "$APP_URL/api/drive-sync")
             echo "$result"
             status=$(echo "$result" | jq -r .status)
             case "$status" in

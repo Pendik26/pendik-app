@@ -1,3 +1,4 @@
+import { useI18n } from "../../i18n/useI18n";
 export interface PlotSeries {
   label: string;
   /** CSS class suffix for the series colour: "a", "b" or "c". */
@@ -31,8 +32,9 @@ function ticks(lo: number, hi: number): number[] {
 
 /** "Plot Data": the recorded runs as a line chart, one line per series. */
 export function DataPlot({ series, xLabel, yLabel }: Props) {
+  const { t } = useI18n();
   const all = series.flatMap((s) => s.points);
-  if (all.length === 0) return <p className="lab-empty">Record some data first.</p>;
+  if (all.length === 0) return <p className="lab-empty">{t("lab.recordFirst")}</p>;
   const xs = all.map((p) => p[0]);
   const xt = ticks(Math.min(...xs), Math.max(...xs));
   const yt = ticks(0, Math.max(0.5, ...all.map((p) => p[1])));

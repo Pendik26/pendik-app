@@ -27,7 +27,7 @@ export function subjectHue(id: string): number {
 }
 
 export function subjectAccent(id: string): string {
-  return `hsl(${subjectHue(id)}, 65%, 60%)`;
+  return `hsl(${subjectHue(id)}, 36%, 52%)`;
 }
 
 /** Inline style that sets --subject-hue — pair with the "subject-tinted" CSS class. */

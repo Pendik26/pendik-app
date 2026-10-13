@@ -1,7 +1,6 @@
 import { useSyncExternalStore } from "react";
 import type { Track } from "../context/accountContextValue";
-import { db, errorCode, rpc } from "./db/client";
-import type { Json } from "./db/types";
+import { errorCode, must, rpc } from "./db/client";
 
 // Exam and practice packages, run by the database (see database/schema/04_exams.sql): the
 // browser shows questions and sends answers; the server keeps time, holds the keys and grades.
@@ -51,7 +50,7 @@ export interface ExamRecords {
   attempts: AttemptSummary[];
 }
 
-interface PackageRow {
+export interface PackageRow {
   id: string;
   title: string;
   block: string | null;
@@ -122,23 +121,17 @@ function setRecords(next: ExamRecords) {
   for (const l of listeners) l();
 }
 
-export const PACKAGE_COLUMNS = "id, title, block, source, year, mode, time_limit_minutes, track_best, status, question_count, track";
-const ATTEMPT_COLUMNS =
-  "id, package_id, title, mode, status, score, correct_count, wrong_count, blank_count, time_limit_minutes, started_at, finished_at";
-
 /** Reads the published packages and the student's attempts (at sign-in and after a submit). */
 export async function loadExamRecords(): Promise<void> {
-  const [packages, attempts] = await Promise.all([
-    db.from("package_summaries").select(PACKAGE_COLUMNS).eq("status", "published").order("title"),
-    db.from("attempts").select(ATTEMPT_COLUMNS).order("started_at", { ascending: false }).limit(500),
-  ]);
-  if (packages.error) throw packages.error;
-  if (attempts.error) throw attempts.error;
+  const [packages, attempts] = await Promise.all([rpc<PackageRow[]>("package_summaries"), rpc<AttemptRow[]>("my_attempts")]);
+  if (packages.error) throw new Error(packages.error.message);
+  if (attempts.error) throw new Error(attempts.error.message);
   loadedAt = Date.now();
   setRecords({
     loaded: true,
-    packages: (packages.data as PackageRow[]).map(toPackage),
-    attempts: (attempts.data as AttemptRow[]).map(toAttempt),
+    // Admins are sent drafts too; the student-facing lists only show what's published.
+    packages: packages.data.filter((p) => p.status === "published").map(toPackage),
+    attempts: attempts.data.map(toAttempt),
   });
 }
 
@@ -362,17 +355,11 @@ export function startBankPractice(c: BankChoice): Promise<{ attempt_id: string; 
 
 /** The ids of the questions the student has bookmarked. */
 export async function bookmarkedIds(): Promise<Set<string>> {
-  const { data, error } = await db.from("bookmarks").select("question_id");
-  if (error) throw new Error(error.message);
-  // View columns come back typed as nullable; these never are.
-  return new Set(data.flatMap((r) => (r.question_id ? [r.question_id] : [])));
+  return new Set(await must(rpc<string[]>("bookmark_ids")));
 }
 
-export async function setBookmark(questionId: string, on: boolean, userId: string): Promise<void> {
-  const { error } = on
-    ? await db.from("bookmarks").upsert({ user_id: userId, question_id: questionId }, { onConflict: "user_id,question_id", ignoreDuplicates: true })
-    : await db.from("bookmarks").delete().eq("user_id", userId).eq("question_id", questionId);
-  if (error) throw new Error(error.message);
+export async function setBookmark(questionId: string, on: boolean): Promise<void> {
+  await must(rpc("set_bookmark", { p_question_id: questionId, p_on: on }));
 }
 
 export interface BookmarkedQuestion {
@@ -446,7 +433,7 @@ export function saveAttempt(
   return call(rpc("save_attempt", {
     p_attempt_id: attemptId,
     p_holder: tabHolderId(),
-    p_answers: answers as Json,
+    p_answers: answers,
     p_flagged: flagged,
     p_tab_leaves: tabLeaves,
   }));
@@ -457,7 +444,7 @@ export function takeOverAttempt(attemptId: string): Promise<void> {
 }
 
 export async function submitAttempt(attemptId: string, answers: Record<string, AttemptAnswer>): Promise<void> {
-  await call(rpc("submit_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId(), p_answers: answers as Json }));
+  await call(rpc("submit_attempt", { p_attempt_id: attemptId, p_holder: tabHolderId(), p_answers: answers }));
   await loadExamRecords().catch(() => undefined);
 }
 

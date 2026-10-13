@@ -52,7 +52,7 @@
 }
 
 .io-count {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.78rem;
   opacity: 0.85;
 }
@@ -201,7 +201,7 @@
 }
 
 .btn-grade .io-interval {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
   opacity: 0.75;
   margin-left: 0.15rem;
@@ -296,7 +296,7 @@
 .io-chip {
   --chip: var(--io-new);
   font: inherit;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.78rem;
   min-width: 2rem;
   height: 2rem;
@@ -377,7 +377,7 @@
 }
 
 .io-keys dt {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   color: var(--text);
 }
 

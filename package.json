@@ -19,18 +19,15 @@
     "test:watch": "vitest",
     "graph:relations": "node scripts/graph-relations.mjs",
     "docs:wiki": "node scripts/wiki.mjs",
-    "supabase": "node scripts/supabase.mjs",
-    "db:test": "bash database/tests/run.sh && bash database/tests/schema-check.sh",
-    "db:push": "node scripts/supabase.mjs db push",
-    "db:first-admin": "bash database/seeds/first-admin.sh",
-    "db:content": "node scripts/content-catalog.mjs",
-    "db:types": "node scripts/supabase.mjs gen types typescript --linked --schema public > src/lib/db/types.ts"
+    "content:catalog": "node scripts/content-catalog.mjs",
+    "content:check": "node scripts/content-catalog.mjs --check"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.117.3",
+    "better-auth": "^1.7.7",
     "d3-force": "^3.0.0",
     "fuse.js": "^7.5.0",
     "marked": "^18.0.13",
+    "mongodb": "^7.7.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4",

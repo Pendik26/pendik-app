@@ -54,10 +54,8 @@
 
 .summary-content th {
   background: var(--surface-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: var(--text-muted);
 }
 
@@ -86,7 +84,7 @@
 .summary-content figure.diagram .figure-source {
   display: block;
   margin-top: 0.3rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.7rem;
   letter-spacing: 0.02em;
   opacity: 0.8;
@@ -163,7 +161,7 @@
 }
 
 .reading-control-scale {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
   color: var(--text-muted);
   min-width: 2.4rem;

@@ -1,6 +1,6 @@
 # 3D anatomy
 
-**3D anatomy** (in the sidebar under Read) is a model of the whole body that
+**3D anatomy** (in the sidebar under More › Explore) is a model of the whole body that
 you can turn, take apart and click on. It has the skeleton, joints and
 ligaments, muscles, heart and vessels, nerves, organs, the lymphatic system,
 skin and body regions: about 1,800 named structures.

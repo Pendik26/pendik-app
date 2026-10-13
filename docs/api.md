@@ -1,131 +1,34 @@
-# Server API
+# API
 
-There's no server of our own. The browser talks to Supabase:
+One Vercel Function ([`api/index.ts`](../api/index.ts)) serves `/api/*`; the routes are in
+[`server/app.ts`](../server/app.ts).
 
-- **Tables and SQL functions** through supabase-js (`src/lib/db/client.ts`),
-  with the signed-in student's token. Row level security and the functions'
-  own checks decide what each call may do; they're described in
-  [database.md](database.md). The app's wrappers are in `src/lib/exams.ts`
-  (attempts), `src/lib/admin.ts` (admin pages), `src/lib/leaderboard.ts`,
-  `src/lib/classReadiness.ts` and `src/lib/progressSync.ts`.
-- **Three Edge Functions** (Deno, in `database/functions/`) for what needs a
-  secret: the AI key, the service role, or Google's credentials. They're
-  below.
+| Route | |
+| --- | --- |
+| `/api/auth/*` | Better Auth: sign-in (`/sign-in/email`), sign-out, change password, session, Google |
+| `POST /api/rpc/<name>` | the app's functions, below |
+| `POST /api/ai/explain`, `/api/ai/chat` | AI answers, streamed as plain text (needs sign-in; daily allowance) |
+| `POST /api/drive-sync` | one step of the Drive sync (the `x-sync-secret` header, or an admin) |
+| `GET /api/config` | what the site has switched on |
 
-Shared code for the functions is in `database/functions/_shared/`. It has no
-imports beyond its own folder, so the same files are unit-tested with Vitest
-(`*.test.ts` next to them) and typechecked with `tsconfig.functions.json`.
+`POST /api/rpc/<name>` takes a JSON object and answers `{ "data": … }` or `{ "error": "code" }` with an HTTP status
+(401 `not_signed_in`, 403 `admins_only` / `locked` / `not_on_roster`, 400 for a refused argument). Argument names
+start with `p_`.
 
-## Conventions
+**Student functions:** `my_account`, `update_my_settings`, `password_changed`, `leaderboard`, `save_readiness`,
+`class_readiness`, `record_reviews`, `record_quiz`, `finish_chapter`, `record_study_day`, `user_state_list`,
+`user_state_save`, `package_summaries`, `my_attempts`, `start_attempt`, `get_attempt`, `save_attempt`,
+`take_over_attempt`, `submit_attempt`, `abandon_attempt`, `get_attempt_result`, `bank_options`,
+`start_bank_practice`, `bookmark_ids`, `set_bookmark`, `my_bookmarks`, `drive_files`.
 
-- Address: `https://<project-ref>.supabase.co/functions/v1/<name>`.
-- All take `POST` with a JSON body and answer JSON (except the AI's text
-  stream). Errors are `{ "error": "message" }` with a fitting status.
-- Browsers from addresses not in the `APP_ORIGINS` secret get no CORS
-  headers, so their calls fail.
-- `ai` and `admin-accounts` need `Authorization: Bearer <access token>` (and
-  the `apikey` header supabase-js sends); Supabase checks the token before
-  the function runs (`verify_jwt = true` in `database/config.toml`).
+**Admin functions** (refused for anyone else): `admin_list_roster`, `admin_add_students`, `admin_set_track`,
+`admin_remove_student`, `admin_set_role`, `admin_accounts` (activate, lock, unlock, reset), `admin_audit_log`,
+`admin_search_questions`, `admin_question_facets`, `admin_update_question`, `admin_delete_question`,
+`admin_import_questions`, `admin_package_questions`, `admin_packages_from_import`, `admin_set_package_status`,
+`admin_update_package`, `admin_delete_package`, `admin_drive_files`, `admin_set_file_order`,
+`admin_set_file_hidden`, `admin_sync_runs`.
 
-## `ai`: "Explain this" and Alfond
+Exams and quizzes are graded on the server; the browser only sends what the student chose.
 
-For signed-in students on the roster. Secrets: `AI_BASE_URL`, `AI_API_KEY`,
-`AI_MODEL`, `AI_DAILY_LIMIT`, `APP_ORIGINS`. Called by `src/lib/aiStream.ts`.
-
-### POST /ai/explain
-
-```json
-{
-  "subject": "Physiology",
-  "question": "A triad consists of:",
-  "options": ["…", "…"],
-  "answer": "One T-tubule and two terminal cisternae",
-  "chosen": "Two T-tubules and one terminal cisterna",
-  "explanation": "The bank's own explanation",
-  "notes": [{ "title": "Chapter 1: The triad", "text": "…" }]
-}
-```
-
-`question` and `answer` are required; the rest is optional and trimmed to
-fixed limits (8 options, 4 notes of 2,400 characters). The notes are the
-matching passages the browser already found in the ebook and summary.
-
-### POST /ai/chat
-
-```json
-{
-  "messages": [{ "role": "user", "content": "What does this mean?" }],
-  "page": {
-    "title": "Chapter 2 · Physiology",
-    "path": "/ebooks/1.2/physiology/chapter-02",
-    "text": "…"
-  }
-}
-```
-
-The last 12 messages are kept (3,000 characters each), and the conversation
-must end with the student's message. `page` is optional (up to 6,000
-characters of text).
-
-Both take one answer from the student's daily allowance (`ai_take()`) before
-calling the gateway, and give it back (`ai_refund()`) if the answer fails.
-The response is a plain-text stream; the header `x-ai-remaining` says how
-many answers are left today. `401` without a valid token, `403` for an
-account that isn't on the roster, `429` with the allowance used up, `503`
-with no AI configured.
-
-## `admin-accounts`: activate, lock, unlock, reset
-
-Admins only (the function checks `accounts.role`). Uses the service role to
-change Supabase Auth users. Called by `accountAction()` and
-`activateAccounts()` in `src/lib/admin.ts`.
-
-```json
-{ "action": "activate", "student_ids": ["2601001", "2601002"] }
-```
-
-Creates the Auth user (`<nim>@pendik26.internal`, password `pendik26` + NIM)
-and the account for each roster student, up to 300 at once. Answers
-`{ "results": [{ "student_id": "2601001", "ok": true }, …] }`, with a
-`message` on each one that failed.
-
-```json
-{ "action": "lock", "user_id": "<uuid>" }
-{ "action": "unlock", "user_id": "<uuid>" }
-{ "action": "reset", "user_id": "<uuid>" }
-```
-
-Lock bans the Auth user, so they can't sign in or renew their session;
-unlock lifts it; reset sets the password back to the first password and makes
-them change it at next sign-in. An admin can't lock or reset their own account.
-
-## `drive-sync`: copy the class Drive
-
-Called by the daily GitHub Action with `x-sync-secret: <DRIVE_SYNC_SECRET>`,
-or by an admin from Admin → Drive with their token (`verify_jwt = false`, so
-the function checks both itself). Secrets: `GOOGLE_SERVICE_ACCOUNT`,
-`DRIVE_ROOT_FOLDER_ID`, `DRIVE_SYNC_SECRET`, `DRIVE_SYNC_BUDGET_MS`,
-`APP_ORIGINS`.
-
-```json
-{}
-```
-
-Does one step of the current sync (or starts one): walks folders until its
-time budget runs out, saves the files it found and where it got to, and
-answers the run's state, `{ "status": "running" | "done" | "held" | "failed",
-"filesFound": …, "remaining": … }`. Call again while it says `running`.
-
-```json
-{ "action": "apply", "run_id": "<uuid>" }
-```
-
-Admins only: lets a held run go ahead (marks the files it didn't see as
-missing).
-
-## Tests
-
-```sh
-npm test                 # Vitest, including database/functions/_shared/*.test.ts
-npm run db:test          # the SQL rules and the schema check, see database.md
-```
+Tests: `npm test` runs everything; the API's integration tests need `MONGODB_TEST_URI` (a throwaway MongoDB; each run
+makes and drops its own database).

@@ -6,14 +6,16 @@ import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import { UpcomingSubjectCard } from "../components/UpcomingSubjectCard";
 import type { QuizAttempt } from "../types/content";
+import { useI18n } from "../i18n/useI18n";
 
 export function QuizSubjects() {
   const groups = groupByBlock(quizSubjects);
+  const { t } = useI18n();
 
   return (
     <section className="page">
-      <h1>Quizzes</h1>
-      <p className="subtitle">Multiple-choice question banks with instant scoring.</p>
+      <h1>{t("lib.quizzesTitle")}</h1>
+      <p className="subtitle">{t("lib.quizzesIntro")}</p>
       {groups.map(({ block, subjects, upcoming }) => (
         <div key={block.id} className="block-section">
           <h2 className="block-section-heading">{block.label}</h2>
@@ -35,23 +37,23 @@ export function QuizSubjects() {
                   <p>
                     {bank && (
                       <>
-                        {bank.length} questions
+                        {t("lib.questions", { count: bank.length })}
                         {dueCount > 0 && (
                           <>
                             {" "}
-                            · <strong>{dueCount} due</strong>
+                            · <strong>{t("lib.due", { count: dueCount })}</strong>
                           </>
                         )}
                         {last && (
                           <>
                             {" "}
-                            · last score <strong>{last.score}/{last.total}</strong>
+                            · {t("lib.lastScore", { score: last.score, total: last.total })}
                           </>
                         )}
                       </>
                     )}
                     {bank && games && " · "}
-                    {games && "Interactive quiz"}
+                    {games && t("lib.interactiveQuiz")}
                   </p>
                 </Link>
               );

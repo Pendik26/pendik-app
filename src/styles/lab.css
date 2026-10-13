@@ -11,10 +11,8 @@
 
 .lab-kicker {
   margin: 0.25rem 0 0.2rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -87,7 +85,7 @@
   border-radius: 50%;
   background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: var(--accent);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
 }
 
@@ -107,7 +105,7 @@
   flex: none;
   font-size: 0.75rem;
   color: var(--accent);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 /* Activity page */
@@ -128,7 +126,7 @@
   border: 1px solid var(--border);
   color: var(--text-muted);
   text-decoration: none;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.85rem;
 }
 
@@ -214,7 +212,7 @@
 .lab-rig-small {
   font-size: 10px;
   fill: var(--text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 .lab-rig-thread {
@@ -264,7 +262,7 @@
 .lab-rig-weight-label {
   font-size: 10px;
   fill: #fff;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 .lab-scope-wrap {
@@ -297,7 +295,7 @@
 .lab-scope-tick {
   font-size: 11px;
   fill: var(--lab-screen-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 .lab-scope-label {
@@ -364,13 +362,13 @@
 }
 
 .lab-scope-legend b {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
   color: var(--text);
 }
 
 .lab-scope-legend-x {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   color: var(--text);
 }
 
@@ -468,7 +466,7 @@
   background: var(--surface-2);
   color: var(--text);
   text-align: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 1rem;
 }
 
@@ -489,7 +487,7 @@
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--text);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   cursor: pointer;
 }
 
@@ -535,7 +533,7 @@
 
 .lab-readouts dd {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 1.05rem;
   font-weight: 600;
 }
@@ -593,7 +591,7 @@
 }
 
 .lab-table td {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 .lab-table th:first-child,
@@ -654,7 +652,7 @@
 .lab-plot-tick {
   font-size: 11px;
   fill: var(--text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
 }
 
 .lab-plot-label {
@@ -718,7 +716,7 @@
 }
 
 .lab-questions-score {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.85rem;
   display: inline-flex;
   gap: 0.75rem;

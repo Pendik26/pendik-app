@@ -4,7 +4,7 @@
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-Postgres-3ECF8E?logo=supabase&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-installable-2dd4a7)
 
 The class app for the Pendik 26 medical students, organized the way the
@@ -16,8 +16,7 @@ with an English toggle.
 
 Only students on the class roster can sign in, with their NIM or a linked
 Google account. Progress, exam attempts and the past papers live in one
-Supabase project (Postgres with row level security, plus three Edge
-Functions); study content ships with the site as JSON, Markdown and PDF
+MongoDB database behind a small API (Better Auth for sign-in); study content ships with the site as JSON, Markdown and PDF
 files. It installs as a PWA and works offline from what's already loaded.
 
 ## Screenshots
@@ -320,8 +319,8 @@ files. It installs as a PWA and works offline from what's already loaded.
   [server API](docs/api.md), the [3D anatomy atlas](docs/atlas-3d.md), and
   [how the numbers are worked out](docs/calculations.md), every formula from
   the Virtual Lab to leaderboard points.
-- **Setting it up:** [deploying](docs/deploying.md), from a new Supabase
-  project to the first admin.
+- **Setting it up:** [deploying](docs/deploying.md), from a new MongoDB
+  cluster to the first admin.
 
 All of it is also on the [wiki](https://github.com/Pendik26/pendik-app/wiki),
 regenerated from `docs/` and `content/help/` on every push.
@@ -332,12 +331,12 @@ regenerated from `docs/` and `content/help/` on every push.
 git clone https://github.com/Pendik26/pendik-app.git
 cd pendik-app
 npm install
-cp .env.example .env.local   # fill in VITE_SUPABASE_URL and the publishable key
+cp .env.example .env.local   # fill in MONGODB_URI and BETTER_AUTH_SECRET
 npm run dev                  # http://localhost:5173
 ```
 
-Every page needs sign-in, so the app needs a Supabase project: a hosted one
-(see [deploying](docs/deploying.md)) or a local one with `npm run supabase -- start`.
+Every page needs sign-in, so the app needs a MongoDB database: an Atlas cluster
+(see [deploying](docs/deploying.md)) or a local `mongo:7` in Docker.
 Scripts, tests and conventions are in [development](docs/development.md).
 
 ## Adding content
@@ -354,9 +353,8 @@ privacy checklist are in the [content guide](docs/content-guide.md).
 ## Data and privacy
 
 - Progress, exam attempts and settings that follow you are stored in the
-  Supabase database under your account, with your NIM, name, class and cohort
-  from the roster. Row level security lets each student read only their own
-  rows; admins see the roster and account states, not anyone's answers.
+  MongoDB database under your account, with your NIM, name, class and cohort
+  from the roster. The API only ever returns a student's own rows; admins see the roster and account states, not anyone's answers.
 - This device keeps only its own settings (theme, language, sidebar, recent
   pages); resetting them never touches your progress.
 - Nothing is shared with classmates unless you join the leaderboard, which

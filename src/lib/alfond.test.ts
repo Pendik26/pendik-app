@@ -3,8 +3,7 @@ import { alfondState, clearAlfond, retryAlfond, sendToAlfond } from "./alfond";
 
 // A signed-in student, so the AI request goes out with their token.
 vi.mock("./db/client", () => ({
-  currentSession: async () => ({ access_token: "token" }),
-  fetchFunction: (path: string, _session: unknown, init: RequestInit) => fetch(`/functions/v1/${path}`, init),
+  apiFetch: (path: string, init: RequestInit) => fetch(`/api/${path}`, init),
 }));
 
 let snapshot: ReturnType<typeof alfondState>;

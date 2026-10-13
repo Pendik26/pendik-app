@@ -159,10 +159,8 @@
 }
 
 .readiness-summary-block {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -453,10 +451,8 @@ a.meter:hover .meter-label {
 
 .weak-spots h3 {
   margin: 0 0 0.45rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -552,10 +548,8 @@ a.meter:hover .meter-label {
 }
 
 .milestone-next-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -980,31 +974,29 @@ a.meter:hover .meter-label {
 .today {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin: 0.5rem 0 2rem;
+  gap: 1.5rem;
+  margin: 1.5rem 0 0;
 }
 
 .today-head {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
 }
 
 .today-date {
-  margin: 0 0 0.2rem;
+  margin: 0;
   color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
 .today-title {
   margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  line-height: 1.1;
+  font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.15;
 }
 
 .today-chip {
@@ -1024,11 +1016,11 @@ a.meter:hover .meter-label {
 .today-chip svg {
   width: 14px;
   height: 14px;
-  color: var(--accent);
+  color: var(--text-muted);
 }
 
 a.today-chip:hover {
-  border-color: var(--accent);
+  border-color: var(--border-strong);
   color: var(--text);
 }
 
@@ -1045,13 +1037,11 @@ a.today-chip:hover {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.25rem 1.35rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
-    var(--surface);
-  box-shadow: var(--glass-shadow);
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
 }
 
 .today-card-meta {
@@ -1096,17 +1086,14 @@ a.today-chip:hover {
 }
 
 .today-kicker {
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: var(--text-muted);
+  font-size: 0.82rem;
 }
 
 .today-next-title {
   margin: 0;
-  font-size: clamp(1.25rem, 2.6vw, 1.6rem);
-  line-height: 1.2;
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  line-height: 1.25;
 }
 
 .today-next-detail {
@@ -1116,8 +1103,8 @@ a.today-chip:hover {
 }
 
 .today-start {
-  padding: 0.85rem 1.8rem;
-  font-size: 1rem;
+  padding: 0.7rem 1.4rem;
+  font-size: 0.95rem;
 }
 
 .today-extras {
@@ -1159,17 +1146,18 @@ a.today-chip:hover {
 
 /* First visit: which block? */
 .block-picker {
-  padding: 1.1rem 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
-  border-radius: var(--radius-lg);
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   background: var(--surface);
+  box-shadow: var(--shadow-md);
 }
 
 .block-picker-title {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .block-picker-hint {
@@ -1191,11 +1179,16 @@ a.today-chip:hover {
   padding: 0.75rem 0.9rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--surface-2);
+  background: var(--bg);
   color: var(--text);
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.block-picker-option strong {
+  font-weight: 500;
 }
 
 .block-picker-option span {
@@ -1203,7 +1196,11 @@ a.today-chip:hover {
   font-size: 0.84rem;
 }
 
-.block-picker-option:hover,
+.block-picker-option:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
 .block-picker-option.is-on {
   border-color: var(--accent);
 }
@@ -1217,9 +1214,9 @@ a.today-chip:hover {
   flex-wrap: wrap;
   margin: 1.25rem 0 0;
   padding: 0.9rem 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  background: var(--surface);
   text-align: left;
 }
 
@@ -1238,6 +1235,7 @@ a.today-chip:hover {
 
 /* Home: the other blocks, folded */
 .other-blocks {
+  margin-top: 2.5rem;
   border-top: 1px solid var(--border);
   padding-top: 1rem;
 }
@@ -1248,7 +1246,7 @@ a.today-chip:hover {
   gap: 0.6rem;
   cursor: pointer;
   color: var(--text);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .other-blocks > summary span {

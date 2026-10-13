@@ -1,7 +1,9 @@
 import type { QuizAttempt } from "../types/content";
+import { useI18n } from "../i18n/useI18n";
 
 /** Compact trend accessory for a quiz's score history — de-emphasis line, accent end-marker. */
 export function ScoreSparkline({ history }: { history: QuizAttempt[] }) {
+  const { t } = useI18n();
   const points = history.slice(-12);
   if (points.length < 2) return null;
 
@@ -31,7 +33,7 @@ export function ScoreSparkline({ history }: { history: QuizAttempt[] }) {
       width={w}
       height={h}
       role="img"
-      aria-label={`Score trend over the last ${points.length} attempts, most recent ${Math.round(ratios[ratios.length - 1] * 100)} percent`}
+      aria-label={t("spark.aria", { count: points.length, pct: Math.round(ratios[ratios.length - 1] * 100) })}
     >
       <path
         d={path}

@@ -1,8 +1,6 @@
-import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
-import { StreakBadge } from "./StreakBadge";
-import { QuizDueBadge } from "./QuizDueBadge";
 import { PulseLine } from "./PulseLine";
 import { OPEN_COMMAND_PALETTE_EVENT } from "./CommandPalette";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -34,7 +32,6 @@ import {
 import { useAccount } from "../hooks/useAccount";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
-import { LanguageSwitch } from "./LanguageSwitch";
 
 interface NavItem {
   to: string;
@@ -49,29 +46,29 @@ interface NavItem {
 }
 
 interface NavGroup {
-  /** Shown above the group in the sidebar; the first group has none. */
+  /** Shown above the group; the first group has none. */
   label?: string;
   items: NavItem[];
 }
 
-// Grouped by what the student is doing: studying (with what's due), reading, exploring, and
-// their own pages. Search lives in the sidebar footer (and the phone tab bar), so it isn't
-// repeated here.
-const groups: NavGroup[] = [
-  {
-    items: [
-      { to: "/", label: "nav.home", end: true, icon: <HomeIcon /> },
-      { to: "/subjects", label: "nav.subjects", icon: <GridIcon /> },
-      { to: "/alfond", label: "nav.alfond", icon: <AlfondIcon /> },
-    ],
-  },
+// The few places most students go every day are always in view. Everything else (each study
+// tool on its own, the library, the extras and the student's own pages) sits under one "More"
+// that stays closed until it's wanted, so the sidebar reads at a glance.
+const mainLinks: NavItem[] = [
+  { to: "/", label: "nav.home", end: true, icon: <HomeIcon /> },
+  { to: "/subjects", label: "nav.subjects", icon: <GridIcon /> },
+  { to: "/exam", label: "nav.exams", icon: <TimerIcon /> },
+  { to: "/drive", label: "nav.drive", icon: <DriveIcon /> },
+  { to: "/alfond", label: "nav.alfond", icon: <AlfondIcon /> },
+];
+
+const moreGroups: NavGroup[] = [
   {
     label: "nav.study",
     items: [
       { to: "/flashcards", label: "nav.flashcards", icon: <CardsIcon />, due: "cards" },
       { to: "/quizzes", label: "nav.quizzes", icon: <QuizIcon />, due: "questions" },
       { to: "/occlusion", label: "nav.occlusion", icon: <OcclusionIcon /> },
-      { to: "/exam", label: "nav.exams", icon: <TimerIcon /> },
       { to: "/plan", label: "nav.plan", icon: <CalendarIcon /> },
     ],
   },
@@ -81,7 +78,6 @@ const groups: NavGroup[] = [
       { to: "/ebooks", label: "nav.ebooks", icon: <BookIcon /> },
       { to: "/summaries", label: "nav.summaries", icon: <SummaryIcon /> },
       { to: "/modules", label: "nav.modules", icon: <SlidesIcon /> },
-      { to: "/drive", label: "nav.drive", icon: <DriveIcon /> },
     ],
   },
   {
@@ -95,23 +91,48 @@ const groups: NavGroup[] = [
   {
     label: "nav.you",
     items: [
+      { to: "/search", label: "nav.search", icon: <SearchIcon /> },
       { to: "/progress", label: "nav.progress", icon: <ProgressIcon /> },
       { to: "/leaderboard", label: "nav.leaderboard", icon: <TrophyIcon /> },
-      { to: "/account", label: "nav.account", icon: <UserIcon /> },
       { to: "/docs", label: "nav.help", icon: <HelpIcon /> },
       { to: "/admin", label: "nav.admin", icon: <ShieldIcon />, admin: true },
     ],
   },
 ];
 
-/** The phone tab bar: two direct tabs and three that open their groups as a sheet. */
+/** The phone tab bar: four direct tabs and "More", which opens everything else as a sheet. */
 const tabs: { id: string; label: string; icon: ReactNode; to?: string; sections?: NavGroup[] }[] = [
   { id: "home", label: "nav.home", icon: <HomeIcon />, to: "/" },
-  { id: "study", label: "nav.study", icon: <CardsIcon />, sections: [{ items: [groups[0].items[1], ...groups[1].items] }] },
-  { id: "library", label: "nav.library", icon: <BookIcon />, sections: [groups[2], groups[3]] },
-  { id: "search", label: "nav.search", icon: <SearchIcon />, to: "/search" },
-  { id: "me", label: "nav.me", icon: <UserIcon />, sections: [{ items: [groups[0].items[2], ...groups[4].items] }] },
+  { id: "subjects", label: "nav.subjects", icon: <GridIcon />, to: "/subjects" },
+  { id: "exam", label: "nav.exams", icon: <TimerIcon />, to: "/exam" },
+  { id: "drive", label: "nav.drive", icon: <DriveIcon />, to: "/drive" },
+  {
+    id: "more",
+    label: "nav.more",
+    icon: <MoreIcon />,
+    sections: [
+      ...moreGroups.slice(0, 3),
+      {
+        label: "nav.you",
+        items: [
+          { to: "/alfond", label: "nav.alfond", icon: <AlfondIcon /> },
+          { to: "/account", label: "nav.account", icon: <UserIcon /> },
+          ...moreGroups[3].items,
+        ],
+      },
+    ],
+  },
 ];
+
+function MoreIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="5.5" cy="12" r="1.6" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+      <circle cx="18.5" cy="12" r="1.6" fill="currentColor" />
+    </svg>
+  );
+}
 
 /** Groups as this student sees them: in their language, admin links only for admins. */
 function useNavGroups(): <T extends { label?: string; items: NavItem[] }>(list: T[]) => T[] {
@@ -175,10 +196,9 @@ export function MobileTabBar() {
         <div className="tabsheet-backdrop" onClick={() => { setOpen(null); }}>
           <div className="tabsheet" role="dialog" aria-modal="true" aria-label={sheet.label} onClick={(e) => { e.stopPropagation(); }}>
             <span className="tabsheet-handle" aria-hidden="true" />
-            <h2 className="tabsheet-title">{sheet.label}</h2>
             {sheet.sections.map((section, si) => (
               <Fragment key={section.label ?? si}>
-                {section.label && section.label !== sheet.label && <h3 className="tabsheet-subtitle">{section.label}</h3>}
+                {section.label && <h3 className="tabsheet-subtitle">{section.label}</h3>}
                 <div className="tabsheet-grid">
                   {section.items.map((item) => (
                     <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? "tabsheet-link active" : "tabsheet-link")}>
@@ -195,7 +215,6 @@ export function MobileTabBar() {
       )}
       <nav className="tabbar" aria-label={t("nav.sections")}>
         {visibleTabs.map((tab) => {
-          // Subject pages sit under Home: they're reached from its subject cards.
           const items = (tab.sections ?? []).flatMap((s) => s.items);
           const active = tab.to ? inSection(pathname, tab.to) : items.some((i) => inSection(pathname, i.to));
           const due = items.reduce((n, i) => n + dueFor(i, counts), 0);
@@ -224,122 +243,56 @@ function openCommandPalette() {
   window.dispatchEvent(new CustomEvent(OPEN_COMMAND_PALETTE_EVENT));
 }
 
-/** Marks which ends of the scrolling link list have more links past them, for the edge fades. */
-function markScrollEdges(nav: HTMLElement) {
-  nav.toggleAttribute("data-more-above", nav.scrollTop > 1);
-  nav.toggleAttribute("data-more-below", nav.scrollTop + nav.clientHeight < nav.scrollHeight - 1);
+const collapseShortcut = isMac ? "⌘\\" : "Ctrl+\\";
+
+function SidebarLink({ link, due, onNavigate }: { link: NavItem; due: number; onNavigate: () => void }) {
+  return (
+    <NavLink
+      to={link.to}
+      end={link.end}
+      className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
+      onClick={onNavigate}
+      title={link.label}
+    >
+      <span className="sidebar-link-icon">{link.icon}</span>
+      <span className="sidebar-link-label">{link.label}</span>
+      <DueCount n={due} kind={link.due} />
+    </NavLink>
+  );
 }
 
-const collapseShortcut = isMac ? "⌘\\" : "Ctrl+\\";
+/** The student's initial in a circle, as on their account row. */
+function Avatar({ name }: { name: string }) {
+  return (
+    <span className="avatar" aria-hidden="true">
+      {(name.trim()[0] ?? "?").toUpperCase()}
+    </span>
+  );
+}
 
 export function Sidebar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Desktop only: shrinks the sidebar to an icon rail. The mobile drawer ignores it.
   const [collapsed, setCollapsed] = useLocalStorage<boolean>(STORAGE_KEYS.sidebarCollapsed, false);
-  const navRef = useRef<HTMLElement>(null);
-  const hoveredLink = useRef<HTMLElement | null>(null);
   const { pathname } = useLocation();
   const counts = useDueCounts();
-  const visibleGroups = useNavGroups()(groups);
+  const navGroups = useNavGroups();
+  const main = navGroups([{ items: mainLinks }])[0].items;
+  const more = navGroups(moreGroups);
   const { t } = useI18n();
-  // On the collapsed rail, the hovered or focused link's name, shown beside it right away
-  // (a title attribute takes a second to appear and can't be styled).
-  const [tip, setTip] = useState<{ label: string; x: number; y: number; path: string } | null>(null);
-  const showTip = useCallback(
-    (link: HTMLElement | null) => {
-      if (!collapsed || !link || !window.matchMedia("(min-width: 961px)").matches) { setTip(null); return; }
-      const r = link.getBoundingClientRect();
-      setTip({ label: link.dataset.label ?? "", x: r.right + 14, y: r.top + r.height / 2, path: pathname });
-    },
-    [collapsed, pathname],
-  );
+  const { user } = useAccount();
 
-  // Two glass "lenses" sit behind the links: one marks the current page, the other follows the
-  // pointer. Both are positioned from the link boxes through CSS custom properties on the nav,
-  // and CSS springs them between links.
-  const placeLens = useCallback((name: "active" | "hover", link: Element | null) => {
-    const nav = navRef.current;
-    if (!nav) return;
-    if (!(link instanceof HTMLElement)) {
-      nav.style.setProperty(`--${name}-o`, "0");
-      return;
-    }
-    nav.style.setProperty(`--${name}-x`, `${link.offsetLeft}px`);
-    nav.style.setProperty(`--${name}-y`, `${link.offsetTop}px`);
-    nav.style.setProperty(`--${name}-w`, `${link.offsetWidth}px`);
-    nav.style.setProperty(`--${name}-h`, `${link.offsetHeight}px`);
-    nav.style.setProperty(`--${name}-o`, "1");
-  }, []);
-
-  useLayoutEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
-    const sync = () => {
-      placeLens("active", nav.querySelector(".sidebar-link.active"));
-      if (hoveredLink.current) placeLens("hover", hoveredLink.current);
-      markScrollEdges(nav);
-    };
-    sync();
-    // On a short window the links scroll: keep the current page's in view.
-    const active = nav.querySelector<HTMLElement>(".sidebar-link.active");
-    if (active) {
-      const top = active.offsetTop - nav.scrollTop;
-      if (top < 0 || top + active.offsetHeight > nav.clientHeight) nav.scrollTop = active.offsetTop - nav.clientHeight / 2;
-    }
-    // Only animate once the lenses have a real starting position.
-    const frame = requestAnimationFrame(() => { nav.setAttribute("data-ready", ""); });
-    // Keeps the lenses glued to the links while the sidebar collapses or expands.
-    const observer = new ResizeObserver(sync);
-    observer.observe(nav);
-    return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-    };
-  }, [pathname, placeLens]);
-
-  // While the sidebar itself is resizing, the lenses follow the links frame by frame (via the
-  // ResizeObserver) instead of springing, so they never lag behind the narrowing rail.
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    const nav = navRef.current;
-    if (!nav) return;
-    nav.setAttribute("data-morphing", "");
-    const timer = window.setTimeout(() => { nav.removeAttribute("data-morphing"); }, 700);
-    return () => { window.clearTimeout(timer); };
-  }, [collapsed]);
-
-  const onNavPointerMove = (e: PointerEvent<HTMLElement>) => {
-    const nav = navRef.current;
-    const link = (e.target as HTMLElement).closest(".sidebar-link") as HTMLElement | null;
-    if (!nav || !link) return;
-    if (link !== hoveredLink.current) {
-      // Coming from outside the nav, the lens appears in place instead of sliding in from
-      // wherever it was last.
-      if (!hoveredLink.current) {
-        nav.setAttribute("data-lens-jump", "");
-        requestAnimationFrame(() => requestAnimationFrame(() => { nav.removeAttribute("data-lens-jump"); }));
-      }
-      hoveredLink.current = link;
-      placeLens("hover", link);
-      showTip(link);
-    }
-    const rect = link.getBoundingClientRect();
-    nav.style.setProperty("--lens-px", `${e.clientX - rect.left}px`);
-    nav.style.setProperty("--lens-py", `${e.clientY - rect.top}px`);
-  };
-
-  const onNavPointerLeave = () => {
-    hoveredLink.current = null;
-    placeLens("hover", null);
-    setTip(null);
-  };
-
-  // The name goes away when the rail expands (the labels are back) or the page changes.
-  const shownTip = tip && collapsed && tip.path === pathname ? tip : null;
+  // "More" opens by itself when the current page is inside it, and otherwise remembers nothing:
+  // a fresh visit always starts with the short list.
+  const inMore = more.some((g) => g.items.some((i) => inSection(pathname, i.to)));
+  const [moreOpen, setMoreOpen] = useState(inMore);
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    if (inMore && !moreOpen) setMoreOpen(true);
+  }
+  const moreDue = more.flatMap((g) => g.items).reduce((n, i) => n + dueFor(i, counts), 0);
+  const closeDrawer = useCallback(() => { setDrawerOpen(false); }, []);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -361,13 +314,15 @@ export function Sidebar() {
     return () => { window.removeEventListener("keydown", onKeyDown); };
   }, [drawerOpen]);
 
+  const name = user?.displayName || user?.fullName || "";
+
   return (
     <>
       <header className="topbar">
         <div className="topbar-row">
           <button
             type="button"
-            className="icon-btn sidebar-toggle"
+            className="icon-btn icon-btn-quiet sidebar-toggle"
             onClick={() => { setDrawerOpen((o) => !o); }}
             aria-label={drawerOpen ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={drawerOpen}
@@ -375,28 +330,28 @@ export function Sidebar() {
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               {drawerOpen ? (
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M4 8h16M4 16h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               )}
             </svg>
           </button>
 
           <div className="topbar-brand">
-            <PulseLine width={24} height={14} />
+            <PulseLine width={22} height={13} />
             Pendik
           </div>
 
           <div className="topbar-actions">
-            <StreakBadge />
-            <QuizDueBadge />
-            <ThemeToggle />
+            <button type="button" className="icon-btn icon-btn-quiet" onClick={openCommandPalette} aria-label={t("nav.commandPalette")}>
+              <SearchIcon />
+            </button>
           </div>
         </div>
       </header>
 
       {drawerOpen && (
-        <div className="sidebar-backdrop" onClick={() => { setDrawerOpen(false); }} aria-hidden="true" />
+        <div className="sidebar-backdrop" onClick={closeDrawer} aria-hidden="true" />
       )}
 
       <aside
@@ -405,12 +360,12 @@ export function Sidebar() {
       >
         <div className="sidebar-brand">
           <span className="sidebar-brand-name">
-            <PulseLine width={28} height={17} />
+            <PulseLine width={24} height={14} />
             Pendik
           </span>
           <button
             type="button"
-            className="icon-btn sidebar-collapse-btn"
+            className="icon-btn icon-btn-quiet sidebar-collapse-btn"
             onClick={() => { setCollapsed((c) => !c); }}
             aria-label={collapsed ? t("nav.expand") : t("nav.collapse")}
             aria-expanded={!collapsed}
@@ -418,88 +373,75 @@ export function Sidebar() {
             title={`${collapsed ? t("nav.expand") : t("nav.collapse")} (${collapseShortcut})`}
           >
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <rect x="3.5" y="4.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
-              <path d="M9.5 4.5v15" stroke="currentColor" strokeWidth="1.6" />
-              <path
-                d={collapsed ? "M13.5 10l2 2-2 2" : "M16 10l-2 2 2 2"}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <rect x="3.5" y="4.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M9.5 4.5v15" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </button>
         </div>
 
-        <nav
-          className="sidebar-nav"
-          aria-label={t("nav.primary")}
-          ref={navRef}
-          onPointerMove={onNavPointerMove}
-          onPointerLeave={onNavPointerLeave}
-          onFocus={(e) => { showTip((e.target as HTMLElement).closest<HTMLElement>(".sidebar-link")); }}
-          onBlur={() => { setTip(null); }}
-          onScroll={(e) => {
-            hoveredLink.current = null;
-            setTip(null);
-            markScrollEdges(e.currentTarget);
-          }}
+        <button
+          type="button"
+          className="sidebar-search"
+          onClick={openCommandPalette}
+          title={t("nav.commandPaletteHint")}
+          aria-label={t("nav.commandPalette")}
         >
-          <span className="sidebar-lens sidebar-lens-active" aria-hidden="true" />
-          <span className="sidebar-lens sidebar-lens-hover" aria-hidden="true" />
-          {visibleGroups.map((group, gi) => (
-            <Fragment key={group.label ?? gi}>
-              {group.label && (
-                <span className="sidebar-group-label" aria-hidden="true">
-                  {group.label}
-                </span>
-              )}
-              {group.items.map((link) => (
-                <NavLink
-                  key={link.to}
-                  to={link.to}
-                  end={link.end}
-                  className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
-                  onClick={() => { setDrawerOpen(false); }}
-                  data-label={link.label}
-                >
-                  <span className="sidebar-link-icon">{link.icon}</span>
-                  <span className="sidebar-link-label">{link.label}</span>
-                  <DueCount n={dueFor(link, counts)} kind={link.due} />
-                </NavLink>
-              ))}
-            </Fragment>
+          <SearchIcon />
+          <span className="sidebar-link-label">{t("nav.searchShort")}</span>
+          <kbd>{isMac ? "⌘K" : "Ctrl K"}</kbd>
+        </button>
+
+        <nav className="sidebar-nav" aria-label={t("nav.primary")}>
+          {main.map((link) => (
+            <SidebarLink key={link.to} link={link} due={dueFor(link, counts)} onNavigate={closeDrawer} />
           ))}
+
+          <button
+            type="button"
+            className={`sidebar-more${moreOpen ? " open" : ""}`}
+            aria-expanded={moreOpen}
+            aria-controls="sidebar-more-list"
+            onClick={() => { setMoreOpen((o) => !o); }}
+            title={t("nav.more")}
+          >
+            <span className="sidebar-link-icon"><MoreIcon /></span>
+            <span className="sidebar-link-label">{t("nav.more")}</span>
+            {!moreOpen && moreDue > 0 && <span className="sidebar-more-dot" aria-label={t("nav.dueReviews", { count: moreDue })} />}
+            <svg className="sidebar-more-chevron" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          {moreOpen && (
+            <div id="sidebar-more-list" className="sidebar-more-list">
+              {more.map((group) => (
+                <Fragment key={group.label}>
+                  <span className="sidebar-group-label" aria-hidden="true">{group.label}</span>
+                  {group.items.map((link) => (
+                    <SidebarLink key={link.to} link={link} due={dueFor(link, counts)} onNavigate={closeDrawer} />
+                  ))}
+                </Fragment>
+              ))}
+            </div>
+          )}
         </nav>
 
         <div className="sidebar-footer">
-          <div className="sidebar-badges">
-            <StreakBadge />
-            <QuizDueBadge />
-          </div>
-          <div className="sidebar-footer-actions">
-            <button
-              type="button"
-              className="icon-btn command-trigger"
-              onClick={openCommandPalette}
-              aria-label={t("nav.commandPalette")}
-              title={t("nav.commandPaletteHint")}
-            >
-              <SearchIcon />
-              <kbd>{isMac ? "⌘K" : "Ctrl K"}</kbd>
-            </button>
-            <LanguageSwitch compact />
-            <ThemeToggle />
-          </div>
+          <NavLink
+            to="/account"
+            className={({ isActive }) => (isActive ? "sidebar-account active" : "sidebar-account")}
+            onClick={closeDrawer}
+            title={t("nav.account")}
+          >
+            <Avatar name={name || "?"} />
+            <span className="sidebar-account-text">
+              <span className="sidebar-account-name">{name || t("nav.account")}</span>
+              {user?.track && <span className="sidebar-account-meta">{user.track === "IUP" ? "IUP" : "Reguler"}</span>}
+            </span>
+          </NavLink>
+          <ThemeToggle />
         </div>
       </aside>
-
-      {shownTip && (
-        <span className="sidebar-tip" style={{ left: shownTip.x, top: shownTip.y }} aria-hidden="true">
-          {shownTip.label}
-        </span>
-      )}
     </>
   );
 }

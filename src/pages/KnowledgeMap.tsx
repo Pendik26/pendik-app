@@ -35,6 +35,7 @@ import { GRAPH_URL, type GraphNode, type KnowledgeGraph, type SectionRef } from 
 import { allSubjects } from "../lib/routeMeta";
 import { STORAGE_KEYS } from "../lib/storage";
 import { STORAGE_UPDATED_EVENT } from "../lib/storage";
+import { useI18n } from "../i18n/useI18n";
 
 // The knowledge map as an Obsidian-style vault: a ribbon of tools, a concept explorer (blocks
 // and subjects as folders), the graph view, and the open concept as a note with its
@@ -86,6 +87,7 @@ function useThemeKey(): string {
 }
 
 export function KnowledgeMap() {
+  const { t } = useI18n();
   const [graph, setGraph] = useState<KnowledgeGraph | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -105,16 +107,17 @@ export function KnowledgeMap() {
 
   return (
     <section className="page map-page">
-      <h1>Knowledge map</h1>
+      <h1>{t("map.title")}</h1>
       <p className="subtitle">
-        Every concept in your subjects as one graph, linked where they're taught together. Open one to see its links and where to study it.
+        {t("map.intro")}
       </p>
-      {graph ? <Workspace graph={graph} /> : <p className="map-loading">{failed ? "The map couldn't be loaded. Check your connection and reload." : "Loading the map…"}</p>}
+      {graph ? <Workspace graph={graph} /> : <p className="map-loading">{failed ? t("map.failed") : t("map.loading")}</p>}
     </section>
   );
 }
 
 function Workspace({ graph }: { graph: KnowledgeGraph }) {
+  const { t } = useI18n();
   const { config } = useAccount();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -334,14 +337,14 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
   return (
     <div className={pageFull ? "obs-frame is-page-full" : "obs-frame"} ref={frame}>
       <div className={explorerOpen ? "obs explorer-open" : "obs"}>
-        <nav className="obs-ribbon" aria-label="Map tools">
-          <button type="button" className={explorerOpen ? "obs-ribbon-btn is-on" : "obs-ribbon-btn"} aria-pressed={explorerOpen} onClick={() => { setExplorerOpen((o) => !o); }} title="Concepts" aria-label="Show the concept list">
+        <nav className="obs-ribbon" aria-label={t("map.tools")}>
+          <button type="button" className={explorerOpen ? "obs-ribbon-btn is-on" : "obs-ribbon-btn"} aria-pressed={explorerOpen} onClick={() => { setExplorerOpen((o) => !o); }} title={t("map.concepts")} aria-label={t("map.showList")}>
             <FolderIcon />
           </button>
-          <button type="button" className="obs-ribbon-btn" onClick={findConcept} title="Find a concept (/)" aria-label="Find a concept">
+          <button type="button" className="obs-ribbon-btn" onClick={findConcept} title={t("map.findTitle")} aria-label={t("map.find")}>
             <SearchIcon />
           </button>
-          <button type="button" className="obs-ribbon-btn" onClick={() => { setLocalGraph(false); canvas.current?.fit(); }} title="Whole graph" aria-label="Show the whole graph">
+          <button type="button" className="obs-ribbon-btn" onClick={() => { setLocalGraph(false); canvas.current?.fit(); }} title={t("map.whole")} aria-label={t("map.showWhole")}>
             <GraphIcon />
           </button>
           <button
@@ -350,12 +353,12 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
             aria-pressed={localGraph}
             disabled={selected === null}
             onClick={() => { setLocalGraph((l) => !l); }}
-            title="Local graph of the open concept"
-            aria-label="Local graph of the open concept"
+            title={t("map.localOpen")}
+            aria-label={t("map.localOpen")}
           >
             <LocalGraphIcon />
           </button>
-          <button type="button" className="obs-ribbon-btn" onClick={openRandom} title="Open a random concept" aria-label="Open a random concept">
+          <button type="button" className="obs-ribbon-btn" onClick={openRandom} title={t("map.random")} aria-label={t("map.random")}>
             <DiceIcon />
           </button>
         </nav>
@@ -378,9 +381,9 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
           <div className="obs-tabbar">
             <span className="obs-tab is-active">
               {localGraph ? <LocalGraphIcon /> : <GraphIcon />}
-              <span className="obs-tab-title">{localGraph && selectedNode ? `Local graph of ${selectedNode.label}` : "Graph view"}</span>
+              <span className="obs-tab-title">{localGraph && selectedNode ? t("map.localOf", { label: selectedNode.label }) : t("map.graphView")}</span>
             </span>
-            <div className="obs-view-switch" role="radiogroup" aria-label="Graph view">
+            <div className="obs-view-switch" role="radiogroup" aria-label={t("map.graphView")}>
               {(["2d", "3d"] as const).map((v) => (
                 <button key={v} type="button" role="radio" aria-checked={settings.view === v} className={settings.view === v ? "is-on" : undefined} onClick={() => { patchSettings({ view: v }); }}>
                   {v.toUpperCase()}
@@ -392,8 +395,8 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
               className={fullScreen ? "obs-icon-btn obs-full-btn is-on" : "obs-icon-btn obs-full-btn"}
               aria-pressed={fullScreen}
               onClick={toggleFullScreen}
-              title={fullScreen ? "Exit full screen (Esc)" : "Full screen"}
-              aria-label={fullScreen ? "Exit full screen" : "Show the map full screen"}
+              title={fullScreen ? t("map.exitFullTitle") : t("map.full")}
+              aria-label={fullScreen ? t("map.exitFull") : t("map.showFull")}
             >
               {fullScreen ? <ShrinkIcon /> : <ExpandIcon />}
             </button>
@@ -437,18 +440,18 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
               orphanCount={orphanCount}
             />
             <div className="obs-zoom">
-              <button type="button" className="obs-icon-btn" onClick={() => canvas.current?.zoom(1.4)} aria-label="Zoom in" title="Zoom in">
+              <button type="button" className="obs-icon-btn" onClick={() => canvas.current?.zoom(1.4)} aria-label={t("map.zoomIn")} title={t("map.zoomIn")}>
                 <PlusIcon />
               </button>
-              <button type="button" className="obs-icon-btn" onClick={() => canvas.current?.zoom(1 / 1.4)} aria-label="Zoom out" title="Zoom out">
+              <button type="button" className="obs-icon-btn" onClick={() => canvas.current?.zoom(1 / 1.4)} aria-label={t("map.zoomOut")} title={t("map.zoomOut")}>
                 <MinusIcon />
               </button>
-              <button type="button" className="obs-icon-btn" onClick={() => canvas.current?.fit()} aria-label="Fit the graph" title="Fit">
+              <button type="button" className="obs-icon-btn" onClick={() => canvas.current?.fit()} aria-label={t("map.fitGraph")} title={t("map.fit")}>
                 <FitIcon />
               </button>
             </div>
             {settings.colorBy !== "none" && (
-              <div className="obs-legend" aria-label="Legend">
+              <div className="obs-legend" aria-label={t("map.legend")}>
                 {settings.colorBy === "subject" ? (
                   subjectSlots.map((s) => (
                     <span key={s.id}>
@@ -460,11 +463,11 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
                   <>
                     <span>
                       <span className="obs-ramp" aria-hidden="true" />
-                      Weaker → stronger
+                      {t("map.weakerStronger")}
                     </span>
                     <span>
                       <span className="obs-dot obs-dot-weak" aria-hidden="true" />
-                      Needs work
+                      {t("map.needsWork")}
                     </span>
                   </>
                 )}
@@ -477,9 +480,9 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
           <div className="obs-tabbar">
             <span className="obs-tab is-active">
               <FileIcon />
-              <span className="obs-tab-title">{selectedNode ? selectedNode.label : "New tab"}</span>
+              <span className="obs-tab-title">{selectedNode ? selectedNode.label : t("map.newTab")}</span>
               {selectedNode && (
-                <button type="button" className="obs-tab-close" onClick={() => { select(null); }} aria-label="Close this concept" title="Close">
+                <button type="button" className="obs-tab-close" onClick={() => { select(null); }} aria-label={t("map.closeConcept")} title={t("drive.close")}>
                   <CloseIcon />
                 </button>
               )}
@@ -501,15 +504,15 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
             />
           ) : (
             <div className="obs-empty">
-              <p className="obs-empty-title">No concept is open</p>
+              <p className="obs-empty-title">{t("map.noneOpen")}</p>
               <button type="button" className="obs-empty-action" onClick={findConcept}>
-                Find a concept <kbd>/</kbd>
+                {t("map.find")} <kbd>/</kbd>
               </button>
               <button type="button" className="obs-empty-action" onClick={openRandom}>
-                Open a random concept
+                {t("map.random")}
               </button>
-              <p className="obs-empty-hint">Or click any dot in the graph. Drag a dot to move it; the others follow.</p>
-              <h3 className="obs-empty-head">Concepts that connect subjects</h3>
+              <p className="obs-empty-hint">{t("map.emptyHint")}</p>
+              <h3 className="obs-empty-head">{t("map.bridges")}</h3>
               <ul className="obs-bridges">
                 {bridges.map(({ n, i }) => (
                   <li key={i}>
@@ -527,11 +530,11 @@ function Workspace({ graph }: { graph: KnowledgeGraph }) {
         <footer className="obs-status">
           {selectedNode && selected !== null && (
             <span>
-              {neighbours.get(selected)?.length ?? 0} links · {selectedNode.sections.length} mentions
+              {t("map.statusNode", { links: neighbours.get(selected)?.length ?? 0, mentions: selectedNode.sections.length })}
             </span>
           )}
           <span>
-            {visibleCount} concepts · {linkCount} links
+            {t("map.statusAll", { concepts: visibleCount, links: linkCount })}
           </span>
         </footer>
       </div>
@@ -597,6 +600,7 @@ function Explorer({
     if (key && !(open.has(blockOf(key)) && open.has(key))) setOpen(new Set([...open, blockOf(key), key]));
   }
 
+  const { t } = useI18n();
   const q = query.trim().toLowerCase();
   const results = useMemo(() => {
     if (q.length < 2) return [];
@@ -615,13 +619,13 @@ function Explorer({
   );
 
   return (
-    <aside className="obs-explorer" aria-label="Concepts">
+    <aside className="obs-explorer" aria-label={t("map.concepts")}>
       <div className="obs-explorer-head">
-        <span>Concepts</span>
-        <button type="button" className="obs-icon-btn" onClick={() => { setOpen(new Set()); }} aria-label="Collapse all folders" title="Collapse all">
+        <span>{t("map.concepts")}</span>
+        <button type="button" className="obs-icon-btn" onClick={() => { setOpen(new Set()); }} aria-label={t("map.collapseFolders")} title={t("map.collapse")}>
           <CollapseIcon />
         </button>
-        <button type="button" className="obs-icon-btn obs-explorer-close" onClick={onClose} aria-label="Close the concept list" title="Close">
+        <button type="button" className="obs-icon-btn obs-explorer-close" onClick={onClose} aria-label={t("map.closeList")} title={t("drive.close")}>
           <CloseIcon />
         </button>
       </div>
@@ -630,8 +634,8 @@ function Explorer({
         <input
           ref={searchRef}
           type="search"
-          placeholder="Search concepts…"
-          aria-label="Search concepts"
+          placeholder={t("map.searchPh")}
+          aria-label={t("map.search")}
           value={query}
           onChange={(e) => { onQuery(e.target.value); }}
           onKeyDown={(e) => {
@@ -643,13 +647,13 @@ function Explorer({
       <div className="obs-explorer-body">
         {q.length >= 2 ? (
           results.length ? (
-            <ul className="obs-tree" aria-label="Matching concepts">
+            <ul className="obs-tree" aria-label={t("map.matching")}>
               {results.map(({ n, i }) => (
                 <li key={i}>{conceptButton(n, i, [...new Set(n.subjects.map((s) => subjectLabel(s)))].join(", "))}</li>
               ))}
             </ul>
           ) : (
-            <p className="obs-explorer-empty">No concept matches “{query.trim()}”.</p>
+            <p className="obs-explorer-empty">{t("map.noMatch", { query: query.trim() })}</p>
           )
         ) : (
           <ul className="obs-tree">
@@ -657,7 +661,7 @@ function Explorer({
               <li key={block}>
                 <button type="button" className="obs-folder" aria-expanded={open.has(block)} onClick={() => { toggle(block); }}>
                   <ChevronIcon />
-                  Block {block}
+                  {t("map.block", { block })}
                 </button>
                 {open.has(block) && (
                   <ul className="obs-tree">
@@ -713,16 +717,17 @@ function Note({
   aiOn: boolean;
   onAsk: (question: string) => void;
 }) {
+  const { t } = useI18n();
   const [mentionsOpen, setMentionsOpen] = useState(true);
   const sectionLink = (s: SectionRef) => (s.c.startsWith("summary:") ? `/summaries/${s.c.slice(8)}#${s.a}` : `/ebooks/${s.c}#${s.a}`);
   const fileTitle = (c: string) => {
-    if (c.startsWith("summary:")) return `${subjectLabel(c.slice(8))} summary`;
+    if (c.startsWith("summary:")) return t("map.summaryOf", { subject: subjectLabel(c.slice(8)) });
     const [b, s, ch] = c.split("/");
     return ebookMeta.get(`${b}/${s}`)?.chapters.find((x) => x.id === ch)?.title ?? ch;
   };
   const fileWhere = (c: string) => {
     const key = c.startsWith("summary:") ? c.slice(8) : c.split("/").slice(0, 2).join("/");
-    return `${subjectLabel(key)} · Block ${blockOf(key)}`;
+    return `${subjectLabel(key)} · ${t("map.block", { block: blockOf(key) })}`;
   };
   const withBlock = (key: string) => `${subjectLabel(key)} ${blockOf(key)}`;
 
@@ -749,13 +754,13 @@ function Note({
   return (
     <div className="obs-note">
       <div className="obs-view-header">
-        <nav className="obs-breadcrumb" aria-label="Where this concept lives">
-          <span>Block {blockOf(first)}</span>
+        <nav className="obs-breadcrumb" aria-label={t("map.whereLives")}>
+          <span>{t("map.block", { block: blockOf(first) })}</span>
           <span aria-hidden="true">/</span>
           <span>{subjectLabel(first)}</span>
         </nav>
         <div className="obs-view-actions">
-          <button type="button" className={localGraph ? "obs-icon-btn is-on" : "obs-icon-btn"} aria-pressed={localGraph} onClick={onLocalGraph} title="Local graph" aria-label="Show only this concept and its links">
+          <button type="button" className={localGraph ? "obs-icon-btn is-on" : "obs-icon-btn"} aria-pressed={localGraph} onClick={onLocalGraph} title={t("map.local")} aria-label={t("map.localOnly")}>
             <LocalGraphIcon />
           </button>
         </div>
@@ -767,14 +772,14 @@ function Note({
           <button
             type="button"
             className="obs-ask"
-            onClick={() => { onAsk(`Explain "${node.label}" and how it connects to ${neighbourNames.join(", ")} across my subjects. Keep it short and exam-focused.`); }}
+            onClick={() => { onAsk(t("map.askPrompt", { label: node.label, links: neighbourNames.join(", ") })); }}
           >
             <span className="obs-ask-icon" aria-hidden="true">
               <AlfondIcon />
             </span>
             <span className="obs-ask-text">
-              <strong>Ask Alfond about {node.label}</strong>
-              <small>{neighbourNames.length > 0 ? `How it connects to ${neighbourNames.slice(0, 3).join(", ")}` : "Explained short and exam-focused"}</small>
+              <strong>{t("map.ask", { label: node.label })}</strong>
+              <small>{neighbourNames.length > 0 ? t("map.howConnects", { links: neighbourNames.slice(0, 3).join(", ") }) : t("map.shortExam")}</small>
             </span>
             <span className="obs-ask-go" aria-hidden="true">
               →
@@ -783,21 +788,21 @@ function Note({
         )}
         {node.d && (
           <div className="obs-callout">
-            <p className="obs-callout-title">What it is</p>
+            <p className="obs-callout-title">{t("map.whatItIs")}</p>
             <p>{node.d}</p>
             {node.da && (
               <Link to={sectionLink(node.da)} className="obs-callout-more">
-                Read more in {fileTitle(node.da.c)} →
+                {t("map.readMore", { title: fileTitle(node.da.c) })} →
               </Link>
             )}
           </div>
         )}
 
-        <div className="obs-properties" aria-label="Properties">
+        <div className="obs-properties" aria-label={t("map.properties")}>
           <div className="obs-prop">
             <span className="obs-prop-key">
               <TagIcon />
-              tags
+              {t("map.pTags")}
             </span>
             <span className="obs-prop-value">
               {where.map((label) => (
@@ -816,36 +821,35 @@ function Note({
           <div className="obs-prop">
             <span className="obs-prop-key">
               <PulseIcon />
-              mastery
+              {t("map.pMastery")}
             </span>
             <span className={mastery !== null && mastery < 0.5 ? "obs-prop-value is-weak" : "obs-prop-value"}>
-              {mastery === null ? <span className="obs-faint">Not studied yet</span> : `${Math.round(mastery * 100)}%${mastery < 0.5 ? " · needs work" : ""}`}
+              {mastery === null ? <span className="obs-faint">{t("map.notStudied")}</span> : `${Math.round(mastery * 100)}%${mastery < 0.5 ? ` · ${t("map.needsWorkLower")}` : ""}`}
             </span>
           </div>
           <div className="obs-prop">
             <span className="obs-prop-key">
               <HashIcon />
-              mentions
+              {t("map.pMentions")}
             </span>
             <span className="obs-prop-value">{node.mentions}</span>
           </div>
           <div className="obs-prop">
             <span className="obs-prop-key">
               <LinkIcon />
-              links
+              {t("map.pLinks")}
             </span>
             <span className="obs-prop-value">{links.length}</span>
           </div>
         </div>
 
         <p>
-          Comes up {node.mentions} time{node.mentions === 1 ? "" : "s"} in {where.join(" and ")}
-          {shared ? ", one of the concepts that connects them" : ""}.
+          {t(shared ? "map.comesUpShared" : "map.comesUp", { count: node.mentions, where: where.join(t("map.and")) })}
         </p>
 
         {links.length > 0 && (
           <>
-            <h3>Links</h3>
+            <h3>{t("map.links")}</h3>
             <ul className="obs-links">
               {links.slice(0, 16).map((l) => (
                 <li key={l.i}>
@@ -861,34 +865,34 @@ function Note({
 
         {(cardEntries.length > 0 || questionEntries.length > 0 || labelEntries.length > 0) && (
           <>
-            <h3>Practise</h3>
+            <h3>{t("map.practise")}</h3>
             <ul className="obs-practice">
               {cardEntries.map(([key, ids]) => (
                 <li key={`c${key}`}>
                   <Link className="obs-internal-link" to={`/flashcards/${key}?cards=${ids.join(",")}`}>
-                    {ids.length} flashcard{ids.length === 1 ? "" : "s"}
+                    {t("map.nCards", { count: ids.length })}
                   </Link>
                   <small>
-                    {withBlock(key)} · e.g. “{flashcardDecks.get(key)?.find((c) => c.id === ids[0])?.front.slice(0, 70) ?? ""}”
+                    {withBlock(key)} · {t("map.eg")} “{flashcardDecks.get(key)?.find((c) => c.id === ids[0])?.front.slice(0, 70) ?? ""}”
                   </small>
                 </li>
               ))}
               {questionEntries.map(([key, ids]) => (
                 <li key={`q${key}`}>
                   <Link className="obs-internal-link" to={`/quizzes/${key}?drill=${ids.join(",")}`}>
-                    {ids.length} quiz question{ids.length === 1 ? "" : "s"}
+                    {t("map.nQuestions", { count: ids.length })}
                   </Link>
                   <small>
-                    {withBlock(key)} · e.g. “{quizBanks.get(key)?.find((q) => q.id === ids[0])?.question.slice(0, 70) ?? ""}”
+                    {withBlock(key)} · {t("map.eg")} “{quizBanks.get(key)?.find((q) => q.id === ids[0])?.question.slice(0, 70) ?? ""}”
                   </small>
                 </li>
               ))}
               {labelEntries.map(([key, ids]) => (
                 <li key={`l${key}`}>
                   <Link className="obs-internal-link" to={`/occlusion/${key}`}>
-                    {ids.length} labelled figure{ids.length === 1 ? "" : "s"}
+                    {t("map.nFigures", { count: ids.length })}
                   </Link>
-                  <small>{withBlock(key)} image occlusion</small>
+                  <small>{t("map.ioOf", { where: withBlock(key) })}</small>
                 </li>
               ))}
             </ul>
@@ -900,7 +904,7 @@ function Note({
         <section className="obs-backlinks">
           <button type="button" className="obs-backlinks-head" aria-expanded={mentionsOpen} onClick={() => { setMentionsOpen((o) => !o); }}>
             <ChevronIcon />
-            Linked mentions
+            {t("map.mentions")}
             <span className="obs-count">{mentionCount}</span>
           </button>
           {mentionsOpen && (

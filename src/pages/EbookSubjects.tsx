@@ -6,14 +6,16 @@ import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
 import { UpcomingSubjectCard } from "../components/UpcomingSubjectCard";
 import type { ReadingPosition } from "../types/content";
+import { useI18n } from "../i18n/useI18n";
 
 export function EbookSubjects() {
   const groups = groupByBlock(ebookSubjects);
+  const { t } = useI18n();
 
   return (
     <section className="page">
-      <h1>Ebooks</h1>
-      <p className="subtitle">Chapter readers, reference PDFs, and curated links by subject.</p>
+      <h1>{t("lib.ebooksTitle")}</h1>
+      <p className="subtitle">{t("lib.ebooksIntro")}</p>
       {groups.map(({ block, subjects, upcoming }) => (
         <div key={block.id} className="block-section">
           <h2 className="block-section-heading">{block.label}</h2>
@@ -38,12 +40,12 @@ export function EbookSubjects() {
               if (meta.chapters.length > 0) {
                 parts.push(
                   completedCount > 0
-                    ? `${completedCount}/${meta.chapters.length} chapters complete`
-                    : `${meta.chapters.length} chapters`,
+                    ? t("lib.chaptersDone", { done: completedCount, count: meta.chapters.length })
+                    : t("lib.chapters", { count: meta.chapters.length }),
                 );
               }
-              if (pdfs.length > 0) parts.push(pdfs.length === 1 ? "PDF" : `${pdfs.length} PDFs`);
-              if (meta.resources?.length) parts.push(`${meta.resources.length} links`);
+              if (pdfs.length > 0) parts.push(pdfs.length === 1 ? t("lib.onePdf") : t("lib.pdfs", { count: pdfs.length }));
+              if (meta.resources?.length) parts.push(t("lib.links", { count: meta.resources.length }));
 
               return (
                 <Link key={subject.id} to={`/ebooks/${block.id}/${subject.id}`} className="nav-card">
@@ -55,7 +57,7 @@ export function EbookSubjects() {
                   <p>{meta.description}</p>
                   <p className="nav-card-meta">
                     {parts.join(" · ")}
-                    {chapterIndex >= 0 && <> · resume at chapter {chapterIndex + 1}</>}
+                    {chapterIndex >= 0 && <> · {t("lib.resumeAt", { n: chapterIndex + 1 })}</>}
                   </p>
                 </Link>
               );

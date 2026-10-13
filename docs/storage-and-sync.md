@@ -33,7 +33,7 @@ new kind of progress is declared once, here.
 `pendik:` prefix (`flashcards:1.2/anatomy`) and the value as JSON (at most
 512 KB). Row level security lets each student read and write only their own
 rows. Nothing in it earns points: the leaderboard counts only the study
-records below. See [database.md](database.md#studying-06_studysql).
+records below. See [database.md](database.md).
 
 ## Loading and saving
 
@@ -78,7 +78,7 @@ read. A record the server refuses (an item not in the catalog) is dropped.
 ## Exams
 
 Past-paper attempts aren't in `user_state`: they're rows in `attempts`, run by
-SQL functions with a server-side timer (see [database.md](database.md#exams-and-practice-04_examssql)).
+server functions with a server-side timer (see [database.md](database.md)).
 The app loads the student's packages and attempts at sign-in into a small
 store, `src/lib/exams.ts`, which Home, the exam plan and readiness read. The
 pooled block exam (questions drawn from the block's quiz banks) keeps its

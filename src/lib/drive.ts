@@ -1,11 +1,11 @@
 import { englishT, type Translate } from "../i18n/i18n";
 import type { DriveFile, DriveFileKind, DriveFolder, DriveTree } from "./driveTypes";
 
-// The class Google Drive, as the `drive-sync` Edge Function copies it into the `drive_files`
+// The class Google Drive, as `/api/drive-sync` copies it into the `driveFiles`
 // table: building the folder tree from it, and finding a block's or subject's folder in it by name
 // ("BLOCK 1.2 …" / "ANATOMY").
 
-/** A row of the `drive_files` table, as the app reads it. */
+/** A document of the `driveFiles` collection, as the app reads it. */
 export interface DriveFileRow {
   drive_file_id: string;
   title: string;

@@ -7,6 +7,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { STORAGE_KEYS } from "../lib/storage";
 import { GRADES } from "../lib/grades";
 import { useI18n } from "../i18n/useI18n";
+import type { MessageKey } from "../i18n/i18n";
 import { INITIAL_CARD_STATE, reviewCard } from "../lib/sm2";
 import {
   REGION_LABELS,
@@ -41,7 +42,7 @@ interface Prefs {
 
 const DEFAULT_PREFS: Prefs = { mode: "review", regions: [], hideAll: true };
 const EMPTY: OcclusionCard[] = [];
-const STATUS_TEXT: Record<LabelStatus, string> = { new: "new", due: "due", learning: "learning", mastered: "mastered" };
+const STATUS_TEXT: Record<LabelStatus, MessageKey> = { new: "ios.new", due: "ios.due", learning: "ios.learning", mastered: "ios.mastered" };
 
 const narrowScreen = () => typeof window !== "undefined" && window.matchMedia("(max-width: 720px)").matches;
 
@@ -58,6 +59,7 @@ interface FigureProps {
 
 /** The figure with its labels covered. Tap the red box to reveal it, another box to ask that one, swipe to move on. */
 function OcclusionFigure({ card, revealed, revealAll, hideAll, zoom, onToggle, onPick, onSwipe }: FigureProps) {
+  const { t } = useI18n();
   const { note, mask } = card;
   const vb = zoom ? zoomBox(note, mask) : { x: 0, y: 0, w: note.width, h: note.height };
   const pad = Math.max(2, note.width / 400);
@@ -93,7 +95,7 @@ function OcclusionFigure({ card, revealed, revealAll, hideAll, zoom, onToggle, o
       className="io-figure-wrap"
       role="button"
       tabIndex={0}
-      aria-label={revealed ? `Revealed: ${mask.label}. Click to cover it again.` : "Recall the label under the red box, then click to reveal it"}
+      aria-label={revealed ? t("ios.revealedAria", { label: mask.label }) : t("ios.recallAria")}
       onClick={clicked(onToggle)}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
@@ -176,6 +178,8 @@ function summarize(cards: readonly OcclusionCard[], stateMap: CardStateMap): Fig
 
 /** Every figure as a thumbnail with its progress; picking one opens it. */
 function FigureGallery({ figures, currentIndex, onOpen, onClose }: { figures: FigureSummary[]; currentIndex: number; onOpen: (index: number) => void; onClose: () => void }) {
+  const { t } = useI18n();
+  const regionName = (r: string) => { const k = own(REGION_LABELS, r); return k ? t(k) : r; };
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     closeRef.current?.focus();
@@ -183,12 +187,12 @@ function FigureGallery({ figures, currentIndex, onOpen, onClose }: { figures: Fi
     current?.scrollIntoView({ block: "center" });
   }, []);
   return (
-    <div className="io-gallery" role="dialog" aria-modal="true" aria-label="All figures" onClick={onClose}>
+    <div className="io-gallery" role="dialog" aria-modal="true" aria-label={t("ios.allFigures")} onClick={onClose}>
       <div className="io-gallery-panel" onClick={(e) => { e.stopPropagation(); }}>
         <div className="io-gallery-head">
-          <h2>All figures ({figures.length})</h2>
+          <h2>{t("ios.allFiguresCount", { count: figures.length })}</h2>
           <button ref={closeRef} type="button" className="io-toggle" onClick={onClose}>
-            Close <span className="key-hint">Esc</span>
+            {t("drive.close")} <span className="key-hint">Esc</span>
           </button>
         </div>
         <div className="io-gallery-grid">
@@ -197,9 +201,9 @@ function FigureGallery({ figures, currentIndex, onOpen, onClose }: { figures: Fi
               <img src={f.note.image} alt="" loading="lazy" decoding="async" width={f.note.width} height={f.note.height} />
               <span className="io-gallery-title">{f.note.title}</span>
               <span className="io-gallery-meta">
-                {own(REGION_LABELS, f.note.region) ?? f.note.region} · {f.total} labels{f.due > 0 ? ` · ${f.due} due` : ""}
+                {regionName(f.note.region)} · {t("ios.labels", { count: f.total })}{f.due > 0 ? ` · ${t("ios.dueCount", { count: f.due })}` : ""}
               </span>
-              <span className="io-meter" aria-label={`${f.mastered} of ${f.total} mastered`}>
+              <span className="io-meter" aria-label={t("ios.masteredOf", { done: f.mastered, total: f.total })}>
                 <span style={{ width: `${(f.mastered / f.total) * 100}%` }} />
               </span>
             </button>
@@ -212,6 +216,7 @@ function FigureGallery({ figures, currentIndex, onOpen, onClose }: { figures: Fi
 
 export function OcclusionStudy() {
   const { t } = useI18n();
+  const regionName = (r: string) => { const k = own(REGION_LABELS, r); return k ? t(k) : r; };
   const { blockId = "", subjectId = "" } = useParams();
   const key = subjectKey(blockId, subjectId);
   const subjectLabel = flashcardSubjects.find((s) => keyOf(s) === key)?.label ?? subjectId;
@@ -375,8 +380,8 @@ export function OcclusionStudy() {
   if (notes === undefined) {
     return (
       <section className="page">
-        <p>This subject has no image-occlusion figures.</p>
-        <Link to="/occlusion">Back to image occlusion</Link>
+        <p>{t("ios.none")}</p>
+        <Link to="/occlusion">{t("ios.back")}</Link>
       </section>
     );
   }
@@ -392,21 +397,21 @@ export function OcclusionStudy() {
       <h1>{subjectLabel}</h1>
       <p className="subtitle">
         {notes === null
-          ? "Loading figures…"
-          : `${stats.due} due · ${stats.mastered}/${stats.total} mastered · ${figures.length} figure${figures.length === 1 ? "" : "s"}`}
+          ? t("ios.loading")
+          : t("ios.subtitle", { due: stats.due, mastered: stats.mastered, total: stats.total, figures: figures.length })}
       </p>
 
       <div className="io-bar">
-        <div className="io-modes" role="tablist" aria-label="Study mode">
+        <div className="io-modes" role="tablist" aria-label={t("ios.mode")}>
           <button type="button" role="tab" aria-selected={mode === "review"} className={mode === "review" ? "is-on" : ""} onClick={() => { setMode("review"); }}>
-            Review <span className="io-count">{stats.due}</span>
+            {t("ios.review")} <span className="io-count">{stats.due}</span>
           </button>
           <button type="button" role="tab" aria-selected={mode === "browse"} className={mode === "browse" ? "is-on" : ""} onClick={() => { setMode("browse"); }}>
-            Browse all <span className="io-count">{stats.total}</span>
+            {t("ios.browseAll")} <span className="io-count">{stats.total}</span>
           </button>
         </div>
         <button type="button" className="io-toggle" onClick={() => { setGalleryOpen(true); }} disabled={figures.length === 0}>
-          All figures <span className="key-hint">G</span>
+          {t("ios.allFigures")} <span className="key-hint">G</span>
         </button>
       </div>
 
@@ -414,53 +419,53 @@ export function OcclusionStudy() {
         <div className="tag-filter-row">
           {allRegions.map((r) => (
             <button key={r} type="button" className={regions.includes(r) ? "tag tag-toggle active" : "tag tag-toggle"} onClick={() => { toggleRegion(r); }} aria-pressed={regions.includes(r)}>
-              {own(REGION_LABELS, r) ?? r}
+              {regionName(r)}
             </button>
           ))}
           {regions.length > 0 && (
             <button type="button" className="tag-filter-clear" onClick={() => { updatePrefs({ regions: [] }); }}>
-              Clear
+              {t("cards.clear")}
             </button>
           )}
         </div>
       )}
 
       {notes === null ? (
-        <div className="route-loading" role="status" aria-label="Loading figures">
+        <div className="route-loading" role="status" aria-label={t("ios.loading")}>
           <PulseLine />
         </div>
       ) : filtered.length === 0 ? (
-        <EmptyState title="No figures in this selection" />
+        <EmptyState title={t("ios.noneSelected")} />
       ) : !card ? (
         <div className="flashcard-empty">
           {session.reviewed > 0 ? (
             <div className="session-summary">
-              <h2>Review done</h2>
+              <h2>{t("ios.done")}</h2>
               <div className="session-stats">
                 <div>
                   <strong>{session.reviewed}</strong>
-                  <span>reviewed</span>
+                  <span>{t("cards.reviewed")}</span>
                 </div>
                 <div>
                   <strong>{session.reviewed - session.lapses}</strong>
-                  <span>recalled</span>
+                  <span>{t("cards.recalled")}</span>
                 </div>
                 <div>
                   <strong>{session.lapses}</strong>
-                  <span>missed</span>
+                  <span>{t("cards.missed")}</span>
                 </div>
               </div>
             </div>
           ) : (
-            <EmptyState title="Nothing due right now">Every label here is scheduled for later. Browse the figures in the meantime.</EmptyState>
+            <EmptyState title={t("ios.nothingDue")}>{t("ios.nothingDueText")}</EmptyState>
           )}
           <div className="io-done-actions">
             <button type="button" className="btn" onClick={() => { setMode("browse"); }}>
-              Browse all figures
+              {t("ios.browseFigures")}
             </button>
             {lastGrade && (
               <button type="button" className="btn btn-secondary" onClick={undo}>
-                Undo last grade
+                {t("ios.undoLast")}
               </button>
             )}
           </div>
@@ -481,7 +486,7 @@ export function OcclusionStudy() {
             />
 
             <p className={revealed ? "io-answer" : "io-answer is-hidden"} aria-live="polite">
-              {revealed ? card.mask.label : "Name the label under the red box"}
+              {revealed ? card.mask.label : t("ios.nameIt")}
             </p>
 
             {revealed ? (
@@ -497,49 +502,49 @@ export function OcclusionStudy() {
             ) : (
               <div className="grade-row">
                 <button type="button" className="btn" onClick={() => { setRevealed(true); }}>
-                  Reveal <span className="key-hint">Space</span>
+                  {t("ios.reveal")} <span className="key-hint">Space</span>
                 </button>
               </div>
             )}
 
             <div className="io-nav">
-              <button type="button" className="io-nav-btn" onClick={() => { step(-1); }} aria-label="Previous label">
-                ← Prev
+              <button type="button" className="io-nav-btn" onClick={() => { step(-1); }} aria-label={t("ios.prevLabel")}>
+                ← {t("ios.prev")}
               </button>
               <span className="io-nav-pos">
-                {mode === "review" ? `${due.length} left${session.reviewed ? ` · ${session.reviewed} done` : ""}` : `Label ${card.order + 1} of ${deck.length}`}
+                {mode === "review" ? `${t("ios.left", { count: due.length })}${session.reviewed ? ` · ${t("ios.doneCount", { count: session.reviewed })}` : ""}` : t("ios.labelOf", { n: card.order + 1, total: deck.length })}
               </span>
               {lastGrade && (
-                <button type="button" className="io-nav-btn" onClick={undo} title="Undo the last grade (U or Ctrl+Z)">
-                  Undo
+                <button type="button" className="io-nav-btn" onClick={undo} title={t("ios.undoTitle")}>
+                  {t("ios.undo")}
                 </button>
               )}
-              <button type="button" className="io-nav-btn" onClick={() => { step(1); }} aria-label={revealed ? "Next label" : "Skip to the next label"}>
-                {revealed ? "Next" : "Skip"} →
+              <button type="button" className="io-nav-btn" onClick={() => { step(1); }} aria-label={revealed ? t("ios.nextLabel") : t("ios.skipLabel")}>
+                {revealed ? t("ios.next") : t("ios.skip")} →
               </button>
             </div>
           </div>
 
           <aside className="io-side">
             <div className="io-fig-nav">
-              <button type="button" className="io-nav-btn" onClick={() => { stepFig(-1); }} aria-label="Previous figure" title="Previous figure (Shift+← or [)">
+              <button type="button" className="io-nav-btn" onClick={() => { stepFig(-1); }} aria-label={t("ios.prevFigure")} title={t("ios.prevFigureTitle")}>
                 ‹
               </button>
               <span>
-                Figure {figureIndex + 1} of {figures.length}
+                {t("ios.figureOf", { n: figureIndex + 1, total: figures.length })}
               </span>
-              <button type="button" className="io-nav-btn" onClick={() => { stepFig(1); }} aria-label="Next figure" title="Next figure (Shift+→ or ])">
+              <button type="button" className="io-nav-btn" onClick={() => { stepFig(1); }} aria-label={t("ios.nextFigure")} title={t("ios.nextFigureTitle")}>
                 ›
               </button>
             </div>
             <h2 className="io-figure-title">{card.note.title}</h2>
             {figure && (
               <p className="io-fig-stats">
-                {own(REGION_LABELS, card.note.region) ?? card.note.region} · {figure.total} labels · {figure.due} due · {figure.mastered} mastered
+                {regionName(card.note.region)} · {t("ios.figStats", { total: figure.total, due: figure.due, mastered: figure.mastered })}
               </p>
             )}
 
-            <div className="io-chips" role="group" aria-label="Labels on this figure">
+            <div className="io-chips" role="group" aria-label={t("ios.labelsHere")}>
               {card.note.masks.map((m, i) => {
                 const id = `${card.note.id}:${m.id}`;
                 const status = labelStatus(own(stateMap, id), now);
@@ -550,7 +555,7 @@ export function OcclusionStudy() {
                     type="button"
                     className={`io-chip is-${status}${current ? " is-current" : ""}`}
                     aria-current={current || undefined}
-                    aria-label={`Label ${i + 1}, ${entry(STATUS_TEXT, status)}`}
+                    aria-label={t("ios.labelAria", { n: i + 1, status: t(entry(STATUS_TEXT, status)) })}
                     onClick={() => { pickMask(m.id); }}
                   >
                     {i + 1}
@@ -559,36 +564,36 @@ export function OcclusionStudy() {
               })}
             </div>
             <p className="io-legend">
-              <span className="io-dot is-new" /> new <span className="io-dot is-due" /> due <span className="io-dot is-learning" /> learning <span className="io-dot is-mastered" /> mastered
+              <span className="io-dot is-new" /> {t("ios.new")} <span className="io-dot is-due" /> {t("ios.due")} <span className="io-dot is-learning" /> {t("ios.learning")} <span className="io-dot is-mastered" /> {t("ios.mastered")}
             </p>
 
             <div className="io-toggles">
               <button type="button" className={`io-toggle${hideAll ? " is-on" : ""}`} onClick={() => { updatePrefs({ hideAll: !hideAll }); }} aria-pressed={hideAll}>
-                Hide all <span className="key-hint">H</span>
+                {t("ios.hideAll")} <span className="key-hint">H</span>
               </button>
               <button type="button" className={`io-toggle${zoom ? " is-on" : ""}`} onClick={() => { updatePrefs({ zoom: !zoom }); }} aria-pressed={zoom}>
-                Zoom <span className="key-hint">Z</span>
+                {t("ios.zoom")} <span className="key-hint">Z</span>
               </button>
               <button type="button" className={`io-toggle${revealAll ? " is-on" : ""}`} onClick={() => { setRevealAll((v) => !v); }} aria-pressed={revealAll}>
-                Show labels <span className="key-hint">A</span>
+                {t("ios.showLabels")} <span className="key-hint">A</span>
               </button>
             </div>
 
             <Link to={card.note.chapter} className="io-read">
-              Read about this figure →
+              {t("ios.read")} →
             </Link>
 
             <dl className="io-keys">
               <dt>Space</dt>
-              <dd>reveal / cover</dd>
+              <dd>{t("ios.kReveal")}</dd>
               <dt>1–5</dt>
-              <dd>grade</dd>
+              <dd>{t("ios.kGrade")}</dd>
               <dt>← →</dt>
-              <dd>previous / next label</dd>
+              <dd>{t("ios.kLabel")}</dd>
               <dt>Shift+← →</dt>
-              <dd>previous / next figure</dd>
+              <dd>{t("ios.kFigure")}</dd>
               <dt>U</dt>
-              <dd>undo last grade</dd>
+              <dd>{t("ios.kUndo")}</dd>
             </dl>
           </aside>
         </div>

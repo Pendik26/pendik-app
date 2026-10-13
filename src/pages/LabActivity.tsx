@@ -22,6 +22,7 @@ import { findLabActivity, type LabActivity, type LabExercise, type LabMode } fro
 import { readJSON, writeJSON, STORAGE_KEYS } from "../lib/storage";
 import { NotFound } from "./NotFound";
 import { entry } from "../lib/records";
+import { useI18n } from "../i18n/useI18n";
 
 type Row = Record<string, number | null>;
 
@@ -220,11 +221,12 @@ function Stepper({ label, value, min, max, step, digits, unit, disabled, onChang
       setDraft(null);
     }
   };
+  const { t } = useI18n();
   return (
     <div className="lab-stepper">
       <span className="lab-stepper-label">{label}</span>
       <div className="lab-stepper-row">
-        <button type="button" className="lab-stepper-btn" onClick={() => { set(value - step); }} disabled={disabled || value <= min} aria-label={`Decrease ${label}`}>
+        <button type="button" className="lab-stepper-btn" onClick={() => { set(value - step); }} disabled={disabled || value <= min} aria-label={t("labx.decrease", { name: label })}>
           −
         </button>
         <input
@@ -247,7 +249,7 @@ function Stepper({ label, value, min, max, step, digits, unit, disabled, onChang
             }
           }}
         />
-        <button type="button" className="lab-stepper-btn" onClick={() => { set(value + step); }} disabled={disabled || value >= max} aria-label={`Increase ${label}`}>
+        <button type="button" className="lab-stepper-btn" onClick={() => { set(value + step); }} disabled={disabled || value >= max} aria-label={t("labx.increase", { name: label })}>
           +
         </button>
         {unit && <span className="lab-stepper-unit">{unit}</span>}
@@ -330,6 +332,7 @@ const DataPanel = memo(function DataPanel({
   setRows: Dispatch<SetStateAction<Row[]>>;
   fileName: string;
 }) {
+  const { t } = useI18n();
   const [showPlot, setShowPlot] = useState(false);
   const plot = cfg.plot;
 
@@ -348,18 +351,18 @@ const DataPanel = memo(function DataPanel({
   return (
     <div className="lab-data">
       <div className="lab-data-head">
-        <h2>Data</h2>
+        <h2>{t("labx.data")}</h2>
         <div className="lab-data-actions">
           {plot && (
             <button type="button" className="btn btn-small btn-secondary" onClick={() => { setShowPlot((v) => !v); }} disabled={rows.length === 0} aria-expanded={showPlot}>
-              {showPlot ? "Hide plot" : "Plot Data"}
+              {showPlot ? t("labx.hidePlot") : t("labx.plot")}
             </button>
           )}
           <button type="button" className="btn btn-small btn-secondary" onClick={downloadCsv} disabled={rows.length === 0}>
-            Download CSV
+            {t("labx.csv")}
           </button>
           <button type="button" className="btn btn-small btn-secondary" onClick={() => { setRows([]); }} disabled={rows.length === 0}>
-            Clear data
+            {t("labx.clear")}
           </button>
         </div>
       </div>
@@ -374,7 +377,7 @@ const DataPanel = memo(function DataPanel({
                 </th>
               ))}
               <th scope="col">
-                <span className="lab-sr">Delete</span>
+                <span className="lab-sr">{t("labx.delete")}</span>
               </th>
             </tr>
           </thead>
@@ -382,7 +385,7 @@ const DataPanel = memo(function DataPanel({
             {rows.length === 0 ? (
               <tr>
                 <td colSpan={cfg.columns.length + 2} className="lab-empty">
-                  Stimulate, then Record Data to add a row.
+                  {t("labx.empty")}
                 </td>
               </tr>
             ) : (
@@ -393,7 +396,7 @@ const DataPanel = memo(function DataPanel({
                     <td key={c.key}>{fmt(r[c.key], c.digits)}</td>
                   ))}
                   <td>
-                    <button type="button" className="lab-row-delete" onClick={() => { setRows((prev) => prev.filter((_, j) => j !== i)); }} aria-label={`Delete row ${i + 1}`}>
+                    <button type="button" className="lab-row-delete" onClick={() => { setRows((prev) => prev.filter((_, j) => j !== i)); }} aria-label={t("labx.deleteRow", { n: i + 1 })}>
                       ×
                     </button>
                   </td>
@@ -419,6 +422,7 @@ const DataPanel = memo(function DataPanel({
 });
 
 function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabActivity }) {
+  const { t } = useI18n();
   const mode = activity.mode;
   const cfg = entry(MODES, mode);
   const defaults = entry(DEFAULTS, mode);
@@ -678,7 +682,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
           {mode === "twitch" && (
             <div className="lab-measure">
               <button type="button" className={`btn btn-small btn-secondary${measure != null ? " is-active" : ""}`} onClick={() => { setMeasure(measure == null ? 10 : null); }} aria-pressed={measure != null}>
-                {measure == null ? "Measure" : "Hide measure"}
+                {measure == null ? t("labx.measure") : t("labx.hideMeasure")}
               </button>
               {measure != null && (
                 <>
@@ -689,7 +693,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
                     step={0.1}
                     value={measure}
                     onChange={(e) => { setMeasure(Number(e.target.value)); }}
-                    aria-label="Measure line time (msec)"
+                    aria-label={t("labx.measureLine")}
                   />
                 </>
               )}
@@ -706,7 +710,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
           {mode === "load" && (
             <div className="lab-stepper">
               <span className="lab-stepper-label">Weight</span>
-              <div className="lab-weights" role="radiogroup" aria-label="Weight">
+              <div className="lab-weights" role="radiogroup" aria-label={t("labx.weight")}>
                 {WEIGHTS.map((w) => (
                   <button key={w} type="button" role="radio" aria-checked={weight === w} className={`lab-weight${weight === w ? " is-on" : ""}`} onClick={() => { setWeight(w); }} disabled={running}>
                     {w.toFixed(1)} g
@@ -751,6 +755,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
 }
 
 export function LabActivityPage() {
+  const { t } = useI18n();
   const { exerciseId = "", activitySlug = "" } = useParams();
   const found = findLabActivity(exerciseId, activitySlug);
   if (!found) return <NotFound />;
@@ -761,13 +766,13 @@ export function LabActivityPage() {
   return (
     <section className="page lab-page">
       <Link to="/lab" className="back-link">
-        ← Virtual Lab
+        ← {t("lab.title")}
       </Link>
       <p className="lab-kicker">
-        {exercise.title} · Activity {activity.number} of {exercise.activities.length}
+        {exercise.title} · {t("labx.activityOf", { n: activity.number, total: exercise.activities.length })}
       </p>
       <h1>{activity.title}</h1>
-      <nav className="lab-activity-nav" aria-label="Activities">
+      <nav className="lab-activity-nav" aria-label={t("labx.activities")}>
         {exercise.activities.map((a) => (
           <Link key={a.slug} to={`/lab/${exercise.id}/${a.slug}`} className={`lab-activity-pill${a.slug === activity.slug ? " is-current" : ""}`} aria-current={a.slug === activity.slug ? "page" : undefined} title={a.title}>
             {a.number}
@@ -777,23 +782,23 @@ export function LabActivityPage() {
 
       <div className="lab-intro">
         <details className="lab-card lab-background">
-          <summary>Background</summary>
+          <summary>{t("labx.background")}</summary>
           {activity.background.map((p, i) => (
             <p key={i}>{p}</p>
           ))}
           <p>
-            Full walkthrough: <Link to={exercise.guide.to}>{exercise.guide.label}</Link>.
+            {t("labx.walkthrough")} <Link to={exercise.guide.to}>{exercise.guide.label}</Link>.
           </p>
         </details>
         <div className="lab-card lab-steps">
-          <h2>Steps</h2>
+          <h2>{t("labx.steps")}</h2>
           <ol>
             {activity.steps.map((step, i) => (
               <li key={i}>{step}</li>
             ))}
           </ol>
           <details className="lab-expected">
-            <summary>What you should find</summary>
+            <summary>{t("labx.expected")}</summary>
             <p>{activity.expected}</p>
           </details>
         </div>
@@ -804,17 +809,17 @@ export function LabActivityPage() {
 
       <LabQuestions key={`q-${activity.slug}`} questions={activity.questions} />
 
-      <nav className="lab-pager" aria-label="Previous and next activity">
+      <nav className="lab-pager" aria-label={t("labx.pager")}>
         {prev ? (
           <Link to={`/lab/${exercise.id}/${prev.slug}`} className="btn btn-secondary">
-            ← Activity {prev.number}
+            ← {t("labx.activity", { n: prev.number })}
           </Link>
         ) : (
           <span />
         )}
         {next && (
           <Link to={`/lab/${exercise.id}/${next.slug}`} className="btn">
-            Activity {next.number} →
+            {t("labx.activity", { n: next.number })} →
           </Link>
         )}
       </nav>

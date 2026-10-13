@@ -2,8 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import { useExamPlan } from "../../hooks/useExamPlan";
 import { studyBlocks } from "../../lib/blocks";
 import { countdownText, focusBlockId, plannableBlocks } from "../../lib/examPlan";
-import { planStatus } from "../../lib/todayPlan";
-import { BodyIcon, CalendarIcon, FlameIcon, MapIcon, TimerIcon } from "../icons";
+import { planStatus, planText } from "../../lib/todayPlan";
+import { CalendarIcon, FlameIcon, TimerIcon } from "../icons";
+import { useAccount } from "../../hooks/useAccount";
 import { TodayPlanList } from "./PlanParts";
 import { useI18n } from "../../i18n/useI18n";
 import type { Translate } from "../../i18n/i18n";
@@ -50,6 +51,8 @@ export function BlockPicker({ current, onPick }: { current: string; onPick: (blo
 export function TodayHero({ streak, firstVisit, current, onPickBlock }: { streak: number; firstVisit: boolean; current: string; onPickBlock: (blockId: string) => void }) {
   // focusBlockId reads the stored block; `current` is that same value, so this follows a pick.
   const { t, language } = useI18n();
+  const { user } = useAccount();
+  const name = (user?.displayName || user?.fullName || "").trim().split(/\s+/)[0] ?? "";
   const blockId = current || focusBlockId();
   const needsBlock = !current && plannableBlocks().length > 1;
   const today = new Date().toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
@@ -60,7 +63,7 @@ export function TodayHero({ streak, firstVisit, current, onPickBlock }: { streak
         <div>
           <p className="today-date">{today}</p>
           <h1 className="today-title" id="today-title">
-            {firstVisit ? t("today.welcome") : greeting(t)}
+            {firstVisit ? t("today.welcome") : name ? greeting(t).replace(/\.$/, `, ${name}`) : greeting(t)}
           </h1>
         </div>
         {streak > 0 && (
@@ -109,8 +112,8 @@ function TodayCard({ blockId }: { blockId: string }) {
               {t("today.upNext", { minutes: Math.max(1, next.minutes) })}
               {status && status.total > 1 && ` · ${t("today.doneToday", { done: status.done, total: status.total })}`}
             </span>
-            <h2 className="today-next-title">{next.title}</h2>
-            <p className="today-next-detail">{next.detail}</p>
+            <h2 className="today-next-title">{planText(next, t).title}</h2>
+            <p className="today-next-detail">{planText(next, t).detail}</p>
           </div>
           <Link to={next.to} className="btn today-start">
             {t("exam.start")}
@@ -128,14 +131,6 @@ function TodayCard({ blockId }: { blockId: string }) {
             <Link to={`/exam/${blockId}`} className="btn btn-secondary">
               <TimerIcon />
               {t("today.mockExam")}
-            </Link>
-            <Link to="/atlas" className="btn btn-secondary">
-              <BodyIcon />
-              {t("nav.atlas")}
-            </Link>
-            <Link to="/map" className="btn btn-secondary">
-              <MapIcon />
-              {t("nav.map")}
             </Link>
           </div>
         </div>
@@ -180,8 +175,8 @@ function NextUpFor({ blockId }: { blockId: string }) {
             <span className="today-kicker">
               {t("today.nextOnPlan", { done: status.done, total: status.total })}
             </span>
-            <strong>{status.next.title}</strong>
-            <span>{status.next.detail}</span>
+            <strong>{planText(status.next, t).title}</strong>
+            <span>{planText(status.next, t).detail}</span>
           </div>
           <Link to={status.next.to} className="btn next-up-go">
             {t("exam.continue")}

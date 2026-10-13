@@ -7,7 +7,7 @@ import { countdownText, PHASE_INFO, parseDay, phaseTimeline, type Phase } from "
 import { entry } from "../../lib/records";
 import type { Milestone } from "../../lib/milestones";
 import type { BlockReadiness, SubjectReadiness } from "../../lib/readiness";
-import type { PlanItem, TodayPlan } from "../../lib/todayPlan";
+import { planText, type PlanItem, type TodayPlan } from "../../lib/todayPlan";
 import type { WeakSpots } from "../../lib/weakSpots";
 import { AlfondIcon, CheckIcon } from "../icons";
 import { SubjectBadge } from "../SubjectBadge";
@@ -189,9 +189,9 @@ function PlanRow({ item, done }: { item: PlanItem; done: number }) {
         {complete ? <CheckIcon /> : null}
       </span>
       <Link to={item.to} className="plan-item-body">
-        <span className="plan-item-title">{item.title}</span>
+        <span className="plan-item-title">{planText(item, t).title}</span>
         <span className="plan-item-detail">
-          {item.detail}
+          {planText(item, t).detail}
           {partial && ` · ${t("xplan.partDone", { done, total: item.target })}`}
         </span>
       </Link>

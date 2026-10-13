@@ -14,6 +14,7 @@ import { ReadingControls } from "../components/ReadingControls";
 import { subjectHueStyle } from "../lib/subjectStyle";
 import type { ReadingPosition } from "../types/content";
 import { SubjectTrail } from "../components/SubjectTrail";
+import { useI18n } from "../i18n/useI18n";
 
 function ExternalIcon() {
   return (
@@ -31,6 +32,7 @@ function ExternalIcon() {
 }
 
 export function EbookReader() {
+  const { t } = useI18n();
   const { blockId = "", subjectId = "", chapterId } = useParams();
   const key = subjectKey(blockId, subjectId);
   const meta = ebookMeta.get(key);
@@ -103,8 +105,8 @@ export function EbookReader() {
   if (!meta) {
     return (
       <section className="page">
-        <p>Unknown ebook.</p>
-        <Link to="/ebooks">Back to ebooks</Link>
+        <p>{t("rd.unknownEbook")}</p>
+        <Link to="/ebooks">{t("rd.backEbooks")}</Link>
       </section>
     );
   }
@@ -124,19 +126,19 @@ export function EbookReader() {
   if (hasChapters && (!chapter || !ebookChapterKeys.includes(chapterKey))) {
     return (
       <section className="page">
-        <p>Unknown chapter.</p>
-        <Link to="/ebooks">Back to ebooks</Link>
+        <p>{t("rd.unknownChapter")}</p>
+        <Link to="/ebooks">{t("rd.backEbooks")}</Link>
       </section>
     );
   }
 
   const sidebar = (
-    <nav className={tocOpen ? "ebook-toc ebook-toc-collapsible is-open" : "ebook-toc ebook-toc-collapsible"} aria-label="Book contents">
+    <nav className={tocOpen ? "ebook-toc ebook-toc-collapsible is-open" : "ebook-toc ebook-toc-collapsible"} aria-label={t("rd.bookContents")}>
       {/* Phones: the contents fold into one line, so each chapter starts at its text. */}
       <button type="button" className="ebook-toc-toggle" onClick={() => { setTocOpen((o) => !o); }} aria-expanded={tocOpen}>
-        <span>{chapter ? `Chapter ${chapterIndex + 1} of ${meta.chapters.length}` : meta.title}</span>
+        <span>{chapter ? t("rd.chapterOf", { n: chapterIndex + 1, total: meta.chapters.length }) : meta.title}</span>
         <span className="ebook-toc-toggle-hint">
-          Contents <span aria-hidden="true">{tocOpen ? "▴" : "▾"}</span>
+          {t("rd.contents")} <span aria-hidden="true">{tocOpen ? "▴" : "▾"}</span>
         </span>
       </button>
       <h2 className="ebook-toc-title">{meta.title}</h2>
@@ -152,7 +154,7 @@ export function EbookReader() {
               >
                 {i + 1}. {c.title}
                 {completedChapters.includes(c.id) && (
-                  <span className="ebook-toc-check" title="Completed">
+                  <span className="ebook-toc-check" title={t("rd.completed")}>
                     <CheckIcon />
                   </span>
                 )}
@@ -180,7 +182,7 @@ export function EbookReader() {
 
       {meta.resources && meta.resources.length > 0 && (
         <div className="ebook-toc-section">
-          <h3 className="ebook-toc-subhead">Further reading</h3>
+          <h3 className="ebook-toc-subhead">{t("rd.further")}</h3>
           <ul className="ebook-toc-flat">
             {meta.resources.map((res) => (
               <li key={res.url}>
@@ -221,7 +223,7 @@ export function EbookReader() {
                 aria-pressed={isComplete}
               >
                 <CheckIcon />
-                {isComplete ? "Completed" : "Mark chapter complete"}
+                {isComplete ? t("rd.completed") : t("rd.markComplete")}
               </button>
               <div className="ebook-nav">
                 {prevChapter ? (
@@ -239,22 +241,22 @@ export function EbookReader() {
                     {nextChapter.title} →
                   </Link>
                 ) : (
-                  <span className="ebook-done">End of book</span>
+                  <span className="ebook-done">{t("rd.endOfBook")}</span>
                 )}
               </div>
             </>
           ) : hasChapters && current?.failed ? (
-            <p className="ebook-status">Couldn't load this chapter. Check your connection and try again.</p>
+            <p className="ebook-status">{t("rd.chapterFailed")}</p>
           ) : hasChapters ? (
             <p className="ebook-status" role="status">
-              Loading chapter…
+              {t("rd.loadingChapter")}
             </p>
           ) : pdfs.length > 0 ? (
             <div className="pdf-viewer">
               <div className="pdf-viewer-bar">
                 <p>{meta.description}</p>
                 <a href={pdfs[0].url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-                  Open in new tab
+                  {t("rd.newTab")}
                   <ExternalIcon />
                 </a>
               </div>
@@ -265,7 +267,7 @@ export function EbookReader() {
               />
             </div>
           ) : (
-            <p>No content yet — drop a chapter or PDF into this subject's folder.</p>
+            <p>{t("rd.noContent")}</p>
           )}
         </div>
       </div>

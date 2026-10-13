@@ -64,15 +64,13 @@
 }
 
 .stat-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   color: var(--text-muted);
   font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .stat-value {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 1.7rem;
   font-weight: 600;
   color: var(--accent);
@@ -119,7 +117,7 @@
 }
 
 .study-plan-message {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.85rem;
   color: var(--text-muted);
   margin: 0;
@@ -224,7 +222,7 @@
 }
 
 .mastery-row-detail {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.78rem;
   color: var(--text-muted);
 }

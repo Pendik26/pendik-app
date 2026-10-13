@@ -162,7 +162,7 @@ export const studyId: { [K in keyof typeof studyEn]: string } = {
   "quiz.missed": "Salah",
   "cards.back": "Kembali ke flashcard",
   "cards.stats": "{due} jatuh tempo · {mastered}/{total} dikuasai",
-  "cards.fromMap": "{count} kartu dari peta pengetahuan",
+  "cards.fromMap": "{count} kartu dari peta konsep",
   "cards.filtered": "disaring menjadi {count} kartu",
   "cards.wholeDeck": "Tampilkan seluruh dek",
   "cards.filterTopic": "Saring per topik",

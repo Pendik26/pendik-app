@@ -8,6 +8,7 @@ import { useReadingPrefs } from "../hooks/useReadingPrefs";
 import { ReadingControls } from "../components/ReadingControls";
 import { subjectHueStyle } from "../lib/subjectStyle";
 import { SubjectTrail } from "../components/SubjectTrail";
+import { useI18n } from "../i18n/useI18n";
 
 export function SummaryDetail() {
   const { blockId = "", subjectId = "" } = useParams();
@@ -15,6 +16,7 @@ export function SummaryDetail() {
   const markdown = summaries.get(key);
   useHashScroll(markdown);
   const [readingPrefs, setReadingPrefs] = useReadingPrefs();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (subjectId) {
@@ -25,8 +27,8 @@ export function SummaryDetail() {
   if (!markdown) {
     return (
       <section className="page">
-        <p>Unknown subject.</p>
-        <Link to="/summaries">Back to summaries</Link>
+        <p>{t("study.unknownSubject")}</p>
+        <Link to="/summaries">{t("lib.backSummaries")}</Link>
       </section>
     );
   }
