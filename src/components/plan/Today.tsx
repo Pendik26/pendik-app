@@ -5,6 +5,7 @@ import { countdownText, focusBlockId, plannableBlocks } from "../../lib/examPlan
 import { planStatus, planText } from "../../lib/todayPlan";
 import { CalendarIcon, FlameIcon, TimerIcon } from "../icons";
 import { useAccount } from "../../hooks/useAccount";
+import { firstName } from "../../lib/firstName";
 import { TodayPlanList } from "./PlanParts";
 import { useI18n } from "../../i18n/useI18n";
 import type { Translate } from "../../i18n/i18n";
@@ -52,7 +53,7 @@ export function TodayHero({ streak, firstVisit, current, onPickBlock }: { streak
   // focusBlockId reads the stored block; `current` is that same value, so this follows a pick.
   const { t, language } = useI18n();
   const { user } = useAccount();
-  const name = (user?.displayName || user?.fullName || "").trim().split(/\s+/)[0] ?? "";
+  const name = user?.displayName ? user.displayName.trim().split(/\s+/)[0] ?? "" : firstName(user?.fullName ?? "");
   const blockId = current || focusBlockId();
   const needsBlock = !current && plannableBlocks().length > 1;
   const today = new Date().toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { weekday: "long", day: "numeric", month: "long" });

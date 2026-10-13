@@ -9,18 +9,8 @@ import { useI18n } from "../i18n/useI18n";
 import { studyBlocks } from "../lib/blocks";
 import { exportAllProgress, STORAGE_KEYS } from "../lib/storage";
 import { ChangePasswordForm } from "./ChangePassword";
+import { firstName, initialsOf } from "../lib/firstName";
 import { useMessage } from "../i18n/useMessage";
-
-function initials(name: string): string {
-  return (
-    name
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() ?? "")
-      .join("") || "?"
-  );
-}
 
 /** The block the student is in; Home shows it first and the daily plan follows it. */
 function CurrentBlockPicker() {
@@ -61,7 +51,7 @@ function ProfileCard() {
   return (
     <div className="account-card account-profile">
       <div className="account-profile-head">
-        <span className="account-avatar" aria-hidden="true">{initials(user.fullName)}</span>
+        <span className="account-avatar" aria-hidden="true">{initialsOf(user.fullName)}</span>
         <div>
           <p className="account-name">{user.fullName}</p>
           <p className="account-email">
@@ -76,7 +66,7 @@ function ProfileCard() {
         <label className="account-field">
           <span>{t("account.displayName")}</span>
           <input className="form-input" minLength={2} maxLength={32} value={displayName}
-            placeholder={user.fullName.split(" ")[0]} onChange={(e) => { setDisplayName(e.target.value); }} />
+            placeholder={firstName(user.fullName)} onChange={(e) => { setDisplayName(e.target.value); }} />
           <small>{t("account.displayNameHint")}</small>
         </label>
         <div className="account-row">
