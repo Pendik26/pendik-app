@@ -31,7 +31,7 @@ Project → Settings → Environment Variables (Production, and Preview if you u
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | optional "Continue with Google" |
 | `APP_ORIGINS` | optional other addresses allowed to call the API, comma separated |
 | `VITE_AI_ENABLED`, `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, `AI_DAILY_LIMIT` | optional "Explain this" and Alfond: `VITE_AI_ENABLED=true` shows them, the `AI_*` settings point at an OpenAI-compatible gateway |
-| `DRIVE_SYNC_SECRET`, `GOOGLE_SERVICE_ACCOUNT_JSON`, `DRIVE_ROOT_FOLDER_ID` | optional class Drive sync, see step 5 |
+| `DRIVE_SYNC_SECRET`, `GOOGLE_DRIVE_API_KEY`, `GOOGLE_DRIVE_FOLDER_ID` | optional class Drive sync, see step 5 |
 
 Without `MONGODB_URI` and `BETTER_AUTH_SECRET` every `/api` route answers 503 and the app shows its
 "couldn't load" page.
@@ -51,9 +51,11 @@ Google" then signs in only an account that was linked. Set `GOOGLE_CLIENT_ID` an
 
 ## 5. The class Drive sync (optional)
 
-Share the class Drive folder with a Google service account (viewer), then set `GOOGLE_SERVICE_ACCOUNT_JSON`,
-`DRIVE_ROOT_FOLDER_ID` and `DRIVE_SYNC_SECRET` on Vercel. In the GitHub repository add the secrets `APP_URL`
-(the site's address) and `DRIVE_SYNC_SECRET` (same value). The Action calls `POST /api/drive-sync` until the
+Share the class Drive folder by link ("anyone with the link can view"). In Google Cloud turn on the Drive API and create
+an API key (APIs & Services → Credentials), then set `GOOGLE_DRIVE_API_KEY`, `GOOGLE_DRIVE_FOLDER_ID` (the folder's id
+or its share link) and `DRIVE_SYNC_SECRET` on Vercel. A private folder works too: share it with a Google service
+account (viewer) and set `GOOGLE_SERVICE_ACCOUNT_JSON` instead of the API key. In the GitHub repository add the secrets
+`APP_URL` (the site's address) and `DRIVE_SYNC_SECRET` (same value). The Action calls `POST /api/drive-sync` until the
 sync is done; admins can also run it from Admin → Drive.
 
 ## 6. Roster and past papers

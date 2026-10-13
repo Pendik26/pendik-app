@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { kindOf, placeOf, youtubeIds } from "./drivePath.js";
-import { applyHeldRun, DEFAULT_SYNC, FOLDER, syncStep, type ApiFile, type DriveApi, type FileRow, type SyncConfig, type SyncCursor, type SyncRun, type SyncStore } from "./driveSync.js";
+import { driveSyncConfigFromEnv } from "./drive.js";
+import { applyHeldRun, DEFAULT_SYNC, driveApi, FOLDER, syncStep, type ApiFile, type DriveApi, type FileRow, type SyncConfig, type SyncCursor, type SyncRun, type SyncStore } from "./driveSync.js";
 import { parseServiceAccount, serviceAccountJwt } from "./googleAuth.js";
 
 describe("where a file sits", () => {
@@ -161,5 +162,31 @@ describe("service account sign-in", () => {
     const unb64 = (x: string) => Uint8Array.from(atob(x.replace(/-/g, "+").replace(/_/g, "/")), (ch) => ch.charCodeAt(0));
     expect(JSON.parse(new TextDecoder().decode(unb64(c)))).toMatchObject({ iss: "sync@x.iam.gserviceaccount.com", iat: 1000, exp: 4600 });
     expect(await crypto.subtle.verify("RSASSA-PKCS1-v1_5", pair.publicKey, unb64(s), new TextEncoder().encode(`${h}.${c}`))).toBe(true);
+  });
+});
+
+describe("the Drive settings", () => {
+  it("accepts an API key and a folder link without a service account", () => {
+    const c = driveSyncConfigFromEnv({ GOOGLE_DRIVE_API_KEY: " k ", GOOGLE_DRIVE_FOLDER_ID: "https://drive.google.com/drive/folders/abc_123?usp=sharing" });
+    expect(c).toMatchObject({ apiKey: "k", rootFolderId: "abc_123" });
+  });
+
+  it("needs a folder and either an API key or a service account", () => {
+    expect(driveSyncConfigFromEnv({ GOOGLE_DRIVE_API_KEY: "k" })).toBeNull();
+    expect(driveSyncConfigFromEnv({ GOOGLE_DRIVE_FOLDER_ID: "abc" })).toBeNull();
+    expect(driveSyncConfigFromEnv({})).toBeNull();
+  });
+
+  it("sends the key with each request and no sign-in header", async () => {
+    const urls: string[] = [];
+    const headers: unknown[] = [];
+    const fake = (async (url: string, init?: RequestInit) => {
+      urls.push(url);
+      headers.push(init?.headers);
+      return new Response(JSON.stringify({ files: [] }));
+    }) as unknown as typeof fetch;
+    await driveApi(async () => "", fake, "https://example.test/drive/v3", "my key").listChildren(["f1"]);
+    expect(urls[0]).toContain("&key=my%20key");
+    expect(headers[0]).toBeUndefined();
   });
 });
