@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { groupByBlock } from "../lib/blocks";
 import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { SubjectBadge } from "../components/SubjectBadge";
@@ -9,7 +10,8 @@ import { useI18n } from "../i18n/useI18n";
 /** Every subject, by block: each card opens the subject's page with all its material. */
 export function SubjectsIndex() {
   const { t } = useI18n();
-  const groups = groupByBlock(buildSubjectOverviews(t));
+  const chosenBlock = useChosenBlock();
+  const groups = groupByBlock(buildSubjectOverviews(t), chosenBlock);
   return (
     <section className="page">
       <h1>{t("nav.subjects")}</h1>

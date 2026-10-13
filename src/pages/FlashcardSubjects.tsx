@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { flashcardDecks, flashcardSubjects, keyOf } from "../lib/content";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
 import { INITIAL_CARD_STATE, isDue } from "../lib/sm2";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { groupByBlock } from "../lib/blocks";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
@@ -10,7 +11,8 @@ import type { CardStateMap } from "../types/content";
 import { useI18n } from "../i18n/useI18n";
 
 export function FlashcardSubjects() {
-  const groups = groupByBlock(flashcardSubjects);
+  const chosenBlock = useChosenBlock();
+  const groups = groupByBlock(flashcardSubjects, chosenBlock);
   const { t } = useI18n();
 
   return (

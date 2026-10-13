@@ -40,9 +40,18 @@ export interface BlockGroup<T> {
   upcoming: UpcomingSubject[];
 }
 
-/** Buckets a flat subject list into its study blocks, in block order, dropping empty blocks. */
-export function groupByBlock<T extends { id: string; blockId: string }>(subjects: T[]): BlockGroup<T>[] {
-  return studyBlocks
+/** The group (or block) for `first` moved to the front, the rest left in order. */
+export function blockFirst<T>(items: T[], idOf: (item: T) => string, first: string): T[] {
+  if (!first) return items;
+  return [...items.filter((i) => idOf(i) === first), ...items.filter((i) => idOf(i) !== first)];
+}
+
+/**
+ * Buckets a flat subject list into its study blocks, in block order, dropping empty blocks. The
+ * student's chosen block (if any) comes first.
+ */
+export function groupByBlock<T extends { id: string; blockId: string }>(subjects: T[], chosenBlock = ""): BlockGroup<T>[] {
+  const groups = studyBlocks
     .map((block) => {
       const present = subjects.filter((s) => s.blockId === block.id);
       return {
@@ -54,4 +63,5 @@ export function groupByBlock<T extends { id: string; blockId: string }>(subjects
       };
     })
     .filter((g) => g.subjects.length > 0 || g.upcoming.length > 0);
+  return blockFirst(groups, (g) => g.block.id, chosenBlock);
 }

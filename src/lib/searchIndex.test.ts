@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { buildContentDocs, buildNavigationDocs, loadContentDocs, type SearchDoc } from "./searchIndex";
+import { blockOfDoc, buildContentDocs, buildNavigationDocs, loadContentDocs, type SearchDoc } from "./searchIndex";
 
 describe("buildNavigationDocs", () => {
   const docs = buildNavigationDocs();
@@ -62,5 +62,13 @@ describe("buildContentDocs", () => {
   it("has no duplicate ids across the whole content index", () => {
     const ids = docs.map((d) => d.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe("blockOfDoc", () => {
+  it("reads the block from a subject link", () => {
+    expect(blockOfDoc({ to: "/quizzes/1.2/physiology" })).toBe("1.2");
+    expect(blockOfDoc({ to: "/ebooks/1.1/anatomy/chapter-03" })).toBe("1.1");
+    expect(blockOfDoc({ to: "/drive" })).toBeNull();
   });
 });

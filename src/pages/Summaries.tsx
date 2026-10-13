@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { summarySubjects } from "../lib/content";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { groupByBlock } from "../lib/blocks";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
@@ -7,7 +8,8 @@ import { UpcomingSubjectCard } from "../components/UpcomingSubjectCard";
 import { useI18n } from "../i18n/useI18n";
 
 export function Summaries() {
-  const groups = groupByBlock(summarySubjects);
+  const chosenBlock = useChosenBlock();
+  const groups = groupByBlock(summarySubjects, chosenBlock);
   const { t } = useI18n();
 
   return (

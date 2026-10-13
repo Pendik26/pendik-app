@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { flashcardSubjects, keyOf, loadOcclusionNotes, occlusionKeys } from "../lib/content";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
 import { INITIAL_CARD_STATE, isDue } from "../lib/sm2";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { groupByBlock } from "../lib/blocks";
 import { occlusionCards } from "../lib/occlusion";
 import { SubjectBadge } from "../components/SubjectBadge";
@@ -37,12 +38,14 @@ export function OcclusionSubjects() {
     };
   }, []);
 
+  const chosenBlock = useChosenBlock();
+
   return (
     <section className="page">
       <h1>{t("io.title")}</h1>
       <p className="subtitle">{t("io.intro")}</p>
 
-      {groupByBlock(subjects)
+      {groupByBlock(subjects, chosenBlock)
         .filter((g) => g.subjects.length > 0)
         .map(({ block, subjects: list }) => (
           <div key={block.id} className="block-section">
