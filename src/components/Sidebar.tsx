@@ -315,7 +315,7 @@ export function Sidebar() {
     return () => { window.removeEventListener("keydown", onKeyDown); };
   }, [drawerOpen]);
 
-  const name = user?.displayName || user?.fullName || "";
+  const name = user?.fullName ?? "";
 
   return (
     <>
