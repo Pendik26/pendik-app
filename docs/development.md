@@ -13,15 +13,17 @@ npm run dev                  # http://localhost:5173
 Every page needs sign-in, so the app needs a Supabase project to talk to:
 either the real one (add `http://localhost:5173` to its redirect URLs and
 `APP_ORIGINS`, see [deploying](deploying.md)), or a local one with the
-[Supabase CLI](https://supabase.com/docs/guides/cli):
+[Supabase CLI](https://supabase.com/docs/guides/cli). The database lives in
+`database/`, not the CLI's usual `supabase/`, so run the CLI through
+`npm run supabase --`, which points it there:
 
 ```bash
-supabase start                 # Postgres, Auth and the API in Docker
-supabase db reset              # apply supabase/migrations/
-supabase functions serve       # the Edge Functions, reading supabase/functions/.env
+npm run supabase -- start              # Postgres, Auth and the API in Docker
+npm run supabase -- db reset           # apply database/migrations/
+npm run supabase -- functions serve    # the Edge Functions, reading database/functions/.env
 ```
 
-`supabase start` prints the local URL and publishable key for `.env.local`.
+`start` prints the local URL and publishable key for `.env.local`.
 Make yourself an admin as in [deploying, step 6](deploying.md#6-first-admin-roster-and-past-papers).
 
 ## Scripts
@@ -36,6 +38,10 @@ npm run test         # Vitest, single run
 npm run test:watch   # Vitest, watch mode
 npm run graph:relations   # AI labels for the knowledge map's links
 npm run docs:wiki         # build the wiki pages into wiki-out/ (CI publishes them)
+npm run supabase -- <command>   # the Supabase CLI, run on database/
+npm run db:test      # SQL tests and the schema check, on a local Postgres (PGHOST etc.)
+npm run db:push      # apply new migrations (add -- --db-url "$POSTGRES_URL_NON_POOLING" if not linked)
+npm run db:types     # rewrite src/lib/db/types.ts from the linked project
 npx markdownlint-cli2 "**/*.md"   # Markdown style
 ```
 
@@ -58,7 +64,7 @@ Tests sit beside the code as `*.test.ts` and run in Node (no DOM). They cover:
 - content integrity (`contentIntegrity.test.ts`) and the prerendered pages
   (`src/prerender/site.test.ts`, which also checks that no past-paper question
   is published);
-- the Edge Functions' shared code in `supabase/functions/_shared/`: the AI
+- the Edge Functions' shared code in `database/functions/_shared/`: the AI
   requests and allowance, account actions, and the Drive sync with its path
   rules (against a fake Drive and store);
 - the translations (`src/i18n/i18n.test.ts`: both languages have the same
@@ -71,7 +77,7 @@ The database rules (exam attempts, grading, deadlines, the Drive functions)
 have SQL tests that run against a local Postgres:
 
 ```bash
-PGHOST=localhost PGPORT=5432 PGUSER=postgres bash supabase/tests/run.sh
+PGHOST=localhost PGPORT=5432 PGUSER=postgres npm run db:test
 ```
 
 There are no component tests; check UI changes in the browser, in light and
@@ -141,10 +147,12 @@ See [storage and sync](storage-and-sync.md#adding-a-new-kind-of-progress).
 ### Something that needs the server
 
 Most things are a table or SQL function: add a migration in
-`supabase/migrations/` with row level security and a header comment, a SQL
-test in `supabase/tests/` if it enforces a rule, and a wrapper in `src/lib`.
+`database/migrations/` with row level security and a header comment, make
+the same change in that domain's file in `database/schema/`, add a SQL test
+in `database/tests/` if it enforces a rule, and call it from `src/lib`
+through `src/lib/db/client.ts` (see [database](database.md#changing-the-schema)).
 Only what needs a secret (an API key, the service role) becomes an Edge
-Function: put its logic in `supabase/functions/_shared/` with a Vitest test,
+Function: put its logic in `database/functions/_shared/` with a Vitest test,
 keep `index.ts` thin, and document it in [the server API](api.md).
 
 ### A new language string

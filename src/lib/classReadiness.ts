@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { currentSession, db } from "./db/client";
 
 // The student's exam readiness against their class: each student's number per block is saved
 // (`block_readiness`), and the class average comes back once at least 3 classmates have one.
@@ -18,17 +18,16 @@ export async function reportReadiness(blockId: string, value: number): Promise<v
   const rounded = Math.round(value);
   if (reported.get(blockId) === rounded) return;
   reported.set(blockId, rounded);
-  const { data } = await supabase.auth.getSession();
-  const userId = data.session?.user.id;
+  const userId = (await currentSession())?.user.id;
   if (!userId) return;
-  const { error } = await supabase.from("block_readiness").upsert(
-    { user_id: userId, block: blockId, value: Math.round(Math.min(100, Math.max(0, value)) * 10) / 10, updated_at: new Date().toISOString() },
+  const { error } = await db.from("block_readiness").upsert(
+    { user_id: userId, block: blockId, value: Math.round(Math.min(100, Math.max(0, value)) * 10) / 10 },
     { onConflict: "user_id,block" },
   );
   if (error) reported.delete(blockId);
 }
 
 export async function fetchClassReadiness(blockId: string): Promise<ClassReadiness | null> {
-  const { data, error } = await supabase.rpc("class_readiness", { p_block: blockId });
-  return error ? null : (data as ClassReadiness);
+  const { data, error } = await db.rpc("class_readiness", { p_block: blockId });
+  return error ? null : (data as unknown as ClassReadiness);
 }

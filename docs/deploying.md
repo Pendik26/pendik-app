@@ -39,9 +39,9 @@ roster and past papers (step 6).
 
 ## 1. Create the Supabase project
 
-Use a **new** project. The tables here were written from scratch in English
-(`questions`, `packages`, `attempts`, `drive_files`…), and penpro's old
-project has its own `roster` and `profiles` tables that would clash. The old
+Use a **new** project. The tables here were written from scratch in English,
+in their own `app` schema, and penpro's old project has its own `roster` and
+`profiles` tables that would only get in the way. The old
 data comes over through the admin pages instead (roster paste, question
 import), see [step 6](#6-first-admin-roster-and-past-papers).
 
@@ -51,22 +51,40 @@ import), see [step 6](#6-first-admin-roster-and-past-papers).
    this repo to the project:
 
    ```sh
-   supabase login
-   supabase link --project-ref <project-ref>
+   npx supabase login
+   npm run supabase -- link --project-ref <project-ref>
    ```
+
+   The schema and functions are in `database/`; `npm run supabase --` runs
+   the CLI with that folder (the CLI on its own looks for `supabase/`).
 
 3. Apply the schema:
 
    ```sh
-   supabase db push
+   npm run db:push
    ```
 
-   This runs `supabase/migrations/*.sql` in order. Without `supabase
-   link`, give it the database directly: `supabase db push --db-url
+   This runs `database/migrations/*.sql` that haven't run yet, in order
+   (`0001_baseline.sql` first, which builds everything). Without `link`, give
+   it the database directly: `npm run db:push -- --db-url
    "$POSTGRES_URL_NON_POOLING"` (with the integration, copy that value from
    Vercel; it holds the database password, so keep it off GitHub).
-   **Check:** Table Editor shows `roster`, `profiles`, `questions`,
-   `packages`, `attempts`, `drive_files`, `progress` and the rest.
+   **Check:** Table Editor, schema `app`, shows `students`, `accounts`,
+   `questions`, `packages`, `attempts`, `study_items`, `user_state` and the
+   rest; schema `public` holds only views and functions.
+
+4. Load the study catalog, so flashcards, quizzes and chapters can earn
+   leaderboard points:
+
+   ```sh
+   POSTGRES_URL_NON_POOLING='postgresql://…' npm run db:content
+   ```
+
+   It needs `psql`. After that, add the same connection string as the
+   repository secret `POSTGRES_URL_NON_POOLING` (GitHub → Settings → Secrets
+   and variables → Actions) and the Content catalog workflow reloads it after
+   every content change. **Check:** it prints how many items of each kind are
+   live.
 
 ## 2. Sign-in settings
 
@@ -131,14 +149,14 @@ automatically.
 Then deploy the functions:
 
 ```sh
-supabase functions deploy ai
-supabase functions deploy admin-accounts
-supabase functions deploy drive-sync --no-verify-jwt
+npm run supabase -- functions deploy ai
+npm run supabase -- functions deploy admin-accounts
+npm run supabase -- functions deploy drive-sync --no-verify-jwt
 ```
 
 `drive-sync` is called by the GitHub Action with the shared secret rather
 than a user's token, so it skips Supabase's own token check and does its
-own (`supabase/config.toml` records the same settings). **Check:** the
+own (`database/config.toml` records the same settings). **Check:** the
 Edge Functions page lists all three.
 
 ## 4. Vercel
@@ -192,11 +210,30 @@ the people who upload.
 
 ## 6. First admin, roster and past papers
 
-Admins are students with `role = 'admin'`. The first one has to be made by
-hand, once, in the SQL editor (replace the NIM and name):
+Admins are students with `role = 'admin'`. Make the first one from your
+computer, with the same connection string as step 1. Who it is comes from
+environment variables, so no student's NIM or name goes into the repo:
+
+```sh
+FIRST_ADMIN_NIM=2601001 FIRST_ADMIN_NAME='Nama Lengkap' \
+POSTGRES_URL_NON_POOLING='postgresql://…' npm run db:first-admin
+```
+
+It runs `database/seeds/first-admin.sql` (it needs `psql`), which puts them on
+the roster and creates their sign-in and admin account. `FIRST_ADMIN_COHORT`
+(default `2026`) and `FIRST_ADMIN_PASSWORD` are optional. Without a password
+the first one is the usual `pendik26` + NIM, which anyone who knows the NIM
+knows too, so sign in and change it right away; the app asks for a new
+password first. Running it again keeps what exists and only makes the
+account an admin; on a database that already has its admin there is nothing
+to do.
+
+Without `psql`, do it once by hand in the SQL editor (replace the NIM and
+name):
 
 ```sql
-insert into public.roster (student_id, full_name, class_group, cohort)
+insert into app.cohorts (id) values ('2026') on conflict do nothing;
+insert into app.students (nim, full_name, class_group, cohort)
 values ('2601001', 'Nama Lengkap', 'A', '2026');
 ```
 
@@ -205,11 +242,10 @@ Then Authentication → Users → **Add user → Create new user**: email
 (`pendik26` + NIM), **Auto Confirm User** on. Then:
 
 ```sql
-insert into public.profiles (id, student_id, full_name, class_group, cohort, role)
-select u.id, r.student_id, r.full_name, r.class_group, r.cohort, 'admin'
+insert into app.accounts (id, nim, role)
+select u.id, '2601001', 'admin'
 from auth.users u
-join public.roster r on u.email = lower(r.student_id) || '@pendik26.internal'
-where r.student_id = '2601001';
+where u.email = '2601001@pendik26.internal';
 ```
 
 Sign in to the app with that NIM and password; it asks for a new password

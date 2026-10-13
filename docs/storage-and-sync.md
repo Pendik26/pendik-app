@@ -24,16 +24,16 @@ theme: { id: null, saved: "device", about: "Light or dark theme" },
 - `saved` is `"server"` (the student's account) or `"device"` (this browser
   only).
 
-The storage helpers, the saving code, sign-out and the leaderboard's scoring
-in the database (`progress_score()`) all follow this table, so a new kind of
-progress is declared once, here.
+The storage helpers, the saving code and sign-out all follow this table, so a
+new kind of progress is declared once, here.
 
 ## On the server
 
-The `progress` table holds one row per student per key, with the key
-without its `pendik:` prefix (`flashcards:1.2/anatomy`) and the value as
-JSON (at most 512 KB). Row level security lets each student read and write
-only their own rows. See [database.md](database.md#study-progress-leaderboard-readiness-ai-0500_studysql).
+`user_state` holds one row per student per key, with the key without its
+`pendik:` prefix (`flashcards:1.2/anatomy`) and the value as JSON (at most
+512 KB). Row level security lets each student read and write only their own
+rows. Nothing in it earns points: the leaderboard counts only the study
+records below. See [database.md](database.md#studying-06_studysql).
 
 ## Loading and saving
 
@@ -46,9 +46,12 @@ only their own rows. See [database.md](database.md#study-progress-leaderboard-re
    wait 1.5 s after the last change, then upsert every changed key in one
    request (200 rows a batch). A value set to `null` (a finished quiz's
    resume slot) deletes the row.
-3. **Coming back to the tab:** `refreshProgress()` reads the account again,
-   so progress made on another device shows up. It skips this while there
-   are unsaved changes, so it never overwrites them.
+3. **Coming back to the tab:** `refreshProgress()` reads only the rows
+   changed since the last read (by `updated_at`, which the database stamps
+   with its own clock, re-reading a minute back to be safe), so progress
+   made on another device shows up without downloading everything again. It
+   skips this while there are unsaved changes, so it never overwrites them.
+   Keys deleted on another device show up at the next sign-in.
 4. **Sign-out:** waits for pending saves, then forgets the progress in
    memory.
 
@@ -60,14 +63,27 @@ now**; closing the tab with unsaved changes asks first.
 With no connection, the app still opens from its offline cache and pages
 work from what's in memory, but nothing new is saved until it's back online.
 
+## Study records (points)
+
+What earns leaderboard points is sent separately, by
+`src/lib/studyRecords.ts`: each graded flashcard or occlusion label
+(`record_reviews`), each finished quiz or block exam with the option picked
+for every question (`record_quiz`, graded again on the server), each chapter
+marked finished (`finish_chapter`) and each study day (`record_study_day`).
+They wait in an outbox kept on the device (so offline studying isn't lost on
+a reload) and go out a moment after the last one, before the tab is hidden,
+when the connection comes back, at sign-out and before the leaderboard is
+read. A record the server refuses (an item not in the catalog) is dropped.
+
 ## Exams
 
-Past-paper attempts aren't in `progress`: they're rows in `attempts`, run by
-SQL functions with a server-side timer (see [database.md](database.md#attempts-0300_attemptssql)).
+Past-paper attempts aren't in `user_state`: they're rows in `attempts`, run by
+SQL functions with a server-side timer (see [database.md](database.md#exams-and-practice-04_examssql)).
 The app loads the student's packages and attempts at sign-in into a small
 store, `src/lib/exams.ts`, which Home, the exam plan and readiness read. The
-pooled block exam (questions drawn from the block's quiz banks) is still kept
-in `progress` as `examhistory:{block}`.
+pooled block exam (questions drawn from the block's quiz banks) keeps its
+history in `user_state` as `examhistory:{block}`, and its answers are sent as
+quiz records.
 
 ## Adding a new kind of progress
 
@@ -76,4 +92,5 @@ in `progress` as `examhistory:{block}`.
 3. Read and write it with `readJSON` / `writeJSON` (or `useLocalStorage`).
 
 That's all: it's saved in the account and cleared at sign-out. If it should
-earn leaderboard points, add it to `progress_score()` in a new migration.
+earn leaderboard points, it needs a study record: see
+[database.md](database.md#changing-the-schema).

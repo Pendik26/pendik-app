@@ -7,6 +7,7 @@ import { useHashScroll } from "../hooks/useHashScroll";
 import { ebookChapterKeys, ebookMeta, ebookPdfs, loadEbookChapter, subjectKey } from "../lib/content";
 import { readJSON, writeJSON, STORAGE_KEYS } from "../lib/storage";
 import { logStudy, recordActivity } from "../lib/activity";
+import { recordChapter } from "../lib/studyRecords";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useReadingPrefs } from "../hooks/useReadingPrefs";
 import { ReadingControls } from "../components/ReadingControls";
@@ -49,7 +50,10 @@ export function EbookReader() {
 
   const toggleComplete = () => {
     if (!chapterId) return;
-    if (!completedChapters.includes(chapterId)) logStudy(key, "chapters");
+    if (!completedChapters.includes(chapterId)) {
+      logStudy(key, "chapters");
+      recordChapter(key, chapterId);
+    }
     setCompletedChapters((prev) =>
       prev.includes(chapterId) ? prev.filter((id) => id !== chapterId) : [...prev, chapterId],
     );

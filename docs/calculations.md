@@ -291,27 +291,27 @@ readiness.
 
 ## Leaderboard
 
-Points are worked out in the database from saved progress and finished
-attempts (`progress_score()` and `attempts_score()` in
-`supabase/migrations/…0500_study.sql`), never from a score the browser
-reports:
+Points are worked out in the database from the study records it checked and
+finished attempts (the triggers in `database/schema/07_leaderboard.sql`),
+never from a score the browser reports:
 
 | Earned for | Points |
 | --- | --- |
-| Correct answer (quiz or exam attempt) | 1 |
-| Flashcard or label learned (reviewed successfully at least once) | 2 |
+| Correct answer: a quiz question graded on the server, or a single-choice question in a finished attempt; each question once a day | 1 |
+| Flashcard or label learned: reviewed on two different UTC days | 2 |
 | Ebook chapter finished | 10 |
 | Study day | 5 |
 
+- Each record adds its points to `app.points` (per student, UTC day and
+  source) as it's made, so points never go down: a reset card or an un-ticked
+  chapter subtracts nothing. A self-marked short answer earns nothing.
 - **This week** sums the points gained over the last 7 UTC days, today
-  included. A gain is never negative, so a reset card subtracts nothing. Daily
-  gains are kept for 14 days.
+  included.
 - **All time** is the total. **Streak** is the latest run of consecutive study
   days, if it ended today or yesterday (UTC).
 - Equal scores share a rank (1, 2, 2, 4), and only scores above zero are listed.
-- Values that can't be real don't count: at most 5,000 cards and 1,000
-  attempts are read per key, and an attempt of more than 500 questions or a
-  study day before 2020 or after tomorrow is ignored.
+- Records that can't be real don't count: an item that isn't in the study
+  catalog is skipped, and a student can record at most 3,000 reviews a day.
 
 ## Knowledge map
 
@@ -416,7 +416,7 @@ Built once at deploy time by `src/lib/knowledgeGraph/build.ts`.
 - **Saving progress:** a change is saved 1.5 s after the last one, every
   changed key in one request (200 rows a batch). Returning to the tab reads
   the account again, unless changes are waiting to be saved.
-- **Class Drive sync** (`supabase/functions/_shared/driveSync.ts`):
+- **Class Drive sync** (`database/functions/_shared/driveSync.ts`):
   - Each call walks folders for up to 40 s, 20 folders per Drive request,
     then saves where it got to; the GitHub Action calls up to 40 times.
   - A run reads at most 3,000 folders, 12 levels deep. A run left

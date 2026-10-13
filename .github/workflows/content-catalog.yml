@@ -1,0 +1,36 @@
+# Loads the study catalog from content/ into the live database after content changes, so new
+# flashcards, occlusion labels, quiz questions and chapters can earn points (scripts/content-catalog.mjs).
+# Repository secret: POSTGRES_URL_NON_POOLING (the database's direct connection string).
+name: Content catalog
+
+on:
+  push:
+    branches: [main, major]
+    paths: ["content/**", "scripts/content-catalog.mjs"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-catalog
+  cancel-in-progress: false
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Load
+        env:
+          POSTGRES_URL_NON_POOLING: ${{ secrets.POSTGRES_URL_NON_POOLING }}
+        run: |
+          if [ -z "$POSTGRES_URL_NON_POOLING" ]; then
+            echo "::notice::The content catalog isn't set up (POSTGRES_URL_NON_POOLING secret)."
+            exit 0
+          fi
+          node scripts/content-catalog.mjs

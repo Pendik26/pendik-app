@@ -1,5 +1,6 @@
 import { own, setOwn } from "./records";
 import { readJSON, writeJSON, STORAGE_KEYS } from "./storage";
+import { recordStudyDay } from "./studyRecords";
 
 function toDateKey(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -7,6 +8,7 @@ function toDateKey(date: Date): string {
 
 /** Marks today as a study day. Cheap to call repeatedly — dedupes automatically. */
 export function recordActivity(date: Date = new Date()): void {
+  recordStudyDay(date);
   const key = toDateKey(date);
   const days = readJSON<string[]>(STORAGE_KEYS.activity, []);
   if (days.includes(key)) return;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { rowsForTrack, treeFromRows, type DriveFileRow } from "../lib/drive";
 import type { DriveTree } from "../lib/driveTypes";
 import { STORAGE_KEYS } from "../lib/storage";
-import { supabase } from "../lib/supabase";
+import { db } from "../lib/db/client";
 import { useAccount } from "./useAccount";
 import { useLocalStorage } from "./useLocalStorage";
 
@@ -35,7 +35,7 @@ const notify = () => { for (const l of listeners) l(); };
 async function fetchRows(): Promise<DriveFileRow[]> {
   const rows: DriveFileRow[] = [];
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await supabase.from("drive_files").select(COLUMNS).order("title").range(from, from + 999);
+    const { data, error } = await db.from("drive_files").select(COLUMNS).order("title").range(from, from + 999);
     if (error) throw new Error(error.message);
     rows.push(...(data as DriveFileRow[]));
     if (data.length < 1000) return rows;
