@@ -5,11 +5,11 @@ mahasiswa lain, dan tidak ada yang melihatmu di sana kecuali kamu ikut.
 
 ## Ikut
 
-Buka **Papan peringkat** (perlu masuk akun), pilih **nama tampilan** (nama
-panggilan juga boleh) lalu tekan **Ikut**. Kamu bisa mengganti nama itu nanti,
-atau **Keluar dari papan peringkat** kapan saja.
+Buka **Papan peringkat** (perlu masuk akun) lalu tekan **Ikut**. Kamu tampil
+dengan nama lengkap sesuai daftar kelas. Kamu bisa **Keluar dari papan
+peringkat** kapan saja.
 
-Mahasiswa lain yang sudah masuk hanya melihat nama tampilan, angkatan dan
+Mahasiswa lain yang sudah masuk hanya melihat nama lengkap, angkatan dan
 skormu: tidak pernah email, jawaban atau soal yang kamu salah.
 
 ## Tiga papan

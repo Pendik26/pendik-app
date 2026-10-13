@@ -109,7 +109,7 @@ Every page is its own lazily loaded chunk (`src/App.tsx`). The pages:
 | `/alfond` | Alfond, the study assistant's own page |
 | `/docs` → `/docs/:pageId` | Help: the index of help pages → one page, with contents and previous/next |
 | `/plan`, `/plan/:block` | Exam plan: today's plan, phases, readiness, mock trend, weak spots, class average |
-| `/leaderboard` | Weekly, all-time and streak rankings, filtered to your cohort; join or leave, and pick a display name |
+| `/leaderboard` | Weekly, all-time and streak rankings, filtered to your cohort; join or leave; ranked by full name |
 | `/account` | Profile, language and theme, current block, password, linking Google, save status, sign out |
 | `/admin/students`, `/packages`, `/questions`, `/import`, `/drive` | Admins only: the roster, accounts and classes; exam packages, their class and questions; searching every question; importing a Markdown file of questions; the Drive sync, hidden files and file order |
 

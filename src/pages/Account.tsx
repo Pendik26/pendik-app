@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { AlfondOverlaySetting } from "../components/alfond/AlfondSetting";
 import { GoogleIcon } from "../components/GoogleIcon";
 import { LanguageSwitch } from "../components/LanguageSwitch";
@@ -9,8 +9,7 @@ import { useI18n } from "../i18n/useI18n";
 import { studyBlocks } from "../lib/blocks";
 import { exportAllProgress, STORAGE_KEYS } from "../lib/storage";
 import { ChangePasswordForm } from "./ChangePassword";
-import { firstName, initialsOf } from "../lib/firstName";
-import { useMessage } from "../i18n/useMessage";
+import { initialsOf } from "../lib/firstName";
 
 /** The block the student is in; Home shows it first and the daily plan follows it. */
 function CurrentBlockPicker() {
@@ -32,21 +31,10 @@ function CurrentBlockPicker() {
 }
 
 function ProfileCard() {
-  const { user, updateSettings } = useAccount();
+  const { user } = useAccount();
   const { t } = useI18n();
-  const message = useMessage();
-  const [displayName, setDisplayName] = useState(user?.displayName ?? "");
-  const [note, setNote] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
   if (!user) return null;
 
-  const save = async (e: FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    const r = await updateSettings({ displayName: displayName.trim() });
-    setBusy(false);
-    setNote(r.ok ? "account.saved" : (r.message ?? "common.error"));
-  };
 
   return (
     <div className="account-card account-profile">
@@ -62,18 +50,6 @@ function ProfileCard() {
           </p>
         </div>
       </div>
-      <form className="account-form" onSubmit={save}>
-        <label className="account-field">
-          <span>{t("account.displayName")}</span>
-          <input className="form-input" minLength={2} maxLength={32} value={displayName}
-            placeholder={firstName(user.fullName)} onChange={(e) => { setDisplayName(e.target.value); }} />
-          <small>{t("account.displayNameHint")}</small>
-        </label>
-        <div className="account-row">
-          <button type="submit" className="btn btn-small" disabled={busy}>{t("common.save")}</button>
-          {note && <span className="account-note">{message(note)}</span>}
-        </div>
-      </form>
       <CurrentBlockPicker />
       <AlfondOverlaySetting />
     </div>

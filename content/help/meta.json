@@ -108,8 +108,8 @@
     "id": "leaderboard",
     "title": "Leaderboard",
     "group": "Your account",
-    "description": "Joining or leaving the leaderboard, your display name, and how points for the week, all time and streaks are earned.",
-    "keywords": "leaderboard points ranking cohort streak display name join leave"
+    "description": "Joining or leaving the leaderboard, your full name, and how points for the week, all time and streaks are earned.",
+    "keywords": "leaderboard points ranking cohort streak full name join leave"
   },
   {
     "id": "privacy",

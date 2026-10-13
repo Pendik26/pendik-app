@@ -6,7 +6,7 @@ and `rateLimit`; the app keeps the rest. The shapes and indexes are in [`server/
 | Collection | Holds |
 | --- | --- |
 | `students` | the roster: `_id` is the NIM, name, cohort, class (track), class group |
-| `accounts` | an activated student: `_id` is the Better Auth user id, `nim`, role, `mustChangePassword`, display name, leaderboard opt-in, `lockedAt` |
+| `accounts` | an activated student: `_id` is the Better Auth user id, `nim`, role, `mustChangePassword`, leaderboard opt-in, `lockedAt` |
 | `questions`, `imports`, `packages` | the past-paper question bank (answer keys live here, server side only) |
 | `attempts` | exam and practice attempts with their frozen questions and graded answers; one in progress per student |
 | `bookmarks` | bookmarked bank questions |

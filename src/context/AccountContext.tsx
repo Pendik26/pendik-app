@@ -17,7 +17,6 @@ interface ProfileRow {
   track: Profile["track"];
   role: "student" | "admin";
   must_change_password: boolean;
-  display_name: string | null;
   leaderboard_joined: boolean;
 }
 
@@ -30,7 +29,6 @@ const toProfile = (r: ProfileRow): Profile => ({
   track: r.track,
   role: r.role,
   mustChangePassword: r.must_change_password,
-  displayName: r.display_name,
   leaderboardJoined: r.leaderboard_joined,
 });
 
@@ -172,16 +170,12 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         if (!changed.error) patchUser({ mustChangePassword: false });
         return { ok: true };
       },
-      updateSettings: async (input: { displayName?: string; leaderboardJoined?: boolean }): Promise<AuthResult> => {
+      updateSettings: async (input: { leaderboardJoined?: boolean }): Promise<AuthResult> => {
         const { error } = await rpc("update_my_settings", {
-          p_display_name: input.displayName ?? null,
           p_leaderboard_joined: input.leaderboardJoined ?? null,
         });
         if (error) return { ok: false, message: error.message };
-        // As update_my_settings() saves them: a blank name keeps the old one.
-        const name = input.displayName?.trim();
         patchUser({
-          ...(name ? { displayName: name } : {}),
           ...(input.leaderboardJoined !== undefined ? { leaderboardJoined: input.leaderboardJoined } : {}),
         });
         return { ok: true };

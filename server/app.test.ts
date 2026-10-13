@@ -150,9 +150,9 @@ run("the API", () => {
 
   it("keeps the leaderboard to students who joined, and shows the class average from 3 students", async () => {
     expect((await call(student, "leaderboard", { p_period: "week" })).data.rows).toEqual([]);
-    await call(student, "update_my_settings", { p_display_name: "Sari", p_leaderboard_joined: true });
+    await call(student, "update_my_settings", { p_leaderboard_joined: true });
     const board = (await call(student, "leaderboard", { p_period: "week" })).data;
-    expect(board.rows).toEqual([{ rank: 1, name: "Sari", cohort: "2026", value: POINTS.days + POINTS.exam, me: true }]);
+    expect(board.rows).toEqual([{ rank: 1, name: "Sari Student", cohort: "2026", value: POINTS.days + POINTS.exam, me: true }]);
     await call(student, "save_readiness", { p_block: "1.1", p_value: 70 });
     expect((await call(student, "class_readiness", { p_block: "1.1" })).data).toEqual({ cohort: "2026", count: 1, average: null });
   });

@@ -1,8 +1,7 @@
-import { firstName } from "../src/lib/firstName.js";
 import type { Auth } from "./auth.js";
 import { firstPassword, parseAccountAction, studentEmail } from "./accounts.js";
 import { audit, blankToNull, refuse, requireAdmin, text, track, type Args, type Ctx } from "./context.js";
-import { daysBefore, today, type AccountDoc, type Collections, type Role, type StudentDoc, type Track } from "./db.js";
+import { daysBefore, today, type Collections, type Role, type Track } from "./db.js";
 import { POINTS, streak } from "./study.js";
 
 // People: the roster (students), the sign-in accounts of activated students, a student's own
@@ -22,20 +21,17 @@ export function myAccount(ctx: Ctx) {
     track: s.track,
     role: a.role,
     must_change_password: a.mustChangePassword,
-    display_name: a.displayName,
     leaderboard_joined: a.leaderboardJoined,
   };
 }
 
-/** The student's own settings. Name, student id, class and role are not theirs to change. */
+/** The student's own settings: only the leaderboard opt-in. Name, student id, class and role are not theirs to change. */
 export async function updateMySettings(ctx: Ctx, args: Args): Promise<null> {
-  const name = blankToNull(text(args, "p_display_name"));
   const joined = args.p_leaderboard_joined;
-  if (name !== null && name.length > 40) throw refuse("bad_display_name");
   if (joined !== null && joined !== undefined && typeof joined !== "boolean") throw refuse("bad_leaderboard_joined");
   await ctx.c.accounts.updateOne(
     { _id: ctx.caller.userId },
-    { $set: { ...(name ? { displayName: name } : {}), ...(typeof joined === "boolean" ? { leaderboardJoined: joined } : {}), updatedAt: ctx.now } },
+    { $set: { ...(typeof joined === "boolean" ? { leaderboardJoined: joined } : {}), updatedAt: ctx.now } },
   );
   return null;
 }
@@ -48,8 +44,6 @@ export async function passwordChanged(ctx: Ctx): Promise<null> {
 
 // ---------------------------------------------------------------------------------------------
 // Leaderboard and class readiness
-
-const displayName = (a: AccountDoc, s: StudentDoc) => a.displayName ?? firstName(s.fullName);
 
 /**
  * The board: students who joined, ranked by this week's points, all-time points or current study
@@ -82,7 +76,7 @@ export async function leaderboard(ctx: Ctx, args: Args) {
     return [{
       userId: a._id,
       joined: a.leaderboardJoined,
-      name: displayName(a, s),
+      name: s.fullName,
       cohort: s.cohort,
       allPoints,
       week,
@@ -107,7 +101,7 @@ export async function leaderboard(ctx: Ctx, args: Args) {
     total: ranked.length,
     me: mine && {
       joined: mine.joined,
-      display_name: mine.name,
+      name: mine.name,
       value: mine.value,
       week: mine.week,
       streak: mine.streak,
@@ -286,7 +280,7 @@ export async function adminAccounts(ctx: Ctx, auth: Auth, body: unknown) {
           password: await context.password.hash(firstPassword(id)),
         });
         await ctx.c.accounts.insertOne({
-          _id: user.id, nim: id, role: "student", mustChangePassword: true, displayName: null,
+          _id: user.id, nim: id, role: "student", mustChangePassword: true,
           leaderboardJoined: false, lockedAt: null, createdAt: ctx.now, updatedAt: ctx.now,
         });
         await audit(ctx, "account.activate", id);
@@ -346,7 +340,7 @@ export async function ensureFirstAdmin(c: Collections, auth: Auth, who: { nim: s
     password: await context.password.hash(firstPassword(who.nim)),
   });
   await c.accounts.insertOne({
-    _id: user.id, nim: who.nim, role: "admin", mustChangePassword: true, displayName: null,
+    _id: user.id, nim: who.nim, role: "admin", mustChangePassword: true,
     leaderboardJoined: false, lockedAt: null, createdAt: now, updatedAt: now,
   });
   return true;
