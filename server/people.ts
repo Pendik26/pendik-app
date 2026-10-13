@@ -1,3 +1,4 @@
+import { firstName } from "../src/lib/firstName.js";
 import type { Auth } from "./auth.js";
 import { firstPassword, parseAccountAction, studentEmail } from "./accounts.js";
 import { audit, blankToNull, refuse, requireAdmin, text, track, type Args, type Ctx } from "./context.js";
@@ -48,7 +49,7 @@ export async function passwordChanged(ctx: Ctx): Promise<null> {
 // ---------------------------------------------------------------------------------------------
 // Leaderboard and class readiness
 
-const displayName = (a: AccountDoc, s: StudentDoc) => a.displayName ?? s.fullName.split(" ")[0];
+const displayName = (a: AccountDoc, s: StudentDoc) => a.displayName ?? firstName(s.fullName);
 
 /**
  * The board: students who joined, ranked by this week's points, all-time points or current study

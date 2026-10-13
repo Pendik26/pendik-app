@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { FlameIcon, TrophyIcon } from "../components/icons";
 import { fetchBoard, updateMembership, type Board, type BoardRow, type Period, type Scope } from "../lib/leaderboard";
+import { initialsOf } from "../lib/firstName";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey, Translate } from "../i18n/i18n";
 
@@ -13,17 +14,6 @@ const PERIODS: { id: Period; label: MessageKey }[] = [
 function unit(period: Period, value: number, t: Translate): string {
   if (period === "streak") return value === 1 ? t("board.day") : t("board.days");
   return value === 1 ? t("board.pt") : t("board.pts");
-}
-
-function initials(name: string): string {
-  return (
-    name
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((p) => p[0]?.toUpperCase() ?? "")
-      .join("") || "?"
-  );
 }
 
 /** A stable hue per name, so each student keeps the same avatar colour. */
@@ -40,7 +30,7 @@ function Row({ row, period }: { row: BoardRow; period: Period }) {
     <li className={row.me ? "lb-row lb-row-me" : "lb-row"}>
       <span className={`lb-rank${medal}`}>{row.rank}</span>
       <span className="lb-avatar" style={{ "--lb-hue": hueOf(row.name) } as CSSProperties} aria-hidden="true">
-        {initials(row.name)}
+        {initialsOf(row.name)}
       </span>
       <span className="lb-name">
         {row.name}
