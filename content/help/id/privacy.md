@@ -15,7 +15,7 @@ Yang disimpan di database aplikasi:
   atau akun Google yang kamu tautkan;
 - kemajuanmu yang disinkronkan (lihat [Akun dan sinkronisasi](/docs/account)
   untuk daftar yang disinkronkan);
-- kalau kamu ikut papan peringkat, nama tampilan dan poinmu.
+- kalau kamu ikut papan peringkat, nama lengkap dan poinmu.
 
 Yang tidak disimpan di akunmu: tema, kuis yang belum selesai, dan obrolan
 Alfond; semuanya tetap di perangkatmu.
@@ -24,7 +24,7 @@ Alfond; semuanya tetap di perangkatmu.
 
 - **Tidak ada** yang melihat kemajuanmu selain kamu.
 - Kalau kamu ikut [papan peringkat](/docs/leaderboard), mahasiswa lain yang
-  sudah masuk melihat nama tampilan, angkatan dan skormu. Kamu bisa keluar
+  sudah masuk melihat nama lengkap, angkatan dan skormu. Kamu bisa keluar
   kapan saja.
 - **Rata-rata kelas** di rencana ujian hanya berupa rata-rata: kesiapan milik
   satu orang tidak pernah ditampilkan.
