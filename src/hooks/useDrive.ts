@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { errorText } from "../i18n/errorText";
 import { rowsForTrack, treeFromRows, type DriveFileRow } from "../lib/drive";
 import type { DriveTree } from "../lib/driveTypes";
 import { STORAGE_KEYS } from "../lib/storage";
@@ -44,7 +45,7 @@ function load(): Promise<void> {
       checkedAt = Date.now();
     })
     .catch((e: Error) => {
-      problem = navigator.onLine ? e.message : currentT("drive.offline");
+      problem = navigator.onLine ? errorText(e) : currentT("drive.offline");
     })
     .finally(() => {
       pending = null;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { errorText } from "../i18n/errorText";
 import { Link, useNavigate } from "react-router-dom";
 import { BookmarkButton } from "../components/exam/BookmarkButton";
 import { QuestionImage } from "../components/exam/QuestionImage";
@@ -19,7 +20,7 @@ export function Bookmarks() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    myBookmarks().then(setList, (e: Error) => { setProblem(e.message); });
+    myBookmarks().then(setList, (e: Error) => { setProblem(errorText(e)); });
   }, []);
 
   const practise = async () => {

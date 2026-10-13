@@ -159,7 +159,7 @@ export function Oscilloscope({ xMax, xLabel, xTicks, yMax, yLabel, yUnit, tracin
         className={`lab-scope${measureX != null ? " is-measuring" : ""}`}
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={`${yLabel} against ${xLabel}, ${all.length} tracing${all.length === 1 ? "" : "s"}`}
+        aria-label={t("labx.scopeAria", { y: yLabel, x: xLabel, n: all.length })}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={stop}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { QuestionImage } from "../../components/exam/QuestionImage";
+import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { importQuestions, packagesFromImport, suggestedMinutes } from "../../lib/admin";
 import { loadExamRecords } from "../../lib/exams";
@@ -42,7 +43,7 @@ export function AdminImport() {
       setPracticeTitle(`${header.title} (${t("exam.modePractice").toLowerCase()})`);
       setMinutes(String(suggestedMinutes(parsed.questions.length)));
     } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
+      setProblem(errorText(e));
     }
     setBusy(false);
   };
@@ -64,7 +65,7 @@ export function AdminImport() {
       }));
       await loadExamRecords().catch(() => undefined);
     } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
+      setProblem(errorText(e));
     }
     setBusy(false);
   };

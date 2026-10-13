@@ -1,4 +1,6 @@
 import { must, rpc } from "./db/client";
+import { errorText } from "../i18n/errorText";
+import { currentT } from "../i18n/i18n";
 import { appKey, savedOnServer, serverKey } from "./storageSchema";
 import { progressValue, replaceProgress, setProgressFromServer, STORAGE_UPDATED_EVENT } from "./storage";
 
@@ -150,7 +152,7 @@ async function runSave(): Promise<void> {
     const offline = typeof navigator !== "undefined" && !navigator.onLine;
     setState({
       phase: "error",
-      message: offline ? "You're offline. Your latest progress will be saved when you're back online." : (e as Error).message,
+      message: offline ? currentT("sync.offline") : errorText(e),
     });
   }
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { LabQuestion } from "../../lib/labActivities";
 import { useI18n } from "../../i18n/useI18n";
+import { useLabText } from "../../i18n/useLabText";
 
 const LETTERS = "ABCDEFGH";
 
@@ -8,6 +9,7 @@ const LETTERS = "ABCDEFGH";
 export function LabQuestions({ questions }: { questions: LabQuestion[] }) {
   /** The option chosen for each question answered so far, by question index. */
   const { t } = useI18n();
+  const lt = useLabText();
   const [answers, setAnswers] = useState<ReadonlyMap<number, number>>(new Map());
   const answered = answers.size;
   const correct = questions.filter((q, i) => answers.get(i) === q.answer).length;
@@ -33,8 +35,8 @@ export function LabQuestions({ questions }: { questions: LabQuestion[] }) {
           const revealed = chosen !== undefined;
           return (
             <li key={qi} className="lab-question">
-              <p className="quiz-question-text">{q.question}</p>
-              <div className="quiz-options" role="radiogroup" aria-label={q.question}>
+              <p className="quiz-question-text">{lt(q.question)}</p>
+              <div className="quiz-options" role="radiogroup" aria-label={lt(q.question)}>
                 {q.options.map((opt, oi) => {
                   let cls = "quiz-option";
                   if (revealed) {
@@ -52,7 +54,7 @@ export function LabQuestions({ questions }: { questions: LabQuestion[] }) {
                       onClick={() => { setAnswers((prev) => new Map(prev).set(qi, oi)); }}
                     >
                       <span className="quiz-option-letter">{LETTERS.charAt(oi)}</span>
-                      <span className="quiz-option-text">{opt}</span>
+                      <span className="quiz-option-text">{lt(opt)}</span>
                     </button>
                   );
                 })}
@@ -60,7 +62,7 @@ export function LabQuestions({ questions }: { questions: LabQuestion[] }) {
               {revealed && (
                 <div className={`quiz-feedback ${chosen === q.answer ? "correct" : "incorrect"}`} role="status">
                   <p className="quiz-feedback-verdict">{chosen === q.answer ? t("study.correct") : t("study.notQuite")}</p>
-                  <p className="quiz-feedback-explanation">{q.explanation}</p>
+                  <p className="quiz-feedback-explanation">{lt(q.explanation)}</p>
                 </div>
               )}
             </li>

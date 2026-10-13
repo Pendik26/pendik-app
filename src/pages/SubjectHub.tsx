@@ -14,6 +14,7 @@ import { RadialGauge } from "../components/RadialGauge";
 import { CheckIcon, TimerIcon } from "../components/icons";
 import type { CardStateMap, QuizAttempt, ReadingPosition } from "../types/content";
 import { useI18n } from "../i18n/useI18n";
+import { useLabText } from "../i18n/useLabText";
 import type { Translate } from "../i18n/i18n";
 
 interface NextAction {
@@ -54,6 +55,7 @@ function nextActions(key: string, blockId: string, subjectId: string, t: Transla
 export function SubjectHub() {
   const { blockId = "", subjectId = "" } = useParams();
   const { t } = useI18n();
+  const lt = useLabText();
   const key = subjectKey(blockId, subjectId);
   const overview = subjectOverview(key, t);
 
@@ -154,13 +156,13 @@ export function SubjectHub() {
 
       {labs.map((e) => (
         <div key={e.id} className="subject-hub-section">
-          <h2 className="section-heading">{t("nav.lab")}: {e.title}</h2>
+          <h2 className="section-heading">{t("nav.lab")}: {lt(e.title)}</h2>
           <ol className="subject-hub-chapters">
             {e.activities.map((a) => (
               <li key={a.slug}>
                 <Link to={`/lab/${e.id}/${a.slug}`}>
                   <span className="subject-hub-chapter-n">{a.number}</span>
-                  <span>{a.title}</span>
+                  <span>{lt(a.title)}</span>
                 </Link>
               </li>
             ))}

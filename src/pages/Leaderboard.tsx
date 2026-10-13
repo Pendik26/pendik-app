@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { errorText } from "../i18n/errorText";
 import { FlameIcon, TrophyIcon } from "../components/icons";
 import { fetchBoard, updateMembership, type Board, type BoardRow, type Period, type Scope } from "../lib/leaderboard";
 import { initialsOf } from "../lib/firstName";
@@ -56,7 +57,7 @@ function JoinCard({ board, onChange }: { board: Board; onChange: () => void }) {
       await updateMembership(joined);
       onChange();
     } catch (err) {
-      setMessage((err as Error).message);
+      setMessage(errorText(err));
     } finally {
       setBusy(false);
     }
@@ -107,7 +108,7 @@ function SignedInBoard() {
         setError("");
       },
       (err: Error) => {
-        if (!cancelled) setError(err.message);
+        if (!cancelled) setError(errorText(err));
       },
     );
     return () => {

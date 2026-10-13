@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { applyHeldSync, listSyncRuns, searchDriveFiles, setFileHidden, setFileOrder, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
 
@@ -11,7 +12,7 @@ export function AdminDrive() {
   const [syncing, setSyncing] = useState(false);
 
   const reload = useCallback(() => {
-    listSyncRuns().then(setRuns, (e: Error) => { setProblem(e.message); });
+    listSyncRuns().then(setRuns, (e: Error) => { setProblem(errorText(e)); });
   }, []);
   useEffect(reload, [reload]);
 
@@ -26,7 +27,7 @@ export function AdminDrive() {
         if (r.status !== "running") break;
       }
     } catch (e) {
-      setProblem(e instanceof Error ? e.message : String(e));
+      setProblem(errorText(e));
     }
     setSyncing(false);
     setProgress(null);
@@ -74,7 +75,7 @@ export function AdminDrive() {
                       <button type="button" className="btn btn-link"
                         onClick={() => {
                           if (!window.confirm(t("admin.applyConfirm"))) return;
-                          applyHeldSync(r.id).then(reload, (e: Error) => { setProblem(e.message); });
+                          applyHeldSync(r.id).then(reload, (e: Error) => { setProblem(errorText(e)); });
                         }}>
                         {t("admin.apply")}
                       </button>
@@ -110,7 +111,7 @@ function HiddenFiles() {
   const [problem, setProblem] = useState<string | null>(null);
 
   const search = useCallback(() => {
-    searchDriveFiles(query, onlyHidden).then(setFiles, (e: Error) => { setProblem(e.message); });
+    searchDriveFiles(query, onlyHidden).then(setFiles, (e: Error) => { setProblem(errorText(e)); });
   }, [query, onlyHidden]);
   useEffect(() => {
     const id = window.setTimeout(search, 300);
@@ -143,10 +144,10 @@ function HiddenFiles() {
                 const raw = e.target.value.trim();
                 const order = raw === "" ? null : Math.max(0, Math.min(9999, Math.round(Number(raw))));
                 if (order === f.sort_order || (order !== null && Number.isNaN(order))) return;
-                setFileOrder(f.id, order).then(search, (err: Error) => { setProblem(err.message); });
+                setFileOrder(f.id, order).then(search, (err: Error) => { setProblem(errorText(err)); });
               }} />
             <button type="button" className="btn btn-link"
-              onClick={() => { setFileHidden(f.id, !f.hidden_at).then(search, (e: Error) => { setProblem(e.message); }); }}>
+              onClick={() => { setFileHidden(f.id, !f.hidden_at).then(search, (e: Error) => { setProblem(errorText(e)); }); }}>
               {f.hidden_at ? t("admin.show") : t("admin.hide")}
             </button>
           </li>

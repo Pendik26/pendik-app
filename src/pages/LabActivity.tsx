@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Oscilloscope } from "../components/lab/Oscilloscope";
 import { TRACE_COLORS, freeSlot, valueAt, type Tracing } from "../lib/labTraces";
 import { MuscleRig } from "../components/lab/MuscleRig";
-import { DataPlot, type PlotSeries } from "../components/lab/DataPlot";
+import { DataPlot } from "../components/lab/DataPlot";
 import { LabQuestions } from "../components/lab/LabQuestions";
 import {
   MUSCLE,
@@ -19,140 +19,15 @@ import {
   type Stimulus,
 } from "../lib/muscleSim";
 import { findLabActivity, type LabActivity, type LabExercise, type LabMode } from "../lib/labActivities";
+import { MODES, type ModeConfig } from "../lib/labModes";
 import { readJSON, writeJSON, STORAGE_KEYS } from "../lib/storage";
 import { NotFound } from "./NotFound";
 import { entry } from "../lib/records";
 import { useI18n } from "../i18n/useI18n";
+import { useLabText } from "../i18n/useLabText";
+import type { Translate } from "../i18n/i18n";
 
 type Row = Record<string, number | null>;
-
-interface Column {
-  key: string;
-  label: string;
-  digits: number;
-}
-
-interface ModeConfig {
-  xMax: number;
-  xTicks: number[];
-  xLabel: string;
-  yMax: number;
-  yLabel: string;
-  /** Sweep time that passes per real millisecond. */
-  simPerRealMs: number;
-  /** Sampling interval of the trace, in sweep units. */
-  sampleStep: number;
-  speedNote: string;
-  columns: Column[];
-  plot?: { x: string; xLabel: string; yLabel: string; series: { key: string; label: string; tone: PlotSeries["tone"] }[] };
-}
-
-const range = (from: number, to: number, step: number) => {
-  const out: number[] = [];
-  for (let v = from; v <= to + 1e-9; v += step) out.push(v);
-  return out;
-};
-
-const V: Column = { key: "voltage", label: "Voltage (V)", digits: 1 };
-const LEN: Column = { key: "length", label: "Length (mm)", digits: 0 };
-const FORCES: Column[] = [
-  { key: "active", label: "Active force (g)", digits: 2 },
-  { key: "passive", label: "Passive force (g)", digits: 2 },
-  { key: "total", label: "Total force (g)", digits: 2 },
-];
-
-const TWITCH_SWEEP = { xMax: 150, xTicks: range(0, 140, 20), xLabel: "Time (msec)", simPerRealMs: 1 / 8, sampleStep: 0.25, speedNote: "Slowed 8× so you can watch the twitch." };
-
-const MODES: Record<LabMode, ModeConfig> = {
-  twitch: {
-    ...TWITCH_SWEEP,
-    yMax: 2,
-    yLabel: "Force (g)",
-    columns: [V, { key: "active", label: "Active force (g)", digits: 2 }, { key: "latent", label: "Latent period (msec)", digits: 1 }],
-    plot: { x: "voltage", xLabel: "Voltage (V)", yLabel: "Active force (g)", series: [{ key: "active", label: "Active force", tone: "a" }] },
-  },
-  voltage: {
-    ...TWITCH_SWEEP,
-    yMax: 2,
-    yLabel: "Force (g)",
-    columns: [V, LEN, ...FORCES],
-    plot: { x: "voltage", xLabel: "Voltage (V)", yLabel: "Active force (g)", series: [{ key: "active", label: "Active force", tone: "a" }] },
-  },
-  length: {
-    ...TWITCH_SWEEP,
-    yMax: 3,
-    yLabel: "Force (g)",
-    columns: [V, LEN, ...FORCES],
-    plot: {
-      x: "length",
-      xLabel: "Muscle length (mm)",
-      yLabel: "Force (g)",
-      series: [
-        { key: "active", label: "Active", tone: "a" },
-        { key: "passive", label: "Passive", tone: "b" },
-        { key: "total", label: "Total", tone: "c" },
-      ],
-    },
-  },
-  frequency: {
-    xMax: 1000,
-    xTicks: range(0, 1000, 200),
-    xLabel: "Time (msec)",
-    yMax: 4,
-    yLabel: "Force (g)",
-    simPerRealMs: 1 / 4,
-    sampleStep: 1,
-    speedNote: "Slowed 4×: click Stimulate again while the trace is still running.",
-    columns: [V, { key: "stimuli", label: "Stimuli", digits: 0 }, { key: "peak", label: "Peak force (g)", digits: 2 }],
-  },
-  tetanus: {
-    xMax: 1000,
-    xTicks: range(0, 1000, 200),
-    xLabel: "Time (msec)",
-    yMax: 5,
-    yLabel: "Force (g)",
-    simPerRealMs: 1 / 2,
-    sampleStep: 0.5,
-    speedNote: "Slowed 2×. The train runs until you click Stop Stimulus or the sweep ends.",
-    columns: [V, { key: "rate", label: "Stimuli/sec", digits: 0 }, { key: "peak", label: "Peak force (g)", digits: 2 }],
-    plot: { x: "rate", xLabel: "Stimuli per second", yLabel: "Peak force (g)", series: [{ key: "peak", label: "Peak force", tone: "a" }] },
-  },
-  fatigue: {
-    xMax: 30,
-    xTicks: range(0, 30, 5),
-    xLabel: "Time (sec)",
-    yMax: 5,
-    yLabel: "Force (g)",
-    simPerRealMs: 3 / 1000,
-    sampleStep: 0.05,
-    speedNote: "Runs 3× faster than real time. Stop, wait (rest), then stimulate again within the same sweep.",
-    columns: [
-      V,
-      { key: "rate", label: "Stimuli/sec", digits: 0 },
-      { key: "rest", label: "Rest period (sec)", digits: 1 },
-      { key: "peak1", label: "Peak force, 1st bout (g)", digits: 2 },
-      { key: "peak2", label: "Peak force after rest (g)", digits: 2 },
-    ],
-  },
-  load: {
-    xMax: 200,
-    xTicks: range(0, 200, 40),
-    xLabel: "Time (msec)",
-    yMax: 4,
-    yLabel: "Shortening (mm)",
-    simPerRealMs: 1 / 8,
-    sampleStep: 0.5,
-    speedNote: "Slowed 8×. The trace shows how far the muscle shortens as it lifts the weight.",
-    columns: [
-      V,
-      { key: "weight", label: "Weight (g)", digits: 1 },
-      { key: "latent", label: "Time to lift (msec)", digits: 1 },
-      { key: "velocity", label: "Velocity (mm/sec)", digits: 1 },
-      { key: "distance", label: "Distance (mm)", digits: 2 },
-    ],
-    plot: { x: "weight", xLabel: "Load (g)", yLabel: "Velocity (mm/sec)", series: [{ key: "velocity", label: "Velocity", tone: "a" }] },
-  },
-};
 
 const DEFAULTS: Record<LabMode, { voltage: number; length: number; rate: number; weight: number }> = {
   twitch: { voltage: 0, length: 75, rate: 50, weight: 0.5 },
@@ -178,16 +53,16 @@ interface RunSettings {
 }
 
 /** Legend label for a tracing: the variable the activity changes. */
-function traceLabel(mode: LabMode, r: RunSettings): string {
+function traceLabel(mode: LabMode, r: RunSettings, t: Translate): string {
   switch (mode) {
     case "length":
       return `${r.length} mm`;
     case "frequency":
-      return `${r.stimuli} stimul${r.stimuli === 1 ? "us" : "i"}`;
+      return t(r.stimuli === 1 ? "labx.traceStimulus" : "labx.traceStimuli", { n: r.stimuli });
     case "tetanus":
-      return `${r.rate}/sec`;
+      return t("labx.tracePerSec", { rate: r.rate });
     case "fatigue":
-      return r.rest != null ? `${r.rate}/sec, rest ${r.rest.toFixed(1)} s` : `${r.rate}/sec`;
+      return r.rest != null ? t("labx.traceRest", { rate: r.rate, rest: r.rest.toFixed(1) }) : t("labx.tracePerSec", { rate: r.rate });
     case "load":
       return `${r.weight.toFixed(1)} g`;
     default:
@@ -333,11 +208,12 @@ const DataPanel = memo(function DataPanel({
   fileName: string;
 }) {
   const { t } = useI18n();
+  const lt = useLabText();
   const [showPlot, setShowPlot] = useState(false);
   const plot = cfg.plot;
 
   const downloadCsv = () => {
-    const header = cfg.columns.map((c) => `"${c.label}"`).join(",");
+    const header = cfg.columns.map((c) => `"${lt(c.label)}"`).join(",");
     const body = rows.map((r) => cfg.columns.map((c) => fmt(r[c.key], c.digits).replace("—", "")).join(",")).join("\n");
     const blob = new Blob([`${header}\n${body}\n`], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -373,7 +249,7 @@ const DataPanel = memo(function DataPanel({
               <th scope="col">#</th>
               {cfg.columns.map((c) => (
                 <th key={c.key} scope="col">
-                  {c.label}
+                  {lt(c.label)}
                 </th>
               ))}
               <th scope="col">
@@ -408,10 +284,10 @@ const DataPanel = memo(function DataPanel({
       </div>
       {plot && showPlot && rows.length > 0 && (
         <DataPlot
-          xLabel={plot.xLabel}
-          yLabel={plot.yLabel}
+          xLabel={lt(plot.xLabel)}
+          yLabel={lt(plot.yLabel)}
           series={plot.series.map((ser) => ({
-            label: ser.label,
+            label: lt(ser.label),
             tone: ser.tone,
             points: rows.filter((r) => r[plot.x] != null && r[ser.key] != null).map((r) => [r[plot.x] as number, r[ser.key] as number]),
           }))}
@@ -423,6 +299,7 @@ const DataPanel = memo(function DataPanel({
 
 function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabActivity }) {
   const { t } = useI18n();
+  const lt = useLabText();
   const mode = activity.mode;
   const cfg = entry(MODES, mode);
   const defaults = entry(DEFAULTS, mode);
@@ -547,7 +424,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
         break;
     }
     const id = nextId.current++;
-    const label = traceLabel(mode, { ...st, stimuli: st.stimuli.length, rest: row.rest });
+    const label = traceLabel(mode, { ...st, stimuli: st.stimuli.length, rest: row.rest }, t);
     const points = st.points;
     setTracings((prev) => {
       const kept = prev.slice(-(MAX_TRACINGS - 1));
@@ -555,7 +432,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
     });
     setResult(row);
     publish();
-  }, [mode, publish]);
+  }, [mode, publish, t]);
 
   const loop = useCallback(
     function tick(now: number) {
@@ -648,9 +525,9 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
   const running = s.running;
 
   const readouts: [string, string][] = (() => {
-    if (running) return [[cfg.yLabel.replace(/ \(.*/, "") + " now", `${fmt(liveNow, 2)} ${mode === "load" ? "mm" : "g"}`]];
+    if (running) return [[t("labx.now", { what: lt(cfg.yLabel).replace(/ \(.*/, "") }), `${fmt(liveNow, 2)} ${mode === "load" ? "mm" : "g"}`]];
     if (!result) return [];
-    return cfg.columns.filter((c) => !["voltage", "length", "rate", "weight"].includes(c.key) && !(mode === "twitch" && c.key === "latent")).map((c) => [c.label, fmt(result[c.key], c.digits)]);
+    return cfg.columns.filter((c) => !["voltage", "length", "rate", "weight"].includes(c.key) && !(mode === "twitch" && c.key === "latent")).map((c) => [lt(c.label), fmt(result[c.key], c.digits)]);
   })();
 
   return (
@@ -668,17 +545,17 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
         <div className="lab-scope-wrap">
           <Oscilloscope
             xMax={cfg.xMax}
-            xLabel={cfg.xLabel}
+            xLabel={lt(cfg.xLabel)}
             xTicks={cfg.xTicks}
             yMax={cfg.yMax}
-            yLabel={cfg.yLabel}
+            yLabel={lt(cfg.yLabel)}
             yUnit={mode === "load" ? "mm" : "g"}
             tracings={running ? tracings.slice(-(MAX_TRACINGS - 1)) : tracings}
-            live={running ? { id: 0, points: s.points, label: traceLabel(mode, s), slot: freeSlot(tracings.slice(-(MAX_TRACINGS - 1))) } : null}
+            live={running ? { id: 0, points: s.points, label: traceLabel(mode, s, t), slot: freeSlot(tracings.slice(-(MAX_TRACINGS - 1))) } : null}
             measureX={measure}
             onMeasure={setMeasure}
           />
-          <p className="lab-note">{cfg.speedNote}</p>
+          <p className="lab-note">{lt(cfg.speedNote)}</p>
           {mode === "twitch" && (
             <div className="lab-measure">
               <button type="button" className={`btn btn-small btn-secondary${measure != null ? " is-active" : ""}`} onClick={() => { setMeasure(measure == null ? 10 : null); }} aria-pressed={measure != null}>
@@ -704,12 +581,12 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
 
       <div className="lab-controls">
         <div className="lab-controls-set">
-          <Stepper label="Voltage" unit="V" value={voltage} min={0} max={MUSCLE.maxV} step={mode === "voltage" ? 0.1 : 0.5} digits={1} onChange={setVoltage} disabled={running && mode !== "frequency"} />
-          {mode === "length" && <Stepper label="Muscle length" unit="mm" value={length} min={MUSCLE.minLengthMm} max={MUSCLE.maxLengthMm} step={5} digits={0} onChange={setLength} disabled={running} />}
-          {(mode === "tetanus" || mode === "fatigue") && <Stepper label="Stimuli/sec" value={rate} min={10} max={150} step={2} digits={0} onChange={setRate} disabled={trainOn} />}
+          <Stepper label={t("labx.voltage")} unit="V" value={voltage} min={0} max={MUSCLE.maxV} step={mode === "voltage" ? 0.1 : 0.5} digits={1} onChange={setVoltage} disabled={running && mode !== "frequency"} />
+          {mode === "length" && <Stepper label={t("labx.muscleLength")} unit="mm" value={length} min={MUSCLE.minLengthMm} max={MUSCLE.maxLengthMm} step={5} digits={0} onChange={setLength} disabled={running} />}
+          {(mode === "tetanus" || mode === "fatigue") && <Stepper label={t("labx.stimuliSec")} value={rate} min={10} max={150} step={2} digits={0} onChange={setRate} disabled={trainOn} />}
           {mode === "load" && (
             <div className="lab-stepper">
-              <span className="lab-stepper-label">Weight</span>
+              <span className="lab-stepper-label">{t("labx.weight")}</span>
               <div className="lab-weights" role="radiogroup" aria-label={t("labx.weight")}>
                 {WEIGHTS.map((w) => (
                   <button key={w} type="button" role="radio" aria-checked={weight === w} className={`lab-weight${weight === w ? " is-on" : ""}`} onClick={() => { setWeight(w); }} disabled={running}>
@@ -756,6 +633,7 @@ function Bench({ exercise, activity }: { exercise: LabExercise; activity: LabAct
 
 export function LabActivityPage() {
   const { t } = useI18n();
+  const lt = useLabText();
   const { exerciseId = "", activitySlug = "" } = useParams();
   const found = findLabActivity(exerciseId, activitySlug);
   if (!found) return <NotFound />;
@@ -769,12 +647,12 @@ export function LabActivityPage() {
         ← {t("lab.title")}
       </Link>
       <p className="lab-kicker">
-        {exercise.title} · {t("labx.activityOf", { n: activity.number, total: exercise.activities.length })}
+        {lt(exercise.title)} · {t("labx.activityOf", { n: activity.number, total: exercise.activities.length })}
       </p>
-      <h1>{activity.title}</h1>
+      <h1>{lt(activity.title)}</h1>
       <nav className="lab-activity-nav" aria-label={t("labx.activities")}>
         {exercise.activities.map((a) => (
-          <Link key={a.slug} to={`/lab/${exercise.id}/${a.slug}`} className={`lab-activity-pill${a.slug === activity.slug ? " is-current" : ""}`} aria-current={a.slug === activity.slug ? "page" : undefined} title={a.title}>
+          <Link key={a.slug} to={`/lab/${exercise.id}/${a.slug}`} className={`lab-activity-pill${a.slug === activity.slug ? " is-current" : ""}`} aria-current={a.slug === activity.slug ? "page" : undefined} title={lt(a.title)}>
             {a.number}
           </Link>
         ))}
@@ -784,22 +662,22 @@ export function LabActivityPage() {
         <details className="lab-card lab-background">
           <summary>{t("labx.background")}</summary>
           {activity.background.map((p, i) => (
-            <p key={i}>{p}</p>
+            <p key={i}>{lt(p)}</p>
           ))}
           <p>
-            {t("labx.walkthrough")} <Link to={exercise.guide.to}>{exercise.guide.label}</Link>.
+            {t("labx.walkthrough")} <Link to={exercise.guide.to}>{lt(exercise.guide.label)}</Link>.
           </p>
         </details>
         <div className="lab-card lab-steps">
           <h2>{t("labx.steps")}</h2>
           <ol>
             {activity.steps.map((step, i) => (
-              <li key={i}>{step}</li>
+              <li key={i}>{lt(step)}</li>
             ))}
           </ol>
           <details className="lab-expected">
             <summary>{t("labx.expected")}</summary>
-            <p>{activity.expected}</p>
+            <p>{lt(activity.expected)}</p>
           </details>
         </div>
       </div>

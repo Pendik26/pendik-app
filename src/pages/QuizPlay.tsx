@@ -11,7 +11,7 @@ import { FlameIcon } from "../components/icons";
 import { subjectHueStyle } from "../lib/subjectStyle";
 import { readJSON, writeJSON, STORAGE_KEYS } from "../lib/storage";
 import { buildSessionBank } from "../lib/quizShuffle";
-import { buildSections, type QuizSection } from "../lib/quizSections";
+import { buildSections, SECTION_SIZE, SECTION_THRESHOLD, type QuizSection } from "../lib/quizSections";
 import type { Answers, QuizAttempt, QuizQuestion } from "../types/content";
 import { NextUp } from "../components/plan/Today";
 import { SubjectTrail } from "../components/SubjectTrail";
@@ -89,7 +89,7 @@ export function QuizPlay() {
   const [zoomFull, setZoomFull] = useState(false);
 
   const bank = sessionBank ?? [];
-  const sections = useMemo(() => buildSections(fullBank), [fullBank]);
+  const sections = useMemo(() => buildSections(fullBank, SECTION_SIZE, SECTION_THRESHOLD, t("quiz.sectionWord")), [fullBank, t]);
 
   // dueIds only changes when an attempt is recorded, so this only recomputes on finish, not on
   // every keystroke while a quiz is in progress.

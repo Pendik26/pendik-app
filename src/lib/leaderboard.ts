@@ -1,4 +1,6 @@
 import { rpc } from "./db/client";
+import { errorText } from "../i18n/errorText";
+import { currentT } from "../i18n/i18n";
 import { saveNow } from "./progressSync";
 import { sendRecords } from "./studyRecords";
 
@@ -61,7 +63,7 @@ export async function fetchBoard(period: Period, scope: Scope): Promise<Board> {
   // Your own score is only current once your latest records are in.
   await Promise.all([saveNow(), sendRecords()]);
   const { data, error } = await rpc<BoardJson>("leaderboard", { p_period: period, p_my_cohort_only: scope === "cohort" });
-  if (error) throw new Error(navigator.onLine ? error.message : "You're offline. The leaderboard needs a connection.");
+  if (error) throw new Error(navigator.onLine ? errorText(error.message) : currentT("board.offline"));
   const b = data;
   const s = b.me.stats;
   return {

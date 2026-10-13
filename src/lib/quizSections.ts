@@ -20,6 +20,8 @@ export function buildSections(
   bank: QuizQuestion[],
   sectionSize = SECTION_SIZE,
   threshold = SECTION_THRESHOLD,
+  /** "Section" in the reader's language. */
+  sectionWord = "Section",
 ): QuizSection[] {
   if (bank.length <= threshold) return [];
 
@@ -34,7 +36,7 @@ export function buildSections(
     const questions = bank.slice(offset, offset + size);
     const start = offset + 1;
     const end = offset + size;
-    const shortLabel = `Section ${i + 1}`;
+    const shortLabel = `${sectionWord} ${i + 1}`;
     const range = `Q${start}–${end}`;
     sections.push({ shortLabel, range, label: `${shortLabel} (${range})`, questions });
     offset += size;

@@ -1,3 +1,4 @@
+import { currentT } from "../i18n/i18n";
 import { ebookMeta, loadEbookChapter, summaries } from "./content";
 import { streamAi, type AiResult } from "./aiStream";
 import { markdownToPlainText, splitMarkdownSections, truncate } from "./textExtract";
@@ -21,7 +22,7 @@ async function subjectPassages(key: string): Promise<NotePassage[]> {
   if (summary) {
     for (const s of splitMarkdownSections(summary)) {
       const text = markdownToPlainText(s.body);
-      if (text) out.push({ title: `Summary: ${s.heading}`, text, to: `/summaries/${key}` });
+      if (text) out.push({ title: `${currentT("explain.summary")}: ${s.heading}`, text, to: `/summaries/${key}` });
     }
   }
   const book = ebookMeta.get(key);

@@ -1,5 +1,6 @@
 import { allSubjects } from "./routeMeta";
 import { helpPagesIn, type HelpLanguage } from "./help";
+import { labText } from "../i18n/labText";
 import { labExercises } from "./labActivities";
 import {
   ebookMeta,
@@ -76,10 +77,10 @@ function staticPages(t: Translate, language: HelpLanguage): SearchDoc[] {
       e.activities.map((a) => ({
         type: "page" as const,
         id: `lab-${e.id}-${a.slug}`,
-        title: `Lab ${a.number}: ${a.title}`,
-        detail: a.summary,
+        title: `Lab ${a.number}: ${labText(language, a.title)}`,
+        detail: labText(language, a.summary),
         to: `/lab/${e.id}/${a.slug}`,
-        keywords: `physioex virtual lab ${e.title} activity ${a.number}`,
+        keywords: `physioex virtual lab ${e.title} ${labText(language, e.title)} activity ${a.number}`,
       })),
     ),
     ...PAGES_AFTER_LAB.map((p) => pageDoc(p, t)),

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { QuestionList } from "../../components/admin/QuestionList";
+import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { BANK_PAGE, questionFacets, searchQuestions, type BankFilter, type BankQuestion } from "../../lib/admin";
 
@@ -15,11 +16,11 @@ export function AdminQuestions() {
   const [problem, setProblem] = useState<string | null>(null);
 
   useEffect(() => {
-    questionFacets().then(setFacets, (e: Error) => { setProblem(e.message); });
+    questionFacets().then(setFacets, (e: Error) => { setProblem(errorText(e)); });
   }, []);
 
   const search = useCallback(() => {
-    searchQuestions(filter).then(setQuestions, (e: Error) => { setProblem(e.message); });
+    searchQuestions(filter).then(setQuestions, (e: Error) => { setProblem(errorText(e)); });
   }, [filter]);
   useEffect(search, [search]);
 
