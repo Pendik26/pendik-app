@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { DriveKind } from "./DriveParts";
-import { DriveIcon } from "../icons";
 import { useDrive, useDriveOpened } from "../../hooks/useDrive";
 import { useI18n } from "../../i18n/useI18n";
 import { allFiles, fileTitle, placeLabel } from "../../lib/drive";
@@ -22,26 +21,23 @@ export function RecentDriveFiles() {
   if (files.length === 0) return null;
 
   return (
-    <div className="dashboard-section">
-      <h2 className="section-heading">
-        <DriveIcon />
-        {t("drive.recentlyOpened")}
-      </h2>
-      <div className="continue-list">
+    <section className="home-section">
+      <h2 className="home-heading">{t("drive.recentlyOpened")}</h2>
+      <div className="row-list">
         {files.map(({ file, path }) => {
           const params = new URLSearchParams(path.map((name) => ["f", name]));
           params.set("file", file.id);
           return (
-            <Link key={file.id} to={`/drive?${params.toString()}`} className="continue-item">
+            <Link key={file.id} to={`/drive?${params.toString()}`} className="row-item">
               <DriveKind kind={file.kind} />
-              <span className="continue-item-body">
-                <span className="continue-item-title">{fileTitle(file.name)}</span>
-                <span className="continue-item-detail">{placeLabel(path, t)}</span>
+              <span className="row-item-body">
+                <span className="row-item-title">{fileTitle(file.name)}</span>
+                <span className="row-item-detail">{placeLabel(path, t)}</span>
               </span>
             </Link>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

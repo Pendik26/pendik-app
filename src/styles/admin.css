@@ -43,7 +43,7 @@
 
 .admin-mono,
 .admin-textarea.admin-mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.85rem;
 }
 

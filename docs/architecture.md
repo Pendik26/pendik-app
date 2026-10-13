@@ -36,7 +36,7 @@ content/*.json, *.md, *.pdf ──► Vite bundle ──► browser (React SPA, 
 - three.js for the 3D anatomy atlas only (`/atlas`), in its own chunk that no
   other page loads.
 - The interface is in **Indonesian by default, with English** from the
-  sidebar or Account page (`src/i18n/`).
+  Account page (`src/i18n/`).
 
 ## Project layout
 

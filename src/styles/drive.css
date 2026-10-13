@@ -187,7 +187,7 @@
   padding: 0 0.35rem;
   border: 1px solid var(--border);
   border-radius: 4px;
-  font: 0.72rem var(--font-mono);
+  font: 0.72rem var(--font-label);
   color: var(--text-muted);
 }
 
@@ -221,8 +221,6 @@
 .drive-fresh h2 {
   margin: 0 0 0.6rem;
   font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--text-muted);
 }
 
@@ -365,8 +363,6 @@
   color: var(--text-muted);
   font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
 }
 
 .drive-kind-folder {
@@ -587,7 +583,6 @@
   color: var(--green);
   font-size: 0.65rem;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
 .drive-toc-link .drive-kind {

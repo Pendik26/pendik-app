@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { subjectAccent } from "../lib/subjectStyle";
 import { AtomIcon, DropletPulseIcon, MicroscopeIcon, MoleculeIcon } from "./icons";
 
@@ -9,7 +10,7 @@ const SUBJECT_ICONS = new Map([
 
 export function SubjectBadge({ id, label }: { id: string; label: string }) {
   return (
-    <span className="subject-badge" style={{ background: subjectAccent(id) }} aria-hidden="true" title={label}>
+    <span className="subject-badge" style={{ "--badge": subjectAccent(id) } as CSSProperties} aria-hidden="true" title={label}>
       {SUBJECT_ICONS.get(id) ?? <AtomIcon />}
     </span>
   );

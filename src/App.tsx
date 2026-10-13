@@ -10,7 +10,6 @@ import { rememberPage } from "./lib/recentPages";
 import { PulseLine } from "./components/PulseLine";
 import { UpdateNudge } from "./components/UpdateNudge";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { useCardSpotlight } from "./hooks/useCardSpotlight";
 import { AccountProvider } from "./context/AccountContext";
 import { AuthGate } from "./components/AuthGate";
 import { I18nProvider } from "./i18n/I18nProvider";
@@ -162,7 +161,6 @@ function AppRoutes() {
 }
 
 export default function App() {
-  useCardSpotlight();
 
   return (
     <ErrorBoundary>

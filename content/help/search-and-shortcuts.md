@@ -2,7 +2,7 @@
 
 ## Search
 
-The **Search** page (the magnifier in the sidebar, or the tab bar on a phone)
+The **Search** page (under **More** in the sidebar or the phone's tab bar)
 looks through every flashcard, quiz question, summary section and ebook
 chapter at once. It forgives typos, so "mitocondria" still finds
 mitochondria.

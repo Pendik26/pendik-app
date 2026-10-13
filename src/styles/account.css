@@ -162,10 +162,9 @@
   height: 48px;
   flex-shrink: 0;
   border-radius: 50%;
-  font-weight: 700;
-  color: var(--accent-ink);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.35) inset, 0 8px 18px -10px var(--accent);
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--text);
 }
 
 .account-name {
@@ -229,7 +228,7 @@
 }
 
 .btn.account-danger {
-  background: linear-gradient(135deg, var(--red), color-mix(in srgb, var(--red) 70%, #000));
+  background: var(--red);
   color: #fff;
 }
 
@@ -248,17 +247,14 @@
 }
 
 .your-block-pill {
-  margin-left: 0.6rem;
-  padding: 0.15rem 0.55rem;
+  padding: 0.1rem 0.5rem;
   border-radius: var(--radius-pill);
   font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-size: 0.72rem;
+  font-weight: 500;
   vertical-align: middle;
   color: var(--accent);
   background: var(--accent-soft);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 @media (max-width: 720px) {

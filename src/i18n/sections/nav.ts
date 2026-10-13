@@ -38,6 +38,9 @@ export const navEn = {
   "nav.collapse": "Collapse sidebar",
   "nav.commandPalette": "Open command palette",
   "nav.commandPaletteHint": "Search & jump to anything",
+  "nav.more": "More",
+  "nav.studyTools": "Study tools",
+  "nav.searchShort": "Search",
 };
 
 export const navId: { [K in keyof typeof navEn]: string } = {
@@ -78,4 +81,7 @@ export const navId: { [K in keyof typeof navEn]: string } = {
   "nav.collapse": "Ciutkan sidebar",
   "nav.commandPalette": "Buka palet perintah",
   "nav.commandPaletteHint": "Cari & lompat ke mana saja",
+  "nav.more": "Lainnya",
+  "nav.studyTools": "Alat belajar",
+  "nav.searchShort": "Cari",
 };

@@ -125,14 +125,8 @@ a.material-tab:hover {
   grid-column: 1;
   min-height: 220px;
   backface-visibility: hidden;
-  background:
-    radial-gradient(ellipse 260px 140px at 50% 0%, var(--accent-soft), transparent 70%),
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-    var(--surface);
-  background-size: auto, 20px 20px, 20px 20px, auto;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--accent);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
@@ -157,11 +151,9 @@ a.material-tab:hover {
 }
 
 .flashcard-hint {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   color: var(--text-muted);
   font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
 }
 
 .flashcard-image {

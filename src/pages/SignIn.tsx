@@ -5,6 +5,7 @@ import { useI18n } from "../i18n/useI18n";
 import { useMessage } from "../i18n/useMessage";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { LanguageSwitch } from "../components/LanguageSwitch";
+import { PulseLine } from "../components/PulseLine";
 
 /** The whole app sits behind this page until a roster student signs in. */
 export function SignIn() {
@@ -45,7 +46,10 @@ export function SignIn() {
         <ThemeToggle />
       </div>
       <div className="account-card auth-card">
-        <div className="auth-brand" aria-hidden="true">P</div>
+        <div className="auth-brand" aria-hidden="true">
+          <PulseLine width={30} height={18} />
+          Pendik
+        </div>
         <h1>{t("auth.title")}</h1>
         <p className="account-note">{t("auth.subtitle")}</p>
         {(error ?? notice) && (

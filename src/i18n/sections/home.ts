@@ -42,6 +42,7 @@ export const homeEn = {
   "home.fullProgress": "Full progress",
   "home.searchEverything": "Search everything",
   "home.tip": "Tip of the day",
+  "home.masteredShort": "{percent}% mastered",
 };
 
 export const homeId: { [K in keyof typeof homeEn]: string } = {
@@ -86,4 +87,5 @@ export const homeId: { [K in keyof typeof homeEn]: string } = {
   "home.fullProgress": "Kemajuan lengkap",
   "home.searchEverything": "Cari apa saja",
   "home.tip": "Tips hari ini",
+  "home.masteredShort": "{percent}% dikuasai",
 };

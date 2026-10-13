@@ -806,7 +806,7 @@
   border-radius: 999px;
   background: var(--obs-accent-soft);
   color: var(--obs-link);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.74rem;
 }
 
@@ -1038,7 +1038,7 @@
   border-radius: 999px;
   background: none;
   color: var(--obs-text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
@@ -1211,11 +1211,9 @@
 .obs-note-body .obs-callout .obs-callout-title {
   margin-bottom: 0.2rem;
   color: var(--obs-link);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .obs-callout-more {
@@ -1282,7 +1280,7 @@
 
 .map-3d-help dt {
   color: var(--obs-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
   white-space: nowrap;
 }

@@ -39,7 +39,7 @@
 }
 
 .session-stats strong {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 1.5rem;
   color: var(--accent);
 }
@@ -56,11 +56,9 @@
 }
 
 .hardest-cards h3 {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.75rem;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .hardest-cards ul {
@@ -194,7 +192,7 @@
 }
 
 .quiz-section-range {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.72rem;
   color: var(--text-muted);
 }
@@ -348,7 +346,7 @@
   color: var(--text-muted);
   border: 1.5px solid var(--text-muted);
   opacity: 0.8;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 700;
   font-size: 0.75rem;
   box-shadow: 0 1px 4px rgb(0 0 0 / 0.45);
