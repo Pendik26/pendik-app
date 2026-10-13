@@ -143,18 +143,21 @@ export function mongoSyncStore(c: Collections): SyncStore {
 }
 
 export interface DriveSyncConfig {
+  /** A Google Cloud API key, for a folder shared by link; used instead of the service account. */
+  apiKey?: string;
   serviceAccountJson: string;
   rootFolderId: string;
   budgetMs?: number;
 }
 
 export function driveSyncConfigFromEnv(env: Record<string, string | undefined>): DriveSyncConfig | null {
-  const serviceAccountJson = env.GOOGLE_SERVICE_ACCOUNT?.trim() ?? "";
-  const root = env.DRIVE_ROOT_FOLDER_ID?.trim() ?? "";
+  const apiKey = env.GOOGLE_DRIVE_API_KEY?.trim() ?? "";
+  const serviceAccountJson = (env.GOOGLE_SERVICE_ACCOUNT_JSON ?? env.GOOGLE_SERVICE_ACCOUNT)?.trim() ?? "";
+  const root = (env.GOOGLE_DRIVE_FOLDER_ID ?? env.DRIVE_ROOT_FOLDER_ID)?.trim() ?? "";
   const rootFolderId = /\/folders\/([A-Za-z0-9_-]+)/.exec(root)?.[1] ?? root;
-  if (!parseServiceAccount(serviceAccountJson) || !rootFolderId) return null;
+  if (!rootFolderId || (!apiKey && !parseServiceAccount(serviceAccountJson))) return null;
   const budget = Number(env.DRIVE_SYNC_BUDGET_MS);
-  return { serviceAccountJson, rootFolderId, ...(budget > 0 ? { budgetMs: budget } : {}) };
+  return { ...(apiKey ? { apiKey } : {}), serviceAccountJson, rootFolderId, ...(budget > 0 ? { budgetMs: budget } : {}) };
 }
 
 let cachedToken: { value: string; until: number } | null = null;
@@ -162,8 +165,9 @@ let cachedToken: { value: string; until: number } | null = null;
 /** One step of copying the class Drive into driveFiles; call again while the answer says "running". */
 export async function driveSyncStep(c: Collections, config: DriveSyncConfig, startedBy: "schedule" | "admin", body: { action?: string; run_id?: string }) {
   const account = parseServiceAccount(config.serviceAccountJson);
-  if (!account) throw refuse("drive_not_set_up", 503);
+  if (!account && !config.apiKey) throw refuse("drive_not_set_up", 503);
   const token = async () => {
+    if (!account) return "";
     if (cachedToken && cachedToken.until > Date.now()) return cachedToken.value;
     const value = await serviceAccountToken(account, "https://www.googleapis.com/auth/drive.readonly");
     cachedToken = { value, until: Date.now() + 50 * 60_000 };
@@ -176,7 +180,7 @@ export async function driveSyncStep(c: Collections, config: DriveSyncConfig, sta
     if (!run) throw refuse("no_such_sync", 404);
     return applyHeldRun(store, toRun(run));
   }
-  return syncStep(store, driveApi(token), { ...DEFAULT_SYNC, rootFolderId: config.rootFolderId, ...(config.budgetMs ? { budgetMs: config.budgetMs } : {}) }, startedBy);
+  return syncStep(store, driveApi(token, fetch, undefined, config.apiKey), { ...DEFAULT_SYNC, rootFolderId: config.rootFolderId, ...(config.budgetMs ? { budgetMs: config.budgetMs } : {}) }, startedBy);
 }
 
 export type { DriveFileDoc };

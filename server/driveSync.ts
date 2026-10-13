@@ -313,10 +313,12 @@ export async function applyHeldRun(store: SyncStore, run: SyncRun): Promise<Sync
   return result(run);
 }
 
-/** The Drive API over fetch, with an access token. */
-export function driveApi(token: () => Promise<string>, fetchImpl: typeof fetch = fetch, base = "https://www.googleapis.com/drive/v3"): DriveApi {
+/** The Drive API over fetch, with an access token, or with an API key for a folder shared by link. */
+export function driveApi(token: () => Promise<string>, fetchImpl: typeof fetch = fetch, base = "https://www.googleapis.com/drive/v3", apiKey = ""): DriveApi {
   const get = async (url: string) => {
-    const res = await fetchImpl(url, { headers: { authorization: `Bearer ${await token()}` }, signal: AbortSignal.timeout(20_000) });
+    const res = apiKey
+      ? await fetchImpl(`${url}${url.includes("?") ? "&" : "?"}key=${encodeURIComponent(apiKey)}`, { signal: AbortSignal.timeout(20_000) })
+      : await fetchImpl(url, { headers: { authorization: `Bearer ${await token()}` }, signal: AbortSignal.timeout(20_000) });
     if (!res.ok) throw new Error(`Drive answered ${res.status}`);
     return res;
   };
