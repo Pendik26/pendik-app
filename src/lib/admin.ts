@@ -1,12 +1,10 @@
 import type { Track } from "../context/accountContextValue";
-import { PACKAGE_COLUMNS, toPackage, type PackageSummary } from "./exams";
+import { toPackage, type PackageRow, type PackageSummary } from "./exams";
 import type { ImportQuestion } from "./questionMarkdown";
-import type { Json } from "./db/types";
-import { db, invokeFunction as invoke, must, rpc } from "./db/client";
+import { must, rpc } from "./db/client";
 
-// What the admin pages read and change: views and database functions in the public API (row level
-// security shows admins everything), and the admin-accounts Edge Function for account changes that
-// need the service role.
+// What the admin pages read and change: the server's admin functions, which refuse anyone who
+// isn't an admin.
 
 // --- Students ---------------------------------------------------------------------------------
 
@@ -23,20 +21,32 @@ export interface RosterEntry {
   googleLinked: boolean;
 }
 
+interface RosterRow {
+  student_id: string;
+  full_name: string;
+  class_group: string | null;
+  cohort: string;
+  track: Track | null;
+  user_id: string | null;
+  role: "student" | "admin" | null;
+  account: RosterEntry["account"];
+  must_change_password: boolean | null;
+  google_linked: boolean;
+}
+
 export async function listRoster(): Promise<RosterEntry[]> {
-  const rows = await must(rpc("admin_list_roster"));
+  const rows = await must(rpc<RosterRow[]>("admin_list_roster"));
   return rows.map((r) => ({
     studentId: r.student_id,
     fullName: r.full_name,
-    // The generated types can't tell these columns of the left join may be null.
-    classGroup: r.class_group ?? null,
+    classGroup: r.class_group,
     cohort: r.cohort,
-    track: (r.track as Track | null) ?? null,
-    userId: r.user_id ?? null,
-    role: (r.role as RosterEntry["role"]) ?? null,
-    account: r.account as RosterEntry["account"],
-    mustChangePassword: r.must_change_password ?? null,
-    googleLinked: Boolean(r.google_linked),
+    track: r.track,
+    userId: r.user_id,
+    role: r.role,
+    account: r.account,
+    mustChangePassword: r.must_change_password,
+    googleLinked: r.google_linked,
   }));
 }
 
@@ -80,27 +90,27 @@ export function parseRosterLines(text: string, defaultCohort: string, defaultTra
   return { rows, problems };
 }
 
-/** Adds students to the roster; a student already on it is updated (the database does the upsert). */
+/** Adds students to the roster; a student already on it is updated (the server does the upsert). */
 export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
-  await must(db.from("students").insert(rows));
+  await must(rpc("admin_add_students", { p_rows: rows }));
 }
 
 /** Moves a student to the other class (the track lives on the roster only). */
 export async function setTrack(studentId: string, track: Track | null): Promise<void> {
-  await must(db.from("students").update({ track }).eq("student_id", studentId));
+  await must(rpc("admin_set_track", { p_student_id: studentId, p_track: track }));
 }
 
-/** Removes a student who has no account yet (the database refuses an activated one). */
+/** Removes a student who has no account yet (the server refuses an activated one). */
 export async function removeFromRoster(studentId: string): Promise<void> {
-  await must(db.from("students").delete().eq("student_id", studentId));
+  await must(rpc("admin_remove_student", { p_student_id: studentId }));
 }
 
 export function activateAccounts(studentIds: string[]): Promise<{ results: { student_id: string; ok: boolean; message?: string }[] }> {
-  return invoke("admin-accounts", { action: "activate", student_ids: studentIds });
+  return must(rpc<{ results: { student_id: string; ok: boolean; message?: string }[] }>("admin_accounts", { action: "activate", student_ids: studentIds }));
 }
 
 export function accountAction(action: "lock" | "unlock" | "reset", userId: string): Promise<{ ok: boolean }> {
-  return invoke("admin-accounts", { action, user_id: userId });
+  return must(rpc<{ ok: boolean }>("admin_accounts", { action, user_id: userId }));
 }
 
 export async function setRole(userId: string, role: "student" | "admin"): Promise<void> {
@@ -110,8 +120,8 @@ export async function setRole(userId: string, role: "student" | "admin"): Promis
 // --- Questions and packages ---------------------------------------------------------------------
 
 export async function listAllPackages(): Promise<PackageSummary[]> {
-  const rows = await must(db.from("package_summaries").select(PACKAGE_COLUMNS).order("block").order("title"));
-  return (rows as Parameters<typeof toPackage>[0][]).map(toPackage);
+  const rows = await must(rpc<PackageRow[]>("package_summaries"));
+  return rows.map(toPackage);
 }
 
 export async function setPackageStatus(packageId: string, status: "draft" | "published"): Promise<void> {
@@ -119,7 +129,7 @@ export async function setPackageStatus(packageId: string, status: "draft" | "pub
 }
 
 export async function updatePackage(packageId: string, patch: { title?: string; time_limit_minutes?: number | null; track_best?: boolean; track?: Track | null }): Promise<void> {
-  await must(rpc("admin_update_package", { p_package_id: packageId, p_patch: patch as Json }));
+  await must(rpc("admin_update_package", { p_package_id: packageId, p_patch: patch }));
 }
 
 export async function deletePackage(packageId: string): Promise<void> {
@@ -142,13 +152,8 @@ export interface AdminQuestion {
   status: "draft" | "published";
 }
 
-const QUESTION_COLUMNS = "id, type, subject, stem, stem_image, stem_image_alt, options, correct_index, accepted_answers, explanation, revision, status";
-
 export async function packageQuestions(packageId: string): Promise<AdminQuestion[]> {
-  const rows = await must(
-    db.from("admin_package_questions").select(`position, ${QUESTION_COLUMNS}`).eq("package_id", packageId).order("position"),
-  );
-  return rows as unknown as AdminQuestion[];
+  return must(rpc<AdminQuestion[]>("admin_package_questions", { p_package_id: packageId }));
 }
 
 /** A question in the bank, with what it is and which packages use it. */
@@ -167,21 +172,21 @@ export interface BankFilter {
   text?: string;
 }
 
-const BANK_COLUMNS = `${QUESTION_COLUMNS}, block, source, year, packages`;
-
 /** Most questions one search shows. */
 export const BANK_PAGE = 100;
 
 /** Questions in the bank matching every filter given, newest import first (at most BANK_PAGE). */
 export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[]> {
-  let q = db.from("admin_questions").select(BANK_COLUMNS);
-  if (filter.block) q = q.eq("block", filter.block);
-  if (filter.source) q = q.eq("source", filter.source);
-  if (filter.year) q = q.eq("year", filter.year);
-  if (filter.subject) q = q.eq("subject", filter.subject);
-  if (filter.text?.trim()) q = q.ilike("stem", `%${filter.text.trim().replace(/[%_\\]/g, "\\$&")}%`);
-  const rows = await must(q.order("created_at", { ascending: false }).order("import_position").limit(BANK_PAGE));
-  return (rows as unknown as Omit<BankQuestion, "position">[]).map((r, i) => ({ ...r, position: i + 1, packages: r.packages ?? [] }));
+  const rows = await must(
+    rpc<Omit<BankQuestion, "position">[]>("admin_search_questions", {
+      p_block: filter.block ?? null,
+      p_source: filter.source ?? null,
+      p_year: filter.year ?? null,
+      p_subject: filter.subject ?? null,
+      p_text: filter.text?.trim() || null,
+    }),
+  );
+  return rows.slice(0, BANK_PAGE).map((r, i) => ({ ...r, position: i + 1, packages: r.packages ?? [] }));
 }
 
 export interface QuestionFacets {
@@ -191,9 +196,9 @@ export interface QuestionFacets {
   subjects: string[];
 }
 
-/** The blocks, sources, years and subjects in the bank, for the filters (worked out in the database). */
+/** The blocks, sources, years and subjects in the bank, for the filters (worked out by the server). */
 export async function questionFacets(): Promise<QuestionFacets> {
-  const f = (await must(rpc("admin_question_facets"))) as unknown as QuestionFacets;
+  const f = await must(rpc<QuestionFacets>("admin_question_facets"));
   const sorted = <T,>(xs: T[]) => [...xs].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
   return { blocks: sorted(f.blocks), sources: sorted(f.sources), years: sorted(f.years).reverse(), subjects: sorted(f.subjects) };
 }
@@ -202,7 +207,7 @@ export type QuestionPatch = Partial<Pick<AdminQuestion, "subject" | "stem" | "st
 
 /** Saves an edit; the question's revision goes up when anything a student sees changed. */
 export async function updateQuestion(questionId: string, patch: QuestionPatch): Promise<void> {
-  await must(rpc("admin_update_question", { p_question_id: questionId, p_patch: patch as unknown as Json }));
+  await must(rpc("admin_update_question", { p_question_id: questionId, p_patch: patch }));
 }
 
 /** Takes a question out of every package; attempts that already used it keep it. */
@@ -211,7 +216,7 @@ export async function deleteQuestion(questionId: string): Promise<void> {
 }
 
 export async function importQuestions(title: string, sourceText: string, questions: ImportQuestion[]): Promise<string> {
-  return must(rpc("admin_import_questions", { p_title: title, p_source_text: sourceText, p_questions: questions as unknown as Json }));
+  return must(rpc<string>("admin_import_questions", { p_title: title, p_source_text: sourceText, p_questions: questions }));
 }
 
 export async function packagesFromImport(input: {
@@ -224,8 +229,8 @@ export async function packagesFromImport(input: {
   timeLimitMinutes: number;
   trackBest: boolean;
 }): Promise<{ exam_id: string; practice_id: string; question_count: number }> {
-  return (await must(
-    rpc("admin_packages_from_import", {
+  return must(
+    rpc<{ exam_id: string; practice_id: string; question_count: number }>("admin_packages_from_import", {
       p_import_id: input.importId,
       p_exam_title: input.examTitle,
       p_practice_title: input.practiceTitle,
@@ -235,7 +240,7 @@ export async function packagesFromImport(input: {
       p_time_limit_minutes: input.timeLimitMinutes,
       p_track_best: input.trackBest,
     }),
-  )) as unknown as { exam_id: string; practice_id: string; question_count: number };
+  );
 }
 
 /** About a minute a question, rounded to five minutes. */
@@ -259,9 +264,7 @@ export interface SyncRunRow {
 }
 
 export async function listSyncRuns(): Promise<SyncRunRow[]> {
-  return (await must(
-    db.from("drive_sync_runs").select("id, status, started_by, files_found, files_added, files_updated, files_missing, calls, notes, error, started_at, finished_at").order("started_at", { ascending: false }).limit(15),
-  )) as SyncRunRow[];
+  return must(rpc<SyncRunRow[]>("admin_sync_runs"));
 }
 
 export interface SyncStepResult {
@@ -271,12 +274,24 @@ export interface SyncStepResult {
   filesFound: number;
 }
 
+async function syncCall(body: object): Promise<SyncStepResult> {
+  const res = await fetch("/api/drive-sync", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json().catch(() => null)) as (Partial<SyncStepResult> & { error?: string }) | null;
+  if (!res.ok || !data || data.error) throw new Error(data?.error ?? "server_error");
+  return data as SyncStepResult;
+}
+
 export function syncStep(): Promise<SyncStepResult> {
-  return invoke("drive-sync", {});
+  return syncCall({});
 }
 
 export function applyHeldSync(runId: string): Promise<SyncStepResult> {
-  return invoke("drive-sync", { action: "apply", run_id: runId });
+  return syncCall({ action: "apply", run_id: runId });
 }
 
 export interface AdminDriveFile {
@@ -292,17 +307,14 @@ export interface AdminDriveFile {
 }
 
 export async function searchDriveFiles(query: string, onlyHidden: boolean): Promise<AdminDriveFile[]> {
-  let q = db.from("drive_files").select("id, title, kind, block, category, folder_path, hidden_at, missing_since, sort_order").order("title").limit(100);
-  if (query.trim()) q = q.ilike("title", `%${query.trim().replace(/[%_]/g, "\\$&")}%`);
-  if (onlyHidden) q = q.not("hidden_at", "is", null);
-  return (await must(q)) as AdminDriveFile[];
+  return must(rpc<AdminDriveFile[]>("admin_drive_files", { p_query: query.trim() || null, p_only_hidden: onlyHidden }));
 }
 
 /** Puts a file in an admin's order within its folder (lower first), or back to by-name (null). */
 export async function setFileOrder(id: string, order: number | null): Promise<void> {
-  await must(db.from("drive_files").update({ sort_order: order }).eq("id", id));
+  await must(rpc("admin_set_file_order", { p_id: id, p_order: order }));
 }
 
 export async function setFileHidden(id: string, hidden: boolean): Promise<void> {
-  await must(db.from("drive_files").update({ hidden_at: hidden ? new Date().toISOString() : null }).eq("id", id));
+  await must(rpc("admin_set_file_hidden", { p_id: id, p_hidden: hidden }));
 }

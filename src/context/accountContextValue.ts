@@ -28,7 +28,7 @@ export interface Profile {
 }
 
 export interface AppConfig {
-  /** The AI Edge Function is set up (VITE_AI_ENABLED). */
+  /** The server's AI settings are set (VITE_AI_ENABLED). */
   ai: boolean;
 }
 

@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { useAccount } from "../hooks/useAccount";
 import { useI18n } from "../i18n/useI18n";
-import { supabaseConfigError } from "../lib/db/client";
 import { ChangePassword } from "../pages/ChangePassword";
 import { SignIn } from "../pages/SignIn";
 import { PulseLine } from "./PulseLine";
@@ -14,9 +13,6 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const { status, user, signOut, retry } = useAccount();
   const { t } = useI18n();
 
-  if (supabaseConfigError) {
-    return <main className="auth-status"><p>{t("auth.notConfigured")}</p></main>;
-  }
   if (status === "checking" || status === "loading") {
     return (
       <main className="auth-status" role="status" aria-label={t("common.loading")}>

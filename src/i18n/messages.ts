@@ -48,7 +48,6 @@ const coreEn = {
   "auth.progressFailed": "Your progress couldn't be loaded. Check your connection.",
   "auth.signOut": "Sign out",
   "auth.hello": "Hi, {name}",
-  "auth.notConfigured": "The app isn't connected to its database yet.",
 
   // First-login password change
   "password.title": "Choose a new password",
@@ -134,7 +133,6 @@ const coreId: { [K in keyof typeof coreEn]: string } = {
   "auth.progressFailed": "Progres kamu tidak bisa dimuat. Periksa koneksi internet.",
   "auth.signOut": "Keluar",
   "auth.hello": "Halo, {name}",
-  "auth.notConfigured": "Aplikasi belum terhubung ke database.",
 
   "password.title": "Buat password baru",
   "password.subtitle": "Kamu masuk dengan password awal. Buat password sendiri sebelum lanjut.",

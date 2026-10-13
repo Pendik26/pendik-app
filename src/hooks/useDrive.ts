@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { rowsForTrack, treeFromRows, type DriveFileRow } from "../lib/drive";
 import type { DriveTree } from "../lib/driveTypes";
 import { STORAGE_KEYS } from "../lib/storage";
-import { db } from "../lib/db/client";
+import { must, rpc } from "../lib/db/client";
 import { useAccount } from "./useAccount";
 import { useLocalStorage } from "./useLocalStorage";
 import { currentT } from "../i18n/i18n";
@@ -23,7 +23,6 @@ export type DriveState =
 
 /** Read again when the page comes back into view after this long. */
 const RECHECK_MS = 5 * 60_000;
-const COLUMNS = "drive_file_id, title, kind, folder_path, size_bytes, drive_modified_at, created_at, synced_at, track, sort_order";
 
 // One listing per visit, shared by every page that shows the Drive.
 let rows: DriveFileRow[] | null = null;
@@ -34,13 +33,7 @@ const listeners = new Set<() => void>();
 const notify = () => { for (const l of listeners) l(); };
 
 async function fetchRows(): Promise<DriveFileRow[]> {
-  const rows: DriveFileRow[] = [];
-  for (let from = 0; ; from += 1000) {
-    const { data, error } = await db.from("drive_files").select(COLUMNS).order("title").range(from, from + 999);
-    if (error) throw new Error(error.message);
-    rows.push(...(data as DriveFileRow[]));
-    if (data.length < 1000) return rows;
-  }
+  return must(rpc<DriveFileRow[]>("drive_files"));
 }
 
 function load(): Promise<void> {
@@ -64,7 +57,7 @@ function load(): Promise<void> {
 const noFolderLoad = () => {};
 const folderState = () => ({ loading: false, problem: null });
 
-/** The class Drive's folder tree, from the synced `drive_files` table. */
+/** The class Drive's folder tree, from the synced `driveFiles` collection. */
 export function useDrive(): DriveState & { refresh: () => void } {
   const [, rerender] = useState(0);
   const { user } = useAccount();

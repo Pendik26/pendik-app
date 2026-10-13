@@ -32,7 +32,7 @@ export function useBookmarks(): { has: (id: string) => boolean; toggle: (id: str
     else set.delete(id);
     notify();
     setProblem(null);
-    setBookmark(id, on, user.id).catch((e: Error) => {
+    setBookmark(id, on).catch((e: Error) => {
       if (on) set.delete(id);
       else set.add(id);
       notify();

@@ -24,10 +24,9 @@ app's sidebar, or go to `/docs`. Its pages are written in
   conventions, and recipes for common changes.
 - [Storage and saving](storage-and-sync.md): the key registry and how
   progress is loaded from and saved to the account.
-- [Database](database.md): the Supabase tables, who can see what, the SQL
-  functions, tests and schema changes.
-- [Server API](api.md): the Edge Functions (`ai`, `admin-accounts`,
-  `drive-sync`) with their requests and responses.
+- [Database](database.md): the MongoDB collections and who can see what.
+- [Server API](api.md): the `/api` routes and functions with their
+  requests and responses.
 - [3D anatomy atlas](atlas-3d.md): the `/atlas` page's models, where they
   come from and their licence, the viewer, and how to rebuild them from
   Z-Anatomy.
@@ -37,6 +36,6 @@ app's sidebar, or go to `/docs`. Its pages are written in
 
 ## Running it
 
-- [Deploying](deploying.md): the Supabase project, sign-in, Edge Function
+- [Deploying](deploying.md): MongoDB Atlas, sign-in, the API
   secrets, Vercel, the Class Drive sync, the first admin, the roster and the
   past papers.

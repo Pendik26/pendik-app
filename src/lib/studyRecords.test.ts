@@ -12,7 +12,7 @@ vi.stubGlobal("localStorage", {
 });
 
 const calls: { fn: string; args: unknown }[] = [];
-let failWith: { code: string; message: string } | null = null;
+let failWith: { status: number; message: string } | null = null;
 vi.mock("./db/client", () => ({
   rpc: async (fn: string, args?: unknown) => {
     calls.push({ fn, args });
@@ -71,7 +71,7 @@ describe("the outbox", () => {
   });
 
   it("keeps records while offline, on this device, and sends them later", async () => {
-    failWith = { code: "", message: "TypeError: Failed to fetch" };
+    failWith = { status: 0, message: "network" };
     recordReview("flashcard", "1.1/biochem", "bio-001");
     await sendRecords();
     expect(localStorage.getItem("pendik-outbox:u1")).toContain("bio-001");
@@ -85,7 +85,7 @@ describe("the outbox", () => {
   });
 
   it("drops a record the server refuses, so it can't block the rest", async () => {
-    failWith = { code: "P0001", message: "no_such_chapter" };
+    failWith = { status: 400, message: "no_such_chapter" };
     recordReview("flashcard", "1.1/biochem", "bio-001");
     await sendRecords();
     expect(localStorage.getItem("pendik-outbox:u1")).toBeNull();

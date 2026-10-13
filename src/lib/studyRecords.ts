@@ -1,9 +1,8 @@
 import { rpc } from "./db/client";
-import type { Json } from "./db/types";
 import { quizBanks, quizSubjects, keyOf } from "./content";
 import type { Answers, QuizQuestion } from "../types/content";
 
-// The records that earn leaderboard points (database/schema/06_study.sql): card and label reviews,
+// The records that earn leaderboard points (server/study.ts): card and label reviews,
 // graded quiz answers, finished chapters and study days. The server checks each one against the
 // study catalog and keeps the date by its own clock; the browser only says what happened.
 //
@@ -102,22 +101,22 @@ async function runSend(): Promise<void> {
     const { error } = await sendOne(batch);
     if (userId !== owner) return;
     // Offline, signed out or the server unreachable: try again later. A record the server refuses
-    // for what it is (a raised error or bad data) is dropped, so one can't hold up the rest.
-    if (error && !/^(P0001|22|23)/.test(error.code ?? "")) return;
+    // for what it is (a 400 with a code) is dropped, so one can't hold up the rest.
+    if (error && error.status !== 400) return;
     outbox = outbox.filter((r) => !sent.has(r));
     persist();
   }
 }
 
-function sendOne(batch: Record_[]): PromiseLike<{ error: { code?: string; message: string } | null }> {
+function sendOne(batch: Record_[]): PromiseLike<{ error: { status?: number; message: string } | null }> {
   const first = batch[0];
   switch (first.type) {
     case "review":
       return rpc("record_reviews", {
-        p_items: batch.map((r) => (r.type === "review" ? { kind: r.kind, deck: r.deck, item: r.item } : null)) as Json,
+        p_items: batch.map((r) => (r.type === "review" ? { kind: r.kind, deck: r.deck, item: r.item } : null)),
       });
     case "quiz":
-      return rpc("record_quiz", { p_answers: first.answers as unknown as Json });
+      return rpc("record_quiz", { p_answers: first.answers });
     case "chapter":
       return rpc("finish_chapter", { p_deck: first.deck, p_chapter: first.chapter });
     case "day":

@@ -6,25 +6,21 @@
 git clone https://github.com/Pendik26/pendik-app.git
 cd pendik-app
 npm install
-cp .env.example .env.local   # then fill in VITE_SUPABASE_URL and the key
+cp .env.example .env.local   # then fill in MONGODB_URI and BETTER_AUTH_SECRET
 npm run dev                  # http://localhost:5173
 ```
 
-Every page needs sign-in, so the app needs a Supabase project to talk to:
-either the real one (add `http://localhost:5173` to its redirect URLs and
-`APP_ORIGINS`, see [deploying](deploying.md)), or a local one with the
-[Supabase CLI](https://supabase.com/docs/guides/cli). The database lives in
-`database/`, not the CLI's usual `supabase/`, so run the CLI through
-`npm run supabase --`, which points it there:
+Every page needs sign-in, so `npm run dev` also serves the API from the Vite dev server when `MONGODB_URI` and
+`BETTER_AUTH_SECRET` are set (in `.env.local`). Use an Atlas cluster, or a local MongoDB:
 
 ```bash
-npm run supabase -- start              # Postgres, Auth and the API in Docker
-npm run supabase -- db reset           # apply database/migrations/
-npm run supabase -- functions serve    # the Edge Functions, reading database/functions/.env
+docker run -d -p 27017:27017 mongo:7
+# .env.local: MONGODB_URI=mongodb://127.0.0.1:27017  BETTER_AUTH_SECRET=<anything long>
+#             FIRST_ADMIN_NIM=<your NIM>  FIRST_ADMIN_NAME=<your name>
 ```
 
-`start` prints the local URL and publishable key for `.env.local`.
-Make yourself an admin as in [deploying, step 6](deploying.md#6-first-admin-roster-and-past-papers).
+Sign in with your NIM and `pendik26<NIM>`; the first sign-in asks for a new password. The first-admin settings only
+work while the database has no admin ([deploying, step 3](deploying.md#3-the-first-admin)).
 
 ## Scripts
 
@@ -38,10 +34,9 @@ npm run test         # Vitest, single run
 npm run test:watch   # Vitest, watch mode
 npm run graph:relations   # AI labels for the knowledge map's links
 npm run docs:wiki         # build the wiki pages into wiki-out/ (CI publishes them)
-npm run supabase -- <command>   # the Supabase CLI, run on database/
-npm run db:test      # SQL tests and the schema check, on a local Postgres (PGHOST etc.)
-npm run db:push      # apply new migrations (add -- --db-url "$POSTGRES_URL_NON_POOLING" if not linked)
-npm run db:types     # rewrite src/lib/db/types.ts from the linked project
+npm run content:catalog   # rebuild server/catalog.generated.ts after a content change
+npm run content:check     # fail when it is out of date
+MONGODB_TEST_URI=mongodb://127.0.0.1:27017 npm test   # also runs the API tests
 npx markdownlint-cli2 "**/*.md"   # Markdown style
 ```
 
@@ -64,21 +59,15 @@ Tests sit beside the code as `*.test.ts` and run in Node (no DOM). They cover:
 - content integrity (`contentIntegrity.test.ts`) and the prerendered pages
   (`src/prerender/site.test.ts`, which also checks that no past-paper question
   is published);
-- the Edge Functions' shared code in `database/functions/_shared/`: the AI
-  requests and allowance, account actions, and the Drive sync with its path
-  rules (against a fake Drive and store);
+- the server in `server/`: the AI requests and allowance, account actions, and the
+  Drive sync with its path rules (against a fake Drive and store); `server/app.test.ts`
+  runs the whole API against a real MongoDB when `MONGODB_TEST_URI` is set;
 - the translations (`src/i18n/i18n.test.ts`: both languages have the same
   keys and the same `{placeholders}`).
 
 A test that needs `window` stubs it with `vi.stubGlobal`; one that needs
-Supabase mocks `./supabase`.
+the server mocks `./db/client`.
 
-The database rules (exam attempts, grading, deadlines, the Drive functions)
-have SQL tests that run against a local Postgres:
-
-```bash
-PGHOST=localhost PGPORT=5432 PGUSER=postgres npm run db:test
-```
 
 There are no component tests; check UI changes in the browser, in light and
 dark mode and at phone width (about 380 px).
@@ -108,8 +97,8 @@ dark mode and at phone width (about 380 px).
   makes text takes a `t: Translate` argument (defaulting to English, for
   tests and the prerender).
 - **Names in code are English**, including database tables and columns.
-- **Privacy:** no secrets in the repo (the server's keys are Supabase
-  Edge Function secrets), and no personal data in content. Anything only for signed-in
+- **Privacy:** no secrets in the repo (the server's keys are Vercel
+  environment variables), and no personal data in content. Anything only for signed-in
   students (the Class Drive) stays out of the prerendered pages, search and the
   knowledge map.
 
@@ -146,14 +135,11 @@ See [storage and sync](storage-and-sync.md#adding-a-new-kind-of-progress).
 
 ### Something that needs the server
 
-Most things are a table or SQL function: add a migration in
-`database/migrations/` with row level security and a header comment, make
-the same change in that domain's file in `database/schema/`, add a SQL test
-in `database/tests/` if it enforces a rule, and call it from `src/lib`
-through `src/lib/db/client.ts` (see [database](database.md#changing-the-schema)).
-Only what needs a secret (an API key, the service role) becomes an Edge
-Function: put its logic in `database/functions/_shared/` with a Vitest test,
-keep `index.ts` thin, and document it in [the server API](api.md).
+Most things are a function in `server/` (a file per domain), registered in `FUNCTIONS` in
+`server/app.ts`, taking `p_*` arguments and refusing with `refuse("code")`. Add a collection to
+`server/db.ts` with its indexes, test it in `server/app.test.ts`, and call it from `src/lib` through
+`rpc()` in `src/lib/db/client.ts` (see [the server API](api.md)). Anything that needs a secret (an
+API key) stays in `server/`, with its logic in its own file and a Vitest test.
 
 ### A new language string
 

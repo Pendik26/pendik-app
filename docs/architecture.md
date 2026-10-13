@@ -3,19 +3,18 @@
 Pendik is a single-page React app for the Pendik 26 class. Study material
 (flashcards, quizzes, ebooks, summaries, lecture PDFs, the knowledge map and
 atlas) is bundled at build time; everything students and admins save is in
-one Supabase project: sign-in, progress, past-paper exams, the class Drive
+one MongoDB database behind a small API: sign-in, progress, past-paper exams, the class Drive
 listing, the leaderboard and the AI allowance. Every page needs sign-in, and
 only students on the class roster can have an account.
 
 ```text
           build time                              run time
 content/*.json, *.md, *.pdf ──► Vite bundle ──► browser (React SPA, PWA)
-                                   │                │  supabase-js (signed in)
+                                   │                │  /api (signed-in cookie)
                                    ▼                ▼
-               scripts/prerender.mjs         Supabase: Auth, Postgres + RLS, SQL functions
-               static page per route           Edge Functions: ai ──► AI gateway
-               (served by Vercel)                              admin-accounts
-                                                               drive-sync ◄── GitHub Action (daily)
+               scripts/prerender.mjs         api/index.ts (Vercel Function): Better Auth, server/
+               static page per route           MongoDB Atlas   /api/ai ──► AI gateway
+               (served by Vercel)                              /api/drive-sync ◄── GitHub Action (daily)
                                                                    └──► Google Drive API
 ```
 
@@ -24,11 +23,10 @@ content/*.json, *.md, *.pdf ──► Vite bundle ──► browser (React SPA, 
 - **Vite 8, React 19, TypeScript 6** (strict, `erasableSyntaxOnly`), React
   Router 7.
 - **vite-plugin-pwa / Workbox** for the service worker.
-- **Vercel** hosts the static site. **Supabase** for sign-in (Auth), the
-  database (Postgres with row level security and SQL functions) and three
-  Edge Functions (Deno).
+- **Vercel** hosts the static site and one Function (`api/index.ts`) for the
+  API. **MongoDB Atlas** is the database; **Better Auth** handles sign-in.
 - **Vitest** for tests, **oxlint** and **Stylelint** for linting,
-  **markdownlint** for Markdown; SQL tests for the database rules.
+  **markdownlint** for Markdown; API tests against a real MongoDB.
 - Fuse.js for search, marked for Markdown, d3-force for the knowledge map's
   layout (once at build time, then live on the map page). The map draws on a
   2D canvas in both views; its 3D view has its own small physics and camera,
@@ -65,18 +63,12 @@ public/atlas/   the 3D anatomy models and index (CC BY-SA, see atlas-3d.md)
 public/question-images/  pictures for exam questions (see questions.md)
 scripts/        prerender.mjs (after vite build), graph-relations.mjs,
                 build-info.mjs (version and build for the footer), wiki.mjs,
-                supabase.mjs (runs the Supabase CLI on database/),
+                content-catalog.mjs (builds server/catalog.generated.ts),
                 atlas/ (converts Z-Anatomy into public/atlas/)
-database/       everything on the Supabase side (see database.md)
-  schema/       the current schema, one file per domain: read this
-  migrations/   0001_baseline.sql, then one numbered file per change: never
-                edit one that has run
-  seeds/        first-admin.sql
-  functions/    the Edge Functions ai, admin-accounts, drive-sync, and
-                _shared/ (their logic, tested with Vitest; see api.md)
-  tests/        SQL tests for the rules, and the check that schema/ matches
-                the migrations
-  config.toml   the Supabase CLI's settings for a local stack
+api/            index.ts: the Vercel Function that serves /api/*
+server/         the API: app.ts (routes), auth.ts, db.ts (collections and
+                indexes), study/exams/people/drive.ts (the functions), ai.ts,
+                driveSync.ts, catalog.generated.ts; tests beside them
 ```
 
 ## How content gets into the app
@@ -158,12 +150,12 @@ anything from the Class Drive are never written to these pages.
 
 ## Accounts and progress
 
-Students sign in with their NIM (as `<nim>@pendik26.internal` in Supabase
-Auth) or with Google once they've linked it. Their progress is kept in their
+Students sign in with their NIM (as `<nim>@pendik26.internal` in
+Better Auth) or with Google once they've linked it. Their progress is kept in their
 account only: loaded into memory at sign-in and saved a moment after each
 change. The keys are declared in one registry, `src/lib/storageSchema.ts`.
 The whole design is in [Storage and saving](storage-and-sync.md), the tables
-in [Database](database.md), the Edge Functions in [Server API](api.md).
+in [Database](database.md), the API in [Server API](api.md).
 
 ## Pure logic in src/lib
 
@@ -211,12 +203,12 @@ pure function with a `*.test.ts` beside it. The formulas are written out in
 | `storage.ts` | Reading and writing saved values (progress in memory, device settings in `localStorage`) and the key builders |
 | `progressSync.ts` | Loading the account's progress at sign-in and saving changes |
 | `studyRecords.ts` | The outbox of records that earn leaderboard points: reviews, quiz answers, chapters, study days |
-| `db/` | The one Supabase client (`client.ts`: the database, functions, Edge Functions, errors, the NIM sign-in address), the database's generated types (`types.ts`) and which build settings reach the page (`env.ts`) |
+| `db/` | The one API client (`client.ts`: Better Auth, `rpc()` calls, streaming requests, error codes); `account.ts` holds the NIM sign-in address |
 | `exams.ts` | Past-paper packages and attempts: the store loaded at sign-in, and the attempt functions |
 | `questionMarkdown.ts` | The question import format: parsing and writing it |
 | `admin.ts` | The admin pages' calls: roster, accounts, packages, imports, Drive sync |
-| `aiStream.ts` | Streams an answer from the `ai` Edge Function |
-| `leaderboard.ts`, `classReadiness.ts` | The leaderboard and the class average, from SQL functions |
+| `aiStream.ts` | Streams an answer from `/api/ai` |
+| `leaderboard.ts`, `classReadiness.ts` | The leaderboard and the class average, from the server |
 
 ## Design
 

@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv, type Plugin, type UserConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { SITE_ORIGIN } from './src/lib/site.ts'
-import { supabaseEnv } from './src/lib/db/env.ts'
 import { buildInfo } from './scripts/build-info.mjs'
 
 // /privacy and /terms are the legal pages in public/legal/ (vercel.json rewrites them the same
@@ -74,20 +73,55 @@ function siteUrl(): Plugin {
   }
 }
 
+// Serves the real API (api/index.ts) from the Vite dev server when MONGODB_URI is set (in the
+// environment or .env.local): `MONGODB_URI=... BETTER_AUTH_SECRET=... npm run dev`.
+function devApi(env: Record<string, string>): Plugin {
+  return {
+    name: 'pendik-dev-api',
+    apply: 'serve',
+    configureServer(server) {
+      for (const [k, v] of Object.entries(env)) process.env[k] ??= v
+      if (!process.env.MONGODB_URI) return
+      server.middlewares.use(async (req, res, next) => {
+        if (!req.url?.startsWith('/api/')) return next()
+        try {
+          const { POST } = (await server.ssrLoadModule('/api/index.ts')) as { POST: (r: Request) => Promise<Response> }
+          const chunks: Buffer[] = []
+          for await (const chunk of req) chunks.push(chunk as Buffer)
+          const headers = new Headers()
+          for (const [k, v] of Object.entries(req.headers)) {
+            if (Array.isArray(v)) v.forEach((x) => headers.append(k, x))
+            else if (v !== undefined) headers.set(k, v)
+          }
+          const hasBody = req.method !== 'GET' && req.method !== 'HEAD'
+          const response = await POST(
+            new Request(`http://${req.headers.host}${req.url}`, { method: req.method, headers, body: hasBody ? Buffer.concat(chunks) : undefined }),
+          )
+          res.statusCode = response.status
+          response.headers.forEach((value, key) => { if (key !== 'set-cookie') res.setHeader(key, value) })
+          const cookies = response.headers.getSetCookie()
+          if (cookies.length) res.setHeader('set-cookie', cookies)
+          res.end(Buffer.from(await response.arrayBuffer()))
+        } catch (err) {
+          console.error(err)
+          res.statusCode = 500
+          res.end('Dev API error')
+        }
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(async ({ mode }): Promise<UserConfig> => {
-  // The Supabase URL and public key, under the app's names or the Vercel integration's
-  // (src/lib/db/env.ts). Only these two go into the page, never the secret keys.
-  const supabase = supabaseEnv({ ...loadEnv(mode, process.cwd(), ''), ...process.env })
   return {
     define: {
       // The version and build shown in the footer (src/lib/buildInfo.ts).
       __BUILD_INFO__: JSON.stringify(await buildInfo()),
-      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabase.url),
-      'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(supabase.key),
     },
     plugins: [
       react(),
+      devApi(loadEnv(mode, process.cwd(), '')),
       legalPages(),
       knowledgeGraphDev(),
       siteUrl(),

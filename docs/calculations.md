@@ -291,8 +291,8 @@ readiness.
 
 ## Leaderboard
 
-Points are worked out in the database from the study records it checked and
-finished attempts (the triggers in `database/schema/07_leaderboard.sql`),
+Points are worked out on the server from the study records it checked and
+finished attempts (`server/study.ts` and `server/exams.ts`),
 never from a score the browser reports:
 
 | Earned for | Points |
@@ -416,7 +416,7 @@ Built once at deploy time by `src/lib/knowledgeGraph/build.ts`.
 - **Saving progress:** a change is saved 1.5 s after the last one, every
   changed key in one request (200 rows a batch). Returning to the tab reads
   the account again, unless changes are waiting to be saved.
-- **Class Drive sync** (`database/functions/_shared/driveSync.ts`):
+- **Class Drive sync** (`server/driveSync.ts`):
   - Each call walks folders for up to 40 s, 20 folders per Drive request,
     then saves where it got to; the GitHub Action calls up to 40 times.
   - A run reads at most 3,000 folders, 12 levels deep. A run left

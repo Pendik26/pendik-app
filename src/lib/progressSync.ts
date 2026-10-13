@@ -1,5 +1,4 @@
-import { db } from "./db/client";
-import type { Json } from "./db/types";
+import { must, rpc } from "./db/client";
 import { appKey, savedOnServer, serverKey } from "./storageSchema";
 import { progressValue, replaceProgress, setProgressFromServer, STORAGE_UPDATED_EVENT } from "./storage";
 
@@ -43,21 +42,14 @@ export function subscribeSaveState(listener: (s: SaveState) => void): () => void
 
 /** The account's progress rows, or only those changed at or after `since`. */
 async function fetchRows(since: string | null): Promise<{ rows: [string, unknown][]; newest: string | null }> {
+  const data = await must(rpc<{ key: string; value: unknown; updated_at: string }[]>("user_state_list", { p_since: since }));
   const rows: [string, unknown][] = [];
   let newest: string | null = null;
-  for (let from = 0; ; from += 1000) {
-    let query = db.from("user_state").select("key, value, updated_at");
-    if (since) query = query.gte("updated_at", since);
-    const { data, error } = await query.order("key").range(from, from + 999);
-    if (error) throw new Error(error.message);
-    for (const r of data) {
-      // View columns come back typed as nullable; these never are.
-      if (r.key === null || r.updated_at === null) continue;
-      rows.push([appKey(r.key), r.value]);
-      if (!newest || r.updated_at > newest) newest = r.updated_at;
-    }
-    if (data.length < 1000) return { rows, newest };
+  for (const r of data) {
+    rows.push([appKey(r.key), r.value]);
+    if (!newest || r.updated_at > newest) newest = r.updated_at;
   }
+  return { rows, newest };
 }
 
 function noteNewest(newest: string | null) {
@@ -138,7 +130,6 @@ export function saveNow(): Promise<void> {
 
 async function runSave(): Promise<void> {
   if (!userId || pending.size === 0) return;
-  const owner = userId;
   const keys = [...pending];
   pending.clear();
   setState({ phase: "saving" });
@@ -146,18 +137,12 @@ async function runSave(): Promise<void> {
     // A value cleared to null (e.g. a finished quiz's resume slot) is removed from the account.
     const cleared = keys.filter((k) => progressValue(k) == null);
     const kept = keys.filter((k) => progressValue(k) != null);
-    for (let i = 0; i < kept.length; i += BATCH) {
-      const rows = kept.slice(i, i + BATCH).map((key) => ({
-        user_id: owner,
-        key: serverKey(key),
-        value: progressValue(key) as Json,
-      }));
-      const { error } = await db.from("user_state").upsert(rows, { onConflict: "user_id,key" });
-      if (error) throw new Error(error.message);
-    }
-    if (cleared.length) {
-      const { error } = await db.from("user_state").delete().eq("user_id", owner).in("key", cleared.map(serverKey));
-      if (error) throw new Error(error.message);
+    for (let i = 0; i < Math.max(kept.length, 1); i += BATCH) {
+      const rows = kept.slice(i, i + BATCH).map((key) => ({ key: serverKey(key), value: progressValue(key) }));
+      // The keys cleared go out with the first batch.
+      const gone = i === 0 ? cleared.map(serverKey) : [];
+      if (rows.length === 0 && gone.length === 0) break;
+      await must(rpc("user_state_save", { p_rows: rows, p_cleared: gone }));
     }
     setState({ phase: "idle", lastSavedAt: Date.now(), message: undefined });
   } catch (e) {

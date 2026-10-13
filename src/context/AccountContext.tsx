@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import type { Session } from "@supabase/supabase-js";
 import { AccountContext, type AccountContextValue, type AccountStatus, type AuthResult, type Profile } from "./accountContextValue";
-import { db, isFirstPassword, newClient, rpc, studentEmail } from "../lib/db/client";
+import { authClient, rpc } from "../lib/db/client";
+import { firstPassword, isFirstPassword, studentEmail } from "../lib/account";
 import { clearProgress, loadProgress, pendingSaves, queueSave, refreshProgress, saveNow, subscribeSaveState, type SaveState } from "../lib/progressSync";
 import { clearDeviceSettings, PROGRESS_CHANGED_EVENT } from "../lib/storage";
 import { clearExamRecords, loadExamRecords, refreshExamRecords } from "../lib/exams";
 import { clearBookmarkCache } from "../hooks/useBookmarks";
 import { sendRecords, startRecords, stopRecords } from "../lib/studyRecords";
-
-const PROFILE_COLUMNS =
-  "id, student_id, full_name, class_group, cohort, track, role, must_change_password, display_name, leaderboard_joined";
 
 interface ProfileRow {
   id: string;
@@ -40,36 +37,40 @@ const toProfile = (r: ProfileRow): Profile => ({
 function authError(error: { message?: string; status?: number; code?: string } | null): string {
   if (!error) return "common.error";
   if (error.status === 429) return "auth.tooMany";
-  if (error.code === "user_banned" || /banned/i.test(error.message ?? "")) return "auth.locked";
-  if (error.code === "invalid_credentials" || error.status === 400) return "auth.wrong";
+  // A locked account can't start a session.
+  if (error.code === "FAILED_TO_CREATE_SESSION") return "auth.locked";
+  if (error.status === 401 || error.status === 400) return "auth.wrong";
   return error.message ?? "common.error";
 }
 
 const config = { ai: import.meta.env.VITE_AI_ENABLED === "true" };
 
 export function AccountProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const { data: session, isPending } = authClient.useSession();
+  const [googleLinked, setGoogleLinked] = useState(false);
   const [status, setStatus] = useState<AccountStatus>("checking");
   const [user, setUser] = useState<Profile | null>(null);
   const [save, setSave] = useState<SaveState>({ phase: "idle", pending: 0 });
   const [attempt, setAttempt] = useState(0);
-  const [notice, setNotice] = useState<string | null>(null);
+  // Google sends an account that isn't linked to a student back with ?error=...
+  const [notice, setNotice] = useState<string | null>(() => {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("error")) return null;
+    url.searchParams.delete("error");
+    window.history.replaceState(null, "", url);
+    return "auth.notOnRoster";
+  });
   const loadedFor = useRef<string | null>(null);
 
   useEffect(() => subscribeSaveState(setSave), []);
 
-  useEffect(() => {
-    void db.auth.getSession().then(({ data }) => { setSession(data.session); });
-    const { data } = db.auth.onAuthStateChange((_event, s) => { setSession(s); });
-    return () => { data.subscription.unsubscribe(); };
-  }, []);
-
   // Signed in: load the account, the progress and the exam records together. Only roster students
   // have an account; a Google account that isn't linked to one gets signed out with an explanation
-  // (row level security gives it no progress or attempts, and what loaded is cleared).
+  // (the server gives it no progress or attempts, and what loaded is cleared).
   const uid = session?.user.id;
+  const checking = isPending && !session;
   useEffect(() => {
-    if (session === undefined) return;
+    if (checking) return;
     if (!uid) {
       loadedFor.current = null;
       return;
@@ -80,16 +81,16 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     setStatus("loading");
     void (async () => {
       const [profile, rest] = await Promise.all([
-        db.from("my_account").select(PROFILE_COLUMNS).maybeSingle(),
+        rpc<ProfileRow>("my_account"),
         Promise.all([loadProgress(uid), loadExamRecords()]).then(() => null, (e: unknown) => e ?? "failed"),
       ]);
       if (cancelled) return;
-      if (profile.error) { setStatus("failed"); return; }
+      if (profile.error && profile.error.status !== 403 && profile.error.status !== 401) { setStatus("failed"); return; }
       if (!profile.data) {
         clearProgress();
         clearExamRecords();
-        setNotice("auth.notOnRoster");
-        await db.auth.signOut();
+        setNotice(profile.error?.message === "locked" ? "auth.locked" : "auth.notOnRoster");
+        await authClient.signOut();
         return;
       }
       if (rest !== null) { setStatus("failed"); return; }
@@ -99,7 +100,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       setStatus("signed-in");
     })();
     return () => { cancelled = true; };
-  }, [session, uid, attempt]);
+  }, [checking, uid, attempt]);
 
   // While signed in: save changes shortly after they're made, before the tab is hidden, and
   // when the connection returns; read the account again when the tab comes back into view.
@@ -136,7 +137,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     };
   }, [status]);
 
-  const googleLinked = Boolean(session?.user.identities?.some((i) => i.provider === "google"));
+  useEffect(() => {
+    if (status !== "signed-in") return;
+    void authClient.listAccounts().then(({ data }) => { setGoogleLinked(Boolean(data?.some((a) => a.providerId === "google"))); });
+  }, [status, uid]);
 
   // What the settings functions just changed, applied here instead of reading the profile again.
   const patchUser = useCallback((patch: Partial<Profile>) => {
@@ -146,36 +150,24 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const actions = useMemo(
     () => ({
       signIn: async (studentId: string, password: string): Promise<AuthResult> => {
-        const { error } = await db.auth.signInWithPassword({ email: studentEmail(studentId), password });
+        const { error } = await authClient.signIn.email({ email: studentEmail(studentId), password });
         return error ? { ok: false, message: authError(error) } : { ok: true };
       },
       signInWithGoogle: async (): Promise<AuthResult> => {
-        const { error } = await db.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo: `${window.location.origin}/` },
-        });
-        return error ? { ok: false, message: error.message } : { ok: true };
+        const { error } = await authClient.signIn.social({ provider: "google", callbackURL: "/", errorCallbackURL: "/?error=google" });
+        return error ? { ok: false, message: error.message ?? "common.error" } : { ok: true };
       },
       linkGoogle: async (): Promise<AuthResult> => {
-        const { error } = await db.auth.linkIdentity({
-          provider: "google",
-          options: { redirectTo: `${window.location.origin}/account` },
-        });
-        return error ? { ok: false, message: error.message } : { ok: true };
+        const { error } = await authClient.linkSocial({ provider: "google", callbackURL: "/account" });
+        return error ? { ok: false, message: error.message ?? "common.error" } : { ok: true };
       },
       changePassword: async ({ current, next }: { current?: string; next: string }): Promise<AuthResult> => {
         if (next.length < 8) return { ok: false, message: "password.tooShort" };
         const studentId = user?.studentId ?? "";
         if (isFirstPassword(studentId, next)) return { ok: false, message: "password.notFirst" };
-        if (current !== undefined) {
-          // Check the current password on a separate client, so the session here isn't replaced.
-          const checker = newClient({ persistSession: false, autoRefreshToken: false, storageKey: "pendik-password-check" });
-          const { error } = await checker.auth.signInWithPassword({ email: studentEmail(studentId), password: current });
-          if (error) return { ok: false, message: "password.wrongCurrent" };
-          await checker.auth.signOut({ scope: "local" });
-        }
-        const { error } = await db.auth.updateUser({ password: next });
-        if (error) return { ok: false, message: error.message };
+        // The forced first change starts from the first password, which the student never typed.
+        const { error } = await authClient.changePassword({ currentPassword: current ?? firstPassword(studentId), newPassword: next });
+        if (error) return { ok: false, message: current !== undefined && error.status === 400 ? "password.wrongCurrent" : (error.message ?? "common.error") };
         const changed = await rpc("password_changed");
         if (!changed.error) patchUser({ mustChangePassword: false });
         return { ok: true };
@@ -198,7 +190,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         if (pendingSaves() > 0) await saveNow();
         await sendRecords();
         stopRecords({ forget: clearDevice });
-        await db.auth.signOut();
+        await authClient.signOut();
         clearProgress();
         clearExamRecords();
         clearBookmarkCache();
@@ -211,7 +203,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   );
 
   // Without a session nothing loaded earlier counts, whatever the state still holds.
-  const current: AccountStatus = session === undefined ? "checking" : uid ? status : "signed-out";
+  const current: AccountStatus = checking ? "checking" : uid ? status : "signed-out";
   const currentUser = uid && user?.id === uid ? user : null;
 
   const value = useMemo<AccountContextValue>(
