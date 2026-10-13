@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Fuse from "fuse.js";
-import { buildContentDocs, loadContentDocs, type SearchDoc } from "../lib/searchIndex";
+import { blockOfDoc, buildContentDocs, loadContentDocs, type SearchDoc } from "../lib/searchIndex";
 import { ebookSubjects, flashcardSubjects, quizSubjects, summarySubjects } from "../lib/content";
 import { EmptyState } from "../components/EmptyState";
 import { HighlightText } from "../components/HighlightText";
 import { subjectHue } from "../lib/subjectStyle";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
 
@@ -51,6 +52,7 @@ export function Search() {
   };
   // ?q= opens the page with a search already typed (the anatomy atlas links here).
   const [params] = useSearchParams();
+  const chosenBlock = useChosenBlock();
   const [query, setQuery] = useState(() => params.get("q") ?? "");
   const [activeTypes, setActiveTypes] = useState<string[]>([]);
   const [activeSubjects, setActiveSubjects] = useState<string[]>([]);
@@ -105,11 +107,16 @@ export function Search() {
   };
 
   const rawResults: RankedDoc[] = query.trim()
-    ? fuse.search(query).map((r) => ({
-        doc: r.item,
-        titleRanges: r.matches?.find((m) => m.key === "title")?.indices,
-        detailRanges: r.matches?.find((m) => m.key === "detail")?.indices,
-      }))
+    ? fuse
+        .search(query)
+        // The chosen block's material gets a head start; a clearly better match elsewhere still wins.
+        .map((r) => ({ r, rank: (r.score ?? 0) * (chosenBlock && blockOfDoc(r.item) === chosenBlock ? 0.6 : 1) }))
+        .sort((a, b) => a.rank - b.rank)
+        .map(({ r }) => ({
+          doc: r.item,
+          titleRanges: r.matches?.find((m) => m.key === "title")?.indices,
+          detailRanges: r.matches?.find((m) => m.key === "detail")?.indices,
+        }))
     : [];
   const results = rawResults
     .filter((r) => activeTypes.length === 0 || activeTypes.includes(r.doc.type))

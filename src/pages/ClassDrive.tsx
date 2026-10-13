@@ -4,6 +4,8 @@ import { EmptyState } from "../components/EmptyState";
 import { HighlightText } from "../components/HighlightText";
 import { DriveFileView, DriveKind, NewPill, OpenedMark } from "../components/drive/DriveParts";
 import { RefreshIcon, SearchIcon } from "../components/icons";
+import { useChosenBlock } from "../hooks/useChosenBlock";
+import { blockFirst } from "../lib/blocks";
 import { useDrive, useDriveBothTracks, useDriveOpened } from "../hooks/useDrive";
 import { useI18n } from "../i18n/useI18n";
 import {
@@ -12,6 +14,7 @@ import {
   changedAt,
   countFiles,
   fileFacts,
+  blockIdOf,
   fileTitle,
   filesUnder,
   folderAt,
@@ -62,6 +65,7 @@ function RowSkeleton() {
 /** Everything in the class's Google Drive, folder by folder, for signed-in students. */
 export function ClassDrive() {
   const { t } = useI18n();
+  const chosenBlock = useChosenBlock();
   const drive = useDrive();
   const { opened, recent, markOpened } = useDriveOpened();
   const tracks = useDriveBothTracks();
@@ -491,7 +495,7 @@ export function ClassDrive() {
             <p className="drive-empty">{t("drive.nothingHere")}</p>
           ) : (
             <ul aria-label={folderName}>
-              {folder.folders.map((f) => folderRow(f, [...path, f.name]))}
+              {blockFirst(folder.folders, (f) => blockIdOf(f.name) ?? "", chosenBlock).map((f) => folderRow(f, [...path, f.name]))}
               {sortFiles(folder.files, sort).map((file) => fileRow(file, path))}
             </ul>
           )}

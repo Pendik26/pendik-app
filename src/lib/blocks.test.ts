@@ -14,6 +14,16 @@ describe("groupByBlock", () => {
     expect(groups[1].subjects.map((s) => s.id)).toEqual(["physiology"]);
   });
 
+  it("puts the chosen block first and keeps the others in order", () => {
+    const subjects = [
+      { id: "histology", blockId: "1.1" },
+      { id: "physiology", blockId: "1.2" },
+    ];
+    expect(groupByBlock(subjects, "1.2").map((g) => g.block.id)).toEqual(["1.2", "1.1", "1.3"]);
+    expect(groupByBlock(subjects, "").map((g) => g.block.id)).toEqual(["1.1", "1.2", "1.3"]);
+    expect(groupByBlock(subjects, "9.9").map((g) => g.block.id)).toEqual(["1.1", "1.2", "1.3"]);
+  });
+
   it("includes a block with only upcoming subjects, with no real subjects", () => {
     const groups = groupByBlock([]);
     const block12 = groups.find((g) => g.block.id === "1.2")!;

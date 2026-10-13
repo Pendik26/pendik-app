@@ -33,6 +33,11 @@ export interface SearchDoc {
   keywords?: string;
 }
 
+/** The study block a result belongs to, read from its link ("/quizzes/1.2/anatomy" → "1.2"). */
+export function blockOfDoc(doc: Pick<SearchDoc, "to">): string | null {
+  return /^\/(?:flashcards|quizzes|occlusion|modules|ebooks|summaries|subjects)\/(\d+(?:\.\d+)+)\//.exec(doc.to)?.[1] ?? null;
+}
+
 /** The top-level pages: [id, title, what it is, route, extra search words]. */
 const PAGES: [string, MessageKey, MessageKey, string, string?][] = [
   ["home", "nav.home", "sx.home", "/"],

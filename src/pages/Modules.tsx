@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import { moduleSubjects, modulesByBlockSubject } from "../lib/content";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { groupByBlock } from "../lib/blocks";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
@@ -45,7 +46,8 @@ function useDriveCount(): (blockId: string, subjectId: string) => number | null 
 
 export function Modules() {
   const { t } = useI18n();
-  const groups = groupByBlock(moduleSubjects);
+  const chosenBlock = useChosenBlock();
+  const groups = groupByBlock(moduleSubjects, chosenBlock);
   const driveCount = useDriveCount();
 
   if (groups.length === 0) {

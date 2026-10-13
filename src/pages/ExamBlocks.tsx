@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { quizQuestionsInBlock } from "../lib/content";
-import { studyBlocks } from "../lib/blocks";
+import { blockFirst, studyBlocks } from "../lib/blocks";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { buildExamFormat } from "../lib/examFormat";
 import { attemptTitle, bestScore, finishedAttempts, packagesForBlock, runningAttempt, useExamRecords } from "../lib/exams";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
@@ -13,6 +14,7 @@ export function ExamBlocks() {
   const { t } = useI18n();
   const records = useExamRecords();
   const running = runningAttempt(records);
+  const chosenBlock = useChosenBlock();
 
   return (
     <section className="page">
@@ -42,7 +44,7 @@ export function ExamBlocks() {
         </div>
       )}
 
-      {studyBlocks.map((block) => {
+      {blockFirst(studyBlocks, (b) => b.id, chosenBlock).map((block) => {
         const packages = packagesForBlock(block.id, records);
         const pooled = buildExamFormat(quizQuestionsInBlock(block.id).length);
         if (packages.length === 0 && pooled.questionCount === 0) return null;

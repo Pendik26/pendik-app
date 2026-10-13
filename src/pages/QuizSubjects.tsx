@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { keyOf, quizBanks, quizGames, quizSubjects } from "../lib/content";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
+import { useChosenBlock } from "../hooks/useChosenBlock";
 import { groupByBlock } from "../lib/blocks";
 import { SubjectBadge } from "../components/SubjectBadge";
 import { SubjectCover } from "../components/SubjectCover";
@@ -9,7 +10,8 @@ import type { QuizAttempt } from "../types/content";
 import { useI18n } from "../i18n/useI18n";
 
 export function QuizSubjects() {
-  const groups = groupByBlock(quizSubjects);
+  const chosenBlock = useChosenBlock();
+  const groups = groupByBlock(quizSubjects, chosenBlock);
   const { t } = useI18n();
 
   return (
