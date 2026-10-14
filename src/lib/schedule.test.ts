@@ -44,16 +44,16 @@ describe("sectionEvents", () => {
 
 describe("lecturers", () => {
   const list = [
-    { id: "1", name: "Dr. Adi Prayitno, drg., M.", phones: [] },
-    { id: "2", name: "Abdurahman Laqif, dr., Sp.OG", phones: [] },
-    { id: "3", name: "Muthmainah, dr. MNeurosci PhD", phones: [] },
+    { id: "1", name: "Dr. Ayu Pratama, drg., M.", phones: [] },
+    { id: "2", name: "Aldo Lakso, dr., Sp.OG", phones: [] },
+    { id: "3", name: "Maya Nugraha, dr. MSc PhD", phones: [] },
   ];
   it("links WhatsApp without the plus", () => {
     expect(whatsappLink("+628123456789")).toBe("https://wa.me/628123456789");
   });
   it("makes initials from the name, not the title", () => {
-    expect(initials("Abdurahman Laqif, dr., Sp.OG")).toBe("AL");
-    expect(initials("Dr. Adi Prayitno, drg., M.")).toBe("AP");
+    expect(initials("Aldo Lakso, dr., Sp.OG")).toBe("AL");
+    expect(initials("Dr. Ayu Pratama, drg., M.")).toBe("AP");
   });
   it("groups by first letter and finds by any part of the name", () => {
     expect(lecturerGroups(list, "").map((g) => g.letter)).toEqual(["A", "M"]);
