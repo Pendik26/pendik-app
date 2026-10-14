@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { GoogleIcon } from "../components/GoogleIcon";
 import { useAccount } from "../hooks/useAccount";
 import { useI18n } from "../i18n/useI18n";
+import { PasswordInput } from "../components/PasswordInput";
 import { useMessage } from "../i18n/useMessage";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { LanguageSwitch } from "../components/LanguageSwitch";
@@ -73,9 +74,7 @@ export function SignIn() {
           </label>
           <label className="account-field">
             <span>{t("auth.password")}</span>
-            <input
-              className="form-input"
-              type="password"
+            <PasswordInput
               required
               autoComplete="current-password"
               value={password}

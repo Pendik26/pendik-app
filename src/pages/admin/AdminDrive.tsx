@@ -3,7 +3,7 @@ import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { syncAlarm } from "../../lib/syncAlarm";
 import { logTime, runLog } from "../../lib/syncLog";
-import { applyHeldSync, listSyncRuns, searchDriveFiles, setFileHidden, setFileOrder, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
+import { ANOMALY_KINDS, applyHeldSync, listSyncRuns, runAnomalies, searchDriveFiles, setFileHidden, setFileOrder, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
 
 /** The class Drive sync: run it now, look at past runs, let a held run go ahead, hide files. */
 export function AdminDrive() {
@@ -20,14 +20,14 @@ export function AdminDrive() {
   }, []);
   useEffect(reload, [reload]);
 
-  const syncNow = async () => {
+  const syncNow = async (rereadDocs = false) => {
     setSyncing(true);
     setProblem(null);
-    note("sync started");
+    note(rereadDocs ? "sync started (re-reading every Doc)" : "sync started");
     try {
       // Each call does part of the walk; keep calling while the run is going.
       for (let call = 1; call <= 60; call++) {
-        const r = await syncStep();
+        const r = await syncStep(rereadDocs && call === 1);
         setProgress(t("admin.syncProgress", { files: r.filesFound, folders: r.remaining }));
         note(`call ${call}: ${r.filesFound} files found, ${r.remaining} folders left, status ${r.status}`);
         if (r.status !== "running") break;
@@ -52,6 +52,10 @@ export function AdminDrive() {
       <div className="admin-toolbar">
         <button type="button" className="btn btn-small" disabled={syncing} onClick={() => void syncNow()}>
           {syncing ? t("admin.syncing") : t("admin.syncNow")}
+        </button>
+        <button type="button" className="btn btn-small btn-secondary" disabled={syncing} title={t("admin.syncRereadHint")}
+          onClick={() => void syncNow(true)}>
+          {t("admin.syncReread")}
         </button>
         {progress && <span className="account-note" role="status">{progress}</span>}
       </div>
@@ -91,6 +95,7 @@ export function AdminDrive() {
                   <td>{r.files_found}</td>
                   <td>{t("admin.syncChanges", { added: r.files_added, updated: r.files_updated, missing: r.files_missing })}</td>
                   <td>
+                    <AnomalyList run={r} />
                     <details className="sync-log">
                       <summary>{t("admin.syncLogRun")}</summary>
                       <pre className="sync-log-text">{runLog(r).join("\n")}</pre>
@@ -132,6 +137,40 @@ function heldReason(r: SyncRunRow, t: ReturnType<typeof useI18n>["t"]): string {
   return n.reason === "incomplete"
     ? t("admin.heldIncomplete", { count: n.skippedFolders ?? 0 })
     : t("admin.heldTooMany", { unseen: n.unseen ?? 0, live: n.live ?? 0 });
+}
+
+const anomalyKey = {
+  outside_pattern: "admin.anomalyOutsidePattern",
+  no_course: "admin.anomalyNoCourse",
+  duplicate: "admin.anomalyDuplicate",
+  too_deep: "admin.anomalyTooDeep",
+  too_many_folders: "admin.anomalyTooMany",
+  unlistable: "admin.anomalyUnlistable",
+  broken_shortcut: "admin.anomalyShortcut",
+  unreadable_doc: "admin.anomalyUnreadableDoc",
+  youtube_no_id: "admin.anomalyYoutube",
+} as const;
+
+/** What a run noticed in the Drive, by kind, with a few example paths each. */
+function AnomalyList({ run }: { run: SyncRunRow }) {
+  const { t } = useI18n();
+  const found = runAnomalies(run);
+  const kinds = ANOMALY_KINDS.filter((k) => (found[k]?.count ?? 0) > 0);
+  if (kinds.length === 0) return null;
+  const total = kinds.reduce((n, k) => n + (found[k]?.count ?? 0), 0);
+  return (
+    <details className="sync-log sync-anomalies">
+      <summary>{t("admin.anomalies", { count: total })}</summary>
+      <ul>
+        {kinds.map((k) => (
+          <li key={k}>
+            <strong>{t(anomalyKey[k])}</strong> ({found[k]?.count})
+            <ul>{found[k]?.examples.map((e) => <li key={e}><code>{e}</code></li>)}</ul>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
 }
 
 function HiddenFiles() {

@@ -8,7 +8,8 @@ type Facets = Awaited<ReturnType<typeof questionFacets>>;
 
 /** Every question in the bank, across packages: filter, search, edit, delete. */
 export function AdminQuestions() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const day = (iso: string) => new Date(iso).toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { dateStyle: "medium" });
   const [facets, setFacets] = useState<Facets | null>(null);
   const [filter, setFilter] = useState<BankFilter>({});
   const [text, setText] = useState("");
@@ -50,6 +51,12 @@ export function AdminQuestions() {
           <option value="">{t("admin.anySubject")}</option>
           {facets?.subjects.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
+        <select className="form-input admin-select" aria-label={t("admin.status")} value={filter.status ?? ""}
+          onChange={(e) => { const v = e.target.value; setFilter((f) => ({ ...f, status: v === "draft" || v === "published" ? v : undefined })); }}>
+          <option value="">{t("admin.anyStatus")}</option>
+          <option value="draft">{t("admin.draft")}</option>
+          <option value="published">{t("admin.published")}</option>
+        </select>
         <label className="admin-check">
           <input type="checkbox" checked={filter.deleted === true} onChange={(e) => { setFilter((f) => ({ ...f, deleted: e.target.checked })); }} />
           {t("admin.showDeleted")}
@@ -72,7 +79,9 @@ export function AdminQuestions() {
             details={(q) => {
               const b = q as BankQuestion;
               return [t("admin.blockN", { block: b.block }), b.source, b.year, b.subject,
-                b.packages.length ? b.packages.join(", ") : t("admin.inNoPackage")].filter(Boolean).join(" · ");
+                b.packages.length ? b.packages.join(", ") : t("admin.inNoPackage"),
+                b.status === "draft" ? t("admin.draft") : t("admin.published"),
+                t("admin.createdUpdated", { created: day(b.created_at), updated: day(b.updated_at) })].filter(Boolean).join(" · ");
             }}
           />
         </>

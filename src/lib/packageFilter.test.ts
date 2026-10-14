@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PackageSummary } from "./exams";
-import { distinct, filterPackages, NO_FILTER } from "./packageFilter";
+import { distinct, matchSpelling, filterPackages, NO_FILTER } from "./packageFilter";
 
 const pkg = (over: Partial<PackageSummary>): PackageSummary => ({
   id: "p",
@@ -40,5 +40,15 @@ describe("filterPackages", () => {
 describe("distinct", () => {
   it("drops nulls and repeats and sorts naturally", () => {
     expect(distinct(["1.10", "1.2", null, "1.2"])).toEqual(["1.2", "1.10"]);
+  });
+});
+
+describe("matchSpelling", () => {
+  it("uses the spelling already in use, whatever the case or spacing", () => {
+    expect(matchSpelling(" tryout ", ["Block Test", "Tryout"])).toBe("Tryout");
+    expect(matchSpelling("block  test", ["Block Test"])).toBe("Block Test");
+  });
+  it("keeps a new value, tidied", () => {
+    expect(matchSpelling("  UB  2025 ", ["Tryout"])).toBe("UB 2025");
   });
 });

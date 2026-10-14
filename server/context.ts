@@ -96,8 +96,14 @@ export async function audit(ctx: Ctx, action: string, target: string | null = nu
  */
 export function sectionOf(t: Track | null, group: string | null): "A" | "B" | null {
   const g = (group ?? "").trim().toUpperCase();
-  const letter = t === "REGULER" ? g.charAt(0) : t === "IUP" ? g.replace(/^IUP[- ]?/, "").charAt(0) : "";
+  // IUP is one class (its tutorial groups are IUP A and IUP B), so only Reguler has sections.
+  const letter = t === "REGULER" ? g.charAt(0) : "";
   return letter === "A" || letter === "B" ? letter : null;
+}
+
+/** The section to store: the one given, else read from the group. IUP is one class, so never a section. */
+export function sectionFor(t: Track | null, given: unknown, group: string | null): "A" | "B" | null {
+  return t === "IUP" ? null : section(given) ?? sectionOf(t, group);
 }
 
 /** "A" or "B" (any case) as a section, else null. */

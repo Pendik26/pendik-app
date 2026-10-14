@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { QuestionImage } from "../../components/exam/QuestionImage";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
-import { importQuestions, packagesFromImport, suggestedMinutes } from "../../lib/admin";
+import { importQuestions, listAllPackages, packagesFromImport, suggestedMinutes } from "../../lib/admin";
 import { loadExamRecords } from "../../lib/exams";
 import { clearImportDraft, readImportDraft, saveImportDraft } from "../../lib/importDraft";
-import { fillSlots, imageSlots, toWebp, uploadImage } from "../../lib/importImages";
+import { fillSlots, imageSlots, repeatedSlots, toWebp, uploadImage } from "../../lib/importImages";
+import { distinct, matchSpelling } from "../../lib/packageFilter";
 import { parseQuestionMarkdown } from "../../lib/questionMarkdown";
 
 /**
@@ -26,12 +27,27 @@ export function AdminImport() {
   const [draft, setDraft] = useState(() => readImportDraft());
   const effective = fillSlots(text, uploaded);
   const slots = imageSlots(text);
+  const repeated = repeatedSlots(text);
   const parsed = effective.trim() ? parseQuestionMarkdown(effective) : null;
   const header = parsed?.header ?? null;
   const [examTitle, setExamTitle] = useState("");
   const [practiceTitle, setPracticeTitle] = useState("");
   const [minutes, setMinutes] = useState("");
   const [trackBest, setTrackBest] = useState(true);
+  const [block, setBlock] = useState("");
+  const [source, setSource] = useState("");
+  const [onlyPictures, setOnlyPictures] = useState(false);
+  // Blocks and types already in use, so a new package matches their spelling.
+  const [known, setKnown] = useState<{ blocks: string[]; sources: string[] }>({ blocks: [], sources: [] });
+  useEffect(() => {
+    listAllPackages().then(
+      (ps) => { setKnown({ blocks: distinct(ps.map((p) => p.block)), sources: distinct(ps.map((p) => p.source)) }); },
+      () => undefined,
+    );
+  }, []);
+  const finalBlock = matchSpelling(block, known.blocks);
+  const finalSource = matchSpelling(source, known.sources);
+  const previewed = (parsed?.questions ?? []).map((q, i) => ({ q, n: i + 1 })).filter(({ q }) => !onlyPictures || q.stem_image || q.options?.some((o) => o.image));
 
   // Keep an unfinished import in this browser, so a refresh doesn't lose it.
   useEffect(() => {
@@ -71,6 +87,8 @@ export function AdminImport() {
       setExamTitle(header.title);
       setPracticeTitle(`${header.title} (${t("exam.modePractice").toLowerCase()})`);
       setMinutes(String(suggestedMinutes(parsed.questions.length)));
+      setBlock(header.block);
+      setSource(header.source ?? "");
     } catch (e) {
       setProblem(errorText(e));
     }
@@ -86,8 +104,8 @@ export function AdminImport() {
         importId: imported.importId,
         examTitle: examTitle.trim() || header.title,
         practiceTitle: practiceTitle.trim() || header.title,
-        block: header.block,
-        source: header.source,
+        block: finalBlock || header.block,
+        source: finalSource || null,
         year: header.year,
         timeLimitMinutes: Math.max(1, Math.min(300, Number(minutes) || suggestedMinutes(imported.count))),
         trackBest,
@@ -132,6 +150,7 @@ export function AdminImport() {
         <div className="account-card">
           <h3>{t("admin.slotsTitle")}</h3>
           <p className="account-note">{t("admin.slotsHint")}</p>
+          {repeated.length > 0 && <p className="account-error" role="alert">{t("admin.slotsRepeated", { labels: repeated.join(", ") })}</p>}
           <ul className="admin-slots">
             {slots.map((label) => (
               <li key={label} className="admin-slot"
@@ -181,9 +200,14 @@ export function AdminImport() {
           {parsed.questions.length > 0 && (
             <details className="admin-preview">
               <summary>{t("admin.preview")}</summary>
+              <label className="admin-check">
+                <input type="checkbox" checked={onlyPictures} onChange={(e) => { setOnlyPictures(e.target.checked); }} />
+                {t("admin.onlyPictures")}
+              </label>
+              {onlyPictures && previewed.length === 0 && <p className="account-note">{t("admin.noPictures")}</p>}
               <ol>
-                {parsed.questions.slice(0, 200).map((q, i) => (
-                  <li key={i}>
+                {previewed.slice(0, 200).map(({ q, n }) => (
+                  <li key={n} value={n}>
                     <p className="exam-stem">{q.stem}</p>
                     {q.stem_image && <QuestionImage path={q.stem_image} alt={q.stem_image_alt} small />}
                     {q.options ? (
@@ -207,6 +231,22 @@ export function AdminImport() {
             <span>{t("admin.examTitle")}</span>
             <input className="form-input" value={examTitle} onChange={(e) => { setExamTitle(e.target.value); }} />
           </label>
+          <div className="admin-pair">
+            <label className="account-field">
+              <span>{t("admin.packageBlock")}</span>
+              <input className="form-input" list="known-blocks" value={block} onChange={(e) => { setBlock(e.target.value); }} />
+            </label>
+            <label className="account-field">
+              <span>{t("admin.packageType")}</span>
+              <input className="form-input" list="known-sources" value={source} placeholder={t("admin.packageTypeHint")}
+                onChange={(e) => { setSource(e.target.value); }} />
+            </label>
+            <datalist id="known-blocks">{known.blocks.map((b) => <option key={b} value={b} />)}</datalist>
+            <datalist id="known-sources">{known.sources.map((x) => <option key={x} value={x} />)}</datalist>
+          </div>
+          {(finalBlock !== block.trim() || finalSource !== source.trim()) && (
+            <p className="account-note">{t("admin.spellingMatched", { block: finalBlock, type: finalSource || "–" })}</p>
+          )}
           <label className="account-field">
             <span>{t("admin.timeLimit")}</span>
             <input className="form-input" type="number" min={1} max={300} value={minutes} onChange={(e) => { setMinutes(e.target.value); }} />

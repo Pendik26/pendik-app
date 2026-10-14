@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fillSlots, fitWithin, imageSlots } from "./importImages";
+import { fillSlots, fitWithin, imageSlots, repeatedSlots } from "./importImages";
 
 const text = [
   "## 1",
@@ -41,5 +41,12 @@ describe("fitWithin", () => {
   });
   it("never enlarges", () => {
     expect(fitWithin(400, 300)).toEqual({ width: 400, height: 300 });
+  });
+});
+
+describe("repeatedSlots", () => {
+  it("names the labels used more than once", () => {
+    expect(repeatedSlots("![a](upload:knee) ![b](upload:hip) ![c](upload:knee)")).toEqual(["knee"]);
+    expect(repeatedSlots("![a](upload:knee) ![b](upload:hip)")).toEqual([]);
   });
 });

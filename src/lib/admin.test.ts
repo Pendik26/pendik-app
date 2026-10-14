@@ -56,10 +56,9 @@ describe("class section", () => {
     expect(classSection("REGULER", "A3")).toBe("A");
     expect(classSection("REGULER", "b10")).toBe("B");
     expect(classSection("REGULER", null)).toBeNull();
-    expect(classSection("IUP", "IUP-A")).toBe("A");
-    expect(classSection("IUP", "iup b")).toBe("B");
-    expect(classSection("IUP", "IUP A")).toBe("A");
-    expect(classSection("IUP", "IUP-1")).toBeNull();
+    // IUP is one class; IUP A and IUP B are its tutorial groups.
+    expect(classSection("IUP", "IUP A")).toBeNull();
+    expect(classSection("IUP", "IUP B")).toBeNull();
   });
 });
 

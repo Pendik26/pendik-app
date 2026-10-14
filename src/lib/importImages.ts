@@ -11,6 +11,13 @@ export function imageSlots(text: string): string[] {
   return out;
 }
 
+/** Labels the file names more than once: usually a copy-paste slip, since each gets one picture. */
+export function repeatedSlots(text: string): string[] {
+  const seen = new Map<string, number>();
+  for (const m of text.matchAll(SLOT)) seen.set(m[1], (seen.get(m[1]) ?? 0) + 1);
+  return [...seen].filter(([, n]) => n > 1).map(([label]) => label);
+}
+
 /** The text with every uploaded label replaced by its picture's path. */
 export function fillSlots(text: string, uploaded: Readonly<Record<string, string>>): string {
   return text.replace(SLOT, (whole, label: string) => (Object.hasOwn(uploaded, label) ? `](${uploaded[label]})` : whole));

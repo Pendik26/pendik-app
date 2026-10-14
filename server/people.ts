@@ -1,6 +1,6 @@
 import type { Auth } from "./auth.js";
 import { firstPassword, parseAccountAction, studentEmail } from "./accounts.js";
-import { audit, blankToNull, refuse, requireAdmin, section, sectionOf, text, track, type Args, type Ctx } from "./context.js";
+import { audit, blankToNull, refuse, requireAdmin, section, sectionFor, text, track, type Args, type Ctx } from "./context.js";
 import { daysBefore, today, type Collections, type Role, type StudentDoc, type Track } from "./db.js";
 import { POINTS, streak } from "./study.js";
 
@@ -17,7 +17,7 @@ export function myAccount(ctx: Ctx) {
     student_id: a.nim,
     full_name: s.fullName,
     class_group: s.classGroup,
-    class_section: s.classSection ?? sectionOf(s.track, s.classGroup),
+    class_section: sectionFor(s.track, s.classSection, s.classGroup),
     cohort: s.cohort,
     track: s.track,
     role: a.role,
@@ -160,14 +160,14 @@ export async function adminListRoster(ctx: Ctx, auth: Auth) {
   }
   const order = (t: Track | null) => (t === null ? 2 : t === "IUP" ? 0 : 1);
   return students
-    .sort((a, b) => order(a.track) - order(b.track) || (a.classSection ?? sectionOf(a.track, a.classGroup) ?? "￿").localeCompare(b.classSection ?? sectionOf(b.track, b.classGroup) ?? "￿") || (a.classGroup ?? "￿").localeCompare(b.classGroup ?? "￿") || a.fullName.localeCompare(b.fullName))
+    .sort((a, b) => order(a.track) - order(b.track) || (sectionFor(a.track, a.classSection, a.classGroup) ?? "￿").localeCompare(sectionFor(b.track, b.classSection, b.classGroup) ?? "￿") || (a.classGroup ?? "￿").localeCompare(b.classGroup ?? "￿") || a.fullName.localeCompare(b.fullName))
     .map((s) => {
       const a = byNim.get(s._id);
       return {
         student_id: s._id,
         full_name: s.fullName,
         class_group: s.classGroup,
-        class_section: s.classSection ?? sectionOf(s.track, s.classGroup),
+        class_section: sectionFor(s.track, s.classSection, s.classGroup),
         cohort: s.cohort,
         track: s.track,
         user_id: a?._id ?? null,
@@ -196,10 +196,10 @@ export async function adminAddStudents(ctx: Ctx, args: Args): Promise<null> {
     const existing = await ctx.c.students.findOne({ _id: id });
     if (existing) {
       const finalTrack = t ?? existing.track;
-      await ctx.c.students.updateOne({ _id: id }, { $set: { fullName: name, classGroup: group, classSection: section(r.class_section) ?? sectionOf(finalTrack, group), cohort, track: finalTrack, updatedAt: ctx.now } });
+      await ctx.c.students.updateOne({ _id: id }, { $set: { fullName: name, classGroup: group, classSection: sectionFor(finalTrack, r.class_section, group), cohort, track: finalTrack, updatedAt: ctx.now } });
       await audit(ctx, "student.change", id, { cohort, track: t });
     } else {
-      await ctx.c.students.insertOne({ _id: id, fullName: name, cohort, track: t, classGroup: group, classSection: section(r.class_section) ?? sectionOf(t, group), createdAt: ctx.now, updatedAt: ctx.now });
+      await ctx.c.students.insertOne({ _id: id, fullName: name, cohort, track: t, classGroup: group, classSection: sectionFor(t, r.class_section, group), createdAt: ctx.now, updatedAt: ctx.now });
       await audit(ctx, "student.add", id, { cohort, track: t });
     }
   }
@@ -228,7 +228,7 @@ export async function adminSetGroups(ctx: Ctx, args: Args): Promise<{ updated: n
     const found = await ctx.c.students.findOne({ _id: r.id });
     if (!found) { unknown.push(r.id); continue; }
     const finalTrack = r.track ?? found.track;
-    const set: Partial<StudentDoc> = { classGroup: r.group, classSection: r.cls ?? sectionOf(finalTrack, r.group), updatedAt: ctx.now };
+    const set: Partial<StudentDoc> = { classGroup: r.group, classSection: sectionFor(finalTrack, r.cls, r.group), updatedAt: ctx.now };
     if (r.track) set.track = r.track;
     await ctx.c.students.updateOne({ _id: r.id }, { $set: set });
     updated++;

@@ -226,7 +226,7 @@ export function createApp(deps: AppDeps) {
       if (who.account.role !== "admin") throw refuse("admins_only", 403);
     }
     if (!deps.drive) return error(503, "drive_not_set_up", cors);
-    const body = (await request.json().catch(() => ({}))) as { action?: string; run_id?: string };
+    const body = (await request.json().catch(() => ({}))) as { action?: string; run_id?: string; reread_docs?: boolean };
     return json(await driveSyncStep(c, deps.drive, scheduled ? "schedule" : "admin", body), 200, cors);
   }
 

@@ -14,7 +14,15 @@ export function runLog(r: SyncRunRow): string[] {
   } else {
     lines.push("not finished");
   }
-  for (const [key, value] of Object.entries(r.notes)) lines.push(`${key}: ${typeof value === "string" ? value : JSON.stringify(value)}`);
+  for (const [key, value] of Object.entries(r.notes)) {
+    if (key === "anomalies" && value && typeof value === "object") {
+      for (const [kind, v] of Object.entries(value as Record<string, { count: number; examples: string[] }>)) {
+        lines.push(`${kind}: ${v.count}`, ...v.examples.map((e) => `  ${e}`));
+      }
+      continue;
+    }
+    lines.push(`${key}: ${typeof value === "string" ? value : JSON.stringify(value)}`);
+  }
   if (r.error) lines.push(`error: ${r.error}`);
   return lines;
 }
