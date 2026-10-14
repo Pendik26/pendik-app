@@ -139,8 +139,8 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
           description:
             'Flashcards, quizzes, past-paper exams, the class Drive, ebooks and summaries for Pendik 26 medical students.',
           categories: ['education', 'medical'],
-          theme_color: '#faf9f5',
-          background_color: '#faf9f5',
+          theme_color: '#ebe8de',
+          background_color: '#ebe8de',
           display: 'standalone',
           start_url: '/',
           icons: [
