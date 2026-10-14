@@ -680,3 +680,20 @@
     transform: none;
   }
 }
+
+.drive-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.drive-thumb {
+  flex: none;
+  width: 3.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+}

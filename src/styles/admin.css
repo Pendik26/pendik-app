@@ -185,3 +185,26 @@
   width: 4.5rem;
   padding-block: 0.3rem;
 }
+
+.admin-slots {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-slot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+}
+
+.admin-slot .quiz-question-image {
+  max-width: 6rem;
+  margin: 0;
+}

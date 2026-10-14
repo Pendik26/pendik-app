@@ -82,6 +82,15 @@ export function writeJSON<T>(key: string, value: T): void {
   }
 }
 
+/** Removes one device-only value (the same try/catch as the rest: storage may be unavailable). */
+export function removeDeviceValue(key: string): void {
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    // nothing to remove
+  }
+}
+
 /** Removes this browser's device settings (sign out and clear this device). */
 export function clearDeviceSettings(): void {
   try {
@@ -133,6 +142,8 @@ export const STORAGE_KEYS = {
   activity: storageKey("activity"),
   /** The student group whose tutorial and skills-lab sessions the Schedule page shows. */
   scheduleGroup: storageKey("schedulegroup"),
+  /** An admin's unfinished question import: { text, uploaded }. */
+  importDraft: storageKey("importdraft"),
   /** Class Drive file ids the student has opened ("new" badges). */
   driveSeen: storageKey("driveseen"),
   /** true: the Class Drive also shows the other class's folders. */

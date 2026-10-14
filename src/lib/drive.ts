@@ -316,6 +316,14 @@ export function driveViewUrl(id: string): string {
   if (video) return `https://www.youtube.com/watch?v=${video}`;
   return `https://drive.google.com/file/d/${encodeURIComponent(id)}/view`;
 }
+/** A small picture of the file: Drive's own thumbnail, or the video's for a YouTube link. Null for kinds with none. */
+export function driveThumbUrl(id: string, kind: string): string | null {
+  const video = youtubeVideoId(id);
+  if (video) return `https://img.youtube.com/vi/${video}/mqdefault.jpg`;
+  if (kind === "audio" || kind === "other" || kind === "sheet" || kind === "document") return null;
+  return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w200`;
+}
+
 /** Null for a YouTube video, which can't be downloaded. */
 export function driveDownloadUrl(id: string): string | null {
   if (youtubeVideoId(id)) return null;
