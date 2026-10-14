@@ -11,6 +11,8 @@ import { must, rpc } from "./db/client";
 export interface RosterEntry {
   studentId: string;
   fullName: string;
+  /** The class (A or B) the tutorial group belongs to. */
+  classSection: "A" | "B" | null;
   classGroup: string | null;
   cohort: string;
   track: Track | null;
@@ -25,6 +27,7 @@ interface RosterRow {
   student_id: string;
   full_name: string;
   class_group: string | null;
+  class_section: "A" | "B" | null;
   cohort: string;
   track: Track | null;
   user_id: string | null;
@@ -40,6 +43,7 @@ export async function listRoster(): Promise<RosterEntry[]> {
     studentId: r.student_id,
     fullName: r.full_name,
     classGroup: r.class_group,
+    classSection: r.class_section,
     cohort: r.cohort,
     track: r.track,
     userId: r.user_id,
@@ -97,7 +101,7 @@ export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
 
 /**
  * A student's class section ("A" or "B"): the first letter of a Reguler tutorial group (A1–A10, B1–B10),
- * or the letter of an IUP group ("IUP-A", "IUP-B").
+ * or the letter of an IUP group ("IUP A", "IUP B").
  */
 export function classSection(track: Track | null, group: string | null): "A" | "B" | null {
   const g = (group ?? "").trim().toUpperCase();
@@ -108,11 +112,12 @@ export function classSection(track: Track | null, group: string | null): "A" | "
 export interface GroupRow {
   student_id: string;
   class_group: string | null;
+  class_section?: "A" | "B";
   track?: Track;
 }
 
 /**
- * Reads pasted "student id, group[, IUP or Reguler]" lines for students already on the roster.
+ * Reads pasted "student id, group[, IUP or Reguler[, A or B]]" lines for students already on the roster.
  * No names needed. Separators are commas, tabs or semicolons; a header line is skipped.
  */
 export function parseGroupLines(text: string): { rows: GroupRow[]; problems: string[] } {
@@ -121,16 +126,18 @@ export function parseGroupLines(text: string): { rows: GroupRow[]; problems: str
   const seen = new Set<string>();
   text.split(/\r?\n/).forEach((line, i) => {
     if (!line.trim()) return;
-    const [id = "", group = "", cls = ""] = line.split(/\t|;|,/).map((c) => c.trim());
+    const [id = "", group = "", cls = "", sec = ""] = line.split(/\t|;|,/).map((c) => c.trim());
     if (i === 0 && /^(nim|student|id)/i.test(id) && !/[0-9]/.test(id)) return;
     if (!/^[0-9A-Za-z]{3,30}$/.test(id)) { problems.push(`Line ${i + 1}: "${id}" isn't a student id.`); return; }
     if (group.length > 40) { problems.push(`Line ${i + 1}: group name is too long.`); return; }
     if (cls && !trackOf(cls)) { problems.push(`Line ${i + 1}: class must be IUP or Reguler.`); return; }
+    if (sec && !/^[ab]$/i.test(sec)) { problems.push(`Line ${i + 1}: class section must be A or B.`); return; }
     if (seen.has(id)) { problems.push(`Line ${i + 1}: ${id} is listed twice.`); return; }
     seen.add(id);
     const row: GroupRow = { student_id: id, class_group: group || null };
     const t = cls ? trackOf(cls) : null;
     if (t) row.track = t;
+    if (sec) row.class_section = sec.toUpperCase() as "A" | "B";
     rows.push(row);
   });
   return { rows, problems };

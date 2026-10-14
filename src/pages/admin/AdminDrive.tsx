@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { syncAlarm } from "../../lib/syncAlarm";
+import { logTime, runLog } from "../../lib/syncLog";
 import { applyHeldSync, listSyncRuns, searchDriveFiles, setFileHidden, setFileOrder, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
 
 /** The class Drive sync: run it now, look at past runs, let a held run go ahead, hide files. */
@@ -11,6 +12,8 @@ export function AdminDrive() {
   const [problem, setProblem] = useState<string | null>(null);
   const [progress, setProgress] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [log, setLog] = useState<string[]>([]);
+  const note = useCallback((line: string) => { setLog((l) => [...l, `${logTime(new Date())}  ${line}`].slice(-300)); }, []);
 
   const reload = useCallback(() => {
     listSyncRuns().then(setRuns, (e: Error) => { setProblem(errorText(e)); });
@@ -20,15 +23,19 @@ export function AdminDrive() {
   const syncNow = async () => {
     setSyncing(true);
     setProblem(null);
+    note("sync started");
     try {
       // Each call does part of the walk; keep calling while the run is going.
       for (let call = 1; call <= 60; call++) {
         const r = await syncStep();
         setProgress(t("admin.syncProgress", { files: r.filesFound, folders: r.remaining }));
+        note(`call ${call}: ${r.filesFound} files found, ${r.remaining} folders left, status ${r.status}`);
         if (r.status !== "running") break;
       }
+      note("sync finished");
     } catch (e) {
       setProblem(errorText(e));
+      note(`sync stopped: ${errorText(e)}`);
     }
     setSyncing(false);
     setProgress(null);
@@ -49,6 +56,16 @@ export function AdminDrive() {
         {progress && <span className="account-note" role="status">{progress}</span>}
       </div>
       <p className="account-note">{t("admin.syncHint")}</p>
+
+      <details className="sync-log" open={log.length > 0}>
+        <summary>{t("admin.syncLog")}</summary>
+        <pre className="sync-log-text" aria-live="polite">{log.length > 0 ? log.join("\n") : t("admin.syncLogEmpty")}</pre>
+        {log.length > 0 && (
+          <button type="button" className="btn btn-secondary btn-small" onClick={() => { void navigator.clipboard?.writeText(log.join("\n")); }}>
+            {t("admin.syncLogCopy")}
+          </button>
+        )}
+      </details>
 
       {runs && runs.length > 0 && (
         <div className="admin-table-wrap">
@@ -74,6 +91,10 @@ export function AdminDrive() {
                   <td>{r.files_found}</td>
                   <td>{t("admin.syncChanges", { added: r.files_added, updated: r.files_updated, missing: r.files_missing })}</td>
                   <td>
+                    <details className="sync-log">
+                      <summary>{t("admin.syncLogRun")}</summary>
+                      <pre className="sync-log-text">{runLog(r).join("\n")}</pre>
+                    </details>
                     {r.status === "held" && (
                       <button type="button" className="btn btn-link"
                         onClick={() => {

@@ -33,6 +33,13 @@ describe("pasted roster lines", () => {
   });
 });
 
+describe("pasted group lines with a class section", () => {
+  it("takes an optional fourth column A or B", () => {
+    expect(parseGroupLines("2601001, IUP A, IUP, A").rows).toEqual([{ student_id: "2601001", class_group: "IUP A", track: "IUP", class_section: "A" }]);
+    expect(parseGroupLines("2601001, A3, Reguler, C").problems).toHaveLength(1);
+  });
+});
+
 describe("pasted group lines", () => {
   it("reads id, group and an optional class, and reports bad lines", () => {
     const { rows, problems } = parseGroupLines("NIM,Group,Class\n2601001, 3, Reguler\n2601002\t1\n2601003, 2, Other\n2601001, 4\nx, 1");
@@ -51,6 +58,7 @@ describe("class section", () => {
     expect(classSection("REGULER", null)).toBeNull();
     expect(classSection("IUP", "IUP-A")).toBe("A");
     expect(classSection("IUP", "iup b")).toBe("B");
+    expect(classSection("IUP", "IUP A")).toBe("A");
     expect(classSection("IUP", "IUP-1")).toBeNull();
   });
 });

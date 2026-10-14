@@ -18,6 +18,9 @@ export interface StudentDoc {
   fullName: string;
   cohort: string;
   track: Track | null;
+  /** The class within the track ("A" or "B"); the tutorial group below belongs to it. Older rows lack it. */
+  classSection?: "A" | "B" | null;
+  /** The tutorial group, e.g. "A3" (Reguler class A) or "IUP A". */
   classGroup: string | null;
   createdAt: Date;
   updatedAt: Date;
