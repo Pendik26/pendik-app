@@ -94,6 +94,8 @@ describe("syncStep", () => {
     expect(r).toMatchObject({ status: "done", remaining: 0, filesFound: 4, filesAdded: 3, filesMissing: 0 });
     expect(files.get("f2")).toMatchObject({ block: "1.1", category: "PPT DOSEN", subject: "Histologi", folder_path: ["SEMESTER 1", "REGULER", "BLOK 1.1 Biomedik", "PPT DOSEN", "Histologi"] });
     expect(files.get("youtube:d1:dQw4w9WgXcQ")).toMatchObject({ kind: "youtube", youtube_id: "dQw4w9WgXcQ", category: "REKAMAN", title: "Links (video)" });
+    // Every folder gets a row named by its path, so empty ones show too.
+    expect(files.get("folder:SEMESTER 1/REGULER/BLOK 1.1 Biomedik/REKAMAN")).toMatchObject({ kind: "folder", title: "REKAMAN", block: "1.1" });
     // No folder ids are kept anywhere.
     expect(JSON.stringify([...files.values()])).not.toMatch(/"(sem1|reg|b11|ppt|histo|rek)"/);
   });
@@ -146,6 +148,15 @@ describe("syncStep", () => {
     const m = memoryStore();
     const r = await syncStep(m.store, fakeDrive(classDrive, {}, new Set(["histo"])), config, "schedule");
     expect(r).toMatchObject({ status: "held", notes: { reason: "incomplete", skippedFolders: 1, anomalies: { unlistable: { count: 1 } } } });
+  });
+
+  it("keeps an empty folder, and hides it once it is gone", async () => {
+    const m = memoryStore();
+    await syncStep(m.store, fakeDrive({ ...classDrive, b11: [...classDrive.b11, folder("e", "KOSONG")] }), config, "schedule");
+    expect(m.files.get("folder:SEMESTER 1/REGULER/BLOK 1.1 Biomedik/KOSONG")).toMatchObject({ kind: "folder", missing_since: null });
+    await new Promise((r) => setTimeout(r, 5));
+    await syncStep(m.store, fakeDrive(classDrive), { ...config, maxMissingShare: 0.9 }, "schedule");
+    expect(m.files.get("folder:SEMESTER 1/REGULER/BLOK 1.1 Biomedik/KOSONG")?.missing_since).toBeTruthy();
   });
 
   it("reports what in the Drive doesn't fit, by kind", async () => {

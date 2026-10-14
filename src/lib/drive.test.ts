@@ -160,4 +160,14 @@ describe("the synced listing", () => {
     expect(subjectFolderPath(tree.root, "1.2", "anatomy")).toEqual(["SEMESTER 1", "BLOCK 1.2 INTEGUMEN", "ANATOMY"]);
     expect(tree.updatedAt).toBe(Date.parse("2026-10-08T00:00:00Z"));
   });
+
+  it("shows a folder with no files, from its folder row", () => {
+    const tree = treeFromRows([
+      { drive_file_id: "folder:SEMESTER 1/BLOCK 1.3 EMPTY", title: "BLOCK 1.3 EMPTY", kind: "folder", folder_path: ["SEMESTER 1", "BLOCK 1.3 EMPTY"], size_bytes: null,
+        drive_modified_at: null, created_at: "2026-10-02T00:00:00Z", synced_at: "2026-10-08T00:00:00Z" },
+    ]);
+    const empty = folderAt(tree.root, ["SEMESTER 1", "BLOCK 1.3 EMPTY"]);
+    expect(empty).toMatchObject({ folders: [], files: [] });
+    expect(countFiles(tree.root)).toBe(0);
+  });
 });
