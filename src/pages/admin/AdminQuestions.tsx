@@ -50,6 +50,10 @@ export function AdminQuestions() {
           <option value="">{t("admin.anySubject")}</option>
           {facets?.subjects.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
+        <label className="admin-check">
+          <input type="checkbox" checked={filter.deleted === true} onChange={(e) => { setFilter((f) => ({ ...f, deleted: e.target.checked })); }} />
+          {t("admin.showDeleted")}
+        </label>
         <button type="submit" className="btn btn-small">{t("admin.searchButton")}</button>
       </form>
 

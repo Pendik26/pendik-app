@@ -136,6 +136,17 @@ export async function deletePackage(packageId: string): Promise<void> {
   await must(rpc("admin_delete_package", { p_package_id: packageId }));
 }
 
+/** Packages an admin has deleted, newest first. */
+export async function listDeletedPackages(): Promise<PackageSummary[]> {
+  const rows = await must(rpc<PackageRow[]>("admin_deleted_packages"));
+  return rows.map(toPackage);
+}
+
+/** Brings a deleted package back, as a draft. */
+export async function restorePackage(packageId: string): Promise<void> {
+  await must(rpc("admin_restore_package", { p_package_id: packageId }));
+}
+
 export interface AdminQuestion {
   id: string;
   position: number;
@@ -150,6 +161,8 @@ export interface AdminQuestion {
   explanation: string | null;
   revision: number;
   status: "draft" | "published";
+  /** True for a question an admin deleted (only listed when asked for). */
+  deleted?: boolean;
 }
 
 export async function packageQuestions(packageId: string): Promise<AdminQuestion[]> {
@@ -170,6 +183,8 @@ export interface BankFilter {
   year?: number;
   subject?: string;
   text?: string;
+  /** Only deleted questions, to bring them back. */
+  deleted?: boolean;
 }
 
 /** Most questions one search shows. */
@@ -184,6 +199,7 @@ export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[
       p_year: filter.year ?? null,
       p_subject: filter.subject ?? null,
       p_text: filter.text?.trim() || null,
+      p_deleted: filter.deleted === true,
     }),
   );
   return rows.slice(0, BANK_PAGE).map((r, i) => ({ ...r, position: i + 1, packages: r.packages ?? [] }));
@@ -208,6 +224,11 @@ export type QuestionPatch = Partial<Pick<AdminQuestion, "subject" | "stem" | "st
 /** Saves an edit; the question's revision goes up when anything a student sees changed. */
 export async function updateQuestion(questionId: string, patch: QuestionPatch): Promise<void> {
   await must(rpc("admin_update_question", { p_question_id: questionId, p_patch: patch }));
+}
+
+/** Brings a deleted question back. */
+export async function restoreQuestion(questionId: string): Promise<void> {
+  await must(rpc("admin_restore_question", { p_question_id: questionId }));
 }
 
 /** Takes a question out of every package; attempts that already used it keep it. */

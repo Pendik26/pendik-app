@@ -120,6 +120,16 @@ export async function adminDeleteQuestion(ctx: Ctx, args: Args): Promise<null> {
   return null;
 }
 
+/** Brings a deleted question back (as it was; it is in the packages that still list it). */
+export async function adminRestoreQuestion(ctx: Ctx, args: Args): Promise<null> {
+  requireAdmin(ctx);
+  const id = text(args, "p_question_id") ?? "";
+  const { modifiedCount } = await ctx.c.questions.updateOne({ _id: id, deletedAt: { $ne: null } }, { $set: { deletedAt: null, updatedAt: ctx.now } });
+  if (!modifiedCount) throw refuse("question_not_found");
+  await audit(ctx, "question.restore", id);
+  return null;
+}
+
 const BLOCK_RE = /^[0-9]+\.[0-9]+$/;
 
 /** Saves an imported Markdown file and its questions (as drafts) in one step. Returns the import id. */
@@ -195,12 +205,14 @@ const adminQuestionRow = (q: QuestionDoc) => ({
   explanation: q.explanation,
   revision: q.revision,
   status: q.status,
+  deleted: q.deletedAt !== null,
 });
 
 /** Questions matching every filter given, newest import first, with the live packages using each. */
 export async function adminSearchQuestions(ctx: Ctx, args: Args) {
   requireAdmin(ctx);
-  const filter: Filter<QuestionDoc> = { deletedAt: null };
+  // Only deleted questions when asked, otherwise only live ones.
+  const filter: Filter<QuestionDoc> = bool(args, "p_deleted") ? { deletedAt: { $ne: null } } : { deletedAt: null };
   const block = text(args, "p_block");
   const source = text(args, "p_source");
   const year = int(args, "p_year");
@@ -354,6 +366,38 @@ export async function adminDeletePackage(ctx: Ctx, args: Args): Promise<null> {
   const { modifiedCount } = await ctx.c.packages.updateOne({ _id: id, deletedAt: null }, { $set: { deletedAt: ctx.now, status: "draft" } });
   if (!modifiedCount) throw refuse("package_not_found");
   await audit(ctx, "package.delete", id);
+  return null;
+}
+
+/** Deleted packages (newest change first), for Admin → Packages → Show deleted. */
+export async function adminDeletedPackages(ctx: Ctx) {
+  requireAdmin(ctx);
+  const deleted = await ctx.c.packages.find({ deletedAt: { $ne: null } }).sort({ deletedAt: -1 }).toArray();
+  const counts = await questionCounts(ctx, deleted);
+  return deleted.map((p) => ({
+    id: p._id,
+    title: p.title,
+    block: p.block,
+    source: p.source,
+    year: p.year,
+    mode: p.mode,
+    time_limit_minutes: p.timeLimitMinutes,
+    track_best: p.trackBest,
+    status: p.status,
+    created_at: p.createdAt.toISOString(),
+    updated_at: p.updatedAt.toISOString(),
+    question_count: counts.get(p._id) ?? 0,
+    track: p.track,
+  }));
+}
+
+/** Brings a deleted package back as a draft. */
+export async function adminRestorePackage(ctx: Ctx, args: Args): Promise<null> {
+  requireAdmin(ctx);
+  const id = text(args, "p_package_id") ?? "";
+  const { modifiedCount } = await ctx.c.packages.updateOne({ _id: id, deletedAt: { $ne: null } }, { $set: { deletedAt: null, status: "draft", updatedAt: ctx.now } });
+  if (!modifiedCount) throw refuse("package_not_found");
+  await audit(ctx, "package.restore", id);
   return null;
 }
 
