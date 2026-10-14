@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 import { PulseLine } from "./PulseLine";
@@ -28,7 +28,6 @@ import {
   TimerIcon,
   ShieldIcon,
   TrophyIcon,
-  UserIcon,
 } from "./icons";
 import { firstName } from "../lib/firstName";
 import { useAccount } from "../hooks/useAccount";
@@ -111,19 +110,15 @@ const moreGroups: NavGroup[] = [
 const tabs: { id: string; label: string; icon: ReactNode; to?: string; sections?: NavGroup[] }[] = [
   { id: "home", label: "nav.home", icon: <HomeIcon />, to: "/" },
   { id: "schedule", label: "nav.schedule", icon: <CalendarIcon />, to: "/schedule" },
-  { id: "subjects", label: "nav.subjects", icon: <GridIcon />, to: "/subjects" },
-  { id: "exam", label: "nav.exams", icon: <TimerIcon />, to: "/exam" },
+  { id: "subjects", label: "nav.tabSubjects", icon: <GridIcon />, to: "/subjects" },
+  { id: "exam", label: "nav.tabExams", icon: <TimerIcon />, to: "/exam" },
   {
     id: "more",
     label: "nav.more",
     icon: <MoreIcon />,
     sections: [
       { items: mainLinks.filter((l) => !["/", "/schedule", "/subjects", "/exam"].includes(l.to)) },
-      ...moreGroups.slice(0, 3),
-      {
-        label: "nav.you",
-        items: [{ to: "/account", label: "nav.account", icon: <UserIcon /> }, ...moreGroups[3].items],
-      },
+      ...moreGroups,
     ],
   },
 ];
@@ -170,13 +165,17 @@ function DueCount({ n, kind }: { n: number; kind: NavItem["due"] }) {
 
 const inSection = (pathname: string, to: string) => (to === "/" ? pathname === "/" : pathname === to || pathname.startsWith(`${to}/`));
 
-/** Bottom navigation for phones; the sidebar stays reachable from the top bar's menu button. */
+/**
+ * Bottom navigation for phones. Everything not on a tab is in the "More" sheet, which ends with
+ * the student's account and the theme, so the phone needs no sidebar drawer.
+ */
 export function MobileTabBar() {
   const { pathname } = useLocation();
   const counts = useDueCounts();
   const [open, setOpen] = useState<string | null>(null);
   const navGroups = useNavGroups();
   const { t } = useI18n();
+  const { user } = useAccount();
   // A new page closes the sheet that led to it.
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
@@ -214,6 +213,16 @@ export function MobileTabBar() {
                 </div>
               </Fragment>
             ))}
+            <div className="tabsheet-footer">
+              <NavLink to="/account" className={({ isActive }) => (isActive ? "tabsheet-link tabsheet-account active" : "tabsheet-link tabsheet-account")}>
+                <Avatar name={user?.fullName || "?"} />
+                <span className="sidebar-account-text">
+                  <span className="sidebar-account-name">{user?.fullName || t("nav.account")}</span>
+                  <span className="sidebar-account-meta">{t("nav.account")}</span>
+                </span>
+              </NavLink>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       )}
@@ -249,13 +258,12 @@ function openCommandPalette() {
 
 const collapseShortcut = isMac ? "⌘\\" : "Ctrl+\\";
 
-function SidebarLink({ link, due, onNavigate }: { link: NavItem; due: number; onNavigate: () => void }) {
+function SidebarLink({ link, due }: { link: NavItem; due: number }) {
   return (
     <NavLink
       to={link.to}
       end={link.end}
       className={({ isActive }) => (isActive ? "sidebar-link active" : "sidebar-link")}
-      onClick={onNavigate}
       title={link.label}
     >
       <span className="sidebar-link-icon">{link.icon}</span>
@@ -275,7 +283,6 @@ function Avatar({ name }: { name: string }) {
 }
 
 export function Sidebar() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   // Desktop only: shrinks the sidebar to an icon rail. The mobile drawer ignores it.
   const [collapsed, setCollapsed] = useLocalStorage<boolean>(STORAGE_KEYS.sidebarCollapsed, false);
   const { pathname } = useLocation();
@@ -296,7 +303,6 @@ export function Sidebar() {
     if (inMore && !moreOpen) setMoreOpen(true);
   }
   const moreDue = more.flatMap((g) => g.items).reduce((n, i) => n + dueFor(i, counts), 0);
-  const closeDrawer = useCallback(() => { setDrawerOpen(false); }, []);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -309,58 +315,31 @@ export function Sidebar() {
     return () => { window.removeEventListener("keydown", onKeyDown); };
   }, [setCollapsed]);
 
-  useEffect(() => {
-    if (!drawerOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setDrawerOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => { window.removeEventListener("keydown", onKeyDown); };
-  }, [drawerOpen]);
-
   const name = user?.fullName ?? "";
 
   return (
     <>
       <header className="topbar">
         <div className="topbar-row">
-          <button
-            type="button"
-            className="icon-btn icon-btn-quiet sidebar-toggle"
-            onClick={() => { setDrawerOpen((o) => !o); }}
-            aria-label={drawerOpen ? t("nav.closeMenu") : t("nav.openMenu")}
-            aria-expanded={drawerOpen}
-            aria-controls="app-sidebar"
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              {drawerOpen ? (
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              ) : (
-                <path d="M4 8h16M4 16h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              )}
-            </svg>
-          </button>
-
-          <div className="topbar-brand">
+          <NavLink to="/" className="topbar-brand" aria-label={t("nav.home")}>
             <PulseLine width={22} height={13} />
             Pendik
-          </div>
+          </NavLink>
 
           <div className="topbar-actions">
             <button type="button" className="icon-btn icon-btn-quiet" onClick={openCommandPalette} aria-label={t("nav.commandPalette")}>
               <SearchIcon />
             </button>
+            <NavLink to="/account" className="topbar-account" aria-label={t("nav.account")} title={t("nav.account")}>
+              <Avatar name={name || "?"} />
+            </NavLink>
           </div>
         </div>
       </header>
 
-      {drawerOpen && (
-        <div className="sidebar-backdrop" onClick={closeDrawer} aria-hidden="true" />
-      )}
-
       <aside
         id="app-sidebar"
-        className={["sidebar", drawerOpen && "open", collapsed && "collapsed"].filter(Boolean).join(" ")}
+        className={["sidebar", collapsed && "collapsed"].filter(Boolean).join(" ")}
       >
         <div className="sidebar-brand">
           <span className="sidebar-brand-name">
@@ -397,7 +376,7 @@ export function Sidebar() {
 
         <nav className="sidebar-nav" aria-label={t("nav.primary")}>
           {main.map((link) => (
-            <SidebarLink key={link.to} link={link} due={dueFor(link, counts)} onNavigate={closeDrawer} />
+            <SidebarLink key={link.to} link={link} due={dueFor(link, counts)} />
           ))}
 
           <button
@@ -422,7 +401,7 @@ export function Sidebar() {
                 <Fragment key={group.label}>
                   <span className="sidebar-group-label" aria-hidden="true">{group.label}</span>
                   {group.items.map((link) => (
-                    <SidebarLink key={link.to} link={link} due={dueFor(link, counts)} onNavigate={closeDrawer} />
+                    <SidebarLink key={link.to} link={link} due={dueFor(link, counts)} />
                   ))}
                 </Fragment>
               ))}
@@ -434,7 +413,6 @@ export function Sidebar() {
           <NavLink
             to="/account"
             className={({ isActive }) => (isActive ? "sidebar-account active" : "sidebar-account")}
-            onClick={closeDrawer}
             title={t("nav.account")}
           >
             <Avatar name={name || "?"} />

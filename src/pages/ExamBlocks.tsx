@@ -4,7 +4,8 @@ import { quizQuestionsInBlock } from "../lib/content";
 import { blockFirst, studyBlocks } from "../lib/blocks";
 import { useChosenBlock } from "../hooks/useChosenBlock";
 import { buildExamFormat } from "../lib/examFormat";
-import { averageScore, bestScore, finishedAttempts, packagesForBlock, useExamRecords } from "../lib/exams";
+import { averageScore, bestScore, extraPaperBlocks, finishedAttempts, packagesForBlock, useExamRecords } from "../lib/exams";
+import { sourceLabel } from "../lib/examSource";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
 import { RadialGauge } from "../components/RadialGauge";
 import { SubjectBadge } from "../components/SubjectBadge";
@@ -24,6 +25,16 @@ export function ExamBlocks() {
   const years = useMemo(() => [...new Set(records.packages.flatMap((p) => (p.year ? [String(p.year)] : [])))].sort().reverse(), [records.packages]);
   const sources = useMemo(() => [...new Set(records.packages.flatMap((p) => (p.source ? [p.source] : [])))].sort((a, b) => a.localeCompare(b)), [records.packages]);
   const filtering = year !== "" || source !== "";
+  // Every study block, then any other block that has papers, then the papers with no block at all.
+  const groups = useMemo(() => {
+    const known = studyBlocks.map((b) => b.id);
+    const all: { id: string | null; label: string }[] = [
+      ...studyBlocks,
+      ...extraPaperBlocks(known, records).map((id) => ({ id, label: t("exam.blockN", { id }) })),
+    ];
+    if (records.packages.some((p) => !p.block)) all.push({ id: null, label: t("exam.otherPapers") });
+    return blockFirst(all, (b) => b.id ?? "", chosenBlock);
+  }, [records, chosenBlock, t]);
   const matches = (p: { year: number | null; source: string | null }) =>
     (year === "" || String(p.year) === year) && (source === "" || p.source === source);
 
@@ -60,7 +71,7 @@ export function ExamBlocks() {
           {sources.length > 1 && (
             <select className="form-input admin-select" aria-label={t("exam.type")} value={source} onChange={(e) => { setSource(e.target.value); }}>
               <option value="">{t("exam.allTypes")}</option>
-              {sources.map((s) => <option key={s} value={s}>{s}</option>)}
+              {sources.map((s) => <option key={s} value={s}>{sourceLabel(s, t)}</option>)}
             </select>
           )}
           {filtering && (
@@ -69,16 +80,16 @@ export function ExamBlocks() {
         </div>
       )}
 
-      {blockFirst(studyBlocks, (b) => b.id, chosenBlock).map((block) => {
+      {groups.map((block) => {
         const packages = packagesForBlock(block.id, records).filter(matches);
         // The pooled exam has no year or type, so it steps aside while those are being filtered.
-        const pooled = buildExamFormat(filtering ? 0 : quizQuestionsInBlock(block.id).length);
+        const pooled = buildExamFormat(filtering || !block.id ? 0 : quizQuestionsInBlock(block.id).length);
         if (packages.length === 0 && pooled.questionCount === 0) return null;
-        const lastPooled = readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(block.id), []).at(-1);
+        const lastPooled = block.id ? readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(block.id), []).at(-1) : undefined;
         return (
-          <div key={block.id} className="dashboard-section">
+          <div key={block.id ?? "other"} className="dashboard-section">
             <h2 className="section-heading">
-              <SubjectBadge id={block.id} label={block.label} />
+              {block.id && <SubjectBadge id={block.id} label={block.label} />}
               {block.label}
             </h2>
             <div className="card-grid">
@@ -96,8 +107,15 @@ export function ExamBlocks() {
                         <span className="exam-package-ring-value" aria-hidden="true">{ring}</span>
                       </span>
                     )}
-                    <span className={`exam-mode-tag exam-mode-tag-${p.mode}`}>
-                      {p.mode === "exam" ? t("exam.modeExam") : t("exam.modePractice")}
+                    <span className="exam-package-tags">
+                      <span className={`exam-mode-tag exam-mode-tag-${p.mode}`}>
+                        {p.mode === "exam" ? t("exam.modeExam") : t("exam.modePractice")}
+                      </span>
+                      {(p.source || p.year) && (
+                        <span className="exam-mode-tag exam-source-tag">
+                          {[p.source ? sourceLabel(p.source, t) : null, p.year].filter(Boolean).join(" · ")}
+                        </span>
+                      )}
                     </span>
                     <h3>{p.title}</h3>
                     <p>
@@ -109,7 +127,7 @@ export function ExamBlocks() {
                   </Link>
                 );
               })}
-              {pooled.questionCount > 0 && (
+              {pooled.questionCount > 0 && block.id && (
                 <Link to={`/exam/${block.id}`} className="nav-card exam-package-card">
                   <span className="exam-mode-tag">{t("exam.pooled")}</span>
                   <h3>{t("exam.pooledTitle")}</h3>

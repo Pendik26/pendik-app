@@ -160,11 +160,24 @@ export function useExamRecords(): ExamRecords {
   );
 }
 
-/** A block's packages: exams first, then practice, each by title. */
-export function packagesForBlock(blockId: string, from: ExamRecords = records): PackageSummary[] {
+/**
+ * A block's packages (null: the papers with no block): exams first, then practice, each newest year
+ * first (no year last), then by title.
+ */
+export function packagesForBlock(blockId: string | null, from: ExamRecords = records): PackageSummary[] {
   return from.packages
-    .filter((p) => p.block === blockId)
-    .sort((a, b) => (a.mode === b.mode ? a.title.localeCompare(b.title) : a.mode === "exam" ? -1 : 1));
+    .filter((p) => (p.block ?? null) === blockId)
+    .sort((a, b) => {
+      if (a.mode !== b.mode) return a.mode === "exam" ? -1 : 1;
+      if (a.year !== b.year) return (b.year ?? -Infinity) - (a.year ?? -Infinity);
+      return a.title.localeCompare(b.title);
+    });
+}
+
+/** Block ids that have papers but aren't study blocks, in numeric order ("1.10" after "1.9"). */
+export function extraPaperBlocks(known: string[], from: ExamRecords = records): string[] {
+  const ids = new Set(from.packages.flatMap((p) => (p.block && !known.includes(p.block) ? [p.block] : [])));
+  return [...ids].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
 
 export function finishedAttempts(packageId: string, from: ExamRecords = records): AttemptSummary[] {

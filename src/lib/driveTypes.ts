@@ -16,6 +16,8 @@ export interface DriveFile {
   createdTime?: string;
   /** An admin's order within the folder: ordered files come first, lower first. */
   order?: number;
+  /** Drive's own type, when the listing has it (a Google Doc is exported, not downloaded). */
+  mime?: string;
 }
 
 export interface DriveFolder {

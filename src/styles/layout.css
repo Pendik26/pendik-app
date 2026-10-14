@@ -339,10 +339,26 @@
   color: var(--text);
 }
 
+.topbar-brand {
+  text-decoration: none;
+}
+
 .topbar-actions {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+}
+
+.topbar-account {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+.topbar-account .avatar {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 /* Collapsed sidebar (desktop only): an icon rail; each link keeps its name as a tooltip. */
@@ -747,6 +763,20 @@
 
   .tabsheet-link .nav-due {
     margin-left: auto;
+  }
+
+  .tabsheet-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .tabsheet-account {
+    flex: 1;
+    min-width: 0;
   }
 
   .tabbar-item {

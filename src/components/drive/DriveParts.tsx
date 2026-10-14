@@ -66,6 +66,28 @@ function Icon({ d }: { d: string }) {
   );
 }
 
+/** Download and open-in-Drive buttons beside a file's row, so a file needn't be opened first. */
+export function DriveRowActions({ file }: { file: DriveFile }) {
+  const { t } = useI18n();
+  const download = driveDownloadUrl(file.id, file.mime);
+  const title = fileTitle(file.name);
+  return (
+    <span className="drive-row-actions">
+      {download && (
+        <a href={download} className="icon-btn" rel="noopener noreferrer"
+          aria-label={`${t("drive.download")}: ${title}`} title={t("drive.download")}>
+          <Icon d="M12 4.5v10M7.5 10l4.5 4.5 4.5-4.5M5 19.5h14" />
+        </a>
+      )}
+      <a href={driveViewUrl(file.id)} target="_blank" rel="noopener noreferrer" className="icon-btn"
+        aria-label={`${youtubeVideoId(file.id) ? t("drive.openYoutube") : t("drive.openDrive")}: ${title}`}
+        title={youtubeVideoId(file.id) ? t("drive.openYoutube") : t("drive.openDrive")}>
+        <Icon d="M7 17 17 7M9 7h8v8" />
+      </a>
+    </span>
+  );
+}
+
 /**
  * One Drive file in Google's own viewer (slides, PDFs and recordings), with the way to the
  * files before and after it. Give it `key={file.id}` so each file starts out loading.
@@ -90,7 +112,7 @@ export function DriveFileView({
   const { t } = useI18n();
   const [loaded, setLoaded] = useState(false);
   const title = fileTitle(file.name);
-  const download = driveDownloadUrl(file.id);
+  const download = driveDownloadUrl(file.id, file.mime);
 
   useEffect(() => {
     onShown?.(file);

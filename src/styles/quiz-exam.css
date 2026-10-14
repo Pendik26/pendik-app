@@ -741,6 +741,13 @@
   color: var(--accent);
 }
 
+.exam-package-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.6rem;
+  align-items: baseline;
+}
+
 .exam-package-card h3 {
   margin: 0.2rem 0;
   font-size: 1.05rem;
@@ -941,7 +948,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  margin: 0 0 1rem;
+  margin: 1.25rem 0 1rem;
 }
 
 .practice-setup {

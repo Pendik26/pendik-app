@@ -70,6 +70,7 @@ export function QuestionList({ questions, onChanged, details }: {
               </div>
             ) : (
               <div className="admin-question">
+                {q.deleted && <span className="admin-state admin-state-none">{t("admin.deletedTag")}</span>}
                 <QuestionPreview q={q} />
                 <div className="admin-actions">
                   <small>{[details?.(q), t("admin.revisionN", { n: q.revision })].filter(Boolean).join(" · ")}</small>

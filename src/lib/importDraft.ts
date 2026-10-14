@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "react";
 import { readJSON, removeDeviceValue, STORAGE_KEYS, writeJSON } from "./storage";
 
 // An unfinished question import, kept in this browser so a refresh or a closed tab doesn't lose
@@ -25,10 +26,37 @@ export function readImportDraft(): ImportDraft | null {
   return { text, uploaded: clean };
 }
 
-export function saveImportDraft(draft: ImportDraft): void {
+/**
+ * Keeps the draft. False when this browser couldn't keep it (too long, storage full or blocked),
+ * so the page can say a refresh would lose it.
+ */
+export function saveImportDraft(draft: ImportDraft): boolean {
   // An empty page never wipes a draft waiting to be continued; discarding does that on purpose.
-  if (!draft.text.trim()) return;
-  if (draft.text.length <= MAX_TEXT) writeJSON(STORAGE_KEYS.importDraft, draft);
+  let ok = true;
+  if (draft.text.trim()) {
+    if (draft.text.length > MAX_TEXT) ok = false;
+    else {
+      writeJSON(STORAGE_KEYS.importDraft, draft);
+      ok = readImportDraft()?.text === draft.text;
+    }
+  }
+  if (ok !== kept) {
+    kept = ok;
+    for (const l of listeners) l();
+  }
+  return ok;
+}
+
+let kept = true;
+const listeners = new Set<() => void>();
+
+/** Whether the last draft save worked, for the page to warn when it didn't. */
+export function useImportDraftKept(): boolean {
+  return useSyncExternalStore(
+    (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+    () => kept,
+    () => true,
+  );
 }
 
 export function clearImportDraft(): void {

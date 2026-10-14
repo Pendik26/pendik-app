@@ -2,7 +2,7 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { EmptyState } from "../components/EmptyState";
 import { HighlightText } from "../components/HighlightText";
-import { DriveFileView, DriveKind, DriveThumb, NewPill, OpenedMark } from "../components/drive/DriveParts";
+import { DriveFileView, DriveKind, DriveRowActions, DriveThumb, NewPill, OpenedMark } from "../components/drive/DriveParts";
 import { RefreshIcon, SearchIcon } from "../components/icons";
 import { cleanFilter, driveFilterOptions, filterDriveFiles, isFiltering, type DriveFilter } from "../lib/driveFilters";
 import { useChosenBlock } from "../hooks/useChosenBlock";
@@ -275,7 +275,7 @@ export function ClassDrive() {
         <div className="drive-status">
           <span className={drive.problem ? "drive-live off" : "drive-live"}>
             <span className="drive-live-dot" aria-hidden="true" />
-            {drive.refreshing ? t("drive.checking") : t("drive.updated", { when: updatedAgo(drive.tree.updatedAt, now, t) })}
+            {drive.refreshing ? t("drive.checking") : drive.tree.updatedAt ? t("drive.updated", { when: updatedAgo(drive.tree.updatedAt, now, t) }) : t("drive.notSyncedYet")}
           </span>
           <button
             type="button"
@@ -315,7 +315,7 @@ export function ClassDrive() {
   const fileRow = (file: DriveFile, filePath: string[], ranges?: [number, number][]) => {
     const fresh = isNew(file, opened, now);
     return (
-      <li key={file.id}>
+      <li key={file.id} className="drive-row-item">
         <Link
           to={hrefWith({ path: results ? path : filePath, file: file.id })}
           replace
@@ -338,6 +338,7 @@ export function ClassDrive() {
           <DriveThumb file={file} />
           {fresh ? <NewPill /> : opened.has(file.id) && <OpenedMark />}
         </Link>
+        <DriveRowActions file={file} />
       </li>
     );
   };

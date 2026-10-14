@@ -173,6 +173,17 @@ run("the API", () => {
     expect((await call(admin, "admin_packages_from_import", pkgArgs)).status).toBe(200);
     expect((await call(admin, "admin_packages_from_import", pkgArgs)).error).toBe("already_saved");
     expect((await call(admin, "admin_import_questions", { ...again, p_import_id: "nope" })).error).toBe("bad_id");
+    expect((await call(admin, "admin_packages_from_import", { ...pkgArgs, p_exam_id: null, p_practice_id: null, p_year: 25 })).error).toBe("bad_year");
+    // Block, type and year can be changed after the package is made.
+    expect((await call(admin, "admin_update_package", { p_package_id: pkgIds.p_exam_id, p_patch: { block: "1.4", source: " ub ", year: 2023 } })).status).toBe(200);
+    expect((await call(admin, "admin_update_package", { p_package_id: pkgIds.p_exam_id, p_patch: { block: "four" } })).error).toBe("bad_block");
+    expect((await call(admin, "admin_update_package", { p_package_id: pkgIds.p_exam_id, p_patch: { year: 99 } })).error).toBe("bad_year");
+    expect((await call(admin, "package_summaries")).data.find((p: any) => p.id === pkgIds.p_exam_id)).toMatchObject({ block: "1.4", source: "ub", year: 2023 });
+    // A deleted question stays listed in its package, marked, so it can be brought back.
+    const [inPkg] = (await call(admin, "admin_package_questions", { p_package_id: pkgIds.p_exam_id })).data;
+    await call(admin, "admin_delete_question", { p_question_id: inPkg.id });
+    expect((await call(admin, "admin_package_questions", { p_package_id: pkgIds.p_exam_id })).data).toMatchObject([{ id: inPkg.id, deleted: true }]);
+    await call(admin, "admin_restore_question", { p_question_id: inPkg.id });
     await call(admin, "admin_delete_package", { p_package_id: pkgIds.p_exam_id });
     await call(admin, "admin_delete_package", { p_package_id: pkgIds.p_practice_id });
     expect((await call(student, "package_summaries")).data).toEqual([]);
