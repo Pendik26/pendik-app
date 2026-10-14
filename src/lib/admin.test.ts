@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseGroupLines, classSection, parseRosterLines, suggestedMinutes } from "./admin";
+import { parseLecturerTable, parseGroupLines, classSection, parseRosterLines, suggestedMinutes } from "./admin";
 
 describe("pasted roster lines", () => {
   it("reads commas, tabs or semicolons, skips a header and fills the cohort", () => {
@@ -52,5 +52,19 @@ describe("class section", () => {
     expect(classSection("IUP", "IUP-A")).toBe("A");
     expect(classSection("IUP", "iup b")).toBe("B");
     expect(classSection("IUP", "IUP-1")).toBeNull();
+  });
+});
+
+describe("lecturer table", () => {
+  it("reads an exported table with quoted cells and several phone columns", () => {
+    const { rows, problems } = parseLecturerTable('"No. Telp 1","No. Telp 2","Mata Kuliah","Nama"\n"0811111111","0822222222","","Dr. A, dr., Sp.X"\n"","","",""\n"0833333333","","","B Person"\n"","","","No Phone"');
+    expect(rows).toEqual([
+      { name: "Dr. A, dr., Sp.X", phones: ["0811111111", "0822222222"] },
+      { name: "B Person", phones: ["0833333333"] },
+    ]);
+    expect(problems).toEqual(["Line 5: No Phone has no phone number."]);
+  });
+  it("reads plain name, phone lines without a header", () => {
+    expect(parseLecturerTable("C Person, 0844444444, 0855555555").rows).toEqual([{ name: "C Person", phones: ["0844444444", "0855555555"] }]);
   });
 });

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import {
-  clearScheduleGroup, deleteLecturer, deleteScheduleDoc, listLecturerReports, resolveLecturerReport, saveLecturer,
+  clearScheduleGroup, deleteLecturer, importLecturers, parseLecturerTable, deleteScheduleDoc, listLecturerReports, resolveLecturerReport, saveLecturer,
   saveScheduleDoc, saveScheduleEvents,
 } from "../../lib/admin";
 import { listDocs, listGroups, listLecturers, type Lecturer, type LecturerReport, type ScheduleDoc } from "../../lib/schedule";
@@ -55,6 +55,8 @@ export function AdminSchedule() {
       return t("schedule.adminSavedEvents", { count: r.saved });
     });
   };
+  const [lecturerPaste, setLecturerPaste] = useState("");
+  const parsedLecturers = parseLecturerTable(lecturerPaste);
   const [clearGroup, setClearGroup] = useState("");
   const [clearKind, setClearKind] = useState<"tutor" | "sl">("sl");
 
@@ -128,6 +130,22 @@ export function AdminSchedule() {
         <button type="submit" className="btn btn-small">{editing ? t("schedule.adminSaveLecturer") : t("schedule.adminAddLecturer")}</button>
         {editing && <button type="button" className="btn btn-secondary btn-small" onClick={() => { startEdit(null); }}>{t("common.cancel")}</button>}
       </form>
+      <details className="account-card">
+        <summary>{t("schedule.adminImportLecturers")}</summary>
+        <p className="account-note">{t("schedule.adminImportLecturersHint")}</p>
+        <textarea className="form-input admin-textarea" rows={6} value={lecturerPaste} onChange={(e) => { setLecturerPaste(e.target.value); }} aria-label={t("schedule.adminImportLecturers")} />
+        {parsedLecturers.problems.length > 0 && <ul className="admin-problems">{parsedLecturers.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
+        <button
+          type="button" className="btn btn-small" disabled={parsedLecturers.rows.length === 0}
+          onClick={() => void act(async () => {
+            const r = await importLecturers(parsedLecturers.rows);
+            setLecturerPaste("");
+            return `${t("schedule.adminImportedLecturers", { added: r.added, updated: r.updated })}${r.skipped.length ? ` ${t("schedule.adminImportSkipped", { names: r.skipped.join("; ") })}` : ""}`;
+          })}
+        >
+          {t("schedule.adminImportCount", { count: parsedLecturers.rows.length })}
+        </button>
+      </details>
       {lecturers.length > 0 && (
         <div className="admin-table-wrap">
           <table className="admin-table">

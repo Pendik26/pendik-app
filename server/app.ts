@@ -101,6 +101,7 @@ const FUNCTIONS: Record<string, Fn> = {
   admin_save_events: schedule.adminSaveEvents,
   admin_delete_events: schedule.adminDeleteEvents,
   admin_save_lecturer: schedule.adminSaveLecturer,
+  admin_import_lecturers: schedule.adminImportLecturers,
   admin_delete_lecturer: schedule.adminDeleteLecturer,
   admin_save_schedule_doc: schedule.adminSaveScheduleDoc,
   admin_delete_schedule_doc: schedule.adminDeleteScheduleDoc,

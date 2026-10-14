@@ -391,6 +391,65 @@ export async function setFileHidden(id: string, hidden: boolean): Promise<void> 
 export const saveScheduleEvents = (events: unknown[]) => must(rpc<{ saved: number }>("admin_save_events", { p_events: events }));
 export const clearScheduleGroup = (group: string, kind: "tutor" | "sl") => must(rpc<{ deleted: number }>("admin_delete_events", { p_group: group, p_kind: kind }));
 export const saveLecturer = (name: string, phones: string[], id?: string) => must(rpc("admin_save_lecturer", { p_name: name, p_phones: phones, p_id: id ?? null }));
+export interface LecturerRow {
+  name: string;
+  phones: string[];
+}
+
+/** Splits CSV text into rows of cells; quoted cells may hold commas, doubled quotes and line breaks. */
+function csvRows(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  const body = text.replace(/^\uFEFF/, "");
+  for (let i = 0; i < body.length; i++) {
+    const c = body[i];
+    if (quoted) {
+      if (c === '"' && body[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === "," || c === "\t" || c === ";") { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && body[i + 1] === "\n") i++;
+      row.push(cell); rows.push(row); row = []; cell = "";
+    } else cell += c;
+  }
+  row.push(cell);
+  rows.push(row);
+  return rows.map((r) => r.map((c) => c.trim()));
+}
+
+/**
+ * Reads a pasted or exported lecturer table. With a header line, the "Nama"/"Name" column is the
+ * name and every "Telp"/"Phone"/"HP" column holds a number; without one each line is
+ * "name, phone[, phone]". Lines with no name or no number are listed in `problems`.
+ */
+export function parseLecturerTable(text: string): { rows: LecturerRow[]; problems: string[] } {
+  const all = csvRows(text);
+  const rows: LecturerRow[] = [];
+  const problems: string[] = [];
+  while (all.length > 0 && !all[all.length - 1]?.some(Boolean)) all.pop();
+  const first = all[0]?.map((c) => c.toLowerCase()) ?? [];
+  const hasHeader = first.some((c) => /^(nama|name)$/.test(c));
+  const nameAt = hasHeader ? first.findIndex((c) => /^(nama|name)$/.test(c)) : 0;
+  const phoneAt = hasHeader ? first.flatMap((c, i) => (/telp|phone|hp|wa|nomor/.test(c) ? [i] : [])) : null;
+  all.slice(hasHeader ? 1 : 0).forEach((cells, i) => {
+    if (!cells.some(Boolean)) return;
+    const line = i + 1 + (hasHeader ? 1 : 0);
+    const name = (cells[nameAt] ?? "").replace(/\s+/g, " ").trim();
+    const phones = (phoneAt ?? cells.map((_, j) => j).filter((j) => j !== nameAt)).map((j) => cells[j] ?? "").filter((c) => /\d{6}/.test(c));
+    if (!name) { problems.push(`Line ${line}: no name.`); return; }
+    if (phones.length === 0) { problems.push(`Line ${line}: ${name} has no phone number.`); return; }
+    rows.push({ name: name.slice(0, 120), phones: phones.slice(0, 5) });
+  });
+  return { rows, problems };
+}
+
+export const importLecturers = (rows: LecturerRow[]) =>
+  must(rpc<{ added: number; updated: number; skipped: string[] }>("admin_import_lecturers", { p_rows: rows }));
+
 export const deleteLecturer = (id: string) => must(rpc("admin_delete_lecturer", { p_id: id }));
 export const saveScheduleDoc = (doc: { title: string; url: string; block: string; track: "IUP" | "REGULER" | null }) =>
   must(rpc("admin_save_schedule_doc", { p_title: doc.title, p_url: doc.url, p_block: doc.block, p_track: doc.track }));

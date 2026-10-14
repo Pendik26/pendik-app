@@ -76,6 +76,16 @@ run("the API", () => {
     expect((await t.app(new Request(`http://localhost/${path}`))).status).toBe(401);
   });
 
+  it("imports lecturers in bulk, merging numbers for a name already listed", async () => {
+    const rows = [{ name: "Test Lecturer", phones: ["0811111111", "bad"] }, { name: "No Number", phones: ["x"] }];
+    expect((await call(admin, "admin_import_lecturers", { p_rows: rows })).data).toEqual({ added: 1, updated: 0, skipped: ["Test Lecturer", "No Number"] });
+    const again = await call(admin, "admin_import_lecturers", { p_rows: [{ name: "Test Lecturer", phones: ["0822222222"] }] });
+    expect(again.data).toMatchObject({ added: 0, updated: 1 });
+    const list = (await call(admin, "lecturers")).data as { name: string; phones: string[] }[];
+    expect(list.find((l) => l.name === "Test Lecturer")?.phones).toEqual(["+62811111111", "+62822222222"]);
+    expect((await call(admin, "admin_import_lecturers", { p_rows: [] })).error).toBe("bad_rows");
+  });
+
   it("lets an admin add students, activate them, and lock or reset an account", async () => {
     await call(admin, "admin_add_students", { p_rows: [{ student_id: "S300", full_name: "Sari Student", class_group: "A", cohort: "2026", track: "IUP" }] });
     const activated = await call(admin, "admin_accounts", { action: "activate", student_ids: ["S300", "NOPE1"] });
