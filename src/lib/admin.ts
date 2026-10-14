@@ -95,6 +95,42 @@ export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
   await must(rpc("admin_add_students", { p_rows: rows }));
 }
 
+export interface GroupRow {
+  student_id: string;
+  class_group: string | null;
+  track?: Track;
+}
+
+/**
+ * Reads pasted "student id, group[, IUP or Reguler]" lines for students already on the roster.
+ * No names needed. Separators are commas, tabs or semicolons; a header line is skipped.
+ */
+export function parseGroupLines(text: string): { rows: GroupRow[]; problems: string[] } {
+  const rows: GroupRow[] = [];
+  const problems: string[] = [];
+  const seen = new Set<string>();
+  text.split(/\r?\n/).forEach((line, i) => {
+    if (!line.trim()) return;
+    const [id = "", group = "", cls = ""] = line.split(/\t|;|,/).map((c) => c.trim());
+    if (i === 0 && /^(nim|student|id)/i.test(id) && !/[0-9]/.test(id)) return;
+    if (!/^[0-9A-Za-z]{3,30}$/.test(id)) { problems.push(`Line ${i + 1}: "${id}" isn't a student id.`); return; }
+    if (group.length > 40) { problems.push(`Line ${i + 1}: group name is too long.`); return; }
+    if (cls && !trackOf(cls)) { problems.push(`Line ${i + 1}: class must be IUP or Reguler.`); return; }
+    if (seen.has(id)) { problems.push(`Line ${i + 1}: ${id} is listed twice.`); return; }
+    seen.add(id);
+    const row: GroupRow = { student_id: id, class_group: group || null };
+    const t = cls ? trackOf(cls) : null;
+    if (t) row.track = t;
+    rows.push(row);
+  });
+  return { rows, problems };
+}
+
+/** Sets the tutorial group (and class) of students already on the roster. */
+export async function setGroups(rows: GroupRow[]): Promise<{ updated: number; unknown: string[] }> {
+  return must(rpc<{ updated: number; unknown: string[] }>("admin_set_groups", { p_rows: rows }));
+}
+
 /** Moves a student to the other class (the track lives on the roster only). */
 export async function setTrack(studentId: string, track: Track | null): Promise<void> {
   await must(rpc("admin_set_track", { p_student_id: studentId, p_track: track }));

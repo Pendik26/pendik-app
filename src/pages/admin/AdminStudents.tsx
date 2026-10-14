@@ -8,8 +8,10 @@ import {
   activateAccounts,
   addToRoster,
   listRoster,
+  parseGroupLines,
   parseRosterLines,
   removeFromRoster,
+  setGroups,
   setRole,
   setTrack,
   type RosterEntry,
@@ -33,6 +35,9 @@ export function AdminStudents() {
   const [showAdd, setShowAdd] = useState(false);
   const [pasteTrack, setPasteTrack] = useState<Track | null>(null);
   const [trackFilter, setTrackFilter] = useState<"all" | Track | "none">("all");
+  const [groupFilter, setGroupFilter] = useState("all");
+  const [groupPaste, setGroupPaste] = useState("");
+  const [showGroups, setShowGroups] = useState(false);
 
   const reload = useCallback(() => {
     listRoster().then(setRoster, (e: Error) => { setProblem(errorText(e)); });
@@ -56,8 +61,14 @@ export function AdminStudents() {
     const q = query.trim().toLowerCase();
     return (roster ?? []).filter((r) =>
       (trackFilter === "all" || (trackFilter === "none" ? r.track === null : r.track === trackFilter)) &&
+      (groupFilter === "all" || (groupFilter === "" ? r.classGroup === null : r.classGroup === groupFilter)) &&
       (!q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q)));
-  }, [roster, query, trackFilter]);
+  }, [roster, query, trackFilter, groupFilter]);
+  const groupNames = useMemo(
+    () => [...new Set((roster ?? []).flatMap((r) => (r.classGroup ? [r.classGroup] : [])))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
+    [roster],
+  );
+  const groupParsed = parseGroupLines(groupPaste);
   const inactiveSelected = [...selected].filter((id) => roster?.find((r) => r.studentId === id)?.account === "none");
   const parsed = parseRosterLines(paste, String(new Date().getFullYear()), pasteTrack);
 
@@ -84,6 +95,12 @@ export function AdminStudents() {
           <option value="REGULER">{t("track.reguler")}</option>
           <option value="none">{t("track.none")}</option>
         </select>
+        <select className="form-input admin-select" aria-label={t("admin.groupFilter")} value={groupFilter}
+          onChange={(e) => { setGroupFilter(e.target.value); }}>
+          <option value="all">{t("admin.allGroups")}</option>
+          {groupNames.map((g) => <option key={g} value={g}>{t("admin.groupN", { group: g })}</option>)}
+          <option value="">{t("admin.noGroup")}</option>
+        </select>
         <button type="button" className="btn btn-small" disabled={busy || inactiveSelected.length === 0}
           onClick={() => void run(async () => {
             const { results } = await activateAccounts(inactiveSelected);
@@ -96,7 +113,26 @@ export function AdminStudents() {
           {t("admin.activateSelected", { count: inactiveSelected.length })}
         </button>
         <button type="button" className="btn btn-secondary btn-small" onClick={() => { setShowAdd((v) => !v); }}>{t("admin.addStudents")}</button>
+        <button type="button" className="btn btn-secondary btn-small" onClick={() => { setShowGroups((v) => !v); }}>{t("admin.setGroups")}</button>
       </div>
+
+      {showGroups && (
+        <div className="account-card admin-add">
+          <p className="account-note">{t("admin.groupsHint")}</p>
+          <textarea className="form-input admin-textarea" rows={6} value={groupPaste} onChange={(e) => { setGroupPaste(e.target.value); }} placeholder={"2601001, 3, Reguler"} />
+          {groupParsed.problems.length > 0 && <ul className="admin-problems">{groupParsed.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
+          <button type="button" className="btn btn-small" disabled={busy || groupParsed.rows.length === 0}
+            onClick={() => void run(async () => {
+              const { updated, unknown } = await setGroups(groupParsed.rows);
+              setGroupPaste("");
+              return unknown.length
+                ? `${t("admin.groupsSet", { count: updated })} ${t("admin.groupsUnknown", { ids: unknown.join(", ") })}`
+                : t("admin.groupsSet", { count: updated });
+            })}>
+            {t("admin.groupsApply", { count: groupParsed.rows.length })}
+          </button>
+        </div>
+      )}
 
       {showAdd && (
         <div className="account-card admin-add">

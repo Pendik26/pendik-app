@@ -1,7 +1,7 @@
 import type { Auth } from "./auth.js";
 import { firstPassword, parseAccountAction, studentEmail } from "./accounts.js";
 import { audit, blankToNull, refuse, requireAdmin, text, track, type Args, type Ctx } from "./context.js";
-import { daysBefore, today, type Collections, type Role, type Track } from "./db.js";
+import { daysBefore, today, type Collections, type Role, type StudentDoc, type Track } from "./db.js";
 import { POINTS, streak } from "./study.js";
 
 // People: the roster (students), the sign-in accounts of activated students, a student's own
@@ -201,6 +201,35 @@ export async function adminAddStudents(ctx: Ctx, args: Args): Promise<null> {
     }
   }
   return null;
+}
+
+/**
+ * Sets the tutorial group (and optionally the class) of students already on the roster, by id.
+ * Needs no names, so a group list can be applied without pasting anyone's details. Unknown ids
+ * are reported, not created.
+ */
+export async function adminSetGroups(ctx: Ctx, args: Args): Promise<{ updated: number; unknown: string[] }> {
+  requireAdmin(ctx);
+  const rows = args.p_rows;
+  if (!Array.isArray(rows) || rows.length === 0 || rows.length > 1000) throw refuse("bad_rows");
+  const parsed = rows.map((raw) => {
+    const r = (raw ?? {}) as Record<string, unknown>;
+    const id = typeof r.student_id === "string" ? r.student_id.trim() : "";
+    const group = blankToNull(typeof r.class_group === "string" ? r.class_group : null);
+    if (!STUDENT_ID.test(id) || (group && group.length > 40)) throw refuse("bad_rows");
+    return { id, group, track: r.track === undefined || r.track === null ? undefined : track(r.track) };
+  });
+  const unknown: string[] = [];
+  let updated = 0;
+  for (const r of parsed) {
+    const set: Partial<StudentDoc> = { classGroup: r.group, updatedAt: ctx.now };
+    if (r.track) set.track = r.track;
+    const { matchedCount } = await ctx.c.students.updateOne({ _id: r.id }, { $set: set });
+    if (matchedCount) updated++;
+    else unknown.push(r.id);
+  }
+  await audit(ctx, "student.groups", null, { updated });
+  return { updated, unknown };
 }
 
 /** Moves a student to the other class (the track lives on the roster only). */

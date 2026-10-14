@@ -90,6 +90,7 @@ const FUNCTIONS: Record<string, Fn> = {
   admin_deleted_packages: (ctx) => exams.adminDeletedPackages(ctx),
   admin_add_students: people.adminAddStudents,
   admin_set_track: people.adminSetTrack,
+  admin_set_groups: people.adminSetGroups,
   admin_remove_student: people.adminRemoveStudent,
   admin_set_role: people.adminSetRole,
   admin_audit_log: (ctx) => people.adminAuditLog(ctx),

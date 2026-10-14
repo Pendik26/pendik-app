@@ -52,6 +52,30 @@ run("the API", () => {
     expect(me.data).toMatchObject({ student_id: "A100", full_name: "Ada Admin", role: "admin", must_change_password: true });
   });
 
+  it("sets tutorial groups by id without names and reports unknown ids", async () => {
+    await call(admin, "admin_add_students", { p_rows: [{ student_id: "S301", full_name: "Gita Group", cohort: "2026" }] });
+    const done = await call(admin, "admin_set_groups", { p_rows: [{ student_id: "S301", class_group: "2", track: "REGULER" }, { student_id: "NOPE2", class_group: "1" }] });
+    expect(done.data).toEqual({ updated: 1, unknown: ["NOPE2"] });
+    const roster = (await call(admin, "admin_list_roster")).data as { student_id: string; class_group: string | null; track: string | null }[];
+    expect(roster.find((r) => r.student_id === "S301")).toMatchObject({ class_group: "2", track: "REGULER" });
+    expect((await call(admin, "admin_set_groups", { p_rows: [] })).error).toBe("bad_rows");
+  });
+
+  it("stores an admin's picture and shows it to signed-in students only", async () => {
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0]);
+    const send = (cookie: string, body: Uint8Array) =>
+      t.app(new Request("http://localhost/api/question-image?name=q.png", { method: "POST", headers: { origin: "http://localhost", cookie }, body: new Uint8Array(body) }));
+    const svg = new TextEncoder().encode("<svg onload=alert(1)></svg>");
+    expect((await send(admin, svg)).status).toBe(400);
+    const ok = await send(admin, png);
+    expect(ok.status).toBe(200);
+    const { data: { path } } = (await ok.json()) as { data: { path: string } };
+    const shown = await t.app(new Request(`http://localhost/${path}`, { headers: { cookie: admin } }));
+    expect(shown.status).toBe(200);
+    expect(shown.headers.get("content-type")).toBe("image/png");
+    expect((await t.app(new Request(`http://localhost/${path}`))).status).toBe(401);
+  });
+
   it("lets an admin add students, activate them, and lock or reset an account", async () => {
     await call(admin, "admin_add_students", { p_rows: [{ student_id: "S300", full_name: "Sari Student", class_group: "A", cohort: "2026", track: "IUP" }] });
     const activated = await call(admin, "admin_accounts", { action: "activate", student_ids: ["S300", "NOPE1"] });
