@@ -3,6 +3,8 @@
 export const adminEn = {
   "admin.title": "Admin",
   "admin.students": "Students",
+  "admin.data": "Data",
+  "admin.lecturers": "Lecturers",
   "admin.packages": "Packages",
   "admin.import": "Import questions",
   "admin.drive": "Drive sync",
@@ -167,6 +169,8 @@ export const adminEn = {
 export const adminId: { [K in keyof typeof adminEn]: string } = {
   "admin.title": "Admin",
   "admin.students": "Mahasiswa",
+  "admin.data": "Data",
+  "admin.lecturers": "Dosen",
   "admin.packages": "Paket",
   "admin.import": "Impor soal",
   "admin.drive": "Sinkron Drive",

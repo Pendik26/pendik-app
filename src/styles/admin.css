@@ -228,3 +228,8 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
+.admin-subtabs {
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+}

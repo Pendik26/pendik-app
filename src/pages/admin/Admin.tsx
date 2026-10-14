@@ -7,7 +7,9 @@ import { useI18n } from "../../i18n/useI18n";
 
 /** Fetched in the background once the admin area is open, so switching tabs doesn't wait on a download. */
 function preloadTabs() {
+  void import("./AdminData");
   void import("./AdminStudents");
+  void import("./AdminLecturers");
   void import("./AdminPackages");
   void import("./AdminQuestions");
   void import("./AdminImport");
@@ -16,7 +18,7 @@ function preloadTabs() {
 }
 
 /**
- * The admin area: students, questions and packages, imports and the Drive sync. The heading and
+ * The admin area: data (students and lecturers), questions and packages, imports and the Drive sync. The heading and
  * tabs stay put when a tab changes; only the content below them is swapped (and loads in place).
  */
 export function Admin() {
@@ -33,7 +35,7 @@ export function Admin() {
     <section className="page admin-page">
       <h1>{t("admin.title")}</h1>
       <nav className="admin-tabs" aria-label={t("admin.title")}>
-        <NavLink to="/admin/students" className={tab}>{t("admin.students")}</NavLink>
+        <NavLink to="/admin/data" className={tab}>{t("admin.data")}</NavLink>
         <NavLink to="/admin/packages" className={tab}>{t("admin.packages")}</NavLink>
         <NavLink to="/admin/questions" className={tab}>{t("admin.questionBank")}</NavLink>
         <NavLink to="/admin/import" className={tab}>{t("admin.import")}</NavLink>
