@@ -68,7 +68,7 @@ export function ClassDrive() {
   const { t } = useI18n();
   const chosenBlock = useChosenBlock();
   const drive = useDrive();
-  const { opened, recent, markOpened } = useDriveOpened();
+  const { opened, recent, openedAt, markOpened } = useDriveOpened();
   const tracks = useDriveBothTracks();
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
@@ -477,7 +477,9 @@ export function ClassDrive() {
                 <Link to={hrefWith({ path: p, file: file.id })} className="drive-fresh-card">
                   <DriveKind kind={file.kind} />
                   <strong>{fileTitle(file.name)}</strong>
-                  <small>{placeLabel(p, t)}</small>
+                  <small>
+                    {[placeLabel(p, t), openedAt[file.id] && t("drive.openedWhen", { when: updatedAgo(openedAt[file.id], now, t) })].filter(Boolean).join(" · ")}
+                  </small>
                 </Link>
               </li>
             ))}

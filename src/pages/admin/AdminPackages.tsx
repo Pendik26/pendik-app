@@ -17,7 +17,8 @@ import { distinct, filterPackages, NO_FILTER, type PackageFilter } from "../../l
 
 /** Every package, drafts included: find, publish, rename, time limit, and its questions. */
 export function AdminPackages() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const day = (iso: string) => new Date(iso).toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { dateStyle: "medium" });
   const [packages, setPackages] = useState<PackageSummary[] | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
@@ -86,6 +87,7 @@ export function AdminPackages() {
           {t("admin.showDeleted")}
         </label>
       </div>
+      {packages.length > 0 && <p className="account-note">{t("admin.packagesShown", { shown: shown.length, total: packages.length })}</p>}
       {packages.length === 0 && <p className="account-note">{showDeleted ? t("admin.noDeletedPackages") : t("admin.noPackages")}</p>}
       {packages.length > 0 && shown.length === 0 && <p className="account-note">{t("admin.noPackagesMatch")}</p>}
       <ul className="admin-list">
@@ -96,7 +98,8 @@ export function AdminPackages() {
                 <strong>{p.title}</strong>
                 <small>
                   {[p.block && t("admin.blockN", { block: p.block }), p.mode === "exam" ? t("exam.modeExam") : t("exam.modePractice"),
-                    t("exam.formatCount", { count: p.questionCount }), p.timeLimitMinutes && `${p.timeLimitMinutes} min`]
+                    p.source, p.year, t("exam.formatCount", { count: p.questionCount }), p.timeLimitMinutes && `${p.timeLimitMinutes} min`,
+                    p.mode === "exam" && p.trackBest && t("admin.tracksBest"), p.createdAt && t("admin.createdOn", { date: day(p.createdAt) })]
                     .filter(Boolean).join(" · ")}
                 </small>
               </div>
@@ -111,7 +114,13 @@ export function AdminPackages() {
             ) : (
             <div className="admin-actions">
               <button type="button" className="btn btn-link"
-                onClick={() => void act(() => setPackageStatus(p.id, p.status === "published" ? "draft" : "published"))}>
+                onClick={() => {
+                  const publishing = p.status !== "published";
+                  const question = publishing
+                    ? t("admin.publishConfirm", { title: p.title, count: p.questionCount, who: p.track === "IUP" ? t("track.iup") : p.track === "REGULER" ? t("track.reguler") : t("track.both") })
+                    : t("admin.unpublishConfirm", { title: p.title });
+                  if (window.confirm(question)) void act(() => setPackageStatus(p.id, publishing ? "published" : "draft"));
+                }}>
                 {p.status === "published" ? t("admin.unpublish") : t("admin.publish")}
               </button>
               <button type="button" className="btn btn-link"

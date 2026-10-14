@@ -238,7 +238,7 @@ export interface BankFilter {
 export const BANK_PAGE = 100;
 
 /** Questions in the bank matching every filter given, newest import first (at most BANK_PAGE). */
-export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[]> {
+export async function searchQuestions(filter: BankFilter, skip = 0): Promise<BankQuestion[]> {
   const rows = await must(
     rpc<Omit<BankQuestion, "position">[]>("admin_search_questions", {
       p_block: filter.block ?? null,
@@ -248,9 +248,10 @@ export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[
       p_text: filter.text?.trim() || null,
       p_status: filter.status ?? null,
       p_deleted: filter.deleted === true,
+      p_skip: skip,
     }),
   );
-  return rows.slice(0, BANK_PAGE).map((r, i) => ({ ...r, position: i + 1, packages: r.packages ?? [] }));
+  return rows.slice(0, BANK_PAGE).map((r, i) => ({ ...r, position: skip + i + 1, packages: r.packages ?? [] }));
 }
 
 export interface QuestionFacets {
@@ -284,8 +285,25 @@ export async function deleteQuestion(questionId: string): Promise<void> {
   await must(rpc("admin_delete_question", { p_question_id: questionId }));
 }
 
-export async function importQuestions(title: string, sourceText: string, questions: ImportQuestion[]): Promise<string> {
-  return must(rpc<string>("admin_import_questions", { p_title: title, p_source_text: sourceText, p_questions: questions }));
+/** `importId` is made once per file on the page, so saving the same file twice is refused. */
+export async function importQuestions(title: string, sourceText: string, questions: ImportQuestion[], importId?: string): Promise<string> {
+  return must(rpc<string>("admin_import_questions", { p_title: title, p_source_text: sourceText, p_questions: questions, ...(importId ? { p_import_id: importId } : {}) }));
+}
+
+/** An earlier import, to make packages from later. */
+export interface ImportSummary {
+  id: string;
+  title: string;
+  created_at: string;
+  question_count: number;
+  block: string | null;
+  source: string | null;
+  year: number | null;
+  package_count: number;
+}
+
+export async function listImports(): Promise<ImportSummary[]> {
+  return must(rpc<ImportSummary[]>("admin_imports"));
 }
 
 export async function packagesFromImport(input: {
@@ -297,6 +315,8 @@ export async function packagesFromImport(input: {
   year: number | null;
   timeLimitMinutes: number;
   trackBest: boolean;
+  /** Made once per form, so a second click or a retry doesn't make a second pair. */
+  ids?: { exam: string; practice: string };
 }): Promise<{ exam_id: string; practice_id: string; question_count: number }> {
   return must(
     rpc<{ exam_id: string; practice_id: string; question_count: number }>("admin_packages_from_import", {
@@ -308,6 +328,7 @@ export async function packagesFromImport(input: {
       p_year: input.year,
       p_time_limit_minutes: input.timeLimitMinutes,
       p_track_best: input.trackBest,
+      ...(input.ids ? { p_exam_id: input.ids.exam, p_practice_id: input.ids.practice } : {}),
     }),
   );
 }

@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DriveKind } from "./DriveParts";
 import { useDrive, useDriveOpened } from "../../hooks/useDrive";
 import { useI18n } from "../../i18n/useI18n";
-import { allFiles, fileTitle, placeLabel } from "../../lib/drive";
+import { allFiles, fileTitle, placeLabel, updatedAgo } from "../../lib/drive";
 
 /** Class Drive files shown on Home. */
 const SHOWN = 4;
@@ -12,7 +12,9 @@ const SHOWN = 4;
 export function RecentDriveFiles() {
   const { t } = useI18n();
   const drive = useDrive();
-  const { recent } = useDriveOpened();
+  const { recent, openedAt } = useDriveOpened();
+  // Read once when Home opens; "2 d ago" doesn't need to tick.
+  const [now] = useState(() => Date.now());
   const files = useMemo(() => {
     if (drive.status !== "ready") return [];
     const byId = new Map(allFiles(drive.tree.root).map((f) => [f.file.id, f]));
@@ -32,7 +34,9 @@ export function RecentDriveFiles() {
               <DriveKind kind={file.kind} />
               <span className="row-item-body">
                 <span className="row-item-title">{fileTitle(file.name)}</span>
-                <span className="row-item-detail">{placeLabel(path, t)}</span>
+                <span className="row-item-detail">
+                  {[placeLabel(path, t), openedAt[file.id] && t("drive.openedWhen", { when: updatedAgo(openedAt[file.id], now, t) })].filter(Boolean).join(" · ")}
+                </span>
               </span>
             </Link>
           );

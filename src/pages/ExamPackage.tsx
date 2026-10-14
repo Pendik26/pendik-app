@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { RunningAttemptBanner } from "../components/exam/RunningAttemptBanner";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
 import { blockById } from "../lib/blocks";
@@ -113,7 +114,7 @@ export function ExamPackage() {
           {runningOther ? (
             <>
               <p className="account-note">{t("exam.finishOtherFirst", { title: attemptTitle(runningOther, records) })}</p>
-              <Link to={`/exam/attempt/${running?.id ?? ""}`} className="btn quiz-start-btn">{t("exam.continue")}</Link>
+              <RunningAttemptBanner />
             </>
           ) : runningHere ? (
             <Link to={`/exam/attempt/${runningHere.id}`} className="btn quiz-start-btn">{t("exam.continue")}</Link>

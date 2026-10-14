@@ -86,6 +86,7 @@ export function SignIn() {
           </button>
         </form>
         <p className="account-note">{t("auth.firstTime")}</p>
+        <p className="account-note">{t("auth.forgotPassword")}</p>
         <div className="account-divider"><span>{t("auth.or")}</span></div>
         <button type="button" className="btn btn-secondary account-google" disabled={busy !== null} onClick={() => void google()}>
           <GoogleIcon />

@@ -131,6 +131,20 @@ export async function adminRestoreQuestion(ctx: Ctx, args: Args): Promise<null> 
 }
 
 const BLOCK_RE = /^[0-9]+\.[0-9]+$/;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * An id the admin page made once for its form, so a retry (a lost answer, a double click) is
+ * recognised and refused instead of saving twice. Without one, the server makes a new id.
+ */
+function formId(args: Args, name: string): string {
+  const given = text(args, name);
+  if (given === null) return randomUUID();
+  if (!UUID_RE.test(given)) throw refuse("bad_id");
+  return given.toLowerCase();
+}
+
+const isDuplicateKey = (e: unknown) => typeof e === "object" && e !== null && (e as { code?: number }).code === 11000;
 
 /** Saves an imported Markdown file and its questions (as drafts) in one step. Returns the import id. */
 export async function adminImportQuestions(ctx: Ctx, args: Args): Promise<string> {
@@ -140,7 +154,8 @@ export async function adminImportQuestions(ctx: Ctx, args: Args): Promise<string
   const questions = args.p_questions;
   if (!title || title.length > 200) throw refuse("bad_title");
   if (!Array.isArray(questions) || questions.length === 0) throw refuse("no_questions");
-  const importId = randomUUID();
+  const importId = formId(args, "p_import_id");
+  if (await ctx.c.imports.findOne({ _id: importId }, { projection: { _id: 1 } })) throw refuse("already_saved", 409);
   const docs: QuestionDoc[] = questions.map((raw, i) => {
     const x = (raw ?? {}) as Record<string, unknown>;
     const kind = x.type === "single_choice" || x.type === "short_answer" ? x.type : null;
@@ -172,7 +187,12 @@ export async function adminImportQuestions(ctx: Ctx, args: Args): Promise<string
       deletedAt: null,
     };
   });
-  await ctx.c.imports.insertOne({ _id: importId, title, sourceText, createdBy: ctx.caller.userId, createdAt: ctx.now });
+  try {
+    await ctx.c.imports.insertOne({ _id: importId, title, sourceText, createdBy: ctx.caller.userId, createdAt: ctx.now });
+  } catch (e) {
+    if (isDuplicateKey(e)) throw refuse("already_saved", 409);
+    throw e;
+  }
   await ctx.c.questions.insertMany(docs);
   await audit(ctx, "questions.import", importId, { title, questions: docs.length });
   return importId;
@@ -225,7 +245,8 @@ export async function adminSearchQuestions(ctx: Ctx, args: Args) {
   if (year) filter.year = year;
   if (subject) filter.subject = subject;
   if (search) filter.stem = { $regex: search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
-  const rows = await ctx.c.questions.find(filter).sort({ createdAt: -1, importPosition: 1 }).limit(100).toArray();
+  const skip = Math.max(0, Math.min(100_000, int(args, "p_skip") ?? 0));
+  const rows = await ctx.c.questions.find(filter).sort({ createdAt: -1, importPosition: 1, _id: 1 }).skip(skip).limit(100).toArray();
   const packages = await ctx.c.packages
     .find({ questionIds: { $in: rows.map((q) => q._id) }, deletedAt: null }, { projection: { title: 1, questionIds: 1 } })
     .toArray();
@@ -313,11 +334,48 @@ export async function adminPackagesFromImport(ctx: Ctx, args: Args) {
     if (!t || t.length > 160) throw refuse("bad_title");
     return t;
   };
-  const exam: PackageDoc = { ...base, _id: randomUUID(), title: title("p_exam_title"), mode: "exam", timeLimitMinutes: minutes, trackBest: bool(args, "p_track_best") ?? true };
-  const practice: PackageDoc = { ...base, _id: randomUUID(), title: title("p_practice_title"), mode: "practice", timeLimitMinutes: null, trackBest: false };
-  await ctx.c.packages.insertMany([exam, practice]);
+  const exam: PackageDoc = { ...base, _id: formId(args, "p_exam_id"), title: title("p_exam_title"), mode: "exam", timeLimitMinutes: minutes, trackBest: bool(args, "p_track_best") ?? true };
+  const practice: PackageDoc = { ...base, _id: formId(args, "p_practice_id"), title: title("p_practice_title"), mode: "practice", timeLimitMinutes: null, trackBest: false };
+  if (exam._id === practice._id) throw refuse("bad_id");
+  if (await ctx.c.packages.countDocuments({ _id: { $in: [exam._id, practice._id] } })) throw refuse("already_saved", 409);
+  try {
+    await ctx.c.packages.insertMany([exam, practice]);
+  } catch (e) {
+    if (isDuplicateKey(e)) throw refuse("already_saved", 409);
+    throw e;
+  }
   await audit(ctx, "packages.create", importId, { exam: exam._id, practice: practice._id });
   return { exam_id: exam._id, practice_id: practice._id, question_count: questions.length };
+}
+
+/**
+ * Earlier imports, newest first: when, how many questions are still there, the block, type and
+ * year they carry, and how many live packages use them, so packages can be made from one later.
+ */
+export async function adminImports(ctx: Ctx) {
+  requireAdmin(ctx);
+  const imports = await ctx.c.imports.find({}, { projection: { sourceText: 0 } }).sort({ createdAt: -1 }).limit(100).toArray();
+  const ids = imports.map((i) => i._id);
+  const questions = await ctx.c.questions
+    .find({ importId: { $in: ids }, deletedAt: null }, { projection: { _id: 1, importId: 1, block: 1, source: 1, year: 1 } })
+    .toArray();
+  const byImport = new Map<string, typeof questions>();
+  for (const q of questions) byImport.set(q.importId ?? "", [...(byImport.get(q.importId ?? "") ?? []), q]);
+  const packages = await ctx.c.packages.find({ deletedAt: null, questionIds: { $in: questions.map((q) => q._id) } }, { projection: { questionIds: 1 } }).toArray();
+  return imports.map((i) => {
+    const qs = byImport.get(i._id) ?? [];
+    const mine = new Set(qs.map((q) => q._id));
+    return {
+      id: i._id,
+      title: i.title,
+      created_at: i.createdAt.toISOString(),
+      question_count: qs.length,
+      block: qs[0]?.block ?? null,
+      source: qs[0]?.source ?? null,
+      year: qs[0]?.year ?? null,
+      package_count: packages.filter((p) => p.questionIds.some((id) => mine.has(id))).length,
+    };
+  });
 }
 
 /** Publishing a package publishes its questions too; unpublishing leaves them (another package may use them). */

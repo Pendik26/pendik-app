@@ -24,6 +24,7 @@ export interface PackageSummary {
   questionCount: number;
   /** Only for this class; null for both. */
   track: Track | null;
+  createdAt: string | null;
 }
 
 export interface AttemptSummary {
@@ -62,6 +63,7 @@ export interface PackageRow {
   status: "draft" | "published";
   question_count: number;
   track: Track | null;
+  created_at?: string;
 }
 
 interface AttemptRow {
@@ -91,6 +93,7 @@ export const toPackage = (r: PackageRow): PackageSummary => ({
   status: r.status,
   questionCount: r.question_count,
   track: r.track ?? null,
+  createdAt: r.created_at ?? null,
 });
 
 const toAttempt = (r: AttemptRow): AttemptSummary => ({
@@ -173,6 +176,12 @@ export function bestScore(packageId: string, from: ExamRecords = records): numbe
   return scores.length ? Math.max(...scores) : null;
 }
 
+/** The average of a package's finished attempts, rounded, or null before the first. */
+export function averageScore(packageId: string, from: ExamRecords = records): number | null {
+  const scores = finishedAttempts(packageId, from).map((a) => a.score).filter((s): s is number => s !== null);
+  return scores.length ? Math.round(scores.reduce((n, s) => n + s, 0) / scores.length) : null;
+}
+
 /** What an attempt is called: a bank practice's own title, else its package's. */
 export function attemptTitle(a: AttemptSummary, from: ExamRecords = records): string {
   return a.title ?? from.packages.find((p) => p.id === a.packageId)?.title ?? "";
@@ -189,20 +198,33 @@ export function runningAttempt(from: ExamRecords = records): AttemptSummary | nu
 // ---------------------------------------------------------------------------------------------
 // Taking a package.
 
-/** Each tab has its own id, so the server can tell which tab holds an attempt. */
+/**
+ * Each tab has its own id, so the server can tell which tab holds an attempt. The id is taken out of
+ * sessionStorage while the page is open and put back on pagehide: a reload keeps it, but a
+ * duplicated tab (which copies sessionStorage) finds nothing and makes its own.
+ */
 export function tabHolderId(): string {
+  if (holderId) return holderId;
   const KEY = "pendik:tab-holder";
+  let id: string | null = null;
   try {
-    const existing = sessionStorage.getItem(KEY);
-    if (existing) return existing;
-    const id = crypto.randomUUID();
-    sessionStorage.setItem(KEY, id);
-    return id;
+    id = sessionStorage.getItem(KEY);
+    sessionStorage.removeItem(KEY);
   } catch {
-    return (holderFallback ??= crypto.randomUUID());
+    // Storage blocked: the id lasts as long as the page.
   }
+  holderId = id || crypto.randomUUID();
+  const keep = holderId;
+  window.addEventListener("pagehide", () => {
+    try { sessionStorage.setItem(KEY, keep); } catch { /* storage blocked */ }
+  });
+  // Back from the back/forward cache: take it out again, so a duplicate made later doesn't copy it.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) try { sessionStorage.removeItem(KEY); } catch { /* storage blocked */ }
+  });
+  return holderId;
 }
-let holderFallback: string | undefined;
+let holderId: string | undefined;
 
 export interface AttemptOption {
   text: string;
@@ -520,3 +542,6 @@ export function matchesAccepted(text: string, accepted: readonly string[]): bool
   const t = norm(text);
   return t.length > 0 && accepted.some((a) => norm(a) === t);
 }
+
+// Take the tab's id out of sessionStorage as soon as the app loads, before any duplicate is made.
+if (typeof window !== "undefined" && typeof sessionStorage !== "undefined") tabHolderId();

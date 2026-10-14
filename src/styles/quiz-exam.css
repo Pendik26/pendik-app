@@ -953,3 +953,53 @@
   flex: 0 1 auto;
   padding: 0.45rem 0.9rem;
 }
+
+.exam-ungraded-tag {
+  display: inline-block;
+  margin: 0 0 0.4rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+/* Best (exam) or average (practice) score in the corner of a package card. */
+.exam-package-card {
+  position: relative;
+}
+
+.exam-package-ring {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+}
+
+.exam-package-ring > * {
+  grid-area: 1 / 1;
+}
+
+.exam-package-ring-value {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.exam-package-card:has(.exam-package-ring) h3 {
+  padding-right: 3rem;
+}
+
+.quiz-question-image-missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 6rem;
+  padding: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}

@@ -15,13 +15,16 @@ export function AdminQuestions() {
   const [text, setText] = useState("");
   const [questions, setQuestions] = useState<BankQuestion[] | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
+  // True while the last page came back full, so there may be more.
+  const [more, setMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     questionFacets().then(setFacets, (e: Error) => { setProblem(errorText(e)); });
   }, []);
 
   const search = useCallback(() => {
-    searchQuestions(filter).then(setQuestions, (e: Error) => { setProblem(errorText(e)); });
+    searchQuestions(filter).then((qs) => { setQuestions(qs); setMore(qs.length >= BANK_PAGE); }, (e: Error) => { setProblem(errorText(e)); });
   }, [filter]);
   useEffect(search, [search]);
 
@@ -71,7 +74,7 @@ export function AdminQuestions() {
       ) : (
         <>
           <p className="account-note">
-            {questions.length >= BANK_PAGE ? t("admin.questionsFirstN", { count: BANK_PAGE }) : t("admin.questionsFound", { count: questions.length })}
+            {more ? t("admin.questionsFirstN", { count: questions.length }) : t("admin.questionsFound", { count: questions.length })}
           </p>
           <QuestionList
             questions={questions}
@@ -84,6 +87,18 @@ export function AdminQuestions() {
                 t("admin.createdUpdated", { created: day(b.created_at), updated: day(b.updated_at) })].filter(Boolean).join(" · ");
             }}
           />
+          {more && (
+            <button type="button" className="btn btn-secondary btn-small" disabled={loadingMore}
+              onClick={() => {
+                setLoadingMore(true);
+                searchQuestions(filter, questions.length).then(
+                  (next) => { setQuestions([...questions, ...next]); setMore(next.length >= BANK_PAGE); setLoadingMore(false); },
+                  (e: Error) => { setProblem(errorText(e)); setLoadingMore(false); },
+                );
+              }}>
+              {loadingMore ? t("common.loading") : t("admin.loadMore")}
+            </button>
+          )}
         </>
       )}
     </div>

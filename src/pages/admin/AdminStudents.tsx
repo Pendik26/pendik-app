@@ -37,6 +37,7 @@ export function AdminStudents() {
   const [trackFilter, setTrackFilter] = useState<"all" | Track | "none" | `${Track}-${"A" | "B"}`>("all");
   const [groupFilter, setGroupFilter] = useState("all");
   const [accountFilter, setAccountFilter] = useState<"all" | RosterEntry["account"]>("all");
+  const [roleFilter, setRoleFilter] = useState<"all" | "student" | "admin">("all");
   const [groupPaste, setGroupPaste] = useState("");
   const [showGroups, setShowGroups] = useState(false);
 
@@ -74,8 +75,9 @@ export function AdminStudents() {
       inClass(r) &&
       (groupFilter === "all" || (groupFilter === "" ? r.classGroup === null : r.classGroup === groupFilter)) &&
       (accountFilter === "all" || r.account === accountFilter) &&
+      (roleFilter === "all" || (roleFilter === "admin" ? r.role === "admin" : r.role !== "admin")) &&
       (!q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q)));
-  }, [roster, query, inClass, groupFilter, accountFilter]);
+  }, [roster, query, inClass, groupFilter, accountFilter, roleFilter]);
   const shownInactive = shown.filter((r) => r.account === "none").map((r) => r.studentId);
   const groupNames = useMemo(
     () => [...new Set((roster ?? []).filter(inClass).flatMap((r) => (r.classGroup ? [r.classGroup] : [])))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
@@ -123,6 +125,12 @@ export function AdminStudents() {
           <option value="all">{t("admin.anyAccount")}</option>
           {(["active", "none", "locked"] as const).map((k) => <option key={k} value={k}>{t(stateKey[k])}</option>)}
         </select>
+        <select className="form-input admin-select" aria-label={t("admin.role")} value={roleFilter}
+          onChange={(e) => { setRoleFilter(e.target.value as typeof roleFilter); }}>
+          <option value="all">{t("admin.anyRole")}</option>
+          <option value="student">{t("admin.roleStudent")}</option>
+          <option value="admin">{t("account.roleAdmin")}</option>
+        </select>
         <button type="button" className="btn btn-secondary btn-small" disabled={shownInactive.length === 0}
           onClick={() => { setSelected((prev) => new Set([...prev, ...shownInactive])); }}>
           {t("admin.selectInactive", { count: shownInactive.length })}
@@ -131,7 +139,7 @@ export function AdminStudents() {
           <button type="button" className="btn btn-link btn-small" onClick={() => { setSelected(new Set()); }}>{t("admin.clearSelection")}</button>
         )}
         <button type="button" className="btn btn-small" disabled={busy || inactiveSelected.length === 0}
-          onClick={() => void run(async () => {
+          onClick={() => window.confirm(t("admin.activateConfirm", { count: inactiveSelected.length })) && void run(async () => {
             const { results } = await activateAccounts(inactiveSelected);
             setSelected(new Set());
             const failed = results.filter((r) => !r.ok);
@@ -240,7 +248,11 @@ export function AdminStudents() {
                     ) : r.userId && r.userId !== user?.id ? (
                       <>
                         <button type="button" className="btn btn-link" disabled={busy}
-                          onClick={() => void run(async () => { await accountAction(r.account === "locked" ? "unlock" : "lock", r.userId ?? ""); return null; })}>
+                          onClick={() => {
+                            const locking = r.account !== "locked";
+                            if (!window.confirm(t(locking ? "admin.lockConfirm" : "admin.unlockConfirm", { name: r.fullName }))) return;
+                            void run(async () => { await accountAction(locking ? "lock" : "unlock", r.userId ?? ""); return null; });
+                          }}>
                           {r.account === "locked" ? t("admin.unlock") : t("admin.lock")}
                         </button>
                         <button type="button" className="btn btn-link" disabled={busy}
@@ -248,7 +260,11 @@ export function AdminStudents() {
                           {t("admin.resetPassword")}
                         </button>
                         <button type="button" className="btn btn-link" disabled={busy}
-                          onClick={() => void run(async () => { await setRole(r.userId ?? "", r.role === "admin" ? "student" : "admin"); return null; })}>
+                          onClick={() => {
+                            const next = r.role === "admin" ? "student" : "admin";
+                            if (!window.confirm(t(next === "admin" ? "admin.makeAdminConfirm" : "admin.makeStudentConfirm", { name: r.fullName }))) return;
+                            void run(async () => { await setRole(r.userId ?? "", next); return null; });
+                          }}>
                           {r.role === "admin" ? t("admin.makeStudent") : t("admin.makeAdmin")}
                         </button>
                       </>
@@ -258,7 +274,14 @@ export function AdminStudents() {
               ))}
             </tbody>
           </table>
-          <p className="account-note">{t("admin.rosterCount", { shown: shown.length, total: roster.length })}</p>
+          <p className="account-note">
+            {t("admin.rosterCount", { shown: shown.length, total: roster.length })} ·{" "}
+            {t("admin.accountCounts", {
+              active: roster.filter((r) => r.account === "active").length,
+              none: roster.filter((r) => r.account === "none").length,
+              locked: roster.filter((r) => r.account === "locked").length,
+            })}
+          </p>
         </div>
       )}
     </div>

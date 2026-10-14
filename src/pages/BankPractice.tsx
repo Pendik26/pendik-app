@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { errorText } from "../i18n/errorText";
 import { Link, useNavigate } from "react-router-dom";
+import { RunningAttemptBanner } from "../components/exam/RunningAttemptBanner";
 import { useI18n } from "../i18n/useI18n";
 import type { MessageKey } from "../i18n/i18n";
 import {
-  attemptTitle,
   AttemptError,
   ATTEMPT_ERRORS,
   bankMatches,
@@ -116,13 +116,7 @@ export function BankPractice() {
       <h1>{t("bank.title")}</h1>
       <p className="subtitle">{t("bank.subtitle")}</p>
 
-      {running && (
-        <Link to={`/exam/attempt/${running.id}`} className="exam-running-banner">
-          <strong>{t("exam.inProgress")}</strong>
-          <span>{attemptTitle(running, records)}</span>
-          <span aria-hidden="true">→</span>
-        </Link>
-      )}
+      <RunningAttemptBanner />
       {problem && <p className="account-error" role="alert">{problem}</p>}
 
       {!groups ? (

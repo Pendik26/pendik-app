@@ -813,3 +813,20 @@
     min-height: 2.5rem;
   }
 }
+
+/* Exam focus mode (src/lib/examFocus.ts): during a real exam only the exam is on screen. */
+body.exam-focus .topbar,
+body.exam-focus .sidebar,
+body.exam-focus .sidebar-backdrop,
+body.exam-focus .tabbar,
+body.exam-focus .site-footer,
+body.exam-focus .update-nudge,
+body.exam-focus .command-overlay,
+body.exam-focus .alfond-fab,
+body.exam-focus .alfond-layer {
+  display: none !important;
+}
+
+body.exam-focus .app-content {
+  padding-bottom: 1.5rem;
+}
