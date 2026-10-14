@@ -89,3 +89,19 @@ export function track(v: unknown): Track | null {
 export async function audit(ctx: Ctx, action: string, target: string | null = null, detail: Record<string, unknown> = {}): Promise<void> {
   await ctx.c.auditLog.insertOne({ actor: ctx.caller.userId, action, target, detail, createdAt: new Date() });
 }
+
+/**
+ * The class section ("A" or "B") a tutorial group belongs to: a Reguler group's first letter
+ * (A1–A10, B1–B10), or the letter of an IUP group ("IUP A", "IUP B"). Null when it can't be told.
+ */
+export function sectionOf(t: Track | null, group: string | null): "A" | "B" | null {
+  const g = (group ?? "").trim().toUpperCase();
+  const letter = t === "REGULER" ? g.charAt(0) : t === "IUP" ? g.replace(/^IUP[- ]?/, "").charAt(0) : "";
+  return letter === "A" || letter === "B" ? letter : null;
+}
+
+/** "A" or "B" (any case) as a section, else null. */
+export function section(v: unknown): "A" | "B" | null {
+  const s = typeof v === "string" ? v.trim().toUpperCase() : "";
+  return s === "A" || s === "B" ? s : null;
+}

@@ -57,7 +57,12 @@ run("the API", () => {
     const done = await call(admin, "admin_set_groups", { p_rows: [{ student_id: "S301", class_group: "2", track: "REGULER" }, { student_id: "NOPE2", class_group: "1" }] });
     expect(done.data).toEqual({ updated: 1, unknown: ["NOPE2"] });
     const roster = (await call(admin, "admin_list_roster")).data as { student_id: string; class_group: string | null; track: string | null }[];
-    expect(roster.find((r) => r.student_id === "S301")).toMatchObject({ class_group: "2", track: "REGULER" });
+    expect(roster.find((r) => r.student_id === "S301")).toMatchObject({ class_group: "2", track: "REGULER", class_section: null });
+    await call(admin, "admin_set_groups", { p_rows: [{ student_id: "S301", class_group: "B4", track: "REGULER" }] });
+    const again = (await call(admin, "admin_list_roster")).data as { student_id: string; class_group: string | null; class_section: string | null }[];
+    expect(again.find((r) => r.student_id === "S301")).toMatchObject({ class_group: "B4", class_section: "B" });
+    await call(admin, "admin_set_groups", { p_rows: [{ student_id: "S301", class_group: "IUP A", track: "IUP", class_section: "A" }] });
+    expect(((await call(admin, "admin_list_roster")).data as { student_id: string; class_section: string | null }[]).find((r) => r.student_id === "S301")?.class_section).toBe("A");
     expect((await call(admin, "admin_set_groups", { p_rows: [] })).error).toBe("bad_rows");
   });
 

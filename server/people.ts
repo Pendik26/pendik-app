@@ -1,6 +1,6 @@
 import type { Auth } from "./auth.js";
 import { firstPassword, parseAccountAction, studentEmail } from "./accounts.js";
-import { audit, blankToNull, refuse, requireAdmin, text, track, type Args, type Ctx } from "./context.js";
+import { audit, blankToNull, refuse, requireAdmin, section, sectionOf, text, track, type Args, type Ctx } from "./context.js";
 import { daysBefore, today, type Collections, type Role, type StudentDoc, type Track } from "./db.js";
 import { POINTS, streak } from "./study.js";
 
@@ -17,6 +17,7 @@ export function myAccount(ctx: Ctx) {
     student_id: a.nim,
     full_name: s.fullName,
     class_group: s.classGroup,
+    class_section: s.classSection ?? sectionOf(s.track, s.classGroup),
     cohort: s.cohort,
     track: s.track,
     role: a.role,
@@ -159,13 +160,14 @@ export async function adminListRoster(ctx: Ctx, auth: Auth) {
   }
   const order = (t: Track | null) => (t === null ? 2 : t === "IUP" ? 0 : 1);
   return students
-    .sort((a, b) => order(a.track) - order(b.track) || (a.classGroup ?? "￿").localeCompare(b.classGroup ?? "￿") || a.fullName.localeCompare(b.fullName))
+    .sort((a, b) => order(a.track) - order(b.track) || (a.classSection ?? sectionOf(a.track, a.classGroup) ?? "￿").localeCompare(b.classSection ?? sectionOf(b.track, b.classGroup) ?? "￿") || (a.classGroup ?? "￿").localeCompare(b.classGroup ?? "￿") || a.fullName.localeCompare(b.fullName))
     .map((s) => {
       const a = byNim.get(s._id);
       return {
         student_id: s._id,
         full_name: s.fullName,
         class_group: s.classGroup,
+        class_section: s.classSection ?? sectionOf(s.track, s.classGroup),
         cohort: s.cohort,
         track: s.track,
         user_id: a?._id ?? null,
@@ -193,10 +195,11 @@ export async function adminAddStudents(ctx: Ctx, args: Args): Promise<null> {
     const t = track(r.track);
     const existing = await ctx.c.students.findOne({ _id: id });
     if (existing) {
-      await ctx.c.students.updateOne({ _id: id }, { $set: { fullName: name, classGroup: group, cohort, track: t ?? existing.track, updatedAt: ctx.now } });
+      const finalTrack = t ?? existing.track;
+      await ctx.c.students.updateOne({ _id: id }, { $set: { fullName: name, classGroup: group, classSection: section(r.class_section) ?? sectionOf(finalTrack, group), cohort, track: finalTrack, updatedAt: ctx.now } });
       await audit(ctx, "student.change", id, { cohort, track: t });
     } else {
-      await ctx.c.students.insertOne({ _id: id, fullName: name, cohort, track: t, classGroup: group, createdAt: ctx.now, updatedAt: ctx.now });
+      await ctx.c.students.insertOne({ _id: id, fullName: name, cohort, track: t, classGroup: group, classSection: section(r.class_section) ?? sectionOf(t, group), createdAt: ctx.now, updatedAt: ctx.now });
       await audit(ctx, "student.add", id, { cohort, track: t });
     }
   }
@@ -204,7 +207,7 @@ export async function adminAddStudents(ctx: Ctx, args: Args): Promise<null> {
 }
 
 /**
- * Sets the tutorial group (and optionally the class) of students already on the roster, by id.
+ * Sets the class section (A or B) and tutorial group (and optionally the track) of students already on the roster, by id.
  * Needs no names, so a group list can be applied without pasting anyone's details. Unknown ids
  * are reported, not created.
  */
@@ -217,16 +220,18 @@ export async function adminSetGroups(ctx: Ctx, args: Args): Promise<{ updated: n
     const id = typeof r.student_id === "string" ? r.student_id.trim() : "";
     const group = blankToNull(typeof r.class_group === "string" ? r.class_group : null);
     if (!STUDENT_ID.test(id) || (group && group.length > 40)) throw refuse("bad_rows");
-    return { id, group, track: r.track === undefined || r.track === null ? undefined : track(r.track) };
+    return { id, group, track: r.track === undefined || r.track === null ? undefined : track(r.track), cls: section(r.class_section) };
   });
   const unknown: string[] = [];
   let updated = 0;
   for (const r of parsed) {
-    const set: Partial<StudentDoc> = { classGroup: r.group, updatedAt: ctx.now };
+    const found = await ctx.c.students.findOne({ _id: r.id });
+    if (!found) { unknown.push(r.id); continue; }
+    const finalTrack = r.track ?? found.track;
+    const set: Partial<StudentDoc> = { classGroup: r.group, classSection: r.cls ?? sectionOf(finalTrack, r.group), updatedAt: ctx.now };
     if (r.track) set.track = r.track;
-    const { matchedCount } = await ctx.c.students.updateOne({ _id: r.id }, { $set: set });
-    if (matchedCount) updated++;
-    else unknown.push(r.id);
+    await ctx.c.students.updateOne({ _id: r.id }, { $set: set });
+    updated++;
   }
   await audit(ctx, "student.groups", null, { updated });
   return { updated, unknown };

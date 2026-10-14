@@ -9,7 +9,6 @@ import {
   addToRoster,
   listRoster,
   parseGroupLines,
-  classSection,
   parseRosterLines,
   removeFromRoster,
   setGroups,
@@ -58,19 +57,26 @@ export function AdminStudents() {
     reload();
   };
 
+  // Class (the parent) → tutorial group (its child): the track and class pick a set of students,
+  // and the group list below shows only the groups inside that set.
+  const inClass = useCallback(
+    (r: RosterEntry) =>
+      trackFilter === "all" ||
+      (trackFilter === "none" ? r.track === null
+        : trackFilter.includes("-") ? `${r.track}-${r.classSection}` === trackFilter
+        : r.track === trackFilter),
+    [trackFilter],
+  );
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (roster ?? []).filter((r) =>
-      (trackFilter === "all" ||
-        (trackFilter === "none" ? r.track === null
-          : trackFilter.includes("-") ? `${r.track}-${classSection(r.track, r.classGroup)}` === trackFilter
-          : r.track === trackFilter)) &&
+      inClass(r) &&
       (groupFilter === "all" || (groupFilter === "" ? r.classGroup === null : r.classGroup === groupFilter)) &&
       (!q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q)));
-  }, [roster, query, trackFilter, groupFilter]);
+  }, [roster, query, inClass, groupFilter]);
   const groupNames = useMemo(
-    () => [...new Set((roster ?? []).flatMap((r) => (r.classGroup ? [r.classGroup] : [])))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
-    [roster],
+    () => [...new Set((roster ?? []).filter(inClass).flatMap((r) => (r.classGroup ? [r.classGroup] : [])))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
+    [roster, inClass],
   );
   const groupParsed = parseGroupLines(groupPaste);
   const inactiveSelected = [...selected].filter((id) => roster?.find((r) => r.studentId === id)?.account === "none");
@@ -93,14 +99,18 @@ export function AdminStudents() {
       <div className="admin-toolbar">
         <input className="form-input" type="search" placeholder={t("admin.searchStudents")} value={query} onChange={(e) => { setQuery(e.target.value); }} />
         <select className="form-input admin-select" aria-label={t("track.label")} value={trackFilter}
-          onChange={(e) => { setTrackFilter(e.target.value as typeof trackFilter); }}>
+          onChange={(e) => { setTrackFilter(e.target.value as typeof trackFilter); setGroupFilter("all"); }}>
           <option value="all">{t("track.all")}</option>
-          <option value="IUP">{t("track.iup")}</option>
-          <option value="REGULER">{t("track.reguler")}</option>
-          <option value="IUP-A">{t("admin.trackSection", { track: t("track.iup"), section: "A" })}</option>
-          <option value="IUP-B">{t("admin.trackSection", { track: t("track.iup"), section: "B" })}</option>
-          <option value="REGULER-A">{t("admin.trackSection", { track: t("track.reguler"), section: "A" })}</option>
-          <option value="REGULER-B">{t("admin.trackSection", { track: t("track.reguler"), section: "B" })}</option>
+          <optgroup label={t("track.iup")}>
+            <option value="IUP">{t("admin.allOfTrack", { track: t("track.iup") })}</option>
+            <option value="IUP-A">{t("admin.sectionN", { section: "A" })}</option>
+            <option value="IUP-B">{t("admin.sectionN", { section: "B" })}</option>
+          </optgroup>
+          <optgroup label={t("track.reguler")}>
+            <option value="REGULER">{t("admin.allOfTrack", { track: t("track.reguler") })}</option>
+            <option value="REGULER-A">{t("admin.sectionN", { section: "A" })}</option>
+            <option value="REGULER-B">{t("admin.sectionN", { section: "B" })}</option>
+          </optgroup>
           <option value="none">{t("track.none")}</option>
         </select>
         <select className="form-input admin-select" aria-label={t("admin.groupFilter")} value={groupFilter}
@@ -127,7 +137,7 @@ export function AdminStudents() {
       {showGroups && (
         <div className="account-card admin-add">
           <p className="account-note">{t("admin.groupsHint")}</p>
-          <textarea className="form-input admin-textarea" rows={6} value={groupPaste} onChange={(e) => { setGroupPaste(e.target.value); }} placeholder={"2601001, 3, Reguler"} />
+          <textarea className="form-input admin-textarea" rows={6} value={groupPaste} onChange={(e) => { setGroupPaste(e.target.value); }} placeholder={"2601001, A3, Reguler, A"} />
           {groupParsed.problems.length > 0 && <ul className="admin-problems">{groupParsed.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
           <button type="button" className="btn btn-small" disabled={busy || groupParsed.rows.length === 0}
             onClick={() => void run(async () => {
@@ -198,7 +208,7 @@ export function AdminStudents() {
                       <option value="REGULER">{t("track.reguler")}</option>
                     </select>
                   </td>
-                  <td>{[classSection(r.track, r.classGroup) && t("admin.sectionN", { section: classSection(r.track, r.classGroup) ?? "" }), r.classGroup, r.cohort].filter(Boolean).join(" · ")}</td>
+                  <td>{[r.classSection && t("admin.sectionN", { section: r.classSection }), r.classGroup && t("admin.groupN", { group: r.classGroup }), r.cohort].filter(Boolean).join(" · ")}</td>
                   <td>
                     <span className={`admin-state admin-state-${r.account}`}>{t(stateKey[r.account])}</span>
                     {r.account === "active" && r.mustChangePassword && <small> · {t("admin.firstPassword")}</small>}
