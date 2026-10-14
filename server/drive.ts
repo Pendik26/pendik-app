@@ -12,7 +12,7 @@ import { parseServiceAccount, serviceAccountToken } from "./googleAuth.js";
 // Admins can hide a file (hidden_at) and put files in an order of their own within a folder
 // (sort_order); the sync never touches either.
 
-const STUDENT_COLUMNS = ["drive_file_id", "title", "kind", "folder_path", "size_bytes", "drive_modified_at", "created_at", "synced_at", "track", "sort_order"] as const;
+const STUDENT_COLUMNS = ["drive_file_id", "title", "kind", "folder_path", "size_bytes", "drive_modified_at", "created_at", "synced_at", "track", "sort_order", "mime_type"] as const;
 
 /** Every file a student sees: not missing, not hidden. */
 export async function driveFiles(ctx: Ctx) {

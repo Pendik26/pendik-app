@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addedWhen, blockIdOf, changedAt, countFiles, driveHref, fileGroups, filesUnder, fileTitle, folderAt, formatSize, isNew, placeLabel, isSubjectFolder, niceName, searchDrive, sortFiles, subjectFolderPath, treeFromRows, updatedAgo } from "./drive";
+import { addedWhen, blockIdOf, changedAt, countFiles, driveDownloadUrl, driveHref, fileGroups, filesUnder, fileTitle, folderAt, formatSize, isNew, placeLabel, isSubjectFolder, niceName, searchDrive, sortFiles, subjectFolderPath, treeFromRows, updatedAgo } from "./drive";
 import type { DriveFile, DriveFolder } from "./driveTypes";
 
 const file = (id: string, name: string): DriveFile => ({ id, name, kind: "slides", size: 1000, modifiedTime: "" });
@@ -61,6 +61,16 @@ describe("Drive labels and links", () => {
     expect(placeLabel(["SEMESTER 1", "BLOCK 1.2 INTEGUMEN SYSTEM", "ANATOMY", "LECTURE", "PPTs"])).toBe("Block 1.2 › Anatomy › Lecture");
     expect(placeLabel(["SEMESTER 1"])).toBe("Class Drive");
     expect(fileTitle("Anatomy_Cranium__Trunk.pptx")).toBe("Anatomy Cranium Trunk");
+    expect(fileTitle("Copy of Salinan dari L3 Heart.pdf")).toBe("L3 Heart");
+    expect(fileTitle("Salinan L4.pptx")).toBe("L4");
+  });
+
+  it("exports Google files and offers no download for a Form", () => {
+    expect(driveDownloadUrl("a")).toBe("https://drive.google.com/uc?export=download&id=a");
+    expect(driveDownloadUrl("a", "application/vnd.google-apps.document")).toBe("https://docs.google.com/document/d/a/export?format=docx");
+    expect(driveDownloadUrl("a", "application/vnd.google-apps.presentation")).toBe("https://docs.google.com/presentation/d/a/export/pptx");
+    expect(driveDownloadUrl("a", "application/vnd.google-apps.spreadsheet")).toBe("https://docs.google.com/spreadsheets/d/a/export?format=xlsx");
+    expect(driveDownloadUrl("a", "application/vnd.google-apps.form")).toBeNull();
   });
 
   it("links to a folder by its names, and a file in it", () => {

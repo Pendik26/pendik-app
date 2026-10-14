@@ -1,4 +1,5 @@
 import { englishT, type Translate } from "../i18n/i18n";
+import { compareCategories } from "./driveFilters";
 import type { DriveFile, DriveFileKind, DriveFolder, DriveTree } from "./driveTypes";
 
 // The class Google Drive, as `/api/drive-sync` copies it into the `driveFiles`
@@ -19,6 +20,8 @@ export interface DriveFileRow {
   track?: string | null;
   /** An admin's order within the folder (lower first). */
   sort_order?: number | null;
+  /** Drive's own type; says which Google Docs/Slides/Sheets/Forms file it is. */
+  mime_type?: string | null;
 }
 
 /** The rows a student of `track` sees: shared files, their own class's, and the other class's when `both`. */
@@ -63,14 +66,17 @@ export function treeFromRows(rows: readonly DriveFileRow[]): DriveTree {
       modifiedTime: row.drive_modified_at ?? row.created_at,
       createdTime: row.created_at,
       ...(row.sort_order != null ? { order: row.sort_order } : {}),
+      ...(row.mime_type ? { mime: row.mime_type } : {}),
     });
   }
   const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, undefined, { numeric: true });
+  // Folders in the class's category order (PPT DOSEN, PPT ASLAB, RECORD, …), the rest A–Z.
+  const byFolder = (a: DriveFolder, b: DriveFolder) => compareCategories(a.name, b.name);
   // Files an admin put in order first (lower first), then the rest by name.
   const byOrder = (a: DriveFile, b: DriveFile) =>
     (a.order ?? Infinity) - (b.order ?? Infinity) || byName(a, b);
   const sort = (f: DriveFolder) => {
-    f.folders.sort(byName);
+    f.folders.sort(byFolder);
     f.files.sort(byOrder);
     f.folders.forEach(sort);
   };
@@ -284,9 +290,10 @@ export function placeLabel(path: readonly string[], t: Translate = englishT): st
   return parts.join(" › ") || t("drive.title");
 }
 
-/** The file name without its extension, for lists. */
+/** The file name without its extension or a "Copy of" in front, for lists. */
 export function fileTitle(name: string): string {
   return name
+    .replace(/^(?:\s*(?:copy of|salinan dari|salinan)\s+)+/i, "")
     .replace(/\.(pptx?|pdf|docx?|xlsx?|mp4|mov|m4a|mp3|key|odp)$/i, "")
     .replace(/_+/g, " ")
     .replace(/\s+/g, " ")
@@ -326,9 +333,20 @@ export function driveThumbUrl(id: string, kind: string): string | null {
   return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w200`;
 }
 
-/** Null for a YouTube video, which can't be downloaded. */
-export function driveDownloadUrl(id: string): string | null {
+// Google's own files have no file to download: they are exported as their Office versions.
+const EXPORTS: Record<string, (id: string) => string> = {
+  "application/vnd.google-apps.document": (id) => `https://docs.google.com/document/d/${id}/export?format=docx`,
+  "application/vnd.google-apps.presentation": (id) => `https://docs.google.com/presentation/d/${id}/export/pptx`,
+  "application/vnd.google-apps.spreadsheet": (id) => `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`,
+};
+
+/** Null for a YouTube video or a Google file with no export (a Form, a Drawing…), which can't be downloaded. */
+export function driveDownloadUrl(id: string, mime?: string | null): string | null {
   if (youtubeVideoId(id)) return null;
+  if (mime?.startsWith("application/vnd.google-apps.")) {
+    const exported = EXPORTS[mime];
+    return exported ? exported(encodeURIComponent(id)) : null;
+  }
   return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`;
 }
 

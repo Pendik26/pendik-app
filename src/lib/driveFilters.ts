@@ -58,6 +58,18 @@ export function filterDriveFiles<T extends { path: string[] }>(files: readonly T
 
 const natural = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true });
 
+// The class's own order for a block's category folders; any other category follows, A–Z.
+const CATEGORY_ORDER = ["PPT DOSEN", "PPT ASLAB", "RECORD", "PPT TENTIRAN", "MODUL SL", "MODUL TUTOR"];
+const categoryRank = (name: string) => {
+  const i = CATEGORY_ORDER.indexOf(name.replace(/\s+/g, " ").trim().toUpperCase());
+  return i < 0 ? CATEGORY_ORDER.length : i;
+};
+
+/** Lecturer slides, assistant slides, recordings, tutoring slides, skills-lab and tutorial modules, then the rest A–Z. */
+export function compareCategories(a: string, b: string): number {
+  return categoryRank(a) - categoryRank(b) || natural(a, b);
+}
+
 export interface DriveFilterOptions {
   blocks: { id: string; name: string | null }[];
   categories: string[];
@@ -79,7 +91,7 @@ export function driveFilterOptions<T extends { path: string[] }>(files: readonly
   const subjects = new Set(inCategory.flatMap((p) => (p.subject ? [p.subject] : [])));
   return {
     blocks: [...blocks].map(([id, name]) => ({ id, name })).sort((a, b) => natural(a.id, b.id)),
-    categories: [...categories].sort(natural),
+    categories: [...categories].sort(compareCategories),
     subjects: [...subjects].sort(natural),
   };
 }

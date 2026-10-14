@@ -172,7 +172,10 @@ export async function setPackageStatus(packageId: string, status: "draft" | "pub
   await must(rpc("admin_set_package_status", { p_package_id: packageId, p_status: status }));
 }
 
-export async function updatePackage(packageId: string, patch: { title?: string; time_limit_minutes?: number | null; track_best?: boolean; track?: Track | null }): Promise<void> {
+export async function updatePackage(
+  packageId: string,
+  patch: { title?: string; time_limit_minutes?: number | null; track_best?: boolean; track?: Track | null; block?: string; source?: string | null; year?: number | null },
+): Promise<void> {
   await must(rpc("admin_update_package", { p_package_id: packageId, p_patch: patch }));
 }
 

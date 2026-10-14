@@ -21,6 +21,12 @@ beforeEach(() => {
 });
 
 describe("import draft", () => {
+  it("says when the browser couldn't keep it", () => {
+    expect(saveImportDraft({ text: "ok", uploaded: {} })).toBe(true);
+    expect(saveImportDraft({ text: "x".repeat(1_000_001), uploaded: {} })).toBe(false);
+    (window as unknown as { localStorage: { setItem: () => void } }).localStorage.setItem = () => { throw new Error("full"); };
+    expect(saveImportDraft({ text: "new text", uploaded: {} })).toBe(false);
+  });
   it("round-trips the text and the uploaded pictures", () => {
     saveImportDraft({ text: "---\ntitle: x\n---", uploaded: { knee: "api/question-image/abc" } });
     expect(readImportDraft()).toEqual({ text: "---\ntitle: x\n---", uploaded: { knee: "api/question-image/abc" } });

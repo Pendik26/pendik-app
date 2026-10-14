@@ -24,6 +24,7 @@ export function AdminPackages() {
   const [open, setOpen] = useState<string | null>(null);
   const [filter, setFilter] = useState<PackageFilter>(NO_FILTER);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
 
   const reload = useCallback(() => {
     (showDeleted ? listDeletedPackages() : listAllPackages()).then(setPackages, (e: Error) => { setProblem(errorText(e)); });
@@ -130,6 +131,10 @@ export function AdminPackages() {
                 }}>
                 {t("admin.rename")}
               </button>
+              <button type="button" className="btn btn-link" aria-expanded={editing === p.id}
+                onClick={() => { setEditing((e) => (e === p.id ? null : p.id)); }}>
+                {t("admin.editDetails")}
+              </button>
               {p.mode === "exam" && (
                 <button type="button" className="btn btn-link"
                   onClick={() => {
@@ -155,10 +160,61 @@ export function AdminPackages() {
               </button>
             </div>
             )}
+            {editing === p.id && (
+              <PackageDetails pkg={p} blocks={blocks} sources={sources}
+                onSave={(patch) => void act(async () => { await updatePackage(p.id, patch); setEditing(null); })}
+                onCancel={() => { setEditing(null); }} />
+            )}
             {open === p.id && <PackageQuestions pkg={p} onChanged={reload} />}
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/** Block, type and year of a package, changed in place. */
+function PackageDetails({ pkg, blocks, sources, onSave, onCancel }: {
+  pkg: PackageSummary;
+  blocks: string[];
+  sources: string[];
+  onSave: (patch: { block: string; source: string | null; year: number | null }) => void;
+  onCancel: () => void;
+}) {
+  const { t } = useI18n();
+  const [block, setBlock] = useState(pkg.block ?? "");
+  const [source, setSource] = useState(pkg.source ?? "");
+  const [year, setYear] = useState(pkg.year ? String(pkg.year) : "");
+  const blockOk = /^[0-9]+\.[0-9]+$/.test(block.trim());
+  const yearOk = year === "" || /^(19|20|21)[0-9]{2}$/.test(year);
+  const id = `pkg-${pkg.id}`;
+  return (
+    <div className="admin-form admin-package-details">
+      <div className="admin-pair">
+        <label className="account-field">
+          <span>{t("admin.packageBlock")}</span>
+          <input className="form-input" list={`${id}-blocks`} value={block} aria-invalid={!blockOk} onChange={(e) => { setBlock(e.target.value); }} />
+        </label>
+        <label className="account-field">
+          <span>{t("admin.packageType")}</span>
+          <input className="form-input" list={`${id}-sources`} value={source} placeholder={t("admin.packageTypeHint")} onChange={(e) => { setSource(e.target.value); }} />
+        </label>
+        <label className="account-field">
+          <span>{t("admin.packageYear")}</span>
+          <input className="form-input" inputMode="numeric" maxLength={4} value={year} placeholder="2025" aria-invalid={!yearOk}
+            onChange={(e) => { setYear(e.target.value.replace(/[^0-9]/g, "")); }} />
+        </label>
+        <datalist id={`${id}-blocks`}>{blocks.map((b) => <option key={b} value={b} />)}</datalist>
+        <datalist id={`${id}-sources`}>{sources.map((x) => <option key={x} value={x} />)}</datalist>
+      </div>
+      {!yearOk && <p className="account-error">{t("admin.yearHint")}</p>}
+      <div className="account-row">
+        <button type="button" className="btn btn-small" disabled={!blockOk || !yearOk}
+          onClick={() => { onSave({ block: block.trim(), source: source.trim() || null, year: year ? Number(year) : null }); }}>
+          {t("common.save")}
+        </button>
+        <button type="button" className="btn btn-link" onClick={onCancel}>{t("common.cancel")}</button>
+      </div>
     </div>
   );
 }
@@ -174,5 +230,11 @@ function PackageQuestions({ pkg, onChanged }: { pkg: PackageSummary; onChanged: 
   useEffect(reload, [reload]);
 
   if (!questions) return <p className="subtitle">{problem ?? t("common.loading")}</p>;
-  return <QuestionList questions={questions} onChanged={() => { reload(); onChanged(); }} />;
+  const deleted = questions.filter((q) => q.deleted).length;
+  return (
+    <>
+      {deleted > 0 && <p className="account-note">{t("admin.packageHasDeleted", { count: deleted })}</p>}
+      <QuestionList questions={questions} onChanged={() => { reload(); onChanged(); }} />
+    </>
+  );
 }

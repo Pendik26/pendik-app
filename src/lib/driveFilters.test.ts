@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanFilter, driveFilterOptions, filterDriveFiles, isFiltering, NO_DRIVE_FILTER, placeOf } from "./driveFilters";
+import { cleanFilter, compareCategories, driveFilterOptions, filterDriveFiles, isFiltering, NO_DRIVE_FILTER, placeOf } from "./driveFilters";
 
 const f = (...path: string[]) => ({ path });
 const files = [
@@ -51,5 +51,12 @@ describe("driveFilterOptions", () => {
 describe("cleanFilter", () => {
   it("clears a part that is no longer offered", () => {
     expect(cleanFilter(files, { block: "1.2", category: "Tutorial", subject: "Biokimia" })).toEqual({ block: "1.2", category: "", subject: "" });
+  });
+});
+
+describe("compareCategories", () => {
+  it("follows the class's order, then A–Z", () => {
+    const names = ["Zeta", "MODUL TUTOR", "Alpha", "RECORD", "PPT ASLAB", "ppt dosen", "MODUL SL", "PPT TENTIRAN"];
+    expect([...names].sort(compareCategories)).toEqual(["ppt dosen", "PPT ASLAB", "RECORD", "PPT TENTIRAN", "MODUL SL", "MODUL TUTOR", "Alpha", "Zeta"]);
   });
 });

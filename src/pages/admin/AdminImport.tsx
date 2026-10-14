@@ -7,7 +7,7 @@ import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { importQuestions, listAllPackages, listImports, packagesFromImport, suggestedMinutes, type ImportSummary } from "../../lib/admin";
 import { loadExamRecords } from "../../lib/exams";
-import { clearImportDraft, readImportDraft, saveImportDraft } from "../../lib/importDraft";
+import { clearImportDraft, readImportDraft, saveImportDraft, useImportDraftKept } from "../../lib/importDraft";
 import { fillSlots, imageSlots, repeatedSlots, toWebp, uploadImage } from "../../lib/importImages";
 import { distinct, matchSpelling } from "../../lib/packageFilter";
 import { parseQuestionMarkdown } from "../../lib/questionMarkdown";
@@ -44,6 +44,7 @@ export function AdminImport() {
   const [trackBest, setTrackBest] = useState(true);
   const [block, setBlock] = useState("");
   const [source, setSource] = useState("");
+  const [year, setYear] = useState("");
   const [onlyPictures, setOnlyPictures] = useState(false);
   // Blocks and types already in use, so a new package matches their spelling.
   const [known, setKnown] = useState<{ blocks: string[]; sources: string[] }>({ blocks: [], sources: [] });
@@ -55,9 +56,12 @@ export function AdminImport() {
   }, []);
   const finalBlock = matchSpelling(block, known.blocks);
   const finalSource = matchSpelling(source, known.sources);
+  // Four digits, or empty for none.
+  const yearOk = /^(19|20|21)[0-9]{2}$/.test(year.trim()) || year.trim() === "";
   const previewed = (parsed?.questions ?? []).map((q, i) => ({ q, n: i + 1 })).filter(({ q }) => !onlyPictures || hasPicture(q));
 
   // Keep an unfinished import in this browser, so a refresh doesn't lose it.
+  const draftLost = !useImportDraftKept();
   useEffect(() => {
     if (!imported) saveImportDraft({ text, uploaded });
   }, [text, uploaded, imported]);
@@ -108,6 +112,7 @@ export function AdminImport() {
     setMinutes(String(suggestedMinutes(from.count)));
     setBlock(fromBlock ?? "");
     setSource(fromSource ?? "");
+    setYear(from.year ? String(from.year) : "");
   };
 
   // Earlier imports, for making packages from one later (shown while no file is open).
@@ -117,7 +122,7 @@ export function AdminImport() {
   }, [imported, text, earlier]);
 
   const makePackages = async () => {
-    if (!imported || !finalBlock) return;
+    if (!imported || !finalBlock || !yearOk) return;
     setBusy(true);
     setProblem(null);
     try {
@@ -127,7 +132,7 @@ export function AdminImport() {
         practiceTitle: practiceTitle.trim() || imported.title,
         block: finalBlock,
         source: finalSource || null,
-        year: imported.year,
+        year: year.trim() ? Number(year.trim()) : null,
         ids: packageIds,
         timeLimitMinutes: Math.max(1, Math.min(300, Number(minutes) || suggestedMinutes(imported.count))),
         trackBest,
@@ -142,6 +147,7 @@ export function AdminImport() {
   return (
     <div className="admin-section">
       {problem && <p className="account-error" role="alert">{problem}</p>}
+      {draftLost && !imported && text.trim() && <p className="account-error" role="status">{t("admin.draftNotKept")}</p>}
 
       {!imported && draft && !text.trim() && (
         <p className="account-note admin-draft">
@@ -286,6 +292,11 @@ export function AdminImport() {
               <input className="form-input" list="known-sources" value={source} placeholder={t("admin.packageTypeHint")}
                 onChange={(e) => { setSource(e.target.value); }} />
             </label>
+            <label className="account-field">
+              <span>{t("admin.packageYear")}</span>
+              <input className="form-input" inputMode="numeric" maxLength={4} value={year} placeholder="2025"
+                aria-invalid={!yearOk} onChange={(e) => { setYear(e.target.value.replace(/[^0-9]/g, "")); }} />
+            </label>
             <datalist id="known-blocks">{known.blocks.map((b) => <option key={b} value={b} />)}</datalist>
             <datalist id="known-sources">{known.sources.map((x) => <option key={x} value={x} />)}</datalist>
           </div>
@@ -304,7 +315,8 @@ export function AdminImport() {
             <span>{t("admin.practiceTitle")}</span>
             <input className="form-input" value={practiceTitle} onChange={(e) => { setPracticeTitle(e.target.value); }} />
           </label>
-          <button type="button" className="btn btn-small" disabled={busy} onClick={() => void makePackages()}>{t("admin.makePackages")}</button>
+          {!yearOk && <p className="account-error">{t("admin.yearHint")}</p>}
+          <button type="button" className="btn btn-small" disabled={busy || !yearOk} onClick={() => void makePackages()}>{t("admin.makePackages")}</button>
         </div>
       )}
 

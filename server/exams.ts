@@ -131,6 +131,13 @@ export async function adminRestoreQuestion(ctx: Ctx, args: Args): Promise<null> 
 }
 
 const BLOCK_RE = /^[0-9]+\.[0-9]+$/;
+
+/** A paper's year: four digits, or null for none. */
+function paperYear(value: unknown): number | null {
+  if (value === null || value === undefined) return null;
+  if (!isInt(value) || value < 1900 || value > 2100) throw refuse("bad_year");
+  return value;
+}
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
@@ -295,12 +302,16 @@ export async function packageSummaries(ctx: Ctx) {
   }));
 }
 
-/** A package's questions in order, for Admin → Packages. */
+/**
+ * A package's questions in order, for Admin → Packages. Deleted ones are listed too (marked), so an
+ * admin sees what students no longer get and can bring a question back.
+ */
 export async function adminPackageQuestions(ctx: Ctx, args: Args) {
   requireAdmin(ctx);
   const pkg = await ctx.c.packages.findOne({ _id: text(args, "p_package_id") ?? "" });
   if (!pkg) return [];
-  const questions = await liveQuestions(ctx, pkg.questionIds);
+  const docs = await ctx.c.questions.find({ _id: { $in: pkg.questionIds } }).toArray();
+  const questions = new Map(docs.map((d) => [d._id, d]));
   return pkg.questionIds.flatMap((id, i) => {
     const q = questions.get(id);
     return q ? [{ package_id: pkg._id, position: i + 1, ...adminQuestionRow(q) }] : [];
@@ -320,7 +331,7 @@ export async function adminPackagesFromImport(ctx: Ctx, args: Args) {
   const base = {
     block,
     source: text(args, "p_source"),
-    year: int(args, "p_year"),
+    year: paperYear(args.p_year),
     track: null,
     status: "draft" as const,
     questionIds: questions.map((q) => q._id),
@@ -393,7 +404,7 @@ export async function adminSetPackageStatus(ctx: Ctx, args: Args): Promise<null>
   return null;
 }
 
-/** Changes a package's settings. p_patch: any of { title, time_limit_minutes, track_best, track }. */
+/** Changes a package's settings. p_patch: any of { title, time_limit_minutes, track_best, track, block, source, year }. */
 export async function adminUpdatePackage(ctx: Ctx, args: Args): Promise<null> {
   requireAdmin(ctx);
   const id = text(args, "p_package_id") ?? "";
@@ -413,6 +424,17 @@ export async function adminUpdatePackage(ctx: Ctx, args: Args): Promise<null> {
   }
   if (Object.hasOwn(patch, "track_best")) set.trackBest = patch.track_best === true;
   if (Object.hasOwn(patch, "track")) set.track = track(patch.track);
+  if (Object.hasOwn(patch, "block")) {
+    const block = typeof patch.block === "string" ? patch.block.trim() : null;
+    if (!block || !BLOCK_RE.test(block)) throw refuse("bad_block");
+    set.block = block;
+  }
+  if (Object.hasOwn(patch, "source")) {
+    const source = typeof patch.source === "string" ? patch.source.trim() : "";
+    if (source.length > 40) throw refuse("bad_source");
+    set.source = source || null;
+  }
+  if (Object.hasOwn(patch, "year")) set.year = paperYear(patch.year);
   const after = { ...pkg, ...set };
   if (after.mode === "exam" && after.timeLimitMinutes === null) throw refuse("exam_needs_time_limit");
   if (after.trackBest && after.mode !== "exam") throw refuse("best_only_for_exams");

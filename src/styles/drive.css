@@ -292,6 +292,36 @@
   list-style: none;
 }
 
+.drive-row-item {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.drive-row-item > .drive-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.drive-row-actions {
+  display: flex;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+
+/* With a mouse the buttons wait for the row to be pointed at; on touch they always show. */
+@media (hover: hover) {
+  .drive-row-actions {
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+
+  .drive-row-item:hover .drive-row-actions,
+  .drive-row-item:focus-within .drive-row-actions {
+    opacity: 1;
+  }
+}
+
 .drive-row {
   display: flex;
   align-items: center;
