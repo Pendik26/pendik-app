@@ -12,6 +12,7 @@ function preloadTabs() {
   void import("./AdminQuestions");
   void import("./AdminImport");
   void import("./AdminDrive");
+  void import("./AdminSchedule");
 }
 
 /**
@@ -37,6 +38,7 @@ export function Admin() {
         <NavLink to="/admin/questions" className={tab}>{t("admin.questionBank")}</NavLink>
         <NavLink to="/admin/import" className={tab}>{t("admin.import")}</NavLink>
         <NavLink to="/admin/drive" className={tab}>{t("admin.drive")}</NavLink>
+        <NavLink to="/admin/schedule" className={tab}>{t("schedule.adminTitle")}</NavLink>
       </nav>
       {/* Keyed by tab so a crash in one resets when another is opened. */}
       <ErrorBoundary key={pathname}>

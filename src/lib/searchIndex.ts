@@ -58,6 +58,7 @@ const PAGES_AFTER_LAB: [string, MessageKey, MessageKey, string, string?][] = [
   ["atlas", "nav.atlas", "sx.atlas", "/atlas"],
   ["map", "nav.map", "sx.map", "/map"],
   ["plan", "nav.plan", "sx.plan", "/plan"],
+  ["schedule", "nav.schedule", "sx.schedule", "/schedule", "jadwal tutor sl kuliah dosen whatsapp timetable lecturer schedule"],
   ["alfond", "nav.alfond", "sx.alfond", "/alfond"],
   ["leaderboard", "nav.leaderboard", "sx.leaderboard", "/leaderboard"],
   ["progress", "nav.progress", "sx.progress", "/progress"],

@@ -70,6 +70,7 @@ const moreGroups: NavGroup[] = [
       { to: "/flashcards", label: "nav.flashcards", icon: <CardsIcon />, due: "cards" },
       { to: "/quizzes", label: "nav.quizzes", icon: <QuizIcon />, due: "questions" },
       { to: "/occlusion", label: "nav.occlusion", icon: <OcclusionIcon /> },
+      { to: "/schedule", label: "nav.schedule", icon: <CalendarIcon /> },
       { to: "/plan", label: "nav.plan", icon: <CalendarIcon /> },
     ],
   },

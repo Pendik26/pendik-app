@@ -224,6 +224,63 @@ export interface DriveSyncRunDoc {
   finished_at: string | null;
 }
 
+/** One session on the schedule: a tutorial (PBL) or a skills-lab (SL) meeting for a student group. */
+export interface ScheduleEventDoc {
+  _id: string;
+  kind: "tutor" | "sl";
+  /** The student group it is for, e.g. "INTER B". */
+  group: string;
+  block: string | null;
+  /** "YYYY-MM-DD" and "HH:MM" in Western Indonesia Time (WIB), as printed on the official schedule. */
+  date: string;
+  start: string;
+  end: string;
+  /** Session number and kind, e.g. "P16" and "Terbimbing". */
+  code: string | null;
+  phase: string | null;
+  title: string;
+  subtitle: string | null;
+  lecturerId: string | null;
+  /** Called off: shown struck out with this note (e.g. "Tidak ada SL (Responsi 2)"). */
+  cancelledNote: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** A lecturer and the WhatsApp numbers students can reach them on. */
+export interface LecturerDoc {
+  _id: string;
+  name: string;
+  /** International format without spaces, e.g. "+628179555799". */
+  phones: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** An official lecture-schedule PDF (one per block and class), opened from a link. */
+export interface ScheduleDocDoc {
+  _id: string;
+  block: string;
+  track: Track | null;
+  title: string;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** A student's note about the lecturer list: a wrong number, or a lecturer who is missing. */
+export interface LecturerReportDoc {
+  _id: string;
+  userId: string;
+  kind: "wrong_number" | "new_lecturer";
+  lecturerId: string | null;
+  name: string | null;
+  phone: string | null;
+  note: string | null;
+  status: "open" | "done";
+  createdAt: Date;
+}
+
 export interface AiUsageDoc {
   userId: string;
   day: string;
@@ -256,6 +313,10 @@ export interface Collections {
   readiness: Collection<ReadinessDoc>;
   driveFiles: Collection<DriveFileDoc>;
   driveSyncRuns: Collection<DriveSyncRunDoc>;
+  scheduleEvents: Collection<ScheduleEventDoc>;
+  lecturers: Collection<LecturerDoc>;
+  scheduleDocs: Collection<ScheduleDocDoc>;
+  lecturerReports: Collection<LecturerReportDoc>;
   aiUsage: Collection<AiUsageDoc>;
   auditLog: Collection<AuditDoc>;
 }
@@ -279,6 +340,10 @@ export function collections(db: Db): Collections {
     readiness: db.collection("readiness"),
     driveFiles: db.collection("driveFiles"),
     driveSyncRuns: db.collection("driveSyncRuns"),
+    scheduleEvents: db.collection("scheduleEvents"),
+    lecturers: db.collection("lecturers"),
+    scheduleDocs: db.collection("scheduleDocs"),
+    lecturerReports: db.collection("lecturerReports"),
     aiUsage: db.collection("aiUsage"),
     auditLog: db.collection("auditLog"),
   };
@@ -325,6 +390,10 @@ export const INDEXES: Record<string, IndexDescription[]> = {
     // One sync running at a time.
     { key: { status: 1 }, unique: true, partialFilterExpression: { status: "running" }, name: "one_running" },
   ],
+  scheduleEvents: [{ key: { group: 1, date: 1, start: 1 } }, { key: { kind: 1, date: 1 } }],
+  lecturers: [{ key: { name: 1 } }],
+  scheduleDocs: [{ key: { block: 1, track: 1 } }],
+  lecturerReports: [{ key: { status: 1, createdAt: -1 } }, { key: { userId: 1, status: 1 } }],
   aiUsage: [{ key: { userId: 1, day: 1 }, unique: true }],
   auditLog: [{ key: { createdAt: -1 } }],
 };

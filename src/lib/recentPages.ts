@@ -30,7 +30,7 @@ export function recentPages(): RecentPage[] {
 export function rememberPage(path: string): void {
   if (SKIP.has(path)) return;
   const meta = pageMeta(path);
-  if (!meta.indexable && !["/progress", "/plan", "/alfond", "/drive", "/leaderboard", "/account"].some((p) => path === p || path.startsWith(`${p}/`))) return;
+  if (!meta.indexable && !["/progress", "/plan", "/schedule", "/alfond", "/drive", "/leaderboard", "/account"].some((p) => path === p || path.startsWith(`${p}/`))) return;
   const page = { path, title: shortTitle(path) };
   writeJSON(STORAGE_KEYS.recentPages, [page, ...recentPages().filter((p) => p.path !== path)].slice(0, KEPT));
 }

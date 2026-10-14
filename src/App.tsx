@@ -80,6 +80,8 @@ const Account = lazy(() => import("./pages/Account").then((m) => ({ default: m.A
 const KnowledgeMap = lazy(() => import("./pages/KnowledgeMap").then((m) => ({ default: m.KnowledgeMap })));
 const ExamPlan = lazy(() => import("./pages/ExamPlan").then((m) => ({ default: m.ExamPlan })));
 const Docs = lazy(() => import("./pages/Docs").then((m) => ({ default: m.Docs })));
+const Schedule = lazy(() => import("./pages/Schedule").then((m) => ({ default: m.Schedule })));
+const AdminSchedule = lazy(() => import("./pages/admin/AdminSchedule").then((m) => ({ default: m.AdminSchedule })));
 const AlfondPage = lazy(() => import("./pages/Alfond").then((m) => ({ default: m.AlfondPage })));
 
 /** Image occlusion briefly lived under the flashcards. */
@@ -143,6 +145,7 @@ function AppRoutes() {
             <Route path="questions" element={<AdminQuestions />} />
             <Route path="import" element={<AdminImport />} />
             <Route path="drive" element={<AdminDrive />} />
+            <Route path="schedule" element={<AdminSchedule />} />
           </Route>
           <Route path="/modules" element={<Modules />} />
           <Route path="/modules/:blockId/:subjectId" element={<ModuleViewer />} />
@@ -161,6 +164,8 @@ function AppRoutes() {
           <Route path="/alfond" element={<AlfondPage />} />
           <Route path="/map" element={<KnowledgeMap />} />
           <Route path="/atlas" element={<Atlas />} />
+          <Route path="/schedule" element={<Navigate to="/schedule/tutor" replace />} />
+          <Route path="/schedule/:tab" element={<Schedule />} />
           <Route path="/plan" element={<ExamPlan />} />
           <Route path="/plan/:blockId" element={<ExamPlan />} />
           <Route path="/docs" element={<Docs />} />

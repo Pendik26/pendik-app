@@ -405,4 +405,4 @@ export function indexablePaths(): string[] {
 }
 
 /** App pages that are rendered for everyone but kept out of search. */
-export const PRIVATE_PATHS = ["/search", "/progress", "/leaderboard", "/account", "/alfond", "/plan", "/drive"];
+export const PRIVATE_PATHS = ["/search", "/progress", "/leaderboard", "/account", "/alfond", "/plan", "/drive", "/schedule"];
