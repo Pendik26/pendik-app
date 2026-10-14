@@ -52,6 +52,9 @@ export function treeFromRows(rows: readonly DriveFileRow[]): DriveTree {
       }
       folder = next;
     }
+    updatedAt = Math.max(updatedAt, Date.parse(row.synced_at) || 0);
+    // A folder row only makes sure its folder exists, so empty folders still show.
+    if (row.kind === "folder") continue;
     folder.files.push({
       id: row.drive_file_id,
       name: row.title,
@@ -61,7 +64,6 @@ export function treeFromRows(rows: readonly DriveFileRow[]): DriveTree {
       createdTime: row.created_at,
       ...(row.sort_order != null ? { order: row.sort_order } : {}),
     });
-    updatedAt = Math.max(updatedAt, Date.parse(row.synced_at) || 0);
   }
   const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, undefined, { numeric: true });
   // Files an admin put in order first (lower first), then the rest by name.

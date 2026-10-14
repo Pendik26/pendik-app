@@ -204,6 +204,35 @@ function fileRow(file: ApiFile, id: string, mimeType: string, path: string[], at
   };
 }
 
+/**
+ * A folder as a row of its own (kind "folder"), so the app shows it even when it holds no files.
+ * Its id is made from its path, not Drive's folder id, and folder_path is the folder's own path.
+ */
+export const folderRowId = (path: readonly string[]) => `folder:${path.join("/")}`;
+
+function folderRow(path: string[], at: string): FileRow {
+  const place = placeOf(path);
+  return {
+    drive_file_id: folderRowId(path),
+    title: path[path.length - 1] ?? "",
+    kind: "folder",
+    semester: place.semester,
+    track: place.track,
+    block: place.block,
+    block_name: place.blockName,
+    category: place.category,
+    subject: place.subject,
+    folder_path: path,
+    mime_type: null,
+    size_bytes: null,
+    web_url: "",
+    youtube_id: null,
+    drive_modified_at: null,
+    synced_at: at,
+    missing_since: null,
+  };
+}
+
 function videoRows(doc: FileRow, ids: string[]): FileRow[] {
   return ids.map((videoId, i) => ({
     ...doc,
@@ -335,7 +364,9 @@ export async function syncStep(
       if (youtubeLinksWithoutId(text).length > 0) flag(run, "youtube_no_id", at(doc.folder_path, doc.title));
     }
 
-    const all = [...unique, ...videos];
+    // Every folder walked in this batch, empty or not (the top folder itself has no row).
+    const folders = batch.filter((f) => f.path.length > 0).map((f) => folderRow(f.path, seenAt));
+    const all = [...unique, ...videos, ...folders];
     if (all.length) await store.upsert(all);
     if (unchangedDocs.length) await store.touchVideosOf(unchangedDocs, seenAt);
     run.filesFound += unique.length;
