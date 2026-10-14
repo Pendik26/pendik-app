@@ -48,12 +48,12 @@
 }
 
 :root[data-theme="light"] .map-page {
-  --obs-bg-alt: #f7f3e9;
+  --obs-bg-alt: #e3dfd3;
   --obs-bg-hover: rgb(15 143 112 / 0.07);
   --obs-text-faint: #66706a;
   --obs-link: var(--accent-dim);
-  --obs-graph-line: #d9cfb6;
-  --obs-graph-grid: #e6dec9;
+  --obs-graph-line: #cbc2a8;
+  --obs-graph-grid: #d6cfba;
   --obs-graph-node: #8d978f;
   --obs-weak-text: #b23a32;
 }
