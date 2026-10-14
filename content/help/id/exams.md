@@ -1,12 +1,12 @@
-# Ujian berwaktu
+# Ujian Blok
 
-Bagian **Ujian** berisi ujian latihan berwaktu untuk setiap blok. Rasanya
+Bagian **Ujian Blok** berisi ujian latihan berwaktu untuk setiap blok. Rasanya
 seperti ujian sungguhan: satu jam untuk seluruh soal, dan (kalau kamu mau)
 tanpa umpan balik sampai jawabanmu dikumpulkan.
 
 ## Memilih ujian
 
-1. Buka **Ujian** dan pilih blokmu.
+1. Buka **Ujian Blok** dan pilih blokmu.
 2. Kalau blok itu punya beberapa **paket ujian** (misalnya soal tahun lalu dari
    tahun atau sumber berbeda), pilih salah satu. Blok tanpa paket mendapat ujian
    yang diambil dari bank soal kuis mata kuliahnya.

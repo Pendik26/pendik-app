@@ -1,7 +1,7 @@
 // Exams and practice packages (the server-run past papers, and the block's pooled exam).
 
 export const examEn = {
-  "exam.title": "Exams",
+  "exam.title": "Block Exams",
   "exam.subtitle": "Past papers as timed exams or as practice with instant feedback, and each block's pooled exam from its quiz questions.",
   "exam.allExams": "All exams",
   "exam.backToExams": "Back to exams",
@@ -76,7 +76,7 @@ export const examEn = {
 };
 
 export const examId: { [K in keyof typeof examEn]: string } = {
-  "exam.title": "Ujian",
+  "exam.title": "Ujian Blok",
   "exam.subtitle": "Soal tahun lalu sebagai ujian berwaktu atau latihan dengan umpan balik langsung, serta ujian gabungan tiap blok dari soal kuisnya.",
   "exam.allExams": "Semua ujian",
   "exam.backToExams": "Kembali ke ujian",
