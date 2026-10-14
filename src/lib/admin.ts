@@ -318,3 +318,15 @@ export async function setFileOrder(id: string, order: number | null): Promise<vo
 export async function setFileHidden(id: string, hidden: boolean): Promise<void> {
   await must(rpc("admin_set_file_hidden", { p_id: id, p_hidden: hidden }));
 }
+
+// --- Schedule ---------------------------------------------------------------------------------
+
+export const saveScheduleEvents = (events: unknown[]) => must(rpc<{ saved: number }>("admin_save_events", { p_events: events }));
+export const clearScheduleGroup = (group: string, kind: "tutor" | "sl") => must(rpc<{ deleted: number }>("admin_delete_events", { p_group: group, p_kind: kind }));
+export const saveLecturer = (name: string, phones: string[], id?: string) => must(rpc("admin_save_lecturer", { p_name: name, p_phones: phones, p_id: id ?? null }));
+export const deleteLecturer = (id: string) => must(rpc("admin_delete_lecturer", { p_id: id }));
+export const saveScheduleDoc = (doc: { title: string; url: string; block: string; track: "IUP" | "REGULER" | null }) =>
+  must(rpc("admin_save_schedule_doc", { p_title: doc.title, p_url: doc.url, p_block: doc.block, p_track: doc.track }));
+export const deleteScheduleDoc = (id: string) => must(rpc("admin_delete_schedule_doc", { p_id: id }));
+export const listLecturerReports = () => must(rpc<import("./schedule").LecturerReport[]>("admin_lecturer_reports"));
+export const resolveLecturerReport = (id: string) => must(rpc("admin_resolve_report", { p_id: id }));

@@ -7,6 +7,7 @@ import { collections, today, type Collections } from "./db.js";
 import { driveFiles, adminDriveFiles, adminSetFileHidden, adminSetFileOrder, adminSyncRuns, driveSyncStep, type DriveSyncConfig } from "./drive.js";
 import * as exams from "./exams.js";
 import * as people from "./people.js";
+import * as schedule from "./schedule.js";
 import * as study from "./study.js";
 import { allowedOrigins, corsHeaders } from "./http.js";
 
@@ -65,6 +66,12 @@ const FUNCTIONS: Record<string, Fn> = {
 
   drive_files: (ctx) => driveFiles(ctx),
 
+  schedule_events: (ctx) => schedule.scheduleEvents(ctx),
+  schedule_groups: (ctx) => schedule.scheduleGroups(ctx),
+  schedule_docs: (ctx) => schedule.scheduleDocs(ctx),
+  lecturers: (ctx) => schedule.lecturers(ctx),
+  report_lecturer: schedule.reportLecturer,
+
   admin_search_questions: exams.adminSearchQuestions,
   admin_question_facets: (ctx) => exams.adminQuestionFacets(ctx),
   admin_update_question: exams.adminUpdateQuestion,
@@ -84,6 +91,14 @@ const FUNCTIONS: Record<string, Fn> = {
   admin_set_file_order: adminSetFileOrder,
   admin_set_file_hidden: adminSetFileHidden,
   admin_sync_runs: (ctx) => adminSyncRuns(ctx),
+  admin_save_events: schedule.adminSaveEvents,
+  admin_delete_events: schedule.adminDeleteEvents,
+  admin_save_lecturer: schedule.adminSaveLecturer,
+  admin_delete_lecturer: schedule.adminDeleteLecturer,
+  admin_save_schedule_doc: schedule.adminSaveScheduleDoc,
+  admin_delete_schedule_doc: schedule.adminDeleteScheduleDoc,
+  admin_lecturer_reports: (ctx) => schedule.adminLecturerReports(ctx),
+  admin_resolve_report: schedule.adminResolveReport,
 };
 
 const NO_STORE = { "cache-control": "no-store" };

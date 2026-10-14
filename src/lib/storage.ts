@@ -131,6 +131,8 @@ export const STORAGE_KEYS = {
   theme: storageKey("theme"),
   language: storageKey("language"),
   activity: storageKey("activity"),
+  /** The student group whose tutorial and skills-lab sessions the Schedule page shows. */
+  scheduleGroup: storageKey("schedulegroup"),
   /** Class Drive file ids the student has opened ("new" badges). */
   driveSeen: storageKey("driveseen"),
   /** true: the Class Drive also shows the other class's folders. */

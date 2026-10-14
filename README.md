@@ -236,6 +236,17 @@ files. It installs as a PWA and works offline from what's already loaded.
   AI_API_KEY=… AI_MODEL=… npm run graph:relations`, then commit
   `content/graph/relations.json`
 
+### Schedule (`/schedule`)
+
+- **Tutor** and **SL**: the sessions of the student's own group (chosen once, saved on
+  the account): the next one on top, then this week, next week and later, with the lecturer
+  and WhatsApp links. Called-off sessions are struck out with their note.
+- **Lectures**: the official lecture timetable PDF for the student's class, shown in the page.
+- **Lecturers**: every lecturer A to Z with WhatsApp numbers, searchable; students can flag a
+  wrong number or suggest a lecturer.
+- Admins fill it in under **Admin → Schedule** (sessions pasted as JSON, lecturers, PDF
+  links) and clear the notes from students there.
+
 ### Exam plan (`/plan`)
 
 - One exam date per block: the block's official date (`examDate` in
