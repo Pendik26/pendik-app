@@ -21,6 +21,7 @@ const CODE_TEXT: Record<string, MessageKey> = {
   not_on_yourself: "err.notOnYourself",
   last_admin: "err.lastAdmin",
   student_has_account: "err.hasAccount",
+  already_saved: "err.alreadySaved",
   value_too_big: "err.tooMuch",
   progress_full: "err.tooMuch",
   too_many_reviews: "err.tooMuch",

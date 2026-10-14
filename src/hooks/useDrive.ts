@@ -103,8 +103,16 @@ export function useDriveBothTracks(): { available: boolean; both: boolean; setBo
 }
 
 /** Which Drive files this student has opened (saved in the account, so "new" clears everywhere). */
-export function useDriveOpened(): { opened: ReadonlySet<string>; recent: readonly string[]; markOpened: (id: string) => void } {
+export function useDriveOpened(): {
+  opened: ReadonlySet<string>;
+  recent: readonly string[];
+  /** When a file was last opened (epoch ms), for files opened since this was kept. */
+  openedAt: Readonly<Record<string, number>>;
+  markOpened: (id: string) => void;
+} {
   const [ids, setIds] = useLocalStorage<string[]>(STORAGE_KEYS.driveSeen, []);
+  const [times, setTimes] = useLocalStorage<Record<string, number>>(STORAGE_KEYS.driveOpenedAt, {});
+  const openedAt = useMemo(() => (times && typeof times === "object" && !Array.isArray(times) ? times : {}), [times]);
   const opened = useMemo(() => new Set(Array.isArray(ids) ? ids : []), [ids]);
   /** Newest first. */
   const recent = useMemo(() => (Array.isArray(ids) ? [...ids].reverse() : []), [ids]);
@@ -115,8 +123,14 @@ export function useDriveOpened(): { opened: ReadonlySet<string>; recent: readonl
         // Last in the list is the most recently opened ("Recently opened" reads it from the end).
         return list.at(-1) === id ? list : [...list.filter((x) => x !== id), id].slice(-OPENED_LIMIT);
       });
+      setTimes((prev) => {
+        const all = prev && typeof prev === "object" && !Array.isArray(prev) ? prev : {};
+        // Keep only the newest few, like the list of opened ids.
+        const kept = Object.entries(all).filter(([k]) => k !== id).sort((a, b) => b[1] - a[1]).slice(0, OPENED_LIMIT - 1);
+        return { ...Object.fromEntries(kept), [id]: Date.now() };
+      });
     },
-    [setIds],
+    [setIds, setTimes],
   );
-  return { opened, recent, markOpened };
+  return { opened, recent, openedAt, markOpened };
 }

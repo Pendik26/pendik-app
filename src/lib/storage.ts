@@ -146,6 +146,8 @@ export const STORAGE_KEYS = {
   importDraft: storageKey("importdraft"),
   /** Class Drive file ids the student has opened ("new" badges). */
   driveSeen: storageKey("driveseen"),
+  /** When each recently opened Class Drive file was last opened: { [fileId]: epoch ms }. */
+  driveOpenedAt: storageKey("driveopenedat"),
   /** true: the Class Drive also shows the other class's folders. */
   driveBothTracks: storageKey("driveboth"),
   /** Recorded runs for one Virtual Lab activity, keyed "{exerciseId}/{activitySlug}". */

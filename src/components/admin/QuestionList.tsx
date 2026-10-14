@@ -3,6 +3,7 @@ import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { deleteQuestion, restoreQuestion, updateQuestion, type AdminQuestion } from "../../lib/admin";
 import { parseQuestionMarkdown, questionMarkdown } from "../../lib/questionMarkdown";
+import { QuestionPreview } from "./QuestionPreview";
 
 /** One question as editable Markdown (the import format, without the file header). */
 function asMarkdown(q: AdminQuestion): string {
@@ -69,12 +70,7 @@ export function QuestionList({ questions, onChanged, details }: {
               </div>
             ) : (
               <div className="admin-question">
-                <p className="exam-stem">{q.stem}</p>
-                {q.options ? (
-                  <ul>{q.options.map((o, oi) => <li key={oi} className={oi === q.correct_index ? "admin-correct" : undefined}>{o.text}</li>)}</ul>
-                ) : (
-                  <p className="admin-correct">{q.accepted_answers?.join(" · ")}</p>
-                )}
+                <QuestionPreview q={q} />
                 <div className="admin-actions">
                   <small>{[details?.(q), t("admin.revisionN", { n: q.revision })].filter(Boolean).join(" · ")}</small>
                   {q.deleted ? (

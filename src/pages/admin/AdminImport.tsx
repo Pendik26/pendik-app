@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { QuestionImage } from "../../components/exam/QuestionImage";
+import { QuestionPreview } from "../../components/admin/QuestionPreview";
+import { hasPicture } from "../../lib/questionPreview";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
-import { importQuestions, listAllPackages, packagesFromImport, suggestedMinutes } from "../../lib/admin";
+import { importQuestions, listAllPackages, listImports, packagesFromImport, suggestedMinutes, type ImportSummary } from "../../lib/admin";
 import { loadExamRecords } from "../../lib/exams";
 import { clearImportDraft, readImportDraft, saveImportDraft } from "../../lib/importDraft";
 import { fillSlots, imageSlots, repeatedSlots, toWebp, uploadImage } from "../../lib/importImages";
@@ -15,11 +17,17 @@ import { parseQuestionMarkdown } from "../../lib/questionMarkdown";
  * exam package and a practice package from them (both drafts until published).
  */
 export function AdminImport() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  const [imported, setImported] = useState<{ importId: string; count: number } | null>(null);
+  // The import saved (or picked from earlier ones) that packages are made from, with what it carries.
+  const [imported, setImported] = useState<{ importId: string; count: number; title: string; year: number | null } | null>(null);
+  // Ids made once per file and once per package form, so a retry or a second click can't save twice.
+  const [importFormId, setImportFormId] = useState(() => crypto.randomUUID());
+  const [packageIds, setPackageIds] = useState(() => ({ exam: crypto.randomUUID(), practice: crypto.randomUUID() }));
+  const [earlier, setEarlier] = useState<ImportSummary[] | null>(null);
+  const [showEmpty, setShowEmpty] = useState(false);
   const [made, setMade] = useState<{ exam_id: string; practice_id: string } | null>(null);
   // Pictures the file asks for as ![..](upload:label); once uploaded, the label becomes the picture's path.
   const [uploaded, setUploaded] = useState<Record<string, string>>({});
@@ -47,7 +55,7 @@ export function AdminImport() {
   }, []);
   const finalBlock = matchSpelling(block, known.blocks);
   const finalSource = matchSpelling(source, known.sources);
-  const previewed = (parsed?.questions ?? []).map((q, i) => ({ q, n: i + 1 })).filter(({ q }) => !onlyPictures || q.stem_image || q.options?.some((o) => o.image));
+  const previewed = (parsed?.questions ?? []).map((q, i) => ({ q, n: i + 1 })).filter(({ q }) => !onlyPictures || hasPicture(q));
 
   // Keep an unfinished import in this browser, so a refresh doesn't lose it.
   useEffect(() => {
@@ -70,6 +78,7 @@ export function AdminImport() {
   const readFile = async (file: File | undefined) => {
     if (!file) return;
     setText(await file.text());
+    setImportFormId(crypto.randomUUID());
     setUploaded({});
     setDraft(null);
     setImported(null);
@@ -81,32 +90,45 @@ export function AdminImport() {
     setBusy(true);
     setProblem(null);
     try {
-      const importId = await importQuestions(header.title, effective, parsed.questions);
-      setImported({ importId, count: parsed.questions.length });
+      const importId = await importQuestions(header.title, effective, parsed.questions, importFormId);
       clearImportDraft();
-      setExamTitle(header.title);
-      setPracticeTitle(`${header.title} (${t("exam.modePractice").toLowerCase()})`);
-      setMinutes(String(suggestedMinutes(parsed.questions.length)));
-      setBlock(header.block);
-      setSource(header.source ?? "");
+      startPackages({ importId, count: parsed.questions.length, title: header.title, year: header.year }, header.block, header.source);
     } catch (e) {
       setProblem(errorText(e));
     }
     setBusy(false);
   };
 
+  /** Opens the package form for a saved import, filled from what the import carries. */
+  const startPackages = (from: { importId: string; count: number; title: string; year: number | null }, fromBlock: string | null, fromSource: string | null) => {
+    setImported(from);
+    setPackageIds({ exam: crypto.randomUUID(), practice: crypto.randomUUID() });
+    setExamTitle(from.title);
+    setPracticeTitle(`${from.title} (${t("exam.modePractice").toLowerCase()})`);
+    setMinutes(String(suggestedMinutes(from.count)));
+    setBlock(fromBlock ?? "");
+    setSource(fromSource ?? "");
+  };
+
+  // Earlier imports, for making packages from one later (shown while no file is open).
+  useEffect(() => {
+    if (imported || text.trim() || earlier) return;
+    listImports().then(setEarlier, () => { setEarlier([]); });
+  }, [imported, text, earlier]);
+
   const makePackages = async () => {
-    if (!imported || !header) return;
+    if (!imported || !finalBlock) return;
     setBusy(true);
     setProblem(null);
     try {
       setMade(await packagesFromImport({
         importId: imported.importId,
-        examTitle: examTitle.trim() || header.title,
-        practiceTitle: practiceTitle.trim() || header.title,
-        block: finalBlock || header.block,
+        examTitle: examTitle.trim() || imported.title,
+        practiceTitle: practiceTitle.trim() || imported.title,
+        block: finalBlock,
         source: finalSource || null,
-        year: header.year,
+        year: imported.year,
+        ids: packageIds,
         timeLimitMinutes: Math.max(1, Math.min(300, Number(minutes) || suggestedMinutes(imported.count))),
         trackBest,
       }));
@@ -144,6 +166,35 @@ export function AdminImport() {
             placeholder={"---\ntitle: Block 1.1 UB 2025\nblock: 1.1\nsource: ub\nyear: 2025\n---\n\n## 1\n…"}
             onChange={(e) => { setText(e.target.value); }} />
         </>
+      )}
+
+      {!imported && !text.trim() && earlier && earlier.length > 0 && (
+        <div className="account-card">
+          <h3>{t("admin.earlierImports")}</h3>
+          <p className="account-note">{t("admin.earlierImportsHint")}</p>
+          <label className="admin-check">
+            <input type="checkbox" checked={showEmpty} onChange={(e) => { setShowEmpty(e.target.checked); }} />
+            {t("admin.showEmptyImports")}
+          </label>
+          <ul className="admin-imports">
+            {earlier.filter((i) => showEmpty || i.question_count > 0).map((i) => (
+              <li key={i.id}>
+                <span>
+                  <strong>{i.title}</strong>
+                  <small>
+                    {[new Date(i.created_at).toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { dateStyle: "medium" }),
+                      t("admin.questionsN", { count: i.question_count }),
+                      i.package_count ? t("admin.packagesMadeN", { count: i.package_count }) : t("admin.noPackagesYet")].join(" · ")}
+                  </small>
+                </span>
+                <button type="button" className="btn btn-secondary btn-small" disabled={i.question_count === 0}
+                  onClick={() => { startPackages({ importId: i.id, count: i.question_count, title: i.title, year: i.year }, i.block, i.source); }}>
+                  {t("admin.makePackages")}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {slots.length > 0 && !imported && (
@@ -208,13 +259,7 @@ export function AdminImport() {
               <ol>
                 {previewed.slice(0, 200).map(({ q, n }) => (
                   <li key={n} value={n}>
-                    <p className="exam-stem">{q.stem}</p>
-                    {q.stem_image && <QuestionImage path={q.stem_image} alt={q.stem_image_alt} small />}
-                    {q.options ? (
-                      <ul>{q.options.map((o, oi) => <li key={oi} className={oi === q.correct_index ? "admin-correct" : undefined}>{o.text}</li>)}</ul>
-                    ) : (
-                      <p className="admin-correct">{q.accepted_answers?.join(" · ")}</p>
-                    )}
+                    <QuestionPreview q={q} />
                   </li>
                 ))}
               </ol>
@@ -268,7 +313,7 @@ export function AdminImport() {
           <p className="account-success">{t("admin.packagesMade")}</p>
           <div className="account-row">
             <Link to="/admin/packages" className="btn btn-small">{t("admin.reviewAndPublish")}</Link>
-            <button type="button" className="btn btn-secondary btn-small" onClick={() => { setText(""); setUploaded({}); setImported(null); setMade(null); }}>{t("admin.importAnother")}</button>
+            <button type="button" className="btn btn-secondary btn-small" onClick={() => { setText(""); setUploaded({}); setImported(null); setMade(null); setImportFormId(crypto.randomUUID()); setEarlier(null); }}>{t("admin.importAnother")}</button>
           </div>
         </div>
       )}

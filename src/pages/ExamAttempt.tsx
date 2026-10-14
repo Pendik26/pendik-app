@@ -4,6 +4,7 @@ import { FlagIcon, TimerIcon } from "../components/icons";
 import { BookmarkButton } from "../components/exam/BookmarkButton";
 import { QuestionImage } from "../components/exam/QuestionImage";
 import { useFullscreen } from "../hooks/useFullscreen";
+import { setExamFocus } from "../lib/examFocus";
 import { formatClock } from "../lib/examFormat";
 import { useI18n } from "../i18n/useI18n";
 import {
@@ -128,6 +129,12 @@ function RunningExam({
   const navigate = useNavigate();
   const isExam = attempt.mode === "exam";
   const fullscreen = useFullscreen(isExam);
+  // A real exam has the screen to itself: navigation, search and the assistant are put away.
+  useEffect(() => {
+    if (!isExam) return;
+    setExamFocus(true);
+    return () => { setExamFocus(false); };
+  }, [isExam]);
   const [answers, setAnswers] = useState<Record<string, AttemptAnswer>>(attempt.answers);
   const [flagged, setFlagged] = useState<Set<string>>(new Set(attempt.flagged));
   const [tabLeaves, setTabLeaves] = useState(attempt.tabLeaves);
@@ -228,6 +235,25 @@ function RunningExam({
   }, [isExam, saveNow]);
 
   useEffect(() => () => { window.clearTimeout(saveTimer.current); }, []);
+
+  // Coming back to this tab: check at once that it still holds the attempt, before anything is typed.
+  useEffect(() => {
+    let lastCheck = 0;
+    const check = () => {
+      if (document.visibilityState !== "visible" || finished.current || Date.now() - lastCheck < 2000) return;
+      lastCheck = Date.now();
+      getAttempt(attempt.id).then(
+        (a) => { if (a.status === "in_progress" && a.holder === "other" && !finished.current) { finished.current = true; onElsewhere(); } },
+        () => undefined,
+      );
+    };
+    document.addEventListener("visibilitychange", check);
+    window.addEventListener("focus", check);
+    return () => {
+      document.removeEventListener("visibilitychange", check);
+      window.removeEventListener("focus", check);
+    };
+  }, [attempt.id, onElsewhere]);
 
   const question = questions[index];
   const answer = question ? answers[question.id] : undefined;
@@ -406,6 +432,7 @@ function RunningExam({
           </div>
         ) : (
           <div className="exam-short-answer">
+            {isExam && <p className="exam-ungraded-tag">{t("exam.typedNotGraded")}</p>}
             <input
               className="form-input"
               value={typed?.text ?? ""}

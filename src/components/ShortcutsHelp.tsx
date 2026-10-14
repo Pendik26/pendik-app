@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { inExamFocus } from "../lib/examFocus";
 import { Link, useLocation } from "react-router-dom";
 import { isTyping } from "../lib/keys";
 import { useI18n } from "../i18n/useI18n";
@@ -76,7 +77,7 @@ export function ShortcutsHelp() {
         setOpen(false);
         return;
       }
-      if (e.key !== "?" || e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
+      if (e.key !== "?" || inExamFocus() || e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
       e.preventDefault();
       setOpen((o) => !o);
     };

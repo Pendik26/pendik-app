@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { inExamFocus } from "../lib/examFocus";
 import { useNavigate } from "react-router-dom";
 import Fuse from "fuse.js";
 import { recentPages } from "../lib/recentPages";
@@ -84,6 +85,7 @@ export function CommandPalette() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (inExamFocus()) return;
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         if (open) {
@@ -95,7 +97,7 @@ export function CommandPalette() {
         setOpen(false);
       }
     };
-    const onOpenEvent = () => { openPalette(); };
+    const onOpenEvent = () => { if (!inExamFocus()) openPalette(); };
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener(OPEN_COMMAND_PALETTE_EVENT, onOpenEvent);
     return () => {

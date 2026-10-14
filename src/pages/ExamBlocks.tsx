@@ -4,9 +4,11 @@ import { quizQuestionsInBlock } from "../lib/content";
 import { blockFirst, studyBlocks } from "../lib/blocks";
 import { useChosenBlock } from "../hooks/useChosenBlock";
 import { buildExamFormat } from "../lib/examFormat";
-import { attemptTitle, bestScore, finishedAttempts, packagesForBlock, runningAttempt, useExamRecords } from "../lib/exams";
+import { averageScore, bestScore, finishedAttempts, packagesForBlock, useExamRecords } from "../lib/exams";
 import { readJSON, STORAGE_KEYS } from "../lib/storage";
+import { RadialGauge } from "../components/RadialGauge";
 import { SubjectBadge } from "../components/SubjectBadge";
+import { RunningAttemptBanner } from "../components/exam/RunningAttemptBanner";
 import { useI18n } from "../i18n/useI18n";
 import type { ExamAttempt } from "../types/content";
 
@@ -14,7 +16,6 @@ import type { ExamAttempt } from "../types/content";
 export function ExamBlocks() {
   const { t } = useI18n();
   const records = useExamRecords();
-  const running = runningAttempt(records);
   const chosenBlock = useChosenBlock();
   // Year and type (the paper's source, e.g. Block Test or Tryout) narrow the papers; the choices come from
   // the published papers themselves, so an empty combination is never offered.
@@ -31,13 +32,7 @@ export function ExamBlocks() {
       <h1>{t("exam.title")}</h1>
       <p className="subtitle">{t("exam.subtitle")}</p>
 
-      {running && (
-        <Link to={`/exam/attempt/${running.id}`} className="exam-running-banner">
-          <strong>{t("exam.inProgress")}</strong>
-          <span>{attemptTitle(running, records)}</span>
-          <span aria-hidden="true">→</span>
-        </Link>
-      )}
+      <RunningAttemptBanner />
 
       {records.packages.some((p) => p.mode === "practice") && (
         <div className="card-grid dashboard-section">
@@ -90,8 +85,17 @@ export function ExamBlocks() {
               {packages.map((p) => {
                 const best = p.trackBest ? bestScore(p.id, records) : null;
                 const taken = finishedAttempts(p.id, records).length;
+                // Exams show the best score, practice the average: a ring once there is one.
+                const ring = p.mode === "exam" ? (p.trackBest ? best : null) : averageScore(p.id, records);
                 return (
                   <Link key={p.id} to={`/exam/papers/${p.id}`} className="nav-card exam-package-card">
+                    {ring !== null && (
+                      <span className="exam-package-ring">
+                        <RadialGauge percent={ring} size={44}
+                          label={p.mode === "exam" ? t("exam.bestScore", { score: ring }) : t("exam.averageScore", { score: ring })} />
+                        <span className="exam-package-ring-value" aria-hidden="true">{ring}</span>
+                      </span>
+                    )}
                     <span className={`exam-mode-tag exam-mode-tag-${p.mode}`}>
                       {p.mode === "exam" ? t("exam.modeExam") : t("exam.modePractice")}
                     </span>
@@ -100,7 +104,7 @@ export function ExamBlocks() {
                       {p.mode === "exam" && p.timeLimitMinutes
                         ? t("exam.formatTimed", { count: p.questionCount, minutes: p.timeLimitMinutes })
                         : t("exam.formatCount", { count: p.questionCount })}
-                      {best !== null ? ` · ${t("exam.bestScore", { score: best })}` : taken > 0 ? ` · ${t("exam.takenTimes", { count: taken })}` : ""}
+                      {taken > 0 ? ` · ${t("exam.takenTimes", { count: taken })}` : ""}
                     </p>
                   </Link>
                 );

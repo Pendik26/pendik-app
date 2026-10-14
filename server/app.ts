@@ -83,6 +83,7 @@ const FUNCTIONS: Record<string, Fn> = {
   admin_import_questions: exams.adminImportQuestions,
   admin_package_questions: exams.adminPackageQuestions,
   admin_packages_from_import: exams.adminPackagesFromImport,
+  admin_imports: (ctx) => exams.adminImports(ctx),
   admin_set_package_status: exams.adminSetPackageStatus,
   admin_update_package: exams.adminUpdatePackage,
   admin_delete_package: exams.adminDeletePackage,

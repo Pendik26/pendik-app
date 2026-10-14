@@ -20,6 +20,8 @@ const isSvgMarkup = (text: string) => /^\s*<svg[\s>]/.test(text) && !/<script|\s
 export function QuestionImage({ path, alt, small = false }: { path: string; alt: string | null; small?: boolean }) {
   const isSvg = path.endsWith(".svg");
   const [svg, setSvg] = useState<{ path: string; markup: string | null } | null>(null);
+  // A picture that can't be loaded shows a labelled box instead of a broken image.
+  const [failed, setFailed] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isSvg) return;
@@ -32,13 +34,20 @@ export function QuestionImage({ path, alt, small = false }: { path: string; alt:
   }, [isSvg, path]);
 
   const cls = small ? "quiz-question-image quiz-question-image-small" : "quiz-question-image";
+  if (failed === path) {
+    return (
+      <div className={`${cls} quiz-question-image-missing`} role="img" aria-label={alt ?? undefined}>
+        <span>{alt || path.split("/").pop()}</span>
+      </div>
+    );
+  }
   if (isSvg && svg?.path === path && svg.markup) {
     return <div className={cls} role="img" aria-label={alt ?? undefined} dangerouslySetInnerHTML={{ __html: svg.markup }} />;
   }
   if (isSvg && svg?.path !== path) return <div className={cls} aria-busy="true" />;
   return (
     <div className={cls}>
-      <img src={`/${path}`} alt={alt ?? ""} loading="lazy" />
+      <img src={`/${path}`} alt={alt ?? ""} loading="lazy" onError={() => { setFailed(path); }} />
     </div>
   );
 }

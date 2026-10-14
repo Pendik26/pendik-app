@@ -48,6 +48,7 @@ function ProfileCard() {
               .join(" · ")}
             {user.role === "admin" && ` · ${t("account.roleAdmin")}`}
           </p>
+          <p className="account-note">{t("account.wrongDetails")}</p>
         </div>
       </div>
       <CurrentBlockPicker />
@@ -177,7 +178,7 @@ function DataCard() {
       <button type="button" className="btn btn-secondary btn-small" onClick={download}>{t("account.download")}</button>
       <div className="account-divider" />
       <div className="account-row">
-        <button type="button" className="btn btn-secondary btn-small" onClick={() => void signOut()}>{t("auth.signOut")}</button>
+        <button type="button" className="btn btn-secondary btn-small" onClick={() => { if (window.confirm(t("auth.signOutConfirm"))) void signOut(); }}>{t("auth.signOut")}</button>
         {confirmClear ? (
           <>
             <button type="button" className="btn btn-small account-danger" onClick={() => void signOut({ clearDevice: true })}>

@@ -163,6 +163,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         if (next.length < 8) return { ok: false, message: "password.tooShort" };
         const studentId = user?.studentId ?? "";
         if (isFirstPassword(studentId, next)) return { ok: false, message: "password.notFirst" };
+        if (current !== undefined && current === next) return { ok: false, message: "password.mustDiffer" };
         // The forced first change starts from the first password, which the student never typed.
         const { error } = await authClient.changePassword({ currentPassword: current ?? firstPassword(studentId), newPassword: next });
         if (error) return { ok: false, message: current !== undefined && error.status === 400 ? "password.wrongCurrent" : (error.message ?? "common.error") };

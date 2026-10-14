@@ -161,6 +161,20 @@ run("the API", () => {
     expect(drafts).toHaveLength(2);
     expect(drafts[0]).toMatchObject({ status: "draft", revision: expect.any(Number), created_at: expect.any(String), updated_at: expect.any(String) });
     expect((await call(admin, "admin_search_questions", { p_status: "published" })).data).toEqual([]);
+    // Earlier imports list what each still has and how many packages use it.
+    expect((await call(admin, "admin_imports")).data[0]).toMatchObject({ id: importId, title: "Paper", question_count: 2, block: "1.1", year: null, package_count: 2 });
+    // A form's own ids make a retry harmless: the second save is refused.
+    const formImport = "6b0c8f0e-4d1a-4f43-9e55-0c7d2b0d9a11";
+    const again = { p_title: "Retry", p_source_text: "…", p_import_id: formImport, p_questions: [{ type: "short_answer", block: "1.1", stem: "Again?", accepted_answers: ["yes"] }] };
+    expect((await call(admin, "admin_import_questions", again)).status).toBe(200);
+    expect((await call(admin, "admin_import_questions", again)).error).toBe("already_saved");
+    const pkgIds = { p_exam_id: "0a1b2c3d-0000-4000-8000-000000000001", p_practice_id: "0a1b2c3d-0000-4000-8000-000000000002" };
+    const pkgArgs = { p_import_id: formImport, p_exam_title: "E", p_practice_title: "P", p_block: "1.1", p_source: null, p_year: null, p_time_limit_minutes: 10, p_track_best: true, ...pkgIds };
+    expect((await call(admin, "admin_packages_from_import", pkgArgs)).status).toBe(200);
+    expect((await call(admin, "admin_packages_from_import", pkgArgs)).error).toBe("already_saved");
+    expect((await call(admin, "admin_import_questions", { ...again, p_import_id: "nope" })).error).toBe("bad_id");
+    await call(admin, "admin_delete_package", { p_package_id: pkgIds.p_exam_id });
+    await call(admin, "admin_delete_package", { p_package_id: pkgIds.p_practice_id });
     expect((await call(student, "package_summaries")).data).toEqual([]);
     expect((await call(admin, "admin_set_package_status", { p_package_id: made.exam_id, p_status: "published" })).status).toBe(200);
     const visible = (await call(student, "package_summaries")).data;

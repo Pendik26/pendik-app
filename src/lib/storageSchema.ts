@@ -43,6 +43,7 @@ export const KEY_TYPES = {
   alfondchat: { id: null, saved: "device", about: "Alfond's recent conversation (device-only)" },
     importdraft: { id: null, saved: "device", about: "An admin's unfinished question import: the file text and the pictures already uploaded (device-only)" },
     driveseen: { id: null, saved: "server", about: "Class Drive file ids the student has opened, the most recently opened last" },
+    driveopenedat: { id: null, saved: "server", about: "When each recently opened Class Drive file was last opened (epoch ms by file id)" },
     schedulegroup: { id: null, saved: "server", about: "The student group whose tutorial and skills-lab schedule the Schedule page shows" },
     driveboth: { id: null, saved: "server", about: "Class Drive shows the other class's (IUP or Reguler) folders too" },
     language: { id: null, saved: "device", about: "Interface language: id or en" },

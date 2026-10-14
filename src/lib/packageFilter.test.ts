@@ -13,6 +13,7 @@ const pkg = (over: Partial<PackageSummary>): PackageSummary => ({
   trackBest: true,
   status: "published",
   questionCount: 10,
+  createdAt: null,
   track: null,
   ...over,
 });
