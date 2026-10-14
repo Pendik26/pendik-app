@@ -95,6 +95,52 @@ export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
   await must(rpc("admin_add_students", { p_rows: rows }));
 }
 
+/**
+ * A student's class section ("A" or "B"): the first letter of a Reguler tutorial group (A1–A10, B1–B10),
+ * or the letter of an IUP group ("IUP-A", "IUP-B").
+ */
+export function classSection(track: Track | null, group: string | null): "A" | "B" | null {
+  const g = (group ?? "").trim().toUpperCase();
+  const letter = track === "REGULER" ? g.charAt(0) : track === "IUP" ? g.replace(/^IUP[- ]?/, "").charAt(0) : "";
+  return letter === "A" || letter === "B" ? letter : null;
+}
+
+export interface GroupRow {
+  student_id: string;
+  class_group: string | null;
+  track?: Track;
+}
+
+/**
+ * Reads pasted "student id, group[, IUP or Reguler]" lines for students already on the roster.
+ * No names needed. Separators are commas, tabs or semicolons; a header line is skipped.
+ */
+export function parseGroupLines(text: string): { rows: GroupRow[]; problems: string[] } {
+  const rows: GroupRow[] = [];
+  const problems: string[] = [];
+  const seen = new Set<string>();
+  text.split(/\r?\n/).forEach((line, i) => {
+    if (!line.trim()) return;
+    const [id = "", group = "", cls = ""] = line.split(/\t|;|,/).map((c) => c.trim());
+    if (i === 0 && /^(nim|student|id)/i.test(id) && !/[0-9]/.test(id)) return;
+    if (!/^[0-9A-Za-z]{3,30}$/.test(id)) { problems.push(`Line ${i + 1}: "${id}" isn't a student id.`); return; }
+    if (group.length > 40) { problems.push(`Line ${i + 1}: group name is too long.`); return; }
+    if (cls && !trackOf(cls)) { problems.push(`Line ${i + 1}: class must be IUP or Reguler.`); return; }
+    if (seen.has(id)) { problems.push(`Line ${i + 1}: ${id} is listed twice.`); return; }
+    seen.add(id);
+    const row: GroupRow = { student_id: id, class_group: group || null };
+    const t = cls ? trackOf(cls) : null;
+    if (t) row.track = t;
+    rows.push(row);
+  });
+  return { rows, problems };
+}
+
+/** Sets the tutorial group (and class) of students already on the roster. */
+export async function setGroups(rows: GroupRow[]): Promise<{ updated: number; unknown: string[] }> {
+  return must(rpc<{ updated: number; unknown: string[] }>("admin_set_groups", { p_rows: rows }));
+}
+
 /** Moves a student to the other class (the track lives on the roster only). */
 export async function setTrack(studentId: string, track: Track | null): Promise<void> {
   await must(rpc("admin_set_track", { p_student_id: studentId, p_track: track }));
@@ -136,6 +182,17 @@ export async function deletePackage(packageId: string): Promise<void> {
   await must(rpc("admin_delete_package", { p_package_id: packageId }));
 }
 
+/** Packages an admin has deleted, newest first. */
+export async function listDeletedPackages(): Promise<PackageSummary[]> {
+  const rows = await must(rpc<PackageRow[]>("admin_deleted_packages"));
+  return rows.map(toPackage);
+}
+
+/** Brings a deleted package back, as a draft. */
+export async function restorePackage(packageId: string): Promise<void> {
+  await must(rpc("admin_restore_package", { p_package_id: packageId }));
+}
+
 export interface AdminQuestion {
   id: string;
   position: number;
@@ -150,6 +207,8 @@ export interface AdminQuestion {
   explanation: string | null;
   revision: number;
   status: "draft" | "published";
+  /** True for a question an admin deleted (only listed when asked for). */
+  deleted?: boolean;
 }
 
 export async function packageQuestions(packageId: string): Promise<AdminQuestion[]> {
@@ -170,6 +229,8 @@ export interface BankFilter {
   year?: number;
   subject?: string;
   text?: string;
+  /** Only deleted questions, to bring them back. */
+  deleted?: boolean;
 }
 
 /** Most questions one search shows. */
@@ -184,6 +245,7 @@ export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[
       p_year: filter.year ?? null,
       p_subject: filter.subject ?? null,
       p_text: filter.text?.trim() || null,
+      p_deleted: filter.deleted === true,
     }),
   );
   return rows.slice(0, BANK_PAGE).map((r, i) => ({ ...r, position: i + 1, packages: r.packages ?? [] }));
@@ -208,6 +270,11 @@ export type QuestionPatch = Partial<Pick<AdminQuestion, "subject" | "stem" | "st
 /** Saves an edit; the question's revision goes up when anything a student sees changed. */
 export async function updateQuestion(questionId: string, patch: QuestionPatch): Promise<void> {
   await must(rpc("admin_update_question", { p_question_id: questionId, p_patch: patch }));
+}
+
+/** Brings a deleted question back. */
+export async function restoreQuestion(questionId: string): Promise<void> {
+  await must(rpc("admin_restore_question", { p_question_id: questionId }));
 }
 
 /** Takes a question out of every package; attempts that already used it keep it. */
@@ -324,6 +391,65 @@ export async function setFileHidden(id: string, hidden: boolean): Promise<void> 
 export const saveScheduleEvents = (events: unknown[]) => must(rpc<{ saved: number }>("admin_save_events", { p_events: events }));
 export const clearScheduleGroup = (group: string, kind: "tutor" | "sl") => must(rpc<{ deleted: number }>("admin_delete_events", { p_group: group, p_kind: kind }));
 export const saveLecturer = (name: string, phones: string[], id?: string) => must(rpc("admin_save_lecturer", { p_name: name, p_phones: phones, p_id: id ?? null }));
+export interface LecturerRow {
+  name: string;
+  phones: string[];
+}
+
+/** Splits CSV text into rows of cells; quoted cells may hold commas, doubled quotes and line breaks. */
+function csvRows(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  const body = text.replace(/^\uFEFF/, "");
+  for (let i = 0; i < body.length; i++) {
+    const c = body[i];
+    if (quoted) {
+      if (c === '"' && body[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === "," || c === "\t" || c === ";") { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && body[i + 1] === "\n") i++;
+      row.push(cell); rows.push(row); row = []; cell = "";
+    } else cell += c;
+  }
+  row.push(cell);
+  rows.push(row);
+  return rows.map((r) => r.map((c) => c.trim()));
+}
+
+/**
+ * Reads a pasted or exported lecturer table. With a header line, the "Nama"/"Name" column is the
+ * name and every "Telp"/"Phone"/"HP" column holds a number; without one each line is
+ * "name, phone[, phone]". Lines with no name or no number are listed in `problems`.
+ */
+export function parseLecturerTable(text: string): { rows: LecturerRow[]; problems: string[] } {
+  const all = csvRows(text);
+  const rows: LecturerRow[] = [];
+  const problems: string[] = [];
+  while (all.length > 0 && !all[all.length - 1]?.some(Boolean)) all.pop();
+  const first = all[0]?.map((c) => c.toLowerCase()) ?? [];
+  const hasHeader = first.some((c) => /^(nama|name)$/.test(c));
+  const nameAt = hasHeader ? first.findIndex((c) => /^(nama|name)$/.test(c)) : 0;
+  const phoneAt = hasHeader ? first.flatMap((c, i) => (/telp|phone|hp|wa|nomor/.test(c) ? [i] : [])) : null;
+  all.slice(hasHeader ? 1 : 0).forEach((cells, i) => {
+    if (!cells.some(Boolean)) return;
+    const line = i + 1 + (hasHeader ? 1 : 0);
+    const name = (cells[nameAt] ?? "").replace(/\s+/g, " ").trim();
+    const phones = (phoneAt ?? cells.map((_, j) => j).filter((j) => j !== nameAt)).map((j) => cells[j] ?? "").filter((c) => /\d{6}/.test(c));
+    if (!name) { problems.push(`Line ${line}: no name.`); return; }
+    if (phones.length === 0) { problems.push(`Line ${line}: ${name} has no phone number.`); return; }
+    rows.push({ name: name.slice(0, 120), phones: phones.slice(0, 5) });
+  });
+  return { rows, problems };
+}
+
+export const importLecturers = (rows: LecturerRow[]) =>
+  must(rpc<{ added: number; updated: number; skipped: string[] }>("admin_import_lecturers", { p_rows: rows }));
+
 export const deleteLecturer = (id: string) => must(rpc("admin_delete_lecturer", { p_id: id }));
 export const saveScheduleDoc = (doc: { title: string; url: string; block: string; track: "IUP" | "REGULER" | null }) =>
   must(rpc("admin_save_schedule_doc", { p_title: doc.title, p_url: doc.url, p_block: doc.block, p_track: doc.track }));

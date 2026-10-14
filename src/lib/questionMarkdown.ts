@@ -146,7 +146,16 @@ function parseQuestion(lines: string[], start: number, header: ImportHeader, pro
       const text = option[2].trim();
       const img = text.match(IMAGE);
       if (option[1].toLowerCase() === "x") correct = [...correct, options.length];
-      options.push(img ? { text: img[1], image: imagePath(img[2]) } : { text, image: null });
+      const optionImage = img ? imagePath(img[2]) : null;
+      if (img && !optionImage) {
+        problems.push({
+          line: at(i),
+          message: /^upload:/i.test(img[2])
+            ? `Upload the picture for "${img[2].slice(7)}" first (see Pictures to upload).`
+            : "Images are paths in the repo, like question-images/1.1/name.jpg.",
+        });
+      }
+      options.push(img ? { text: img[1], image: optionImage } : { text, image: null });
       continue;
     }
     const answer = line.match(ANSWER);
@@ -158,7 +167,14 @@ function parseQuestion(lines: string[], start: number, header: ImportHeader, pro
     const img = line.match(IMAGE);
     if (img) {
       const path = imagePath(img[2]);
-      if (!path) problems.push({ line: at(i), message: "Images are paths in the repo, like question-images/1.1/name.jpg." });
+      if (!path) {
+        problems.push({
+          line: at(i),
+          message: /^upload:/i.test(img[2])
+            ? `Upload the picture for "${img[2].slice(7)}" first (see Pictures to upload).`
+            : "Images are paths in the repo, like question-images/1.1/name.jpg.",
+        });
+      }
       else if (image) problems.push({ line: at(i), message: "A question has one image." });
       else image = { path, alt: img[1].trim() };
       continue;

@@ -1,4 +1,4 @@
-import type { Collection, Db, IndexDescription } from "mongodb";
+import type { Binary, Collection, Db, IndexDescription } from "mongodb";
 import type { FileRow, RunStatus, SyncCursor } from "./driveSync.js";
 
 // Every MongoDB collection the app keeps, its document shape and its indexes, in one place.
@@ -268,6 +268,17 @@ export interface ScheduleDocDoc {
   updatedAt: Date;
 }
 
+/** A question picture an admin uploaded in the import screen (see images.ts). */
+export interface QuestionImageDoc {
+  _id: string;
+  name: string;
+  contentType: "image/webp" | "image/png" | "image/jpeg";
+  data: Binary;
+  size: number;
+  createdBy: string;
+  createdAt: Date;
+}
+
 /** A student's note about the lecturer list: a wrong number, or a lecturer who is missing. */
 export interface LecturerReportDoc {
   _id: string;
@@ -317,6 +328,7 @@ export interface Collections {
   lecturers: Collection<LecturerDoc>;
   scheduleDocs: Collection<ScheduleDocDoc>;
   lecturerReports: Collection<LecturerReportDoc>;
+  questionImages: Collection<QuestionImageDoc>;
   aiUsage: Collection<AiUsageDoc>;
   auditLog: Collection<AuditDoc>;
 }
@@ -344,6 +356,7 @@ export function collections(db: Db): Collections {
     lecturers: db.collection("lecturers"),
     scheduleDocs: db.collection("scheduleDocs"),
     lecturerReports: db.collection("lecturerReports"),
+    questionImages: db.collection("questionImages"),
     aiUsage: db.collection("aiUsage"),
     auditLog: db.collection("auditLog"),
   };

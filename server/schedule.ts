@@ -163,6 +163,37 @@ export async function adminSaveLecturer(ctx: Ctx, args: Args): Promise<null> {
   return null;
 }
 
+/**
+ * Adds many lecturers at once. A lecturer whose name is already listed gets the new numbers
+ * added to theirs; a number that can't be a phone number is skipped and reported by name.
+ */
+export async function adminImportLecturers(ctx: Ctx, args: Args): Promise<{ added: number; updated: number; skipped: string[] }> {
+  requireAdmin(ctx);
+  const rows = args.p_rows;
+  if (!Array.isArray(rows) || rows.length === 0 || rows.length > 500) throw refuse("bad_rows");
+  let added = 0;
+  let updated = 0;
+  const skipped: string[] = [];
+  for (const raw of rows) {
+    const r = (raw ?? {}) as Record<string, unknown>;
+    const name = typeof r.name === "string" ? r.name.trim().replace(/\s+/g, " ") : "";
+    if (!name || name.length > 120 || !Array.isArray(r.phones)) throw refuse("bad_rows");
+    const phones = [...new Set(r.phones.map((p) => (typeof p === "string" ? normalizePhone(p) : null)).filter((p): p is string => p !== null))];
+    if (phones.length !== new Set(r.phones).size) skipped.push(name);
+    if (phones.length === 0) continue;
+    const found = await ctx.c.lecturers.findOne({ name });
+    if (found) {
+      await ctx.c.lecturers.updateOne({ _id: found._id }, { $set: { phones: [...new Set([...found.phones, ...phones])].slice(0, 5), updatedAt: ctx.now } });
+      updated++;
+    } else {
+      await ctx.c.lecturers.insertOne({ _id: crypto.randomUUID(), name, phones: phones.slice(0, 5), createdAt: ctx.now, updatedAt: ctx.now });
+      added++;
+    }
+  }
+  await audit(ctx, "lecturer.import", null, { added, updated });
+  return { added, updated, skipped };
+}
+
 export async function adminDeleteLecturer(ctx: Ctx, args: Args): Promise<null> {
   requireAdmin(ctx);
   const id = text(args, "p_id") ?? "";

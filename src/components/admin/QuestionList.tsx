@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
-import { deleteQuestion, updateQuestion, type AdminQuestion } from "../../lib/admin";
+import { deleteQuestion, restoreQuestion, updateQuestion, type AdminQuestion } from "../../lib/admin";
 import { parseQuestionMarkdown, questionMarkdown } from "../../lib/questionMarkdown";
 
 /** One question as editable Markdown (the import format, without the file header). */
@@ -77,14 +77,23 @@ export function QuestionList({ questions, onChanged, details }: {
                 )}
                 <div className="admin-actions">
                   <small>{[details?.(q), t("admin.revisionN", { n: q.revision })].filter(Boolean).join(" · ")}</small>
-                  <button type="button" className="btn btn-link" onClick={() => { setEditing({ id: q.id, text: asMarkdown(q) }); }}>{t("admin.edit")}</button>
-                  <button type="button" className="btn btn-link account-danger"
-                    onClick={() => {
-                      if (!window.confirm(t("admin.deleteQuestionConfirm"))) return;
-                      deleteQuestion(q.id).then(onChanged, (e: Error) => { setProblem(errorText(e)); });
-                    }}>
-                    {t("admin.delete")}
-                  </button>
+                  {q.deleted ? (
+                    <button type="button" className="btn btn-link"
+                      onClick={() => { restoreQuestion(q.id).then(onChanged, (e: Error) => { setProblem(errorText(e)); }); }}>
+                      {t("admin.restore")}
+                    </button>
+                  ) : (
+                    <>
+                      <button type="button" className="btn btn-link" onClick={() => { setEditing({ id: q.id, text: asMarkdown(q) }); }}>{t("admin.edit")}</button>
+                      <button type="button" className="btn btn-link account-danger"
+                        onClick={() => {
+                          if (!window.confirm(t("admin.deleteQuestionConfirm"))) return;
+                          deleteQuestion(q.id).then(onChanged, (e: Error) => { setProblem(errorText(e)); });
+                        }}>
+                        {t("admin.delete")}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             )}

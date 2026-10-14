@@ -2,8 +2,9 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { EmptyState } from "../components/EmptyState";
 import { HighlightText } from "../components/HighlightText";
-import { DriveFileView, DriveKind, NewPill, OpenedMark } from "../components/drive/DriveParts";
+import { DriveFileView, DriveKind, DriveThumb, NewPill, OpenedMark } from "../components/drive/DriveParts";
 import { RefreshIcon, SearchIcon } from "../components/icons";
+import { cleanFilter, driveFilterOptions, filterDriveFiles, isFiltering, type DriveFilter } from "../lib/driveFilters";
 import { useChosenBlock } from "../hooks/useChosenBlock";
 import { blockFirst } from "../lib/blocks";
 import { useDrive, useDriveBothTracks, useDriveOpened } from "../hooks/useDrive";
@@ -78,6 +79,7 @@ export function ClassDrive() {
   const urlPath = params.getAll("f");
   const fileId = params.get("file");
   const urlQuery = params.get("q") ?? "";
+  const urlFilter: DriveFilter = { block: params.get("block") ?? "", category: params.get("cat") ?? "", subject: params.get("sub") ?? "" };
   const sort: DriveSort = params.get("sort") === "newest" ? "newest" : "name";
   // What's typed lives here, and reaches the URL (for Back and links) after a pause: binding the
   // box to the URL directly drops keystrokes, since navigation updates arrive as transitions.
@@ -108,7 +110,7 @@ export function ClassDrive() {
 
   /** The page with some of its settings changed (folder, file, search, order). */
   const hrefWith = useCallback(
-    (change: { path?: readonly string[]; file?: string | null; q?: string; sort?: DriveSort }) => {
+    (change: { path?: readonly string[]; file?: string | null; q?: string; sort?: DriveSort; filter?: DriveFilter }) => {
       const next = new URLSearchParams();
       for (const name of change.path ?? path) next.append("f", name);
       const file = change.file === undefined ? fileId : change.file;
@@ -116,10 +118,16 @@ export function ClassDrive() {
       const q = change.q ?? query;
       if (q) next.set("q", q);
       if ((change.sort ?? sort) === "newest") next.set("sort", "newest");
+      const chosen = change.filter ?? urlFilter;
+      if (chosen.block) next.set("block", chosen.block);
+      if (chosen.category) next.set("cat", chosen.category);
+      if (chosen.subject) next.set("sub", chosen.subject);
       const qs = next.toString();
       return qs ? `/drive?${qs}` : "/drive";
     },
-    [path, fileId, query, sort],
+    // urlFilter is rebuilt each render; its three strings are what matter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [path, fileId, query, sort, urlFilter.block, urlFilter.category, urlFilter.subject],
   );
 
   const index = useMemo(() => {
@@ -134,6 +142,12 @@ export function ClassDrive() {
       ],
     };
   }, [tree]);
+
+  // A part of the filter that no file offers any more (the Drive changed) is dropped.
+  const filter = useMemo(() => (index ? cleanFilter(index.files, urlFilter) : urlFilter), [index, urlFilter.block, urlFilter.category, urlFilter.subject]); // eslint-disable-line react-hooks/exhaustive-deps
+  const filtering = isFiltering(filter);
+  const filterOptions = useMemo(() => (index ? driveFilterOptions(index.files, filter) : null), [index, filter]);
+  const filteredFiles = useMemo(() => (index && filtering ? filterDriveFiles(index.files, filter) : null), [index, filter, filtering]);
 
   const folder = tree ? folderAt(tree.root, path) : null;
   // An archive's cohort folder on the way to here: read when it's first opened, then checked
@@ -164,7 +178,21 @@ export function ClassDrive() {
   const unopened = useMemo(() => (tree ? waitingFolders(tree.root).length : 0), [tree]);
   const selected = fileId && index ? index.byId.get(fileId) : undefined;
   const searching = deferredQuery.trim().length >= 2;
-  const results = useMemo(() => (index && searching ? searchDrive(index.searchable, deferredQuery) : null), [index, searching, deferredQuery]);
+  const results = useMemo(() => {
+    if (!index) return null;
+    if (searching) {
+      // With a filter on, only the files in it are searched (folders are left out).
+      const inFilter = filteredFiles ? new Set(filteredFiles.map((x) => x.file.id)) : null;
+      const pool = inFilter ? index.searchable.filter((x) => x.item.kind === "file" && inFilter.has(x.item.file.id)) : index.searchable;
+      return searchDrive(pool, deferredQuery);
+    }
+    if (filteredFiles) {
+      const byId = new Map(filteredFiles.map((x) => [x.file.id, x]));
+      const shown = sortFiles(filteredFiles.map((x) => x.file), sort).flatMap((file) => byId.get(file.id) ?? []);
+      return { matches: shown.map(({ file, path: p }) => ({ item: { kind: "file", file, path: p } as Hit, path: p, ranges: [] as [number, number][] })), total: shown.length };
+    }
+    return null;
+  }, [index, searching, deferredQuery, filteredFiles, sort]);
   const recentFiles = useMemo(
     () => (index ? recent.flatMap((id) => index.byId.get(id) ?? []).slice(0, RECENT_SHOWN) : []),
     [index, recent],
@@ -219,6 +247,9 @@ export function ClassDrive() {
   }, [selected, prev, next, open, close, query, hrefWith, setParams]);
 
   const setQuery = (q: string) => { setQueryText(q); };
+  const setFilter = (next: DriveFilter) => {
+    setParams(new URLSearchParams(hrefWith({ filter: next, file: null }).split("?")[1] ?? ""), { replace: true });
+  };
   useEffect(() => {
     if (query === urlQuery) return;
     const timer = window.setTimeout(() => {
@@ -304,6 +335,7 @@ export function ClassDrive() {
             </span>
             <span className="drive-row-sub">{results ? placeLabel(filePath, t) : fileFacts(file, now, t)}</span>
           </span>
+          <DriveThumb file={file} />
           {fresh ? <NewPill /> : opened.has(file.id) && <OpenedMark />}
         </Link>
       </li>
@@ -384,6 +416,34 @@ export function ClassDrive() {
               </kbd>
             )}
           </label>
+          {filterOptions && filterOptions.blocks.length > 0 && (
+            <div className="drive-filters" role="group" aria-label={t("drive.filters")}>
+              <select className="form-input admin-select" aria-label={t("drive.filterBlock")} value={filter.block}
+                onChange={(e) => { setFilter({ block: e.target.value, category: "", subject: "" }); }}>
+                <option value="">{t("drive.anyBlock")}</option>
+                {filterOptions.blocks.map((b) => <option key={b.id} value={b.id}>{b.name ? `${t("admin.blockN", { block: b.id })} · ${niceName(b.name)}` : t("admin.blockN", { block: b.id })}</option>)}
+              </select>
+              {filterOptions.categories.length > 0 && (
+                <select className="form-input admin-select" aria-label={t("drive.filterCategory")} value={filter.category}
+                  onChange={(e) => { setFilter({ ...filter, category: e.target.value, subject: "" }); }}>
+                  <option value="">{t("drive.anyCategory")}</option>
+                  {filterOptions.categories.map((c) => <option key={c} value={c}>{niceName(c)}</option>)}
+                </select>
+              )}
+              {filterOptions.subjects.length > 0 && (
+                <select className="form-input admin-select" aria-label={t("drive.filterSubject")} value={filter.subject}
+                  onChange={(e) => { setFilter({ ...filter, subject: e.target.value }); }}>
+                  <option value="">{t("drive.anySubject")}</option>
+                  {filterOptions.subjects.map((x) => <option key={x} value={x}>{niceName(x)}</option>)}
+                </select>
+              )}
+              {filtering && (
+                <button type="button" className="btn btn-link" onClick={() => { setFilter({ block: "", category: "", subject: "" }); }}>
+                  {t("drive.clearFilters")}
+                </button>
+              )}
+            </div>
+          )}
           {tracks.available && (
             <label className="bank-check drive-both">
               <input type="checkbox" checked={tracks.both} onChange={(e) => { tracks.setBoth(e.target.checked); }} />

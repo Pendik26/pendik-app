@@ -22,6 +22,7 @@ import { buildSubjectOverviews } from "../lib/subjectOverview";
 import { TimerIcon } from "../components/icons";
 import type { CardStateMap, ExamAttempt, QuizAttempt, ReadingPosition } from "../types/content";
 import { packagesForBlock } from "../lib/exams";
+import { RunningAttemptBanner } from "../components/exam/RunningAttemptBanner";
 import { RecentDriveFiles } from "../components/drive/RecentDriveFiles";
 import { useI18n } from "../i18n/useI18n";
 import type { Translate } from "../i18n/i18n";
@@ -218,6 +219,8 @@ export function Home() {
   return (
     <section className="page home">
       <TodayHero streak={streak} firstVisit={!hasActivity} current={currentBlock} onPickBlock={setCurrentBlock} />
+
+      <RunningAttemptBanner />
 
       {continueItems.length > 0 && (
         <section className="home-section">

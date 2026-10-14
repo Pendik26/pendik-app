@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseRosterLines, suggestedMinutes } from "./admin";
+import { parseLecturerTable, parseGroupLines, classSection, parseRosterLines, suggestedMinutes } from "./admin";
 
 describe("pasted roster lines", () => {
   it("reads commas, tabs or semicolons, skips a header and fills the cohort", () => {
@@ -30,5 +30,41 @@ describe("pasted roster lines", () => {
   it("suggests about a minute a question", () => {
     expect(suggestedMinutes(64)).toBe(65);
     expect(suggestedMinutes(2)).toBe(5);
+  });
+});
+
+describe("pasted group lines", () => {
+  it("reads id, group and an optional class, and reports bad lines", () => {
+    const { rows, problems } = parseGroupLines("NIM,Group,Class\n2601001, 3, Reguler\n2601002\t1\n2601003, 2, Other\n2601001, 4\nx, 1");
+    expect(rows).toEqual([
+      { student_id: "2601001", class_group: "3", track: "REGULER" },
+      { student_id: "2601002", class_group: "1" },
+    ]);
+    expect(problems).toHaveLength(3);
+  });
+});
+
+describe("class section", () => {
+  it("comes from the tutorial group's letter", () => {
+    expect(classSection("REGULER", "A3")).toBe("A");
+    expect(classSection("REGULER", "b10")).toBe("B");
+    expect(classSection("REGULER", null)).toBeNull();
+    expect(classSection("IUP", "IUP-A")).toBe("A");
+    expect(classSection("IUP", "iup b")).toBe("B");
+    expect(classSection("IUP", "IUP-1")).toBeNull();
+  });
+});
+
+describe("lecturer table", () => {
+  it("reads an exported table with quoted cells and several phone columns", () => {
+    const { rows, problems } = parseLecturerTable('"No. Telp 1","No. Telp 2","Mata Kuliah","Nama"\n"0811111111","0822222222","","Dr. A, dr., Sp.X"\n"","","",""\n"0833333333","","","B Person"\n"","","","No Phone"');
+    expect(rows).toEqual([
+      { name: "Dr. A, dr., Sp.X", phones: ["0811111111", "0822222222"] },
+      { name: "B Person", phones: ["0833333333"] },
+    ]);
+    expect(problems).toEqual(["Line 5: No Phone has no phone number."]);
+  });
+  it("reads plain name, phone lines without a header", () => {
+    expect(parseLecturerTable("C Person, 0844444444, 0855555555").rows).toEqual([{ name: "C Person", phones: ["0844444444", "0855555555"] }]);
   });
 });

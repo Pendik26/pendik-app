@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { QuestionImage } from "../../components/exam/QuestionImage";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import { importQuestions, packagesFromImport, suggestedMinutes } from "../../lib/admin";
 import { loadExamRecords } from "../../lib/exams";
+import { clearImportDraft, readImportDraft, saveImportDraft } from "../../lib/importDraft";
+import { fillSlots, imageSlots, toWebp, uploadImage } from "../../lib/importImages";
 import { parseQuestionMarkdown } from "../../lib/questionMarkdown";
 
 /**
@@ -18,16 +20,42 @@ export function AdminImport() {
   const [problem, setProblem] = useState<string | null>(null);
   const [imported, setImported] = useState<{ importId: string; count: number } | null>(null);
   const [made, setMade] = useState<{ exam_id: string; practice_id: string } | null>(null);
-  const parsed = text.trim() ? parseQuestionMarkdown(text) : null;
+  // Pictures the file asks for as ![..](upload:label); once uploaded, the label becomes the picture's path.
+  const [uploaded, setUploaded] = useState<Record<string, string>>({});
+  const [uploading, setUploading] = useState<string | null>(null);
+  const [draft, setDraft] = useState(() => readImportDraft());
+  const effective = fillSlots(text, uploaded);
+  const slots = imageSlots(text);
+  const parsed = effective.trim() ? parseQuestionMarkdown(effective) : null;
   const header = parsed?.header ?? null;
   const [examTitle, setExamTitle] = useState("");
   const [practiceTitle, setPracticeTitle] = useState("");
   const [minutes, setMinutes] = useState("");
   const [trackBest, setTrackBest] = useState(true);
 
+  // Keep an unfinished import in this browser, so a refresh doesn't lose it.
+  useEffect(() => {
+    if (!imported) saveImportDraft({ text, uploaded });
+  }, [text, uploaded, imported]);
+
+  const uploadPicture = async (label: string, file: File | undefined) => {
+    if (!file) return;
+    setUploading(label);
+    setProblem(null);
+    try {
+      const path = await uploadImage(await toWebp(file), label);
+      setUploaded((u) => ({ ...u, [label]: path }));
+    } catch (e) {
+      setProblem(t("admin.imageFailed", { label, message: errorText(e) }));
+    }
+    setUploading(null);
+  };
+
   const readFile = async (file: File | undefined) => {
     if (!file) return;
     setText(await file.text());
+    setUploaded({});
+    setDraft(null);
     setImported(null);
     setMade(null);
   };
@@ -37,8 +65,9 @@ export function AdminImport() {
     setBusy(true);
     setProblem(null);
     try {
-      const importId = await importQuestions(header.title, text, parsed.questions);
+      const importId = await importQuestions(header.title, effective, parsed.questions);
       setImported({ importId, count: parsed.questions.length });
+      clearImportDraft();
       setExamTitle(header.title);
       setPracticeTitle(`${header.title} (${t("exam.modePractice").toLowerCase()})`);
       setMinutes(String(suggestedMinutes(parsed.questions.length)));
@@ -74,6 +103,14 @@ export function AdminImport() {
     <div className="admin-section">
       {problem && <p className="account-error" role="alert">{problem}</p>}
 
+      {!imported && draft && !text.trim() && (
+        <p className="account-note admin-draft">
+          {t("admin.draftFound")}{" "}
+          <button type="button" className="btn btn-secondary btn-small" onClick={() => { setText(draft.text); setUploaded(draft.uploaded); setDraft(null); }}>{t("admin.draftRestore")}</button>{" "}
+          <button type="button" className="btn btn-link" onClick={() => { clearImportDraft(); setDraft(null); }}>{t("admin.draftDiscard")}</button>
+        </p>
+      )}
+
       {!imported && (
         <>
           <p className="account-note">
@@ -89,6 +126,35 @@ export function AdminImport() {
             placeholder={"---\ntitle: Block 1.1 UB 2025\nblock: 1.1\nsource: ub\nyear: 2025\n---\n\n## 1\n…"}
             onChange={(e) => { setText(e.target.value); }} />
         </>
+      )}
+
+      {slots.length > 0 && !imported && (
+        <div className="account-card">
+          <h3>{t("admin.slotsTitle")}</h3>
+          <p className="account-note">{t("admin.slotsHint")}</p>
+          <ul className="admin-slots">
+            {slots.map((label) => (
+              <li key={label} className="admin-slot"
+                onDragOver={(e) => { e.preventDefault(); }}
+                onDrop={(e) => { e.preventDefault(); void uploadPicture(label, e.dataTransfer.files[0]); }}>
+                <span className="admin-mono">{label}</span>
+                {uploaded[label] ? (
+                  <>
+                    <span className="account-success">{t("admin.slotDone")}</span>
+                    <QuestionImage path={uploaded[label]} alt={label} small />
+                  </>
+                ) : (
+                  <span className="account-note">{uploading === label ? t("admin.slotUploading") : t("admin.slotWaiting")}</span>
+                )}
+                <label className="btn btn-secondary btn-small">
+                  {uploaded[label] ? t("admin.slotReplace") : t("admin.slotChoose")}
+                  <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden disabled={uploading !== null}
+                    onChange={(e) => { void uploadPicture(label, e.target.files?.[0]); e.target.value = ""; }} />
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {parsed && !imported && (
@@ -162,7 +228,7 @@ export function AdminImport() {
           <p className="account-success">{t("admin.packagesMade")}</p>
           <div className="account-row">
             <Link to="/admin/packages" className="btn btn-small">{t("admin.reviewAndPublish")}</Link>
-            <button type="button" className="btn btn-secondary btn-small" onClick={() => { setText(""); setImported(null); setMade(null); }}>{t("admin.importAnother")}</button>
+            <button type="button" className="btn btn-secondary btn-small" onClick={() => { setText(""); setUploaded({}); setImported(null); setMade(null); }}>{t("admin.importAnother")}</button>
           </div>
         </div>
       )}

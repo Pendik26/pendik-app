@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
+import { syncAlarm } from "../../lib/syncAlarm";
 import { applyHeldSync, listSyncRuns, searchDriveFiles, setFileHidden, setFileOrder, syncStep, type AdminDriveFile, type SyncRunRow } from "../../lib/admin";
 
 /** The class Drive sync: run it now, look at past runs, let a held run go ahead, hide files. */
@@ -34,11 +35,13 @@ export function AdminDrive() {
     reload();
   };
 
+  const alarm = runs ? syncAlarm(runs) : null;
   const when = (iso: string) => new Date(iso).toLocaleString(language === "id" ? "id-ID" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
   return (
     <div className="admin-section">
       {problem && <p className="account-error" role="alert">{problem}</p>}
+      {alarm && <p className="account-error" role="alert">{t(alarmKey[alarm])}</p>}
       <div className="admin-toolbar">
         <button type="button" className="btn btn-small" disabled={syncing} onClick={() => void syncNow()}>
           {syncing ? t("admin.syncing") : t("admin.syncNow")}
@@ -93,6 +96,13 @@ export function AdminDrive() {
     </div>
   );
 }
+
+const alarmKey = {
+  never: "admin.alarmNever",
+  stale: "admin.alarmStale",
+  held: "admin.alarmHeld",
+  failed: "admin.alarmFailed",
+} as const;
 
 const statusKey = { running: "admin.runRunning", done: "admin.runDone", failed: "admin.runFailed", held: "admin.runHeld" } as const;
 

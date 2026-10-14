@@ -103,7 +103,10 @@ function Sessions({ kind }: { kind: SessionKind }) {
   const events = useLoaded(listEvents);
   const groups = useLoaded(listGroups);
   const lecturers = useLoaded(listLecturers);
-  const [group, setGroup] = useLocalStorage<string>(STORAGE_KEYS.scheduleGroup, "");
+  const [chosen, setGroup] = useLocalStorage<string>(STORAGE_KEYS.scheduleGroup, "");
+  const { user } = useAccount();
+  // Until the student picks one, the tutorial group the admin set for them is used.
+  const group = chosen || ((groups.data ?? []).includes(user?.classGroup ?? "") ? (user?.classGroup ?? "") : "");
 
   const now = wibNow();
   const mine = useMemo(() => (events.data ?? []).filter((e) => e.kind === kind && e.group === group), [events.data, kind, group]);

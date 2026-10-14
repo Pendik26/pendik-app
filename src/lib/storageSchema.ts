@@ -41,6 +41,7 @@ export const KEY_TYPES = {
   atlas: { id: null, saved: "server", about: "3D anatomy: recently opened structures, whether the view turns around the selection, perspective or orthographic, and the floor grid" },
   alfond: { id: null, saved: "server", about: "Alfond settings: whether its floating button shows on every page" },
   alfondchat: { id: null, saved: "device", about: "Alfond's recent conversation (device-only)" },
+    importdraft: { id: null, saved: "device", about: "An admin's unfinished question import: the file text and the pictures already uploaded (device-only)" },
     driveseen: { id: null, saved: "server", about: "Class Drive file ids the student has opened, the most recently opened last" },
     schedulegroup: { id: null, saved: "server", about: "The student group whose tutorial and skills-lab schedule the Schedule page shows" },
     driveboth: { id: null, saved: "server", about: "Class Drive shows the other class's (IUP or Reguler) folders too" },

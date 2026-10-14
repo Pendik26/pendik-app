@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { FlagIcon, TimerIcon } from "../components/icons";
 import { BookmarkButton } from "../components/exam/BookmarkButton";
 import { QuestionImage } from "../components/exam/QuestionImage";
+import { useFullscreen } from "../hooks/useFullscreen";
 import { formatClock } from "../lib/examFormat";
 import { useI18n } from "../i18n/useI18n";
 import {
@@ -126,6 +127,7 @@ function RunningExam({
   const { t } = useI18n();
   const navigate = useNavigate();
   const isExam = attempt.mode === "exam";
+  const fullscreen = useFullscreen(isExam);
   const [answers, setAnswers] = useState<Record<string, AttemptAnswer>>(attempt.answers);
   const [flagged, setFlagged] = useState<Set<string>>(new Set(attempt.flagged));
   const [tabLeaves, setTabLeaves] = useState(attempt.tabLeaves);
@@ -336,6 +338,12 @@ function RunningExam({
       </div>
 
       {problem && <p className="account-error" role="alert">{problem}</p>}
+      {isExam && fullscreen.supported && !fullscreen.active && (
+        <p className="exam-fullscreen-note">
+          <span>{t("exam.fullscreenHint")}</span>
+          <button type="button" className="btn btn-secondary btn-small" onClick={fullscreen.enter}>{t("exam.fullscreen")}</button>
+        </p>
+      )}
       {isExam && tabLeaves > 0 && <p className="exam-tab-leaves">{t("exam.tabLeaves", { count: tabLeaves })}</p>}
 
       <div className="quiz-card">

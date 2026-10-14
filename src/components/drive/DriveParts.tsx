@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "../../i18n/useI18n";
-import { driveDownloadUrl, drivePreviewUrl, driveViewUrl, fileFacts, fileTitle, kindLabel, youtubeVideoId } from "../../lib/drive";
+import { driveDownloadUrl, drivePreviewUrl, driveThumbUrl, driveViewUrl, fileFacts, fileTitle, kindLabel, youtubeVideoId } from "../../lib/drive";
 import type { DriveFile, DriveFileKind } from "../../lib/driveTypes";
 
 /** A small tag for what a row is: a folder, slides, a PDF, a recording… */
@@ -20,6 +20,24 @@ export function DriveKind({ kind }: { kind: DriveFileKind | "folder" }) {
         kindLabel(kind, t)
       )}
     </span>
+  );
+}
+
+/** A small picture of a file in a list; nothing at all if there isn't one or it can't be loaded. */
+export function DriveThumb({ file }: { file: DriveFile }) {
+  const [failed, setFailed] = useState(false);
+  const src = driveThumbUrl(file.id, file.kind);
+  if (!src || failed) return null;
+  return (
+    <img
+      className="drive-thumb"
+      src={src}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={() => { setFailed(true); }}
+    />
   );
 }
 
