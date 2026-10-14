@@ -251,7 +251,7 @@ export interface ScheduleEventDoc {
 export interface LecturerDoc {
   _id: string;
   name: string;
-  /** International format without spaces, e.g. "+628179555799". */
+  /** International format without spaces, e.g. "+628123456789". */
   phones: string[];
   createdAt: Date;
   updatedAt: Date;

@@ -3,10 +3,10 @@ import { normalizePhone } from "./schedule.js";
 
 describe("normalizePhone", () => {
   it("turns the ways people write Indonesian numbers into one form", () => {
-    expect(normalizePhone("0817-9555 799")).toBe("+628179555799");
-    expect(normalizePhone("628179555799")).toBe("+628179555799");
-    expect(normalizePhone("+62 817 9555 799")).toBe("+628179555799");
-    expect(normalizePhone("0061498317333")).toBe("+61498317333");
+    expect(normalizePhone("0812-3456 789")).toBe("+628123456789");
+    expect(normalizePhone("628123456789")).toBe("+628123456789");
+    expect(normalizePhone("+62 812 3456 789")).toBe("+628123456789");
+    expect(normalizePhone("0061400000000")).toBe("+61400000000");
   });
   it("refuses what can't be a phone number", () => {
     expect(normalizePhone("abc")).toBeNull();

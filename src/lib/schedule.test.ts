@@ -49,7 +49,7 @@ describe("lecturers", () => {
     { id: "3", name: "Muthmainah, dr. MNeurosci PhD", phones: [] },
   ];
   it("links WhatsApp without the plus", () => {
-    expect(whatsappLink("+628179555799")).toBe("https://wa.me/628179555799");
+    expect(whatsappLink("+628123456789")).toBe("https://wa.me/628123456789");
   });
   it("makes initials from the name, not the title", () => {
     expect(initials("Abdurahman Laqif, dr., Sp.OG")).toBe("AL");
