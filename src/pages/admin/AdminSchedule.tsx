@@ -1,25 +1,20 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
-import {
-  clearScheduleGroup, deleteLecturer, importLecturers, parseLecturerTable, deleteScheduleDoc, listLecturerReports, resolveLecturerReport, saveLecturer,
-  saveScheduleDoc, saveScheduleEvents,
-} from "../../lib/admin";
-import { listDocs, listGroups, listLecturers, type Lecturer, type LecturerReport, type ScheduleDoc } from "../../lib/schedule";
+import { clearScheduleGroup, deleteScheduleDoc, saveScheduleDoc, saveScheduleEvents } from "../../lib/admin";
+import { listDocs, listGroups, type ScheduleDoc } from "../../lib/schedule";
 
-/** Fills in the schedule: sessions (pasted as JSON), lecturers, lecture PDFs, and students' notes. */
+/** Fills in the schedule: sessions (pasted as JSON) and lecture PDFs. Lecturers live under Data. */
 export function AdminSchedule() {
   const { t } = useI18n();
-  const [lecturers, setLecturers] = useState<Lecturer[]>([]);
   const [docs, setDocs] = useState<ScheduleDoc[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
-  const [reports, setReports] = useState<LecturerReport[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
 
   const reload = useCallback(() => {
-    Promise.all([listLecturers(), listDocs(), listGroups(), listLecturerReports()]).then(
-      ([l, d, g, r]) => { setLecturers(l); setDocs(d); setGroups(g); setReports(r); },
+    Promise.all([listDocs(), listGroups()]).then(
+      ([d, g]) => { setDocs(d); setGroups(g); },
       (e: Error) => { setProblem(errorText(e)); },
     );
   }, []);
@@ -55,27 +50,8 @@ export function AdminSchedule() {
       return t("schedule.adminSavedEvents", { count: r.saved });
     });
   };
-  const [lecturerPaste, setLecturerPaste] = useState("");
-  const parsedLecturers = parseLecturerTable(lecturerPaste);
   const [clearGroup, setClearGroup] = useState("");
   const [clearKind, setClearKind] = useState<"tutor" | "sl">("sl");
-
-  // Lecturers
-  const [editing, setEditing] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [phones, setPhones] = useState("");
-  const startEdit = (l: Lecturer | null) => {
-    setEditing(l?.id ?? null);
-    setName(l?.name ?? "");
-    setPhones(l?.phones.join(", ") ?? "");
-  };
-  const submitLecturer = (e: FormEvent) => {
-    e.preventDefault();
-    void act(async () => {
-      await saveLecturer(name, phones.split(/[,\n;]/).map((p) => p.trim()).filter(Boolean), editing ?? undefined);
-      startEdit(null);
-    });
-  };
 
   // PDFs
   const [doc, setDoc] = useState({ title: "", url: "", block: "", track: "" });
@@ -122,49 +98,6 @@ export function AdminSchedule() {
         </div>
       )}
 
-      <h2>{t("schedule.adminLecturersHeading")}</h2>
-      <p className="account-note">{t("schedule.adminLecturerHint")}</p>
-      <form onSubmit={submitLecturer} className="admin-toolbar">
-        <input className="form-input" required maxLength={120} value={name} placeholder={t("schedule.name")} aria-label={t("schedule.name")} onChange={(e) => { setName(e.target.value); }} />
-        <input className="form-input" value={phones} placeholder={t("schedule.adminPhones")} aria-label={t("schedule.adminPhones")} onChange={(e) => { setPhones(e.target.value); }} />
-        <button type="submit" className="btn btn-small">{editing ? t("schedule.adminSaveLecturer") : t("schedule.adminAddLecturer")}</button>
-        {editing && <button type="button" className="btn btn-secondary btn-small" onClick={() => { startEdit(null); }}>{t("common.cancel")}</button>}
-      </form>
-      <details className="account-card">
-        <summary>{t("schedule.adminImportLecturers")}</summary>
-        <p className="account-note">{t("schedule.adminImportLecturersHint")}</p>
-        <textarea className="form-input admin-textarea" rows={6} value={lecturerPaste} onChange={(e) => { setLecturerPaste(e.target.value); }} aria-label={t("schedule.adminImportLecturers")} />
-        {parsedLecturers.problems.length > 0 && <ul className="admin-problems">{parsedLecturers.problems.map((p) => <li key={p}>{p}</li>)}</ul>}
-        <button
-          type="button" className="btn btn-small" disabled={parsedLecturers.rows.length === 0}
-          onClick={() => void act(async () => {
-            const r = await importLecturers(parsedLecturers.rows);
-            setLecturerPaste("");
-            return `${t("schedule.adminImportedLecturers", { added: r.added, updated: r.updated })}${r.skipped.length ? ` ${t("schedule.adminImportSkipped", { names: r.skipped.join("; ") })}` : ""}`;
-          })}
-        >
-          {t("schedule.adminImportCount", { count: parsedLecturers.rows.length })}
-        </button>
-      </details>
-      {lecturers.length > 0 && (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <tbody>
-              {lecturers.map((l) => (
-                <tr key={l.id}>
-                  <td>{l.name}<br /><small>{t("schedule.adminIdHint", { id: l.id })}</small></td>
-                  <td>{l.phones.join(", ")}</td>
-                  <td>
-                    <button type="button" className="btn btn-secondary btn-small" onClick={() => { startEdit(l); }}>{t("schedule.adminEdit")}</button>{" "}
-                    <button type="button" className="btn btn-secondary btn-small" onClick={() => { if (window.confirm(t("schedule.adminDeleteLecturer", { name: l.name }))) void act(() => deleteLecturer(l.id).then(() => undefined)); }}>{t("schedule.adminDelete")}</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
       <h2>{t("schedule.adminDocsHeading")}</h2>
       <form onSubmit={submitDoc} className="admin-toolbar">
         <input className="form-input" required value={doc.title} placeholder={t("schedule.adminDocTitle")} aria-label={t("schedule.adminDocTitle")} onChange={(e) => { setDoc({ ...doc, title: e.target.value }); }} />
@@ -186,23 +119,6 @@ export function AdminSchedule() {
                   <td>{t("schedule.block", { block: d.block })}{d.track ? ` · ${d.track}` : ""}</td>
                   <td><a href={d.url} target="_blank" rel="noopener noreferrer">{d.title}</a></td>
                   <td><button type="button" className="btn btn-secondary btn-small" onClick={() => { void act(() => deleteScheduleDoc(d.id).then(() => undefined)); }}>{t("schedule.adminDelete")}</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <h2>{t("schedule.adminReportsHeading")}</h2>
-      {reports.length === 0 ? <p className="account-note">{t("schedule.adminNoReports")}</p> : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <tbody>
-              {reports.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.kind === "wrong_number" ? t("schedule.adminKindWrong") : t("schedule.adminKindNew")}</td>
-                  <td>{r.name}{r.phone ? ` · ${r.phone}` : ""}{r.note ? <><br /><small>{r.note}</small></> : null}</td>
-                  <td><button type="button" className="btn btn-secondary btn-small" onClick={() => { void act(() => resolveLecturerReport(r.id).then(() => undefined)); }}>{t("schedule.adminDone")}</button></td>
                 </tr>
               ))}
             </tbody>
