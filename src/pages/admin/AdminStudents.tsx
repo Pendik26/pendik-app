@@ -36,6 +36,7 @@ export function AdminStudents() {
   const [pasteTrack, setPasteTrack] = useState<Track | null>(null);
   const [trackFilter, setTrackFilter] = useState<"all" | Track | "none" | `${Track}-${"A" | "B"}`>("all");
   const [groupFilter, setGroupFilter] = useState("all");
+  const [accountFilter, setAccountFilter] = useState<"all" | RosterEntry["account"]>("all");
   const [groupPaste, setGroupPaste] = useState("");
   const [showGroups, setShowGroups] = useState(false);
 
@@ -72,8 +73,10 @@ export function AdminStudents() {
     return (roster ?? []).filter((r) =>
       inClass(r) &&
       (groupFilter === "all" || (groupFilter === "" ? r.classGroup === null : r.classGroup === groupFilter)) &&
+      (accountFilter === "all" || r.account === accountFilter) &&
       (!q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q)));
-  }, [roster, query, inClass, groupFilter]);
+  }, [roster, query, inClass, groupFilter, accountFilter]);
+  const shownInactive = shown.filter((r) => r.account === "none").map((r) => r.studentId);
   const groupNames = useMemo(
     () => [...new Set((roster ?? []).filter(inClass).flatMap((r) => (r.classGroup ? [r.classGroup] : [])))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
     [roster, inClass],
@@ -101,11 +104,7 @@ export function AdminStudents() {
         <select className="form-input admin-select" aria-label={t("track.label")} value={trackFilter}
           onChange={(e) => { setTrackFilter(e.target.value as typeof trackFilter); setGroupFilter("all"); }}>
           <option value="all">{t("track.all")}</option>
-          <optgroup label={t("track.iup")}>
-            <option value="IUP">{t("admin.allOfTrack", { track: t("track.iup") })}</option>
-            <option value="IUP-A">{t("admin.sectionN", { section: "A" })}</option>
-            <option value="IUP-B">{t("admin.sectionN", { section: "B" })}</option>
-          </optgroup>
+          <option value="IUP">{t("track.iup")}</option>
           <optgroup label={t("track.reguler")}>
             <option value="REGULER">{t("admin.allOfTrack", { track: t("track.reguler") })}</option>
             <option value="REGULER-A">{t("admin.sectionN", { section: "A" })}</option>
@@ -119,6 +118,18 @@ export function AdminStudents() {
           {groupNames.map((g) => <option key={g} value={g}>{t("admin.groupN", { group: g })}</option>)}
           <option value="">{t("admin.noGroup")}</option>
         </select>
+        <select className="form-input admin-select" aria-label={t("admin.account")} value={accountFilter}
+          onChange={(e) => { setAccountFilter(e.target.value as typeof accountFilter); }}>
+          <option value="all">{t("admin.anyAccount")}</option>
+          {(["active", "none", "locked"] as const).map((k) => <option key={k} value={k}>{t(stateKey[k])}</option>)}
+        </select>
+        <button type="button" className="btn btn-secondary btn-small" disabled={shownInactive.length === 0}
+          onClick={() => { setSelected((prev) => new Set([...prev, ...shownInactive])); }}>
+          {t("admin.selectInactive", { count: shownInactive.length })}
+        </button>
+        {selected.size > 0 && (
+          <button type="button" className="btn btn-link btn-small" onClick={() => { setSelected(new Set()); }}>{t("admin.clearSelection")}</button>
+        )}
         <button type="button" className="btn btn-small" disabled={busy || inactiveSelected.length === 0}
           onClick={() => void run(async () => {
             const { results } = await activateAccounts(inactiveSelected);

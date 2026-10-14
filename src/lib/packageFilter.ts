@@ -28,3 +28,10 @@ export function filterPackages(packages: readonly PackageSummary[], f: PackageFi
       (!f.year || String(p.year) === f.year),
   );
 }
+
+/** The spelling already in use for this value, ignoring case and extra spaces; else the value tidied. */
+export function matchSpelling(value: string, existing: readonly string[]): string {
+  const tidy = value.replace(/\s+/g, " ").trim();
+  const key = tidy.toLowerCase();
+  return existing.find((x) => x.replace(/\s+/g, " ").trim().toLowerCase() === key) ?? tidy;
+}

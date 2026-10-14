@@ -2,6 +2,7 @@ import type { Track } from "../context/accountContextValue";
 import { toPackage, type PackageRow, type PackageSummary } from "./exams";
 import type { ImportQuestion } from "./questionMarkdown";
 import { must, rpc } from "./db/client";
+export { classSection } from "./classSection";
 
 // What the admin pages read and change: the server's admin functions, which refuse anyone who
 // isn't an admin.
@@ -97,16 +98,6 @@ export function parseRosterLines(text: string, defaultCohort: string, defaultTra
 /** Adds students to the roster; a student already on it is updated (the server does the upsert). */
 export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
   await must(rpc("admin_add_students", { p_rows: rows }));
-}
-
-/**
- * A student's class section ("A" or "B"): the first letter of a Reguler tutorial group (A1–A10, B1–B10),
- * or the letter of an IUP group ("IUP A", "IUP B").
- */
-export function classSection(track: Track | null, group: string | null): "A" | "B" | null {
-  const g = (group ?? "").trim().toUpperCase();
-  const letter = track === "REGULER" ? g.charAt(0) : track === "IUP" ? g.replace(/^IUP[- ]?/, "").charAt(0) : "";
-  return letter === "A" || letter === "B" ? letter : null;
 }
 
 export interface GroupRow {
@@ -227,6 +218,8 @@ export interface BankQuestion extends AdminQuestion {
   block: string;
   source: string | null;
   year: number | null;
+  created_at: string;
+  updated_at: string;
   packages: string[];
 }
 
@@ -236,6 +229,7 @@ export interface BankFilter {
   year?: number;
   subject?: string;
   text?: string;
+  status?: "draft" | "published";
   /** Only deleted questions, to bring them back. */
   deleted?: boolean;
 }
@@ -252,6 +246,7 @@ export async function searchQuestions(filter: BankFilter): Promise<BankQuestion[
       p_year: filter.year ?? null,
       p_subject: filter.subject ?? null,
       p_text: filter.text?.trim() || null,
+      p_status: filter.status ?? null,
       p_deleted: filter.deleted === true,
     }),
   );
@@ -360,8 +355,22 @@ async function syncCall(body: object): Promise<SyncStepResult> {
   return data as SyncStepResult;
 }
 
-export function syncStep(): Promise<SyncStepResult> {
-  return syncCall({});
+/** One step of the Drive sync. `rereadDocs` asks a new run to read every Google Doc again for video links. */
+export function syncStep(rereadDocs = false): Promise<SyncStepResult> {
+  return syncCall(rereadDocs ? { reread_docs: true } : {});
+}
+
+/** What a sync run noticed in the Drive (server/driveSync.ts AnomalyKind), with a few example paths each. */
+export const ANOMALY_KINDS = [
+  "outside_pattern", "no_course", "duplicate", "too_deep", "too_many_folders",
+  "unlistable", "broken_shortcut", "unreadable_doc", "youtube_no_id",
+] as const;
+export type AnomalyKind = (typeof ANOMALY_KINDS)[number];
+export type Anomalies = Partial<Record<AnomalyKind, { count: number; examples: string[] }>>;
+
+export function runAnomalies(r: SyncRunRow): Anomalies {
+  const a = r.notes.anomalies;
+  return a && typeof a === "object" ? (a as Anomalies) : {};
 }
 
 export function applyHeldSync(runId: string): Promise<SyncStepResult> {

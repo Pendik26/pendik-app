@@ -371,3 +371,33 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.password-input {
+  position: relative;
+  display: flex;
+}
+
+.password-input .form-input {
+  padding-right: 5.5rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  color: var(--text);
+  background: var(--surface-hover, rgba(127, 127, 127, 0.12));
+}

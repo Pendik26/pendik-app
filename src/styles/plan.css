@@ -1274,3 +1274,9 @@ a.today-chip:hover {
     margin: 0.2rem 0 0;
   }
 }
+
+.today-who {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}

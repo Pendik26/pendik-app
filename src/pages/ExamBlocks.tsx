@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { quizQuestionsInBlock } from "../lib/content";
 import { blockFirst, studyBlocks } from "../lib/blocks";
@@ -15,6 +16,15 @@ export function ExamBlocks() {
   const records = useExamRecords();
   const running = runningAttempt(records);
   const chosenBlock = useChosenBlock();
+  // Year and type (the paper's source, e.g. Block Test or Tryout) narrow the papers; the choices come from
+  // the published papers themselves, so an empty combination is never offered.
+  const [year, setYear] = useState("");
+  const [source, setSource] = useState("");
+  const years = useMemo(() => [...new Set(records.packages.flatMap((p) => (p.year ? [String(p.year)] : [])))].sort().reverse(), [records.packages]);
+  const sources = useMemo(() => [...new Set(records.packages.flatMap((p) => (p.source ? [p.source] : [])))].sort((a, b) => a.localeCompare(b)), [records.packages]);
+  const filtering = year !== "" || source !== "";
+  const matches = (p: { year: number | null; source: string | null }) =>
+    (year === "" || String(p.year) === year) && (source === "" || p.source === source);
 
   return (
     <section className="page">
@@ -44,9 +54,30 @@ export function ExamBlocks() {
         </div>
       )}
 
+      {(years.length > 1 || sources.length > 1) && (
+        <div className="exam-filters" role="group" aria-label={t("exam.filters")}>
+          {years.length > 1 && (
+            <select className="form-input admin-select" aria-label={t("bank.years")} value={year} onChange={(e) => { setYear(e.target.value); }}>
+              <option value="">{t("exam.allYears")}</option>
+              {years.map((y) => <option key={y} value={y}>{y}</option>)}
+            </select>
+          )}
+          {sources.length > 1 && (
+            <select className="form-input admin-select" aria-label={t("exam.type")} value={source} onChange={(e) => { setSource(e.target.value); }}>
+              <option value="">{t("exam.allTypes")}</option>
+              {sources.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          )}
+          {filtering && (
+            <button type="button" className="btn btn-secondary btn-small" onClick={() => { setYear(""); setSource(""); }}>{t("exam.clearFilters")}</button>
+          )}
+        </div>
+      )}
+
       {blockFirst(studyBlocks, (b) => b.id, chosenBlock).map((block) => {
-        const packages = packagesForBlock(block.id, records);
-        const pooled = buildExamFormat(quizQuestionsInBlock(block.id).length);
+        const packages = packagesForBlock(block.id, records).filter(matches);
+        // The pooled exam has no year or type, so it steps aside while those are being filtered.
+        const pooled = buildExamFormat(filtering ? 0 : quizQuestionsInBlock(block.id).length);
         if (packages.length === 0 && pooled.questionCount === 0) return null;
         const lastPooled = readJSON<ExamAttempt[]>(STORAGE_KEYS.examHistory(block.id), []).at(-1);
         return (
@@ -89,6 +120,7 @@ export function ExamBlocks() {
         );
       })}
       {records.loaded && records.packages.length === 0 && <p className="account-note">{t("exam.noPapersYet")}</p>}
+      {filtering && !records.packages.some(matches) && <p className="account-note">{t("exam.noneMatch")}</p>}
     </section>
   );
 }

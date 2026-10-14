@@ -62,7 +62,8 @@ run("the API", () => {
     const again = (await call(admin, "admin_list_roster")).data as { student_id: string; class_group: string | null; class_section: string | null }[];
     expect(again.find((r) => r.student_id === "S301")).toMatchObject({ class_group: "B4", class_section: "B" });
     await call(admin, "admin_set_groups", { p_rows: [{ student_id: "S301", class_group: "IUP A", track: "IUP", class_section: "A" }] });
-    expect(((await call(admin, "admin_list_roster")).data as { student_id: string; class_section: string | null }[]).find((r) => r.student_id === "S301")?.class_section).toBe("A");
+    // IUP is one class (IUP A and IUP B are tutorial groups), so a section given for it is dropped.
+    expect(((await call(admin, "admin_list_roster")).data as { student_id: string; class_section: string | null }[]).find((r) => r.student_id === "S301")?.class_section).toBeNull();
     expect((await call(admin, "admin_set_groups", { p_rows: [] })).error).toBe("bad_rows");
   });
 
@@ -156,6 +157,10 @@ run("the API", () => {
       p_import_id: importId, p_exam_title: "Exam", p_practice_title: "Practice", p_block: "1.1", p_source: null, p_year: 2024, p_time_limit_minutes: 30, p_track_best: true,
     })).data;
     expect(made.question_count).toBe(2);
+    const drafts = (await call(admin, "admin_search_questions", { p_status: "draft" })).data;
+    expect(drafts).toHaveLength(2);
+    expect(drafts[0]).toMatchObject({ status: "draft", revision: expect.any(Number), created_at: expect.any(String), updated_at: expect.any(String) });
+    expect((await call(admin, "admin_search_questions", { p_status: "published" })).data).toEqual([]);
     expect((await call(student, "package_summaries")).data).toEqual([]);
     expect((await call(admin, "admin_set_package_status", { p_package_id: made.exam_id, p_status: "published" })).status).toBe(200);
     const visible = (await call(student, "package_summaries")).data;
@@ -185,6 +190,15 @@ run("the API", () => {
     expect((await call(student, "leaderboard", { p_period: "all" })).data.me.points).toBe(POINTS.days + POINTS.exam);
     expect((await call(admin, "get_attempt_result", { p_attempt_id: started.attempt_id })).status).toBe(200);
     expect((await call(student, "my_attempts")).data[0]).toMatchObject({ status: "finished", score: 100 });
+
+    // A practice can be shortened and given its own timer; an exam ignores both.
+    await call(admin, "admin_set_package_status", { p_package_id: made.practice_id, p_status: "published" });
+    expect((await call(student, "start_attempt", { p_package_id: made.practice_id, p_holder: holder, p_count: 0 })).error).toBe("bad_count");
+    const short = (await call(student, "start_attempt", { p_package_id: made.practice_id, p_holder: holder, p_count: 1, p_time_limit_minutes: 5 })).data;
+    const shortRun = (await call(student, "get_attempt", { p_attempt_id: short.attempt_id, p_holder: holder })).data;
+    expect(shortRun.questions).toHaveLength(1);
+    expect(shortRun.seconds_left).toBeGreaterThan(290);
+    expect(shortRun.seconds_left).toBeLessThanOrEqual(300);
   });
 
   it("keeps the leaderboard to students who joined, and shows the class average from 3 students", async () => {

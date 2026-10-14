@@ -163,7 +163,7 @@ export function driveSyncConfigFromEnv(env: Record<string, string | undefined>):
 let cachedToken: { value: string; until: number } | null = null;
 
 /** One step of copying the class Drive into driveFiles; call again while the answer says "running". */
-export async function driveSyncStep(c: Collections, config: DriveSyncConfig, startedBy: "schedule" | "admin", body: { action?: string; run_id?: string }) {
+export async function driveSyncStep(c: Collections, config: DriveSyncConfig, startedBy: "schedule" | "admin", body: { action?: string; run_id?: string; reread_docs?: boolean }) {
   const account = parseServiceAccount(config.serviceAccountJson);
   if (!account && !config.apiKey) throw refuse("drive_not_set_up", 503);
   const token = async () => {
@@ -180,7 +180,7 @@ export async function driveSyncStep(c: Collections, config: DriveSyncConfig, sta
     if (!run) throw refuse("no_such_sync", 404);
     return applyHeldRun(store, toRun(run));
   }
-  return syncStep(store, driveApi(token, fetch, undefined, config.apiKey), { ...DEFAULT_SYNC, rootFolderId: config.rootFolderId, ...(config.budgetMs ? { budgetMs: config.budgetMs } : {}) }, startedBy);
+  return syncStep(store, driveApi(token, fetch, undefined, config.apiKey), { ...DEFAULT_SYNC, rootFolderId: config.rootFolderId, ...(config.budgetMs ? { budgetMs: config.budgetMs } : {}) }, startedBy, Date.now, { rereadDocs: body.reread_docs === true });
 }
 
 export type { DriveFileDoc };

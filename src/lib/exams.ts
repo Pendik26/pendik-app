@@ -401,9 +401,13 @@ export async function myBookmarks(): Promise<BookmarkedQuestion[]> {
   }));
 }
 
-/** Starts a package, or returns the attempt already running (which may be another package's). */
-export function startAttempt(packageId: string): Promise<{ attempt_id: string; resumed: boolean }> {
-  return call(rpc("start_attempt", { p_package_id: packageId, p_holder: tabHolderId() }));
+/**
+ * Starts a package, or returns the attempt already running (which may be another package's). A practice can take
+ * fewer questions (`count`) and its own timer (`minutes`, null for none).
+ */
+export function startAttempt(packageId: string, practice?: { count: number; minutes: number | null }): Promise<{ attempt_id: string; resumed: boolean }> {
+  const own = practice ? { p_count: practice.count, p_time_limit_minutes: practice.minutes } : {};
+  return call(rpc("start_attempt", { p_package_id: packageId, p_holder: tabHolderId(), ...own }));
 }
 
 export async function getAttempt(attemptId: string): Promise<AttemptState> {

@@ -22,6 +22,10 @@ export function ExamPackage() {
   const records = useExamRecords();
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  // Practice setup: how many questions (all by default) and an optional timer.
+  const [count, setCount] = useState<number | null>(null);
+  const [timed, setTimed] = useState(false);
+  const [minutes, setMinutes] = useState(30);
 
   const pkg = records.packages.find((p) => p.id === packageId);
   if (!pkg) {
@@ -46,7 +50,7 @@ export function ExamPackage() {
     setBusy(true);
     setProblem(null);
     try {
-      const { attempt_id } = await startAttempt(pkg.id);
+      const { attempt_id } = await startAttempt(pkg.id, isExam ? undefined : { count: count ?? pkg.questionCount, minutes: timed ? minutes : null });
       navigate(`/exam/attempt/${attempt_id}`);
     } catch (e) {
       setBusy(false);
@@ -83,6 +87,26 @@ export function ExamPackage() {
             </>
           )}
         </ul>
+        {!isExam && !running && pkg.questionCount > 1 && (
+          <div className="bank-numbers practice-setup">
+            <label className="account-field">
+              <span>{t("bank.count")}</span>
+              <input className="form-input" type="number" min={1} max={pkg.questionCount} value={count ?? pkg.questionCount}
+                onChange={(e) => { setCount(Math.max(1, Math.min(pkg.questionCount, Math.round(Number(e.target.value) || 1)))); }} />
+            </label>
+            <label className="bank-check">
+              <input type="checkbox" checked={timed} onChange={(e) => { setTimed(e.target.checked); }} />
+              <span>{t("bank.timer")}</span>
+            </label>
+            {timed && (
+              <label className="account-field">
+                <span>{t("bank.minutes")}</span>
+                <input className="form-input" type="number" min={1} max={300} value={minutes}
+                  onChange={(e) => { setMinutes(Math.max(1, Math.min(300, Math.round(Number(e.target.value) || 1)))); }} />
+              </label>
+            )}
+          </div>
+        )}
         {best !== null && <p className="exam-last-score">{t("exam.bestScore", { score: best })}</p>}
         {problem && <p className="account-error" role="alert">{problem}</p>}
         <div className="quiz-start-actions">

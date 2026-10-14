@@ -120,6 +120,43 @@ export const DEFAULT_SYNC: Omit<SyncConfig, "rootFolderId"> = {
 
 const FOLDERS_PER_REQUEST = 20;
 
+/** Things a run noticed that an admin may want to tidy in the Drive; none of them stops the run. */
+export type AnomalyKind =
+  | "outside_pattern" // a file not under a BLOK folder, so it has no block
+  | "no_course" // a file directly in a BLOK folder, with no category folder
+  | "duplicate" // two files with the same name in one folder
+  | "too_deep" // a folder deeper than maxDepth, not walked
+  | "too_many_folders" // a folder past maxFolders, not walked
+  | "unlistable" // a folder Drive wouldn't list
+  | "broken_shortcut" // a shortcut whose target is gone or hidden
+  | "unreadable_doc" // a Google Doc that couldn't be read for video links
+  | "youtube_no_id"; // a Doc with a YouTube link that names no video
+
+export type Anomalies = Partial<Record<AnomalyKind, { count: number; examples: string[] }>>;
+
+const ANOMALY_EXAMPLES = 5;
+
+function flag(run: SyncRun, kind: AnomalyKind, where: string) {
+  const all = (run.notes.anomalies ?? {}) as Anomalies;
+  const entry = all[kind] ?? { count: 0, examples: [] };
+  entry.count += 1;
+  if (entry.examples.length < ANOMALY_EXAMPLES) entry.examples.push(where);
+  all[kind] = entry;
+  run.notes.anomalies = all;
+}
+
+const YOUTUBE_LINK = /(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com|youtu\.be)\/[^\s"'<>)\]]*/gi;
+
+/** YouTube links in a text that don't name a video (a channel, a search, a cut-off link). */
+export function youtubeLinksWithoutId(text: string): string[] {
+  return [...text.matchAll(YOUTUBE_LINK)].map((m) => m[0]).filter((link) => youtubeIds(link).length === 0);
+}
+
+export interface SyncOptions {
+  /** Read every Google Doc again for video links, not just the ones that changed. Only for a new run. */
+  rereadDocs?: boolean;
+}
+
 export interface SyncResult {
   runId: string;
   status: RunStatus;
@@ -187,6 +224,7 @@ export async function syncStep(
   config: SyncConfig,
   startedBy: "schedule" | "admin",
   now: () => number = Date.now,
+  options: SyncOptions = {},
 ): Promise<SyncResult> {
   const started = now();
   let run = await store.runningRun();
@@ -196,8 +234,13 @@ export async function syncStep(
     await store.saveRun(run, true);
     run = null;
   }
-  run ??= await store.createRun(startedBy, { queue: [{ id: config.rootFolderId, path: [] }], visited: [], skipped: 0 });
+  if (!run) {
+    run = await store.createRun(startedBy, { queue: [{ id: config.rootFolderId, path: [] }], visited: [], skipped: 0 });
+    if (options.rereadDocs) run.notes = { ...run.notes, rereadDocs: true };
+  }
   run.calls += 1;
+  const rereadDocs = run.notes.rereadDocs === true;
+  const at = (path: string[], name?: string) => [...path, ...(name === undefined ? [] : [name])].join(" / ") || "(root)";
 
   const cursor = run.cursor;
   const visited = new Set(cursor.visited);
@@ -223,28 +266,43 @@ export async function syncStep(
           children.push(...(await drive.listChildren([f.id])));
         } catch {
           cursor.skipped += 1;
+          flag(run, "unlistable", at(f.path));
         }
       }
     }
 
-    const at = new Date(now()).toISOString();
+    const seenAt = new Date(now()).toISOString();
     const byId = new Map(batch.map((f) => [f.id, f]));
     const rows: FileRow[] = [];
     const docs: FileRow[] = [];
+    const names = new Set<string>();
     for (const child of children) {
       const parent = (child.parents ?? []).map((p) => byId.get(p)).find((p) => p !== undefined);
       if (!parent) continue;
       const isShortcut = child.mimeType === SHORTCUT;
       const id = isShortcut ? child.shortcutDetails?.targetId : child.id;
       const mimeType = isShortcut ? child.shortcutDetails?.targetMimeType : child.mimeType;
-      if (!id || !mimeType) continue;
-      if (mimeType === FOLDER) {
-        const path = [...parent.path, child.name.trim()];
-        if (path.length > config.maxDepth || visited.size + cursor.queue.length >= config.maxFolders) cursor.skipped += 1;
-        else if (!visited.has(id)) cursor.queue.push({ id, path });
+      if (!id || !mimeType) {
+        if (isShortcut) flag(run, "broken_shortcut", at(parent.path, child.name));
         continue;
       }
-      const row = fileRow(child, id, mimeType, parent.path, at);
+      if (mimeType === FOLDER) {
+        const path = [...parent.path, child.name.trim()];
+        if (path.length > config.maxDepth) {
+          cursor.skipped += 1;
+          flag(run, "too_deep", at(path));
+        } else if (visited.size + cursor.queue.length >= config.maxFolders) {
+          cursor.skipped += 1;
+          flag(run, "too_many_folders", at(path));
+        } else if (!visited.has(id)) cursor.queue.push({ id, path });
+        continue;
+      }
+      const row = fileRow(child, id, mimeType, parent.path, seenAt);
+      const nameKey = `${parent.id}\u0000${child.name.trim().toLowerCase()}`;
+      if (names.has(nameKey)) flag(run, "duplicate", at(parent.path, child.name));
+      names.add(nameKey);
+      if (!row.block) flag(run, "outside_pattern", at(parent.path, child.name));
+      else if (!row.category) flag(run, "no_course", at(parent.path, child.name));
       rows.push(row);
       if (mimeType === GOOGLE_DOC) docs.push(row);
     }
@@ -261,20 +319,25 @@ export async function syncStep(
     const unchangedDocs: string[] = [];
     for (const doc of new Map(docs.map((d) => [d.drive_file_id, d])).values()) {
       const before = saved.get(doc.drive_file_id);
-      if (before !== undefined && before === doc.drive_modified_at) {
+      if (!rereadDocs && before !== undefined && before === doc.drive_modified_at) {
         unchangedDocs.push(doc.drive_file_id);
         continue;
       }
+      let text: string;
       try {
-        videos.push(...videoRows(doc, youtubeIds(await drive.exportText(doc.drive_file_id))));
+        text = await drive.exportText(doc.drive_file_id);
       } catch {
+        flag(run, "unreadable_doc", at(doc.folder_path, doc.title));
         unchangedDocs.push(doc.drive_file_id);
+        continue;
       }
+      videos.push(...videoRows(doc, youtubeIds(text)));
+      if (youtubeLinksWithoutId(text).length > 0) flag(run, "youtube_no_id", at(doc.folder_path, doc.title));
     }
 
     const all = [...unique, ...videos];
     if (all.length) await store.upsert(all);
-    if (unchangedDocs.length) await store.touchVideosOf(unchangedDocs, at);
+    if (unchangedDocs.length) await store.touchVideosOf(unchangedDocs, seenAt);
     run.filesFound += unique.length;
   }
 

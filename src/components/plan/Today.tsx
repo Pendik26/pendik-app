@@ -5,6 +5,7 @@ import { countdownText, focusBlockId, plannableBlocks } from "../../lib/examPlan
 import { planStatus, planText } from "../../lib/todayPlan";
 import { CalendarIcon, FlameIcon, TimerIcon } from "../icons";
 import { useAccount } from "../../hooks/useAccount";
+import { classSection } from "../../lib/classSection";
 import { firstName } from "../../lib/firstName";
 import { TodayPlanList } from "./PlanParts";
 import { useI18n } from "../../i18n/useI18n";
@@ -54,6 +55,15 @@ export function TodayHero({ streak, firstVisit, current, onPickBlock }: { streak
   const { t, language } = useI18n();
   const { user } = useAccount();
   const name = firstName(user?.fullName ?? "");
+  // "Reguler A · Group A3 · 2601001": the class first, then the tutorial group, then the NIM.
+  const section = user ? classSection(user.track, user.classGroup) : null;
+  const who = user
+    ? [
+        user.track && [t(user.track === "IUP" ? "track.iup" : "track.reguler"), section].filter(Boolean).join(" "),
+        user.classGroup && t("today.groupN", { group: user.classGroup }),
+        user.studentId,
+      ].filter(Boolean).join(" · ")
+    : "";
   const blockId = current || focusBlockId();
   const needsBlock = !current && plannableBlocks().length > 1;
   const today = new Date().toLocaleDateString(language === "id" ? "id-ID" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
@@ -66,6 +76,7 @@ export function TodayHero({ streak, firstVisit, current, onPickBlock }: { streak
           <h1 className="today-title" id="today-title">
             {firstVisit ? t("today.welcome") : name ? greeting(t).replace(/\.$/, `, ${name}`) : greeting(t)}
           </h1>
+          {who && <p className="today-who">{who}</p>}
         </div>
         {streak > 0 && (
           <span className="today-chip today-chip-streak" title={t("today.streakHint")}>

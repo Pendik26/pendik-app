@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useAccount } from "../hooks/useAccount";
 import { useI18n } from "../i18n/useI18n";
+import { PasswordInput } from "../components/PasswordInput";
 import { useMessage } from "../i18n/useMessage";
 
 /**
@@ -36,18 +37,18 @@ export function ChangePasswordForm({ required = false, onDone }: { required?: bo
       {!required && (
         <label className="account-field">
           <span>{t("password.current")}</span>
-          <input className="form-input" type="password" required autoComplete="current-password" value={current}
+          <PasswordInput required autoComplete="current-password" value={current}
             onChange={(e) => { setCurrent(e.target.value); }} />
         </label>
       )}
       <label className="account-field">
         <span>{t("password.new")}</span>
-        <input className="form-input" type="password" required minLength={8} autoComplete="new-password" value={next}
+        <PasswordInput required minLength={8} autoComplete="new-password" value={next}
           onChange={(e) => { setNext(e.target.value); }} />
       </label>
       <label className="account-field">
         <span>{t("password.confirm")}</span>
-        <input className="form-input" type="password" required minLength={8} autoComplete="new-password" value={repeat}
+        <PasswordInput required minLength={8} autoComplete="new-password" value={repeat}
           onChange={(e) => { setRepeat(e.target.value); }} />
       </label>
       {error && <p className="account-error" role="alert">{message(error)}</p>}

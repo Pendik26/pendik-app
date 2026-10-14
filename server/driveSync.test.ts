@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { kindOf, placeOf, youtubeIds } from "./drivePath.js";
 import { driveSyncConfigFromEnv } from "./drive.js";
-import { applyHeldRun, DEFAULT_SYNC, driveApi, FOLDER, syncStep, type ApiFile, type DriveApi, type FileRow, type SyncConfig, type SyncCursor, type SyncRun, type SyncStore } from "./driveSync.js";
+import { applyHeldRun, DEFAULT_SYNC, driveApi, FOLDER, syncStep, youtubeLinksWithoutId, type ApiFile, type DriveApi, type FileRow, type SyncConfig, type SyncCursor, type SyncRun, type SyncStore } from "./driveSync.js";
 import { parseServiceAccount, serviceAccountJwt } from "./googleAuth.js";
 
 describe("where a file sits", () => {
@@ -145,7 +145,46 @@ describe("syncStep", () => {
   it("holds the run when a folder couldn't be listed", async () => {
     const m = memoryStore();
     const r = await syncStep(m.store, fakeDrive(classDrive, {}, new Set(["histo"])), config, "schedule");
-    expect(r).toMatchObject({ status: "held", notes: { reason: "incomplete", skippedFolders: 1 } });
+    expect(r).toMatchObject({ status: "held", notes: { reason: "incomplete", skippedFolders: 1, anomalies: { unlistable: { count: 1 } } } });
+  });
+
+  it("reports what in the Drive doesn't fit, by kind", async () => {
+    const messy = {
+      ...classDrive,
+      root: [folder("sem1", "SEMESTER 1"), file("loose", "Jadwal.pdf")],
+      b11: [...classDrive.b11, file("nc", "Silabus.pdf")],
+      ppt: [...classDrive.ppt, file("dup", "epitel.pdf"), { id: "s2", name: "Gone", mimeType: "application/vnd.google-apps.shortcut" }],
+      rek: [...classDrive.rek, file("d2", "Broken", { mimeType: "application/vnd.google-apps.document" })],
+    };
+    const drive = fakeDrive(messy, { d1: "Channel https://www.youtube.com/@histologi and https://youtu.be/dQw4w9WgXcQ" });
+    drive.exportText = async (id) => { if (id === "d2") throw new Error("403"); return id === "d1" ? "see https://www.youtube.com/@histologi" : ""; };
+    const r = await syncStep(memoryStore().store, drive, { ...config, maxDepth: 4 }, "schedule");
+    expect(r.notes.anomalies).toMatchObject({
+      outside_pattern: { count: 1, examples: ["Jadwal.pdf"] },
+      no_course: { count: 1, examples: ["SEMESTER 1 / REGULER / BLOK 1.1 Biomedik / Silabus.pdf"] },
+      duplicate: { count: 1 },
+      broken_shortcut: { count: 1 },
+      unreadable_doc: { count: 1 },
+      youtube_no_id: { count: 1 },
+      too_deep: { count: 1, examples: ["SEMESTER 1 / REGULER / BLOK 1.1 Biomedik / PPT DOSEN / Histologi"] },
+    });
+  });
+
+  it("re-reads every Doc when asked, not only the changed ones", async () => {
+    const m = memoryStore();
+    await syncStep(m.store, fakeDrive(classDrive, { d1: "https://youtu.be/dQw4w9WgXcQ" }), config, "schedule");
+    const plain = fakeDrive(classDrive, { d1: "https://youtu.be/dQw4w9WgXcQ" });
+    await syncStep(m.store, plain, config, "schedule");
+    expect(plain.exported).toEqual([]);
+    const again = fakeDrive(classDrive, { d1: "https://youtu.be/dQw4w9WgXcQ" });
+    const r = await syncStep(m.store, again, config, "admin", Date.now, { rereadDocs: true });
+    expect(again.exported).toEqual(["d1"]);
+    expect(r.notes).toMatchObject({ rereadDocs: true });
+  });
+
+  it("finds YouTube links that name no video", () => {
+    expect(youtubeLinksWithoutId("https://youtu.be/dQw4w9WgXcQ and youtube.com/watch?v=dQw4w9WgXcQ")).toEqual([]);
+    expect(youtubeLinksWithoutId("https://www.youtube.com/@channel, https://youtu.be/abc")).toEqual(["https://www.youtube.com/@channel,", "https://youtu.be/abc"]);
   });
 });
 

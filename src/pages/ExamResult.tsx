@@ -10,12 +10,22 @@ import { formatClock } from "../lib/examFormat";
 
 const OPTION_LETTERS = "ABCDEFGH";
 
+type Kind = "wrong" | "blank" | "ungraded" | "correct";
+const KINDS: Kind[] = ["wrong", "blank", "ungraded", "correct"];
+const KIND_LABEL: Record<Kind, MessageKey> = { wrong: "exam.wrong", blank: "exam.blank", ungraded: "exam.notGraded", correct: "exam.correct" };
+
+function kindOf(item: AttemptResult["items"][number]): Kind {
+  if (!item.graded) return "ungraded";
+  return item.isCorrect === true ? "correct" : item.isCorrect === false ? "wrong" : "blank";
+}
+
 /** A finished attempt: the score, then every question with the answer given and the key. */
 export function ExamResult() {
   const { attemptId = "" } = useParams();
   const { t } = useI18n();
   const [result, setResult] = useState<{ id: string; data: AttemptResult } | { id: string; error: string } | null>(null);
-  const [filter, setFilter] = useState<"all" | "missed">("all");
+  // null until the student picks a section; then the default below applies.
+  const [picked, setPicked] = useState<Kind | "all" | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -44,7 +54,10 @@ export function ExamResult() {
   const byId = new Map(r.questions.map((q) => [q.id, q]));
   const perfect = r.score === 100;
   const takenSec = (Date.parse(r.finishedAt) - Date.parse(r.startedAt)) / 1000;
-  const shown = r.items.filter((i) => filter === "all" || i.isCorrect !== true);
+  const counts = Object.fromEntries(KINDS.map((k) => [k, r.items.filter((i) => kindOf(i) === k).length])) as Record<Kind, number>;
+  // A perfect score opens Correct; otherwise the first section that has questions in it, wrong ones first.
+  const filter = picked ?? (perfect ? "correct" : KINDS.find((k) => counts[k] > 0) ?? "all");
+  const shown = r.items.filter((i) => filter === "all" || kindOf(i) === filter);
 
   return (
     <section className="page">
@@ -66,11 +79,13 @@ export function ExamResult() {
           <Link to="/exam" className="btn btn-secondary">{t("exam.allExams")}</Link>
         </div>
 
-        <div className="exam-mode-toggle" role="radiogroup" aria-label={t("exam.review")}>
-          {(["all", "missed"] as const).map((f) => (
+        <div className="exam-mode-toggle exam-review-tabs" role="radiogroup" aria-label={t("exam.review")}>
+          {[...KINDS.filter((k) => counts[k] > 0), "all" as const].map((f) => (
             <button key={f} type="button" role="radio" aria-checked={filter === f}
-              className={filter === f ? "exam-mode-btn active" : "exam-mode-btn"} onClick={() => { setFilter(f); }}>
-              <span className="exam-mode-name">{f === "all" ? t("exam.reviewAll") : t("exam.reviewMissed")}</span>
+              className={filter === f ? "exam-mode-btn active" : "exam-mode-btn"} onClick={() => { setPicked(f); }}>
+              <span className="exam-mode-name">
+                {f === "all" ? `${t("exam.reviewAll")} (${r.items.length})` : `${t(KIND_LABEL[f])} (${counts[f]})`}
+              </span>
             </button>
           ))}
         </div>
@@ -80,13 +95,7 @@ export function ExamResult() {
             const q = byId.get(item.questionId);
             if (!q) return null;
             const n = r.items.indexOf(item) + 1;
-            const verdict = !item.graded
-              ? t("exam.notGraded")
-              : item.isCorrect === true
-                ? t("exam.correct")
-                : item.isCorrect === false
-                  ? t("exam.wrong")
-                  : t("exam.blank");
+            const verdict = t(KIND_LABEL[kindOf(item)]);
             return (
               <li key={q.id} className="quiz-review-item">
                 <p className="quiz-question-text exam-stem">{n}. {q.stem}</p>

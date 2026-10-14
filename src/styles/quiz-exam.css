@@ -935,3 +935,21 @@
   color: var(--text-muted);
   font-size: 0.9rem;
 }
+
+.exam-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.practice-setup {
+  margin: 0.75rem 0;
+}
+
+/* Result sections (Wrong, Blank, Not graded, Correct, All): compact chips. */
+.exam-review-tabs .exam-mode-btn {
+  flex: 0 1 auto;
+  padding: 0.45rem 0.9rem;
+}

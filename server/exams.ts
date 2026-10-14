@@ -218,6 +218,8 @@ export async function adminSearchQuestions(ctx: Ctx, args: Args) {
   const year = int(args, "p_year");
   const subject = text(args, "p_subject");
   const search = text(args, "p_text")?.trim();
+  const status = text(args, "p_status");
+  if (status === "draft" || status === "published") filter.status = status;
   if (block) filter.block = block;
   if (source) filter.source = source;
   if (year) filter.year = year;
@@ -232,6 +234,8 @@ export async function adminSearchQuestions(ctx: Ctx, args: Args) {
     block: q.block,
     source: q.source,
     year: q.year,
+    created_at: q.createdAt.toISOString(),
+    updated_at: q.updatedAt.toISOString(),
     packages: packages.filter((p) => p.questionIds.includes(q._id)).map((p) => p.title).sort(),
   }));
 }
@@ -598,9 +602,20 @@ export async function startAttempt(ctx: Ctx, args: Args) {
   if (!pkg || !trackVisible(ctx, pkg.track)) throw refuse("package_not_found");
   const questions = await liveQuestions(ctx, pkg.questionIds);
   // Question order is shuffled for each attempt (and option order, in createAttempt).
-  const picked = shuffled(pkg.questionIds.flatMap((id) => (questions.has(id) ? [questions.get(id) as QuestionDoc] : [])));
-  if (!picked.length) throw refuse("package_empty");
-  return createAttempt(ctx, { packageId: pkg._id, title: null, mode: pkg.mode, timeLimitMinutes: pkg.timeLimitMinutes, holder: holderArg(args) }, picked);
+  const all = shuffled(pkg.questionIds.flatMap((id) => (questions.has(id) ? [questions.get(id) as QuestionDoc] : [])));
+  if (!all.length) throw refuse("package_empty");
+  // A practice can be shortened and timed by the student; an exam always runs as the package says.
+  let picked = all;
+  let minutes = pkg.timeLimitMinutes;
+  if (pkg.mode === "practice") {
+    const count = int(args, "p_count");
+    if (count !== null && count < 1) throw refuse("bad_count");
+    if (count !== null) picked = all.slice(0, count);
+    const own = int(args, "p_time_limit_minutes");
+    if (own !== null && (own < 1 || own > 300)) throw refuse("bad_time_limit");
+    if (args.p_time_limit_minutes !== undefined) minutes = own;
+  }
+  return createAttempt(ctx, { packageId: pkg._id, title: null, mode: pkg.mode, timeLimitMinutes: minutes, holder: holderArg(args) }, picked);
 }
 
 async function ownAttempt(ctx: Ctx, args: Args): Promise<AttemptDoc> {
