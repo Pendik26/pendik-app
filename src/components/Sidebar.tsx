@@ -12,6 +12,7 @@ import {
   BookIcon,
   CalendarIcon,
   CardsIcon,
+  FlagIcon,
   FlaskIcon,
   GridIcon,
   HelpIcon,
@@ -52,15 +53,18 @@ interface NavGroup {
   items: NavItem[];
 }
 
-// The few places most students go every day are always in view. Everything else (each study
-// tool on its own, the library, the extras and the student's own pages) sits under one "More"
-// that stays closed until it's wanted, so the sidebar reads at a glance.
+// The few places most students go every day are always in view: the timetable first, since it is
+// opened most, then subjects, exams, the class Drive and Alfond (and Admin, for admins only).
+// Everything else (each study tool on its own, the library, the extras and the student's own
+// pages) sits under one "More" that stays closed until it's wanted, so the sidebar reads at a glance.
 const mainLinks: NavItem[] = [
   { to: "/", label: "nav.home", end: true, icon: <HomeIcon /> },
+  { to: "/schedule", label: "nav.schedule", icon: <CalendarIcon /> },
   { to: "/subjects", label: "nav.subjects", icon: <GridIcon /> },
   { to: "/exam", label: "nav.exams", icon: <TimerIcon /> },
   { to: "/drive", label: "nav.drive", icon: <DriveIcon /> },
   { to: "/alfond", label: "nav.alfond", icon: <AlfondIcon /> },
+  { to: "/admin", label: "nav.admin", icon: <ShieldIcon />, admin: true },
 ];
 
 const moreGroups: NavGroup[] = [
@@ -70,8 +74,7 @@ const moreGroups: NavGroup[] = [
       { to: "/flashcards", label: "nav.flashcards", icon: <CardsIcon />, due: "cards" },
       { to: "/quizzes", label: "nav.quizzes", icon: <QuizIcon />, due: "questions" },
       { to: "/occlusion", label: "nav.occlusion", icon: <OcclusionIcon /> },
-      { to: "/schedule", label: "nav.schedule", icon: <CalendarIcon /> },
-      { to: "/plan", label: "nav.plan", icon: <CalendarIcon /> },
+      { to: "/plan", label: "nav.plan", icon: <FlagIcon /> },
     ],
   },
   {
@@ -97,30 +100,29 @@ const moreGroups: NavGroup[] = [
       { to: "/progress", label: "nav.progress", icon: <ProgressIcon /> },
       { to: "/leaderboard", label: "nav.leaderboard", icon: <TrophyIcon /> },
       { to: "/docs", label: "nav.help", icon: <HelpIcon /> },
-      { to: "/admin", label: "nav.admin", icon: <ShieldIcon />, admin: true },
     ],
   },
 ];
 
-/** The phone tab bar: four direct tabs and "More", which opens everything else as a sheet. */
+/**
+ * The phone tab bar: four direct tabs (the ones opened every day, within thumb reach) and "More",
+ * which opens everything else as a sheet. The sheet starts with the remaining everyday places.
+ */
 const tabs: { id: string; label: string; icon: ReactNode; to?: string; sections?: NavGroup[] }[] = [
   { id: "home", label: "nav.home", icon: <HomeIcon />, to: "/" },
+  { id: "schedule", label: "nav.schedule", icon: <CalendarIcon />, to: "/schedule" },
   { id: "subjects", label: "nav.subjects", icon: <GridIcon />, to: "/subjects" },
   { id: "exam", label: "nav.exams", icon: <TimerIcon />, to: "/exam" },
-  { id: "drive", label: "nav.drive", icon: <DriveIcon />, to: "/drive" },
   {
     id: "more",
     label: "nav.more",
     icon: <MoreIcon />,
     sections: [
+      { items: mainLinks.filter((l) => !["/", "/schedule", "/subjects", "/exam"].includes(l.to)) },
       ...moreGroups.slice(0, 3),
       {
         label: "nav.you",
-        items: [
-          { to: "/alfond", label: "nav.alfond", icon: <AlfondIcon /> },
-          { to: "/account", label: "nav.account", icon: <UserIcon /> },
-          ...moreGroups[3].items,
-        ],
+        items: [{ to: "/account", label: "nav.account", icon: <UserIcon /> }, ...moreGroups[3].items],
       },
     ],
   },

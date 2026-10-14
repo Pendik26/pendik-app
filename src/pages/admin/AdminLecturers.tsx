@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useOutletContext } from "react-router-dom";
 import { errorText } from "../../i18n/errorText";
 import { useI18n } from "../../i18n/useI18n";
 import {
   deleteLecturer, importLecturers, listLecturerReports, parseLecturerTable, resolveLecturerReport, saveLecturer,
 } from "../../lib/admin";
 import { listLecturers, type Lecturer, type LecturerReport } from "../../lib/schedule";
+import type { DataContext } from "./AdminData";
 
 /** The lecturer list (add, edit, import) and the students' notes about it: wrong numbers and suggested lecturers. */
 export function AdminLecturers() {
@@ -13,13 +15,14 @@ export function AdminLecturers() {
   const [reports, setReports] = useState<LecturerReport[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
+  const setOpenReports = (useOutletContext() as DataContext | undefined)?.setOpenReports;
 
   const reload = useCallback(() => {
     Promise.all([listLecturers(), listLecturerReports()]).then(
-      ([l, r]) => { setLecturers(l); setReports(r); },
+      ([l, r]) => { setLecturers(l); setReports(r); setOpenReports?.(r.length); },
       (e: Error) => { setProblem(errorText(e)); },
     );
-  }, []);
+  }, [setOpenReports]);
   useEffect(reload, [reload]);
 
   /** Runs a change, then shows what it did (or why not) and reloads the lists. */
