@@ -44,6 +44,8 @@ export const adminEn = {
   "admin.groupsApply": "Apply to {count}",
   "admin.groupsSet": "Updated {count} students.",
   "admin.groupsUnknown": "Not on the roster: {ids}.",
+  "admin.trackSection": "{track} class {section}",
+  "admin.sectionN": "Class {section}",
   "admin.rosterCount": "{shown} of {total} students",
 
   // Packages
@@ -201,6 +203,8 @@ export const adminId: { [K in keyof typeof adminEn]: string } = {
   "admin.groupsApply": "Terapkan ke {count}",
   "admin.groupsSet": "{count} mahasiswa diperbarui.",
   "admin.groupsUnknown": "Tidak ada di daftar: {ids}.",
+  "admin.trackSection": "{track} kelas {section}",
+  "admin.sectionN": "Kelas {section}",
   "admin.rosterCount": "{shown} dari {total} mahasiswa",
 
   "admin.noPackages": "Belum ada paket. Impor file soal untuk membuatnya.",

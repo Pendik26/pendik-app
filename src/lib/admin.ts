@@ -95,6 +95,16 @@ export async function addToRoster(rows: NewRosterRow[]): Promise<void> {
   await must(rpc("admin_add_students", { p_rows: rows }));
 }
 
+/**
+ * A student's class section ("A" or "B"): the first letter of a Reguler tutorial group (A1–A10, B1–B10),
+ * or the letter of an IUP group ("IUP-A", "IUP-B").
+ */
+export function classSection(track: Track | null, group: string | null): "A" | "B" | null {
+  const g = (group ?? "").trim().toUpperCase();
+  const letter = track === "REGULER" ? g.charAt(0) : track === "IUP" ? g.replace(/^IUP[- ]?/, "").charAt(0) : "";
+  return letter === "A" || letter === "B" ? letter : null;
+}
+
 export interface GroupRow {
   student_id: string;
   class_group: string | null;

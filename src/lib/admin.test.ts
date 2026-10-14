@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseGroupLines, parseRosterLines, suggestedMinutes } from "./admin";
+import { parseGroupLines, classSection, parseRosterLines, suggestedMinutes } from "./admin";
 
 describe("pasted roster lines", () => {
   it("reads commas, tabs or semicolons, skips a header and fills the cohort", () => {
@@ -41,5 +41,16 @@ describe("pasted group lines", () => {
       { student_id: "2601002", class_group: "1" },
     ]);
     expect(problems).toHaveLength(3);
+  });
+});
+
+describe("class section", () => {
+  it("comes from the tutorial group's letter", () => {
+    expect(classSection("REGULER", "A3")).toBe("A");
+    expect(classSection("REGULER", "b10")).toBe("B");
+    expect(classSection("REGULER", null)).toBeNull();
+    expect(classSection("IUP", "IUP-A")).toBe("A");
+    expect(classSection("IUP", "iup b")).toBe("B");
+    expect(classSection("IUP", "IUP-1")).toBeNull();
   });
 });

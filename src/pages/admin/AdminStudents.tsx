@@ -9,6 +9,7 @@ import {
   addToRoster,
   listRoster,
   parseGroupLines,
+  classSection,
   parseRosterLines,
   removeFromRoster,
   setGroups,
@@ -34,7 +35,7 @@ export function AdminStudents() {
   const [paste, setPaste] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [pasteTrack, setPasteTrack] = useState<Track | null>(null);
-  const [trackFilter, setTrackFilter] = useState<"all" | Track | "none">("all");
+  const [trackFilter, setTrackFilter] = useState<"all" | Track | "none" | `${Track}-${"A" | "B"}`>("all");
   const [groupFilter, setGroupFilter] = useState("all");
   const [groupPaste, setGroupPaste] = useState("");
   const [showGroups, setShowGroups] = useState(false);
@@ -60,7 +61,10 @@ export function AdminStudents() {
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (roster ?? []).filter((r) =>
-      (trackFilter === "all" || (trackFilter === "none" ? r.track === null : r.track === trackFilter)) &&
+      (trackFilter === "all" ||
+        (trackFilter === "none" ? r.track === null
+          : trackFilter.includes("-") ? `${r.track}-${classSection(r.track, r.classGroup)}` === trackFilter
+          : r.track === trackFilter)) &&
       (groupFilter === "all" || (groupFilter === "" ? r.classGroup === null : r.classGroup === groupFilter)) &&
       (!q || r.studentId.toLowerCase().includes(q) || r.fullName.toLowerCase().includes(q) || (r.classGroup ?? "").toLowerCase().includes(q)));
   }, [roster, query, trackFilter, groupFilter]);
@@ -93,6 +97,10 @@ export function AdminStudents() {
           <option value="all">{t("track.all")}</option>
           <option value="IUP">{t("track.iup")}</option>
           <option value="REGULER">{t("track.reguler")}</option>
+          <option value="IUP-A">{t("admin.trackSection", { track: t("track.iup"), section: "A" })}</option>
+          <option value="IUP-B">{t("admin.trackSection", { track: t("track.iup"), section: "B" })}</option>
+          <option value="REGULER-A">{t("admin.trackSection", { track: t("track.reguler"), section: "A" })}</option>
+          <option value="REGULER-B">{t("admin.trackSection", { track: t("track.reguler"), section: "B" })}</option>
           <option value="none">{t("track.none")}</option>
         </select>
         <select className="form-input admin-select" aria-label={t("admin.groupFilter")} value={groupFilter}
@@ -190,7 +198,7 @@ export function AdminStudents() {
                       <option value="REGULER">{t("track.reguler")}</option>
                     </select>
                   </td>
-                  <td>{[r.classGroup, r.cohort].filter(Boolean).join(" · ")}</td>
+                  <td>{[classSection(r.track, r.classGroup) && t("admin.sectionN", { section: classSection(r.track, r.classGroup) ?? "" }), r.classGroup, r.cohort].filter(Boolean).join(" · ")}</td>
                   <td>
                     <span className={`admin-state admin-state-${r.account}`}>{t(stateKey[r.account])}</span>
                     {r.account === "active" && r.mustChangePassword && <small> · {t("admin.firstPassword")}</small>}
