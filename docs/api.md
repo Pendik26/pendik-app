@@ -12,7 +12,7 @@ One Vercel Function ([`api/index.ts`](../api/index.ts)) serves `/api/*`; the rou
 | `GET /api/config` | what the site has switched on |
 
 `POST /api/rpc/<name>` takes a JSON object and answers `{ "data": … }` or `{ "error": "code" }` with an HTTP status
-(401 `not_signed_in`, 403 `admins_only` / `locked` / `not_on_roster`, 400 for a refused argument). Argument names
+(401 `not_signed_in`, 403 `admins_only` / `locked` / `not_on_roster`, 429 `too_many_requests`, 400 for a refused argument). Argument names
 start with `p_`.
 
 **Student functions:** `my_account`, `update_my_settings`, `password_changed`, `leaderboard`, `save_readiness`,
@@ -30,6 +30,10 @@ start with `p_`.
 `admin_set_file_hidden`, `admin_sync_runs`, `admin_save_events`, `admin_delete_events`,
 `admin_save_lecturer`, `admin_delete_lecturer`, `admin_save_schedule_doc`,
 `admin_delete_schedule_doc`, `admin_lecturer_reports`, `admin_resolve_report`.
+
+**Limits.** Each student may make 240 calls a minute to a function, fewer for the costly ones (starting or submitting
+an attempt, imports, adding students: 12; AI: 20; picture uploads: 30). Counts live in the `apiLimits` collection
+(`server/rateLimit.ts`), so every function instance shares them, and the next minute starts fresh.
 
 Exams and quizzes are graded on the server; the browser only sends what the student chose.
 

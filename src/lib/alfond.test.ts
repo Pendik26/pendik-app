@@ -37,7 +37,7 @@ describe("Alfond's conversation", () => {
     expect(snapshot.messages[0].page).toEqual({ title: page.title, path: page.path });
     expect(snapshot.remaining).toBe(7);
     expect(snapshot.busy).toBe(false);
-    expect(bodies[0]).toEqual({ messages: [{ role: "user", content: "What's a sesamoid bone?" }], page });
+    expect(bodies[0]).toEqual({ messages: [{ role: "user", content: "What's a sesamoid bone?" }], page, language: "id" });
   });
 
   it("keeps a failed answer's message and asks again on retry, with the history", async () => {

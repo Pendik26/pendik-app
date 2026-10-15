@@ -3,9 +3,10 @@ import { MongoClient } from "mongodb";
 import { createApp } from "./app.js";
 import { createAuth } from "./auth.js";
 import { collections, ensureIndexes } from "./db.js";
+import type { Limits } from "./rateLimit.js";
 
 // A whole app on a real MongoDB for the tests (MONGODB_TEST_URI), in a database of its own.
-export async function testApp(uri: string) {
+export async function testApp(uri: string, limits?: Limits) {
   const client = new MongoClient(uri);
   await client.connect();
   const db = client.db(`pendik_test_${Math.random().toString(36).slice(2, 10)}`);
@@ -19,7 +20,7 @@ export async function testApp(uri: string) {
     isLocked: async (id) => Boolean(await c.accounts.findOne({ _id: id, lockedAt: { $ne: null } })),
     rateLimit: false,
   });
-  const app = createApp({ db, client, auth, driveSyncSecret: "sync-secret" });
+  const app = createApp({ db, client, auth, driveSyncSecret: "sync-secret", limits: limits ?? false });
   return {
     app,
     c,

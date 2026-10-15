@@ -26,6 +26,18 @@ export function aiConfigFromEnv(env: Record<string, string | undefined>): AiConf
   return { baseUrl, apiKey, models, dailyLimit: Number.isFinite(limit) && limit > 0 ? limit : 30 };
 }
 
+/** The language the app is set to. */
+export type UiLanguage = "id" | "en";
+
+const uiLanguage = (v: unknown): UiLanguage | undefined => (v === "id" || v === "en" ? v : undefined);
+
+/** One more line for the system prompt: the app's language is the default for the answer. */
+function languageNote(language: UiLanguage | undefined): string {
+  if (!language) return "";
+  const name = language === "id" ? "Indonesian" : "English";
+  return ` The app is set to ${name}: answer in ${name} unless the student's own message is clearly in the other language.`;
+}
+
 export interface ExplainRequest {
   subject: string;
   question: string;
@@ -36,6 +48,8 @@ export interface ExplainRequest {
   explanation?: string;
   /** Passages from the student's own notes that match the question. */
   notes: { title: string; text: string }[];
+  /** The app's language when the student asked. */
+  language?: UiLanguage;
 }
 
 const LIMITS = { subject: 80, question: 1200, option: 300, options: 8, answer: 600, explanation: 2000, noteTitle: 160, noteText: 2400, notes: 4 };
@@ -69,6 +83,7 @@ export function parseExplainRequest(body: unknown): ExplainRequest | null {
     chosen: str(b.chosen, LIMITS.option),
     explanation: str(b.explanation, LIMITS.explanation),
     notes,
+    language: uiLanguage(b.language),
   };
 }
 
@@ -106,6 +121,8 @@ export interface ChatRequest {
   messages: ChatMessage[];
   /** What the student is looking at in the app when they ask. */
   page?: { title: string; path: string; text: string };
+  /** The app's language when the student asked. */
+  language?: UiLanguage;
 }
 
 const CHAT_LIMITS = { messages: 12, message: 3000, pageTitle: 200, pagePath: 300, pageText: 6000 };
@@ -131,6 +148,7 @@ export function parseChatRequest(body: unknown): ChatRequest | null {
   return {
     messages,
     page: text ? { title: str(page.title, CHAT_LIMITS.pageTitle) ?? "", path: str(page.path, CHAT_LIMITS.pagePath) ?? "", text } : undefined,
+    language: uiLanguage(b.language),
   };
 }
 
@@ -159,7 +177,7 @@ export function chatModelMessages(r: ChatRequest): { role: "system" | "user" | "
         `Their message: ${question}`,
       ].join("\n")
     : question;
-  return [{ role: "system", content: CHAT_SYSTEM }, ...history, { role: "user", content: latest }];
+  return [{ role: "system", content: CHAT_SYSTEM + languageNote(r.language) }, ...history, { role: "user", content: latest }];
 }
 
 // Free models can be slow, and a gateway that screens the answer may only send it once it's
@@ -305,7 +323,7 @@ async function attempt(config: AiConfig, model: string, messages: ModelMessage[]
 /** Asks the gateway to explain a question (see streamCompletion). */
 export function streamExplanation(config: AiConfig, request: ExplainRequest, fetchImpl: typeof fetch = fetch): Promise<Response> {
   const messages: ModelMessage[] = [
-    { role: "system", content: EXPLAIN_SYSTEM },
+    { role: "system", content: EXPLAIN_SYSTEM + languageNote(request.language) },
     { role: "user", content: explainUserMessage(request) },
   ];
   return streamCompletion(config, messages, 700, fetchImpl);

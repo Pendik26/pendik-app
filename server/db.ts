@@ -295,6 +295,14 @@ export interface LecturerReportDoc {
   createdAt: Date;
 }
 
+/** One fixed window of calls by one student to one kind of function (see rateLimit.ts). */
+export interface ApiLimitDoc {
+  _id: string;
+  count: number;
+  /** MongoDB deletes the window once this has passed. */
+  expiresAt: Date;
+}
+
 export interface AiUsageDoc {
   userId: string;
   day: string;
@@ -333,6 +341,7 @@ export interface Collections {
   lecturerReports: Collection<LecturerReportDoc>;
   questionImages: Collection<QuestionImageDoc>;
   aiUsage: Collection<AiUsageDoc>;
+  apiLimits: Collection<ApiLimitDoc>;
   auditLog: Collection<AuditDoc>;
 }
 
@@ -361,6 +370,7 @@ export function collections(db: Db): Collections {
     lecturerReports: db.collection("lecturerReports"),
     questionImages: db.collection("questionImages"),
     aiUsage: db.collection("aiUsage"),
+    apiLimits: db.collection("apiLimits"),
     auditLog: db.collection("auditLog"),
   };
 }
@@ -411,6 +421,7 @@ export const INDEXES: Record<string, IndexDescription[]> = {
   scheduleDocs: [{ key: { block: 1, track: 1 } }],
   lecturerReports: [{ key: { status: 1, createdAt: -1 } }, { key: { userId: 1, status: 1 } }],
   aiUsage: [{ key: { userId: 1, day: 1 }, unique: true }],
+  apiLimits: [{ key: { expiresAt: 1 }, expireAfterSeconds: 0, name: "expiry" }],
   auditLog: [{ key: { createdAt: -1 } }],
 };
 

@@ -2,7 +2,7 @@
 // posts a request with the student's sign-in cookie and reads the answer as it streams in as plain text.
 
 import { apiFetch } from "./db/client";
-import { currentT as t } from "../i18n/i18n";
+import { currentT as t, storedLanguage } from "../i18n/i18n";
 
 export type AiResult = { ok: true; remaining: number | null } | { ok: false; status: number; message: string; partial?: string };
 
@@ -13,7 +13,7 @@ const CUT_OFF = "\u0000";
 export async function streamAi(kind: "explain" | "chat", body: unknown, onText: (text: string) => void, signal?: AbortSignal): Promise<AiResult> {
   let res: Response;
   try {
-    res = await apiFetch(`ai/${kind}`, { body: JSON.stringify(body), signal });
+    res = await apiFetch(`ai/${kind}`, { body: JSON.stringify({ ...(body as object), language: storedLanguage() }), signal });
   } catch {
     if (signal?.aborted) return { ok: false, status: 0, message: "" };
     return { ok: false, status: 0, message: t("ai.unreachable") };
