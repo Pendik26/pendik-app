@@ -25,6 +25,7 @@ const CODE_TEXT: Record<string, MessageKey> = {
   value_too_big: "err.tooMuch",
   progress_full: "err.tooMuch",
   too_many_reviews: "err.tooMuch",
+  too_many_requests: "err.slowDown",
   drive_not_set_up: "err.driveNotSetUp",
   lecturer_not_found: "err.notFound",
   not_found: "err.notFound",

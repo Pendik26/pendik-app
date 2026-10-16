@@ -292,7 +292,7 @@ readiness.
 ## Leaderboard
 
 Points are worked out on the server from the study records it checked and
-finished attempts (`server/study.ts` and `server/exams.ts`),
+finished attempts (`server/study.ts` and `server/exams/attempts.ts`),
 never from a score the browser reports:
 
 | Earned for | Points |

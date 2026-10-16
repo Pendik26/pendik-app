@@ -67,8 +67,8 @@ scripts/        prerender.mjs (after vite build), graph-relations.mjs,
                 atlas/ (converts Z-Anatomy into public/atlas/)
 api/            index.ts: the Vercel Function that serves /api/*
 server/         the API: app.ts (routes), auth.ts, db.ts (collections and
-                indexes), study/exams/people/drive.ts (the functions), ai.ts,
-                driveSync.ts, catalog.generated.ts; tests beside them
+                indexes), study/people/drive.ts and exams/ (the functions), ai.ts,
+                rateLimit.ts, driveSync.ts, catalog.generated.ts; tests beside them
 ```
 
 ## How content gets into the app

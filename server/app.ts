@@ -5,12 +5,13 @@ import type { Auth } from "./auth.js";
 import { ApiError, audit, refuse, type Args, type Caller, type Ctx } from "./context.js";
 import { collections, today, type Collections } from "./db.js";
 import { driveFiles, adminDriveFiles, adminSetFileHidden, adminSetFileOrder, adminSyncRuns, driveSyncStep, type DriveSyncConfig } from "./drive.js";
-import * as exams from "./exams.js";
+import * as exams from "./exams/index.js";
 import { loadQuestionImage, MAX_IMAGE_BYTES, storeQuestionImage } from "./images.js";
 import * as people from "./people.js";
 import * as schedule from "./schedule.js";
 import * as study from "./study.js";
 import { allowedOrigins, corsHeaders } from "./http.js";
+import { DEFAULT_LIMITS, takeRate, type Limits } from "./rateLimit.js";
 
 // The whole API as one fetch-style handler (api/index.ts serves it on Vercel):
 //   /api/auth/*          Better Auth: sign-in, sign-out, password, Google
@@ -33,6 +34,8 @@ export interface AppDeps {
   driveSyncSecret?: string;
   /** Addresses allowed to call the API from another origin (APP_ORIGINS). */
   origins?: string;
+  /** Calls a minute per student; `false` turns limiting off. Defaults to DEFAULT_LIMITS. */
+  limits?: Limits | false;
 }
 
 type Fn = (ctx: Ctx, args: Args) => unknown;
@@ -131,6 +134,7 @@ export function createApp(deps: AppDeps) {
   const { auth } = deps;
   const c: Collections = collections(deps.db);
   const origins = allowedOrigins(deps.origins);
+  const limits = deps.limits === undefined ? DEFAULT_LIMITS : deps.limits;
 
   /** The signed-in student, or the reason there isn't one. */
   async function caller(request: Request): Promise<Caller> {
@@ -158,7 +162,9 @@ export function createApp(deps: AppDeps) {
         return error(400, "invalid_json", cors);
       }
     }
-    const ctx: Ctx = { c, caller: await caller(request), now: new Date() };
+    const who = await caller(request);
+    await takeRate(c, limits, who.userId, name);
+    const ctx: Ctx = { c, caller: who, now: new Date() };
     if (name === "admin_list_roster") return json({ data: await people.adminListRoster(ctx, auth) }, 200, cors);
     if (name === "admin_accounts") return json({ data: await people.adminAccounts(ctx, auth, args) }, 200, cors);
     const fn = Object.hasOwn(FUNCTIONS, name) ? FUNCTIONS[name] : undefined;
@@ -170,6 +176,7 @@ export function createApp(deps: AppDeps) {
     if (request.method !== "POST") return error(405, "use_post", cors);
     if (!deps.ai) return error(503, "AI isn't switched on for this site.", cors);
     const who = await caller(request);
+    await takeRate(c, limits, who.userId, "ai");
     const body = await request.text();
     if (body.length > MAX_AI_BYTES[kind]) return error(413, kind === "chat" ? "That message is too long." : "That question is too long to explain.", cors);
     const day = today();
@@ -201,6 +208,7 @@ export function createApp(deps: AppDeps) {
     if (request.method !== "POST") return error(405, "use_post", cors);
     const who = await caller(request);
     if (who.account.role !== "admin") throw refuse("admins_only", 403);
+    await takeRate(c, limits, who.userId, "image");
     if (Number(request.headers.get("content-length") ?? 0) > MAX_IMAGE_BYTES) return error(413, "image_too_big", cors);
     const body = new Uint8Array(await request.arrayBuffer());
     const name = new URL(request.url).searchParams.get("name") ?? "image";

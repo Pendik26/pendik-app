@@ -19,7 +19,8 @@ describe("errorText", () => {
 
   it("covers every code the server can refuse with", () => {
     const codes = new Set<string>();
-    for (const file of readdirSync("server").filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))) {
+    const files = readdirSync("server", { recursive: true, encoding: "utf8" }).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"));
+    for (const file of files) {
       for (const m of readFileSync(`server/${file}`, "utf8").matchAll(/refuse\("([a-z_]+)"/g)) codes.add(m[1]);
     }
     expect(codes.size).toBeGreaterThan(20);

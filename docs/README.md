@@ -25,6 +25,8 @@ app's sidebar, or go to `/docs`. Its pages are written in
 - [Storage and saving](storage-and-sync.md): the key registry and how
   progress is loaded from and saved to the account.
 - [Database](database.md): the MongoDB collections and who can see what.
+- [Running Pendik](operations.md): the after-deploy walk-through, backups,
+  monitoring and the public-content decision.
 - [Server API](api.md): the `/api` routes and functions with their
   requests and responses.
 - [3D anatomy atlas](atlas-3d.md): the `/atlas` page's models, where they

@@ -1,0 +1,30 @@
+# Checks everything a pull request can break outside the server: the app's types, lint, styles,
+# unit tests and production build, plus a scan for real student details in the public repo.
+# (The API's own tests run against MongoDB in server.yml.)
+name: Client
+
+on:
+  pull_request:
+  push:
+    branches: [main, major]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check:student-data
+      - run: npx tsc -b
+      - run: npm run lint
+      - run: npm run lint:css
+      - run: npx vitest run src
+      - run: npm run build

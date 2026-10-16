@@ -20,7 +20,8 @@
     "graph:relations": "node scripts/graph-relations.mjs",
     "docs:wiki": "node scripts/wiki.mjs",
     "content:catalog": "node scripts/content-catalog.mjs",
-    "content:check": "node scripts/content-catalog.mjs --check"
+    "content:check": "node scripts/content-catalog.mjs --check",
+    "check:student-data": "node scripts/check-no-student-data.mjs"
   },
   "dependencies": {
     "better-auth": "^1.7.7",
